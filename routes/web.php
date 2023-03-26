@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
+    Route::post('/owners',[\App\Http\Controllers\Owners\OwnerController::class,'store'])->name('owner.store');
+    Route::get('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'show'])->name('owner.show');
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
