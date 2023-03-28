@@ -83,9 +83,9 @@
                             </div>
                             <br />
                             <div class="row">
-                                <div class="col-lg-4 mobileNo">
+                                <div class="col-lg-4 mobile_number">
                                     <label for="mobileNo">Mobile No.</label><span class="required">*</span>
-                                    <input type="text" name="mobile_number" id="mobileNo" class="form-control">
+                                    <input type="text" name="mobile_number" id="mobile_number" class="form-control">
                                 </div>
                                 <div class="col-lg-4 email">
                                     <label for="email">Email</label><span class="required">*</span>
@@ -105,7 +105,7 @@
                                         <button type="button" class="input-group-text password_icon"><i class="fa fa-eye-slash" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-6 password_confirmation">
                                     <label for="password_confirmation">Confirm Password</label>
                                     <div class="input-group mb-3" id="show_hide_confirm_password">
                                         <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
@@ -138,39 +138,66 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-lg-4 firstname">
+                                <div class="col-lg-4 edit_firstname">
                                     <label for="firstname">First Name</label><span class="required">*</span>
-                                    <input type="text" name="firstname" id="update-firstname" class="form-control">
-                                    <input type="hidden" name="id" id="update-id" class="form-control">
+                                    <input type="text" name="edit_firstname" id="edit_firstname" class="form-control">
+                                    <input type="hidden" name="edit_id" id="edit_id" class="form-control">
                                 </div>
-                                <div class="col-lg-4 middlename">
+                                <div class="col-lg-4 edit_middlename">
                                     <label for="middlename">Middle Name</label>
-                                    <input type="text" name="middlename" id="update-middlename" class="form-control">
+                                    <input type="text" name="edit_middlename" id="edit_middlename" class="form-control">
                                 </div>
-                                <div class="col-lg-4 lastname">
+                                <div class="col-lg-4 edit_lastname">
                                     <label for="lastname">Last Name</label><span class="required">*</span>
-                                    <input type="text" name="lastname" id="update-lastname" class="form-control">
+                                    <input type="text" name="edit_lastname" id="edit_lastname" class="form-control">
                                 </div>
                             </div>
                             <br />
                             <div class="row">
-                                <div class="col-lg-4 mobileNo">
+                                <div class="col-lg-4 edit_mobile_number">
                                     <label for="mobileNo">Mobile No.</label><span class="required">*</span>
-                                    <input type="text" name="mobile_number" id="update-mobileNo" class="form-control">
+                                    <input type="text" name="edit_mobile_number" id="edit_mobile_number" class="form-control">
                                 </div>
-                                <div class="col-lg-4 email">
+                                <div class="col-lg-4 edit_email">
                                     <label for="email">Email</label><span class="required">*</span>
-                                    <input type="email" name="email" id="update-email" class="form-control">
+                                    <input type="email" name="edit_email" id="edit_email" class="form-control">
                                 </div>
-                                <div class="col-lg-4 username">
+                                <div class="col-lg-4 edit_username">
                                     <label for="username">Username</label><span class="required">*</span>
-                                    <input type="text" name="username" id="update-username" class="form-control">
+                                    <input type="text" name="edit_username" id="edit_username" class="form-control">
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <input type="button" class="btn btn-primary update-owner-btn" value="Save">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endcan
+
+    @can('delete owner')
+        <div class="modal fade" id="delete-owner-modal">
+            <form role="form" id="delete-owner-form" class="form-submit">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="deleteOwnerId" id="deleteOwnerId">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger">
+                            <h4 class="modal-title">Delete Owner</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="delete_owner">Delete Owner: <span class="delete-owner-name"></span></p>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                            <input type="button" class="btn btn-outline-light delete-owner-modal-btn" value="Delete">
                         </div>
                     </div>
                 </div>
@@ -230,6 +257,10 @@
                 $('#update-password_confirmation').val();
 
                 $('#update-owner-modal').modal('show');
+            });
+
+            $(document).on('click','.delete-owner-btn',function() {
+                $('#delete-owner-modal').modal('show');
             });
         });
 

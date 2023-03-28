@@ -386,6 +386,12 @@ return [
             'icon_color' => 'cyan',
             'url'        => '#',
         ],
+        [
+            'text'    => 'Owner Management',
+            'icon'    => 'fas fa-user',
+            'route'    => 'owner.lists',
+            'can'     => 'view owner',
+        ],
     ],
 
     /*
