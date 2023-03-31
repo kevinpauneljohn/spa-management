@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Owner')
 
 @section('content_header')
     <h1>Owner</h1>
@@ -247,14 +247,15 @@
             });
 
             $(document).on('click','.edit-owner-btn',function() {
-                $('#update-firstname').val('');
-                $('#update-middlename').val('');
-                $('#update-lastname').val('');
-                $('#update-mobileNo').val('');
-                $('#update-email').val('');
-                $('#update-username').val('');
-                $('#update-password').val('');
-                $('#update-password_confirmation').val();
+                $('#edit_id').val('');
+                $('#edit_firstname').val('');
+                $('#edit_middlename').val('');
+                $('#edit_lastname').val('');
+                $('#edit_mobileNo').val('');
+                $('#edit_email').val('');
+                $('#edit_username').val('');
+                $('#edit_password').val('');
+                $('#edit_password_confirmation').val();
 
                 $('#update-owner-modal').modal('show');
             });
