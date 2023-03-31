@@ -55,8 +55,8 @@ class OwnerController extends Controller
             'mobile_number'     => 'required|unique:users,mobile_number',
             'email'     => 'required|unique:users,email',
             'username'     => 'required|unique:users,username',
-            'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
-            'password_confirmation' => 'min:6'
+            'password' => 'required|min:6,confirmed,required_with:password_confirmed',
+            'password_confirmation' => 'required|min:6'
         ]);
 
         if($validator->passes())
@@ -79,32 +79,15 @@ class OwnerController extends Controller
                 ]);
             }
             $response = [
-                'success'   => true,
+                'status'   => true,
                 'message'   => 'Owner Registration successfully saved.',
                 'data'      => $user,
-            ];            
+            ];    
+            
+            return response($response, $code);
         } else {
-            $code = 201;
-            $validator_error = $validator->errors()->toArray();
-            if (isset($validator_error['email'])) {
-                $message = 'Email has already been taken.';
-            } else if (isset($validator_error['username'])) {
-                $message = 'Username has already been taken.';
-            } else if (isset($validator_error['mobile_number'])) {
-                $message = 'Mobile Number has already been taken.';
-            } else if (isset($validator_error['password'])) {
-                $message = 'The password must be at least 6 characters.';
-            } else if (isset($validator_error['password_confirmation'])) {
-                $message = 'The password confirmation must be at least 6 characters.';
-            }
-
-            $response = [
-                'success'   => false,
-                'message'   => $message,
-            ];
+            return response()->json($validator->errors());
         }
-
-        return response($response, $code);
     }
 
     /**
@@ -139,7 +122,35 @@ class OwnerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $firstname = $request['firstname'];
+        $middlename = $request['middlename'];
+        $lastname = $request['lastname'];
+        $mobile_number = $request['mobile_number'];
+        $email = $request['email'];
+        $username = $request['username'];
+
+        $validator = Validator::make($request->all(), [
+            'firstname'    => 'required',
+            'lastname'     => 'required',
+            // 'mobile_number'=> 'required|unique:users,mobile_number',
+            // 'email'        => 'required|unique:users,email',
+            // 'username'     => 'required|unique:users,username',
+        ]);
+
+        if($validator->passes())
+        {
+            $user = User::findOrFail($id);
+            $user->firstname = $firstname;
+            $user->middlename = $middlename;
+            $user->lastname = $lastname;
+            $user->mobile_number = $mobile_number;
+            $user->email = $email;
+            $user->username = $username;
+            $user->save();
+
+            return response()->json(['status' => true, 'message' => 'Owners information successfully updated.']);
+        }
+        return response()->json($validator->errors());
     }
 
     /**
@@ -150,12 +161,17 @@ class OwnerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $owner = Owner::where('user_id', $id)->first();
+        if ($owner->delete()) {
+            $user->delete();
+        }
+        return response()->json(['status' => true, 'message' => 'Owners information successfully deleted.']);
     }
 
     public function owner_lists()
     {
-        $owners = User::role(['super admin', 'owner'])->get();
+        $owners = User::role(['owner'])->get();
         return DataTables::of($owners)
             ->editColumn('created_at',function($owners){
                 return $owners->created_at->format('M d, Y');
@@ -168,17 +184,19 @@ class OwnerController extends Controller
             })
             ->addColumn('action', function($owners){
                 $action = "";
-                $action .= '<div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        Action
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item view-reserved-unit" href="#" id="'.$owners->id.'" title="View Details" data-toggle="modal" data-target="#view-sales-details">View</a>
-                        <a class="dropdown-item edit-owner-btn" href="#" id="'.$owners->id.'" title="Edit Details">Edit</a>
-                        <a class="dropdown-item view-requirements" href="#" id="'.$owners->id.'" title="View Requirements" data-toggle="modal" data-target="#view-requirements">Manage Requirements</a>
-                    </div>
-                </div>';
-
+                $action = "";
+                if(auth()->user()->can('view owner'))
+                {
+                    // $action .= '<a href="'.route("leads.show",["lead" => $sale->id]).'" class="btn btn-xs btn-success view-btn" id="'.$sale->id.'"><i class="fa fa-eye"></i> View</a>';
+                }
+                if(auth()->user()->can('edit owner'))
+                {
+                    $action .= '<a href="#" class="btn btn-xs btn-primary edit-owner-btn" id="'.$owners->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                }
+                if(auth()->user()->can('delete owner'))
+                {
+                    $action .= '<a href="#" class="btn btn-xs btn-danger delete-owner-btn" id="'.$owners->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                }
                 return $action;
             })
             ->rawColumns(['action','status','total_contract_price','requirements','payments'])

@@ -2,92 +2,31 @@ $(document).on('click','.add-owner-btn',function(){
     var firstname = $('#firstname').val();
     var middlename = $('#middlename').val();
     var lastname = $('#lastname').val();
-    var mobileNo = $('#mobileNo').val();
+    var mobile_number = $('#mobile_number').val();
     var email = $('#email').val();
     var username = $('#username').val();
     var password = $('#password').val();
     var password_confirmation = $('#password_confirmation').val();
 
-    var firstname_valid = false;
-    if (firstname === '') {
-        $('#firstname').addClass('errorForm');
-        return false;
-    } else {
-        firstname_valid = true;
-    }
-
-    var lastname_valid = false;
-    if (lastname === '') {
-        $('#lastname').addClass('errorForm');
-        return false;
-    } else {
-        lastname_valid = true;
-    }
-
-    var mobileNo_valid = false;
-    if (mobileNo === '') {
-        $('#mobileNo').addClass('errorForm');
-        return false;
-    } else {
-        mobileNo_valid = true;
-    }
-
-    var email_valid = false;
-    if (email === '') {
-        $('#email').addClass('errorForm');
-        return false;
-    } else {
-        if( !validateEmail(email)) {
-            alert('Invalid Email format.');
-            return false;
-        } else {
-            email_valid = true;
-        }
-    }
-
-    var username_valid = false;
-    if (username === '') {
-        $('#username').addClass('errorForm');
-        return false;
-    } else {
-        username_valid = true;
-    }
-
-    if (password === '') {
-        $('#password').addClass('errorForm');
-        return false;
-    }
-
-    if (password_confirmation === '') {
-        $('#password_confirmation').addClass('errorForm');
-        return false;
-    }
-
     var password_valid = false;
     if (password == password_confirmation) {
         password_valid = true;
     } else {
-        alert('Password not match.');
-        return false;
+        var element_password = $('#show_hide_password');
+        element_password.closest('div.password')
+        .find('.text-danger')
+        .remove();
+
+        element_password.after('<p class="text-danger">Password and Password confirmation does not match.</p>');
     }
 
-    var isValid = false;
-    if (
-        firstname_valid &&
-        lastname_valid &&
-        mobileNo_valid &&
-        email_valid &&
-        username_valid &&
-        password_valid
-    ) {
-        isValid = true;
-    }
+    var isValid = true;
     
     var data = {
         firstname : firstname,
         middlename : middlename,
         lastname : lastname,
-        mobile_number : mobileNo,
+        mobile_number : mobile_number,
         email : email,
         username : username,
         password : password,
@@ -113,8 +52,25 @@ $(document).on('click','.add-owner-btn',function(){
                         alert(result.message);
                         $('#add-new-owner-modal').modal('hide');
                     } else {
-                        alert(result.message);
-                        reloadOwnerTable();
+                        $.each(result, function (key, value) {
+                            var element = $('#'+key);
+            
+                            element.closest('div.'+key)
+                                .addClass(value.length > 0 ? 'has-error' : 'has-success')
+                                .find('.text-danger')
+                                .remove();
+                            if (key === 'password') {
+                                var element_password = $('#show_hide_password');
+
+                                element_password.after('<p class="text-danger">'+value+'</p>');
+                            } else if (key === 'password_confirmation') {
+                                var element_confirm_password = $('#show_hide_confirm_password');
+
+                                element_confirm_password.after('<p class="text-danger">'+value+'</p>');
+                            } else {
+                                element.after('<p class="text-danger">'+value+'</p>');
+                            }
+                        });
                     }
             
                     $('#owner-form').find('.add-owner-btn').val('Save').attr('disabled',false);
@@ -130,6 +86,11 @@ $(document).on('click','.add-owner-btn',function(){
 
 $('#firstname').on('input',function(e){
     if ($(this).val().length > 0) {
+        var element = $('#firstname');
+        element.closest('div.firstname')
+        .find('.text-danger')
+        .remove();
+
         $('#firstname').removeClass('errorForm');
     } else {
         $('#firstname').addClass('errorForm');
@@ -138,22 +99,37 @@ $('#firstname').on('input',function(e){
 
 $('#lastname').on('input',function(e){
     if ($(this).val().length > 0) {
+        var element = $('#lastname');
+        element.closest('div.lastname')
+        .find('.text-danger')
+        .remove();
+
         $('#lastname').removeClass('errorForm');
     } else {
         $('#lastname').addClass('errorForm');
     }
 });
 
-$('#mobileNo').on('input',function(e){
+$('#mobile_number').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#mobileNo').removeClass('errorForm');
+        var element = $('#mobile_number');
+        element.closest('div.mobile_number')
+        .find('.text-danger')
+        .remove();
+
+        $('#mobile_number').removeClass('errorForm');
     } else {
-        $('#mobileNo').addClass('errorForm');
+        $('#mobile_number').addClass('errorForm');
     }
 });
 
 $('#email').on('input',function(e){
     if ($(this).val().length > 0) {
+        var element = $('#email');
+        element.closest('div.email')
+        .find('.text-danger')
+        .remove();
+
         $('#email').removeClass('errorForm');
     } else {
         $('#email').addClass('errorForm');
@@ -162,6 +138,11 @@ $('#email').on('input',function(e){
 
 $('#username').on('input',function(e){
     if ($(this).val().length > 0) {
+        var element = $('#username');
+        element.closest('div.username')
+        .find('.text-danger')
+        .remove();
+
         $('#username').removeClass('errorForm');
     } else {
         $('#username').addClass('errorForm');
@@ -211,93 +192,39 @@ $(document).on('click','.confirm_password_icon',function(){
 });
 
 $(document).on('click','.edit-owner-btn',function(){
-    alert("No backend function yet. Will continue tomorrow");
     let id = this.id;
     $.ajax({
         'url' : '/owners/'+id,
         'type' : 'GET',
         success: function(result){
-            console.log(result);
-            $('#update-id').val(result.user.id);
-            $('#update-firstname').val(result.user.firstname);
-            $('#update-middlename').val(result.user.middlename);
-            $('#update-lastname').val(result.user.lastname);
-            $('#update-mobileNo').val(result.user.mobile_number);
-            $('#update-email').val(result.user.email);
-            $('#update-username').val(result.user.username);
+            $('#edit_id').val(result.user.id);
+            $('#edit_firstname').val(result.user.firstname);
+            $('#edit_middlename').val(result.user.middlename);
+            $('#edit_lastname').val(result.user.lastname);
+            $('#edit_mobile_number').val(result.user.mobile_number);
+            $('#edit_email').val(result.user.email);
+            $('#edit_username').val(result.user.username);
         }
     });
 });
 
 $(document).on('click','.update-owner-btn',function(){
-    var firstname = $('#update-firstname').val();
-    var middlename = $('#update-middlename').val();
-    var lastname = $('#update-lastname').val();
-    var mobileNo = $('#update-mobileNo').val();
-    var email = $('#update-email').val();
-    var username = $('#update-username').val();
+    var id = $('#edit_id').val();
+    var firstname = $('#edit_firstname').val();
+    var middlename = $('#edit_middlename').val();
+    var lastname = $('#edit_lastname').val();
+    var mobile_number = $('#edit_mobile_number').val();
+    var email = $('#edit_email').val();
+    var username = $('#edit_username').val();
 
-    var firstname_valid = false;
-    if (firstname === '') {
-        $('#update-firstname').addClass('errorForm');
-        return false;
-    } else {
-        firstname_valid = true;
-    }
-
-    var lastname_valid = false;
-    if (lastname === '') {
-        $('#update-lastname').addClass('errorForm');
-        return false;
-    } else {
-        lastname_valid = true;
-    }
-
-    var mobileNo_valid = false;
-    if (mobileNo === '') {
-        $('#update-mobileNo').addClass('errorForm');
-        return false;
-    } else {
-        mobileNo_valid = true;
-    }
-
-    var email_valid = false;
-    if (email === '') {
-        $('#update-email').addClass('errorForm');
-        return false;
-    } else {
-        if( !validateEmail(email)) {
-            alert('Invalid Email format.');
-            return false;
-        } else {
-            email_valid = true;
-        }
-    }
-
-    var username_valid = false;
-    if (username === '') {
-        $('#update-username').addClass('errorForm');
-        return false;
-    } else {
-        username_valid = true;
-    }
-
-    var isValid = false;
-    if (
-        firstname_valid &&
-        lastname_valid &&
-        mobileNo_valid &&
-        email_valid &&
-        username_valid
-    ) {
-        isValid = true;
-    }
+    var isValid = true;
     
     var data = {
+        id: id,
         firstname : firstname,
         middlename : middlename,
         lastname : lastname,
-        mobile_number : mobileNo,
+        mobile_number : mobile_number,
         email : email,
         username : username
     };
@@ -306,73 +233,70 @@ $(document).on('click','.update-owner-btn',function(){
         var returnConfirmed = confirm("Are you sure you want to update Owners Information?");
 
         if (returnConfirmed) {
-            // $.ajax({
-            //     'url' : '/owners',
-            //     'type' : 'POST',
-            //     'data': data,
-            //     'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            //     beforeSend: function () {
-            //       $('#update-owner-form').find('.update-owner-btn').val('Saving ... ').attr('disabled',true);
-            //     },success: function (result) {
-            //         if(result.status) {
-            //             $('#update-owner-form').trigger('reset');
-            //             reloadOwnerTable();
+            $.ajax({
+                'url' : '/owners/'+id,
+                'type' : 'PUT',
+                'data': data,
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+                  $('#update-owner-form').find('.update-owner-btn').val('Saving ... ').attr('disabled',true);
+                },success: function (result) {
+                    if(result.status) {
+                        $('#update-owner-form').trigger('reset');
+                        reloadOwnerTable();
         
-            //             alert(result.message);
-            //             $('#update-owner-modal').modal('hide');
-            //         } else {
-            //             alert(result.message);
-            //             reloadOwnerTable();
-            //         }
-            
-            //         $('#update-form').find('.update-owner-btn').val('Save').attr('disabled',false);
-            //     },error: function(xhr, status, error){
-            //         console.log(xhr);
-            //     }
-            // });
+                        alert(result.message);
+                        $('#update-owner-modal').modal('hide');
+                    }
+
+                    $('#update-form').find('.update-owner-btn').val('Save').attr('disabled',false);
+                },error: function(xhr, status, error){
+                    console.log(xhr);
+                }
+            });
         } else {
             return false;
         }
     }
 });
 
-$('#update-firstname').on('input',function(e){
+$('#edit_firstname').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#update-firstname').removeClass('errorForm');
+        $('#edit_firstname').removeClass('errorForm');
     } else {
-        $('#update-firstname').addClass('errorForm');
+        $('#edit_firstname').addClass('errorForm');
     }
 });
 
-$('#update-lastname').on('input',function(e){
+$('#edit_lastname').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#update-lastname').removeClass('errorForm');
+        $('#edit_lastname').removeClass('errorForm');
     } else {
-        $('#update-lastname').addClass('errorForm');
+        $('#edit_lastname').addClass('errorForm');
     }
 });
 
-$('#update-mobileNo').on('input',function(e){
+$('#edit_mobile_number').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#update-mobileNo').removeClass('errorForm');
+        $('#edit_mobile_number').removeClass('errorForm');
     } else {
-        $('#update-mobileNo').addClass('errorForm');
+        $('#edit_mobile_number').addClass('errorForm');
     }
 });
 
-$('#update-email').on('input',function(e){
+$('#edit_email').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#update-email').removeClass('errorForm');
+        $('#edit_email').removeClass('errorForm');
     } else {
-        $('#update-email').addClass('errorForm');
+        $('#edit_email').addClass('errorForm');
     }
 });
 
-$('#update-username').on('input',function(e){
+$('#edit_username').on('input',function(e){
     if ($(this).val().length > 0) {
-        $('#update-username').removeClass('errorForm');
+        $('#edit_username').removeClass('errorForm');
     } else {
-        $('#update-username').addClass('errorForm');
+        $('#edit_username').addClass('errorForm');
     }
 });
 
@@ -380,3 +304,39 @@ function validateEmail($email) {
     var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
     return emailReg.test( $email );
 }
+
+$(document).on('click','.delete-owner-btn',function () {
+    $tr = $(this).closest('tr');
+    id = this.id;
+    let data = $tr.children('td').map(function () {
+        return $(this).text();
+    }).get();
+
+    $('#deleteOwnerId').val(id);
+    $('.delete-owner-name').html('<strong style="color:yellow;">'+data[1]+'</strong>?');
+});
+
+$(document).on('click','.delete-owner-modal-btn',function(){
+    let id = $('#deleteOwnerId').val();
+
+    $.ajax({
+        'url' : '/owners/'+id,
+        'type' : 'DELETE',
+        'data': '',
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+          $('#delete-owner-form').find('.delete-owner-modal-btn').val('Deleting ... ').attr('disabled',true);
+        },success: function (result) {
+            if(result.status) {
+                reloadOwnerTable();
+
+                alert(result.message);
+                $('#delete-owner-modal').modal('hide');
+            }
+
+            $('#delete-owner-form').find('.delete-owner-modal-btn').val('Delete').attr('disabled',false);
+        },error: function(xhr, status, error){
+            console.log(xhr);
+        }
+    });
+});
