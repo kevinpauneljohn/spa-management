@@ -132,9 +132,9 @@ class OwnerController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname'    => 'required',
             'lastname'     => 'required',
-            // 'mobile_number'=> 'required|unique:users,mobile_number',
-            // 'email'        => 'required|unique:users,email',
-            // 'username'     => 'required|unique:users,username',
+            'mobile_number'=> 'required|unique:users,mobile_number',
+            'email'        => 'required|unique:users,email',
+            'username'     => 'required|unique:users,username',
         ]);
 
         if($validator->passes())
@@ -177,29 +177,40 @@ class OwnerController extends Controller
                 return $owners->created_at->format('M d, Y');
             })
             ->addColumn('fullname',function ($owners){
-                return $owners->fullname;
+                if(auth()->user()->can('view owner'))
+                {
+                    return '<a href="'.route('owners.overview',['id' => $owners->id]).'" title="View">'.$owners->fullname.'</a>&nbsp;';
+                } else {
+                    return $owners->fullname;
+                }
             })
             ->addColumn('qty_of_spa',function ($owners){
                 return "";
             })
             ->addColumn('action', function($owners){
                 $action = "";
-                $action = "";
                 if(auth()->user()->can('view owner'))
                 {
-                    // $action .= '<a href="'.route("leads.show",["lead" => $sale->id]).'" class="btn btn-xs btn-success view-btn" id="'.$sale->id.'"><i class="fa fa-eye"></i> View</a>';
+                    $action .= '<a href="'.route('owners.overview',['id' => $owners->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit owner'))
                 {
-                    $action .= '<a href="#" class="btn btn-xs btn-primary edit-owner-btn" id="'.$owners->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-owner-btn" id="'.$owners->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('delete owner'))
                 {
-                    $action .= '<a href="#" class="btn btn-xs btn-danger delete-owner-btn" id="'.$owners->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-owner-btn" id="'.$owners->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
                 return $action;
             })
-            ->rawColumns(['action','status','total_contract_price','requirements','payments'])
+            ->rawColumns(['action','fullname'])
             ->make(true);
+    }
+
+    public function overview($id)
+    {
+        $owners = User::role(['owner'])->where('id', $id)->first();
+
+        return view('Owner.overview',compact('owners'));
     }
 }

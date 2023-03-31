@@ -249,7 +249,7 @@ $(document).on('click','.update-owner-btn',function(){
                         $('#update-owner-modal').modal('hide');
                     }
 
-                    $('#update-form').find('.update-owner-btn').val('Save').attr('disabled',false);
+                    $('#update-owner-form').find('.update-owner-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
@@ -313,7 +313,7 @@ $(document).on('click','.delete-owner-btn',function () {
     }).get();
 
     $('#deleteOwnerId').val(id);
-    $('.delete-owner-name').html('<strong style="color:yellow;">'+data[1]+'</strong>?');
+    $('.delete-owner-name').html('<strong style="color:red;">'+data[1]+'</strong>?');
 });
 
 $(document).on('click','.delete-owner-modal-btn',function(){
