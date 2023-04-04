@@ -20,7 +20,6 @@ $(document).on('click','.add-owner-btn',function(){
         element_password.after('<p class="text-danger">Password and Password confirmation does not match.</p>');
     }
 
-    var isValid = true;
     
     var data = {
         firstname : firstname,
@@ -33,23 +32,31 @@ $(document).on('click','.add-owner-btn',function(){
         password_confirmation : password,
     };
 
-    if (isValid) {
-        var returnConfirmed = confirm("Are you sure you want to register Owners Information?");
-
-        if (returnConfirmed) {
+    swal.fire({
+        title: "Are you sure you want to register Owners Information?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
             $.ajax({
                 'url' : '/owners',
                 'type' : 'POST',
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#owner-form').find('.add-owner-btn').val('Saving ... ').attr('disabled',true);
+                    $('#owner-form').find('.add-owner-btn').val('Saving ... ').attr('disabled',true);
+                    $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
                         $('#owner-form').trigger('reset');
                         reloadOwnerTable();
         
-                        alert(result.message);
+                        swal.fire("Done!", result.message, "success");
                         $('#add-new-owner-modal').modal('hide');
                     } else {
                         $.each(result, function (key, value) {
@@ -79,9 +86,12 @@ $(document).on('click','.add-owner-btn',function(){
                 }
             });
         } else {
-            return false;
+            e.dismiss;
         }
-    }
+
+    }, function (dismiss) {
+        return false;
+    })
 });
 
 $('#firstname').on('input',function(e){
@@ -90,10 +100,6 @@ $('#firstname').on('input',function(e){
         element.closest('div.firstname')
         .find('.text-danger')
         .remove();
-
-        $('#firstname').removeClass('errorForm');
-    } else {
-        $('#firstname').addClass('errorForm');
     }
 });
 
@@ -103,11 +109,59 @@ $('#lastname').on('input',function(e){
         element.closest('div.lastname')
         .find('.text-danger')
         .remove();
-
-        $('#lastname').removeClass('errorForm');
-    } else {
-        $('#lastname').addClass('errorForm');
     }
+});
+
+$('#firstname, #lastname').on('input',function(e){
+    var firstname = $('#firstname').val();
+    var lastname = $('#lastname').val();
+
+    if (firstname.length > 0 && lastname.length > 0) {
+        $('.basic_info_next_btn').prop('disabled', false);
+    } else {
+        $('.basic_info_next_btn').prop('disabled', true);
+    }
+});
+
+$(document).on('click','.basic_info_next_btn',function(){
+    $('.basic_info_next_btn').addClass('hiddenBtn');
+    $('.closeModal').addClass('hiddenBtn');
+    $('.contact_info_previous_btn').removeClass('hiddenBtn');
+    $('.contact_info_next_btn').removeClass('hiddenBtn');
+});
+
+$(document).on('click','.contact_info_previous_btn',function(){
+    $('.basic_info_next_btn').removeClass('hiddenBtn');
+    $('.closeModal').removeClass('hiddenBtn');
+    $('.contact_info_previous_btn').addClass('hiddenBtn');
+    $('.contact_info_next_btn').addClass('hiddenBtn');
+});
+
+$(document).on('click','.contact_info_next_btn',function(){
+    $('.contact_info_next_btn').addClass('hiddenBtn');
+    $('.contact_info_previous_btn').addClass('hiddenBtn');
+    $('.credential_info_previous_btn').removeClass('hiddenBtn');
+    $('.credential_info_submit_btn').removeClass('hiddenBtn');
+});
+
+$(document).on('click','.credential_info_previous_btn',function(){
+    $('.contact_info_next_btn').removeClass('hiddenBtn');
+    $('.contact_info_previous_btn').removeClass('hiddenBtn');
+    $('.credential_info_previous_btn').addClass('hiddenBtn');
+    $('.credential_info_submit_btn').addClass('hiddenBtn');
+});
+
+$('#add-new-owner-modal').on('hidden.bs.modal', function () {
+    stepper.to(0);
+    $('.basic_info_next_btn').removeClass('hiddenBtn');
+    $('.closeModal').removeClass('hiddenBtn');
+    $('.basic_info_next_btn').prop('disabled', true);
+    $('.contact_info_next_btn').addClass('hiddenBtn');
+    $('.contact_info_previous_btn').addClass('hiddenBtn');
+    $('.contact_info_next_btn').prop('disabled', true);
+    $('.credential_info_previous_btn').addClass('hiddenBtn');
+    $('.credential_info_submit_btn').addClass('hiddenBtn');
+    $('.credential_info_submit_btn').prop('disabled', true);
 });
 
 $('#mobile_number').on('input',function(e){
@@ -116,23 +170,39 @@ $('#mobile_number').on('input',function(e){
         element.closest('div.mobile_number')
         .find('.text-danger')
         .remove();
-
-        $('#mobile_number').removeClass('errorForm');
-    } else {
-        $('#mobile_number').addClass('errorForm');
     }
 });
 
 $('#email').on('input',function(e){
+    var validate = validateEmail($(this).val());
     if ($(this).val().length > 0) {
-        var element = $('#email');
-        element.closest('div.email')
-        .find('.text-danger')
-        .remove();
+        if (validate) {
+            var element = $('#email');
+            element.closest('div.email')
+            .find('.text-danger')
+            .remove();
 
-        $('#email').removeClass('errorForm');
+            $('.emailValidation').addClass('hiddenBtn');
+        } else {
+            $('.emailValidation').removeClass('hiddenBtn');
+            $('.emailValidation').text('Invalid Email format.');
+        }
+    }
+});
+
+$('#mobile_number, #email').on('input',function(e){
+    var mobile_number = $('#mobile_number').val();
+    var email = $('#email').val();
+
+    var validate = validateEmail(email);
+    if (mobile_number.length > 0 && email.length > 0) {
+        if (validate) {
+            $('.contact_info_next_btn').prop('disabled', false);
+        } else {
+            $('.contact_info_next_btn').prop('disabled', true);
+        }
     } else {
-        $('#email').addClass('errorForm');
+        $('.contact_info_next_btn').prop('disabled', true);
     }
 });
 
@@ -171,7 +241,16 @@ $(document).on('click','.password_icon',function(){
 });
 
 $('#password_confirmation').on('input',function(e){
+    var password =  $('#password').val();
+    var confirm_password =  $(this).val();
     if ($(this).val().length > 0) {
+        if (password === confirm_password) {
+            $('.passwordValidation').addClass('hiddenBtn');
+        } else {
+            $('.passwordValidation').removeClass('hiddenBtn');
+            $('.passwordValidation').text('Password and Confirm password not match!');
+        }
+
         $('#password_confirmation').removeClass('errorForm');
         $('.confirm_password_icon').prop("disabled", false);
     } else {
@@ -184,10 +263,26 @@ $(document).on('click','.confirm_password_icon',function(){
         $('#password_confirmation').attr('type', 'password');
         $('#show_hide_confirm_password i').addClass("fa-eye-slash");
         $('#show_hide_confirm_password i').removeClass("fa-eye");
-    }else if($('#password_confirmation').attr("type") == "password"){
+    } else if($('#password_confirmation').attr("type") == "password"){
         $('#password_confirmation').attr('type', 'text');
         $('#show_hide_confirm_password i').removeClass( "fa-eye-slash" );
         $('#show_hide_confirm_password i').addClass( "fa-eye" );
+    }
+});
+
+$('#username, #password, #password_confirmation').on('input',function(e){
+    var username = $('#username').val();
+    var password = $('#password').val();
+    var password_confirmation = $('#password_confirmation').val();
+
+    if (username.length > 0 && password.length > 0 && password_confirmation.length > 0) {
+        if (password === password_confirmation) {
+            $('.credential_info_submit_btn').prop('disabled', false);
+        } else {
+            $('.credential_info_submit_btn').prop('disabled', true);
+        }
+    } else {
+        $('.credential_info_submit_btn').prop('disabled', true);
     }
 });
 
@@ -216,8 +311,6 @@ $(document).on('click','.update-owner-btn',function(){
     var mobile_number = $('#edit_mobile_number').val();
     var email = $('#edit_email').val();
     var username = $('#edit_username').val();
-
-    var isValid = true;
     
     var data = {
         id: id,
@@ -229,75 +322,151 @@ $(document).on('click','.update-owner-btn',function(){
         username : username
     };
 
-    if (isValid) {
-        var returnConfirmed = confirm("Are you sure you want to update Owners Information?");
-
-        if (returnConfirmed) {
+    swal.fire({
+        title: "Are you sure you want to update Owners Information?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
             $.ajax({
                 'url' : '/owners/'+id,
                 'type' : 'PUT',
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#update-owner-form').find('.update-owner-btn').val('Saving ... ').attr('disabled',true);
+                    $('#update-owner-form').find('.update-owner-btn').val('Saving ... ').attr('disabled',true);
+                    $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
                         $('#update-owner-form').trigger('reset');
                         reloadOwnerTable();
         
-                        alert(result.message);
+                        swal.fire("Done!", result.message, "success");
                         $('#update-owner-modal').modal('hide');
+                    } else {
+                        if (result.status === false) {
+                            swal.fire("Warning!", result.message, "warning");
+                        } else {
+                            $.each(result, function (key, value) {
+                                var element = $('#edit_'+key);
+                
+                                element.closest('div.'+key)
+                                    .addClass(value.length > 0 ? 'has-error' : 'has-success')
+                                    .find('.text-danger')
+                                    .remove();
+                                
+                                element.after('<p class="text-danger">'+value+'</p>');
+                            });
+                        }
                     }
-
+            
                     $('#update-owner-form').find('.update-owner-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
             });
         } else {
-            return false;
+            e.dismiss;
         }
-    }
+
+    }, function (dismiss) {
+        return false;
+    })
 });
 
-$('#edit_firstname').on('input',function(e){
-    if ($(this).val().length > 0) {
-        $('#edit_firstname').removeClass('errorForm');
-    } else {
-        $('#edit_firstname').addClass('errorForm');
-    }
+$(document).on('click','.edit_basic_info_next_btn',function(){
+    $('.edit_basic_info_next_btn').addClass('hiddenBtn');
+    $('.edit_closeModal').addClass('hiddenBtn');
+    $('.edit_contact_info_previous_btn').removeClass('hiddenBtn');
+    $('.edit_contact_info_next_btn').removeClass('hiddenBtn');
 });
 
-$('#edit_lastname').on('input',function(e){
-    if ($(this).val().length > 0) {
-        $('#edit_lastname').removeClass('errorForm');
-    } else {
-        $('#edit_lastname').addClass('errorForm');
-    }
+$(document).on('click','.edit_contact_info_previous_btn',function(){
+    $('.edit_basic_info_next_btn').removeClass('hiddenBtn');
+    $('.edit_closeModal').removeClass('hiddenBtn');
+    $('.edit_contact_info_previous_btn').addClass('hiddenBtn');
+    $('.edit_contact_info_next_btn').addClass('hiddenBtn');
 });
 
-$('#edit_mobile_number').on('input',function(e){
-    if ($(this).val().length > 0) {
-        $('#edit_mobile_number').removeClass('errorForm');
+$(document).on('click','.edit_contact_info_next_btn',function(){
+    $('.edit_contact_info_next_btn').addClass('hiddenBtn');
+    $('.edit_contact_info_previous_btn').addClass('hiddenBtn');
+    $('.edit_credential_info_previous_btn').removeClass('hiddenBtn');
+    $('.edit_credential_info_submit_btn').removeClass('hiddenBtn');
+});
+
+$(document).on('click','.edit_credential_info_previous_btn',function(){
+    $('.edit_contact_info_next_btn').removeClass('hiddenBtn');
+    $('.edit_contact_info_previous_btn').removeClass('hiddenBtn');
+    $('.edit_credential_info_previous_btn').addClass('hiddenBtn');
+    $('.edit_credential_info_submit_btn').addClass('hiddenBtn');
+});
+
+$('#edit_firstname, #edit_lastname').on('input',function(e){
+    var firstname = $('#edit_firstname').val();
+    var lastname = $('#edit_lastname').val();
+
+    if (firstname.length > 0 && lastname.length > 0) {
+        $('.edit_basic_info_next_btn').prop('disabled', false);
     } else {
-        $('#edit_mobile_number').addClass('errorForm');
+        $('.edit_basic_info_next_btn').prop('disabled', true);
     }
 });
 
 $('#edit_email').on('input',function(e){
+    var validate = validateEmail($(this).val());
     if ($(this).val().length > 0) {
-        $('#edit_email').removeClass('errorForm');
+        if (validate) {
+            $('.emailValidationEdit').addClass('hiddenBtn');
+        } else {
+            $('.emailValidationEdit').removeClass('hiddenBtn');
+            $('.emailValidationEdit').text('Invalid Email format.');
+        }
+    }
+});
+
+$('#edit_mobile_number, #edit_email').on('input',function(e){
+    var mobile_number = $('#edit_mobile_number').val();
+    var email = $('#edit_email').val();
+
+    var validate = validateEmail(email);
+    if (mobile_number.length > 0 && email.length > 0) {
+        if (validate) {
+            $('.edit_contact_info_next_btn').prop('disabled', false);
+        } else {
+            $('.edit_contact_info_next_btn').prop('disabled', true);
+        }
     } else {
-        $('#edit_email').addClass('errorForm');
+        $('.edit_contact_info_next_btn').prop('disabled', true);
     }
 });
 
 $('#edit_username').on('input',function(e){
-    if ($(this).val().length > 0) {
-        $('#edit_username').removeClass('errorForm');
+    var username = $('#edit_username').val();
+
+    if (username.length > 0) {
+        $('.edit_credential_info_submit_btn').prop('disabled', false);
     } else {
-        $('#edit_username').addClass('errorForm');
+        $('.edit_credential_info_submit_btn').prop('disabled', true);
     }
+});
+
+$('#update-owner-modal').on('hidden.bs.modal', function () {
+    steppers.to(0);
+    $('.edit_basic_info_next_btn').removeClass('hiddenBtn');
+    $('.edit_closeModal').removeClass('hiddenBtn');
+    $('.edit_basic_info_next_btn').prop('disabled', false);
+    $('.edit_contact_info_next_btn').addClass('hiddenBtn');
+    $('.edit_contact_info_previous_btn').addClass('hiddenBtn');
+    $('.edit_contact_info_next_btn').prop('disabled', false);
+    $('.edit_credential_info_previous_btn').addClass('hiddenBtn');
+    $('.edit_credential_info_submit_btn').addClass('hiddenBtn');
+    $('.edit_credential_info_submit_btn').prop('disabled', false);
 });
 
 function validateEmail($email) {
@@ -316,27 +485,46 @@ $(document).on('click','.delete-owner-btn',function () {
     $('.delete-owner-name').html('<strong style="color:red;">'+data[1]+'</strong>?');
 });
 
-$(document).on('click','.delete-owner-modal-btn',function(){
-    let id = $('#deleteOwnerId').val();
+$(document).on('click','.delete-owner-btn',function(){
+    $tr = $(this).closest('tr');
+    id = this.id;
+    let data = $tr.children('td').map(function () {
+        return $(this).text();
+    }).get();
 
-    $.ajax({
-        'url' : '/owners/'+id,
-        'type' : 'DELETE',
-        'data': '',
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
-          $('#delete-owner-form').find('.delete-owner-modal-btn').val('Deleting ... ').attr('disabled',true);
-        },success: function (result) {
-            if(result.status) {
-                reloadOwnerTable();
-
-                alert(result.message);
-                $('#delete-owner-modal').modal('hide');
-            }
-
-            $('#delete-owner-form').find('.delete-owner-modal-btn').val('Delete').attr('disabled',false);
-        },error: function(xhr, status, error){
-            console.log(xhr);
+    swal.fire({
+        title: "Are you sure you want to delete Owner: "+data[1]+"?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                'url' : '/owners/'+id,
+                'type' : 'DELETE',
+                'data': {},
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+                    $('#delete-owner-form').find('.delete-owner-modal-btn').val('Deleting ... ').attr('disabled',true);
+                },success: function (result) {
+                    if(result.status) {
+                        reloadOwnerTable();
+        
+                        swal.fire("Done!", result.message, "success");
+                        $('#delete-owner-modal').modal('hide');
+                    }
+        
+                    $('#delete-therapist-form').find('.delete-therapist-modal-btn').val('Delete').attr('disabled',false);
+                },error: function(xhr, status, error){
+                    console.log(xhr);
+                }
+            });
+        } else {
+            e.dismiss;
         }
     });
 });

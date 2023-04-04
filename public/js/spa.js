@@ -31,6 +31,7 @@ $(document).on('click','.add-spa-btn',function(){
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
                   $('#spa-form').find('.add-spa-btn').val('Saving ... ').attr('disabled',true);
+                  $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
                         $('#spa-form').trigger('reset');
@@ -76,6 +77,7 @@ $(document).on('click','.edit-spa-btn',function(){
             $('#edit_address').val(result.spa.address);
             $('#edit_number_of_rooms').val(result.spa.number_of_rooms);
             $('#edit_license').val(result.spa.license);
+            $('.spa-title').text('Update '+result.spa.name+' Details')
         }
     });
 });
@@ -113,6 +115,7 @@ $(document).on('click','.update-spa-btn',function(){
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
                   $('#update-spa-form').find('.update-spa-btn').val('Saving ... ').attr('disabled',true);
+                  $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
                         $('#spa-form').trigger('reset');

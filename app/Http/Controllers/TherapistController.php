@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Models\Owner;
 use App\Models\Spa;
 use App\Models\Therapist;
 class TherapistController extends Controller
@@ -175,5 +177,17 @@ class TherapistController extends Controller
         }
 
         return response()->json(['status' => $status, 'message' => $message]);
+    }
+
+    public function overview($id)
+    {
+        $spa = Spa::where('id', $id)->first();
+        $owner_id = $spa->owner_id;
+
+        $owner = Owner::where('id', $owner_id)->first();
+        $owners = User::role(['owner'])->where('id', $owner->user_id)->first();
+        $roles = $owners->getRoleNames()->first();
+
+        return view('Therapist.overview',compact('spa', 'owners', 'roles'));
     }
 }
