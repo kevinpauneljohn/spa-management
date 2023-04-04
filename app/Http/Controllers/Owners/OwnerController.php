@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Owners;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Owner;
+use App\Models\Spa;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -122,6 +123,8 @@ class OwnerController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $firstname = $request['firstname'];
         $middlename = $request['middlename'];
         $lastname = $request['lastname'];
@@ -132,23 +135,25 @@ class OwnerController extends Controller
         $validator = Validator::make($request->all(), [
             'firstname'    => 'required',
             'lastname'     => 'required',
-            'mobile_number'=> 'required|unique:users,mobile_number',
-            'email'        => 'required|unique:users,email',
-            'username'     => 'required|unique:users,username',
+            'mobile_number'=> 'required|unique:users,mobile_number,' . $user->id,
+            'email'        => 'required|unique:users,email,' . $user->id,
+            'username'     => 'required|unique:users,username,' . $user->id,
         ]);
 
         if($validator->passes())
         {
-            $user = User::findOrFail($id);
             $user->firstname = $firstname;
             $user->middlename = $middlename;
             $user->lastname = $lastname;
             $user->mobile_number = $mobile_number;
             $user->email = $email;
             $user->username = $username;
-            $user->save();
-
-            return response()->json(['status' => true, 'message' => 'Owners information successfully updated.']);
+            if($user->isDirty()){
+                $user->save();
+                return response()->json(['status' => true, 'message' => 'Onwer information successfully updated.']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'No changes has been made.']);
+            } 
         }
         return response()->json($validator->errors());
     }
@@ -177,21 +182,22 @@ class OwnerController extends Controller
                 return $owners->created_at->format('M d, Y');
             })
             ->addColumn('fullname',function ($owners){
-                if(auth()->user()->can('view owner'))
+                if(auth()->user()->can('view spa'))
                 {
-                    return '<a href="'.route('owners.overview',['id' => $owners->id]).'" title="View">'.$owners->fullname.'</a>&nbsp;';
+                    return '<a href="'.route('spa.overview',['id' => $owners->id]).'" title="View">'.$owners->fullname.'</a>&nbsp;';
                 } else {
                     return $owners->fullname;
                 }
             })
             ->addColumn('qty_of_spa',function ($owners){
-                return "";
+                $count = $this->countSpa($owners->id);
+                return $count;
             })
             ->addColumn('action', function($owners){
                 $action = "";
-                if(auth()->user()->can('view owner'))
+                if(auth()->user()->can('view spa'))
                 {
-                    $action .= '<a href="'.route('owners.overview',['id' => $owners->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.overview',['id' => $owners->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit owner'))
                 {
@@ -207,10 +213,13 @@ class OwnerController extends Controller
             ->make(true);
     }
 
-    public function overview($id)
+    public function countSpa($id)
     {
-        $owners = User::role(['owner'])->where('id', $id)->first();
+        $owner = Owner::where('user_id', $id)->first();
+        $owner_id = $owner->id;
+        $spa = Spa::where('owner_id', $owner_id)->get();
+        $totalSpa = $spa->count();
 
-        return view('Owner.overview',compact('owners'));
+        return $totalSpa;
     }
 }

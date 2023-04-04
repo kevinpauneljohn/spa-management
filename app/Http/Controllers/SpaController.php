@@ -7,6 +7,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Spa;
 use App\Models\Owner;
+use App\Models\User;
 class SpaController extends Controller
 {
     public function lists($id)
@@ -22,7 +23,7 @@ class SpaController extends Controller
             ->addColumn('name',function ($spa){
                 if(auth()->user()->can('view therapist'))
                 {
-                    return '<a href="'.route('spa.overview',['id' => $spa->id]).'" title="View">'.$spa->name.'</a>&nbsp;';
+                    return '<a href="'.route('therapist.overview',['id' => $spa->id]).'" title="View">'.$spa->name.'</a>&nbsp;';
                 } else {
                     return $spa->name;
                 }
@@ -32,15 +33,19 @@ class SpaController extends Controller
             })
             ->addColumn('action', function($spa){
                 $action = "";
+                if(auth()->user()->can('view service'))
+                {
+                    $action .= '<a href="'.route('service.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-warning" title="Services"><i class="fas fa-hot-tub"></i></a>&nbsp;';
+                }
                 if(auth()->user()->can('view therapist'))
                 {
-                    $action .= '<a href="'.route('spa.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('therapist.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
-                if(auth()->user()->can('edit therapist'))
+                if(auth()->user()->can('edit spa'))
                 {
                     $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-spa-btn" id="'.$spa->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
-                if(auth()->user()->can('delete therapist'))
+                if(auth()->user()->can('delete spa'))
                 {
                     $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-spa-btn" id="'.$spa->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
@@ -143,8 +148,12 @@ class SpaController extends Controller
 
     public function overview($id)
     {
-        $spa = Spa::where('id', $id)->first();
+        $owners = User::role(['owner'])->where('id', $id)->first();
+        $roles = $owners->getRoleNames()->first();
 
-        return view('Spa.overview',compact('spa'));
+        return view('Spa.overview',compact('owners', 'roles'));
+        // $spa = Spa::where('id', $id)->first();
+
+        // return view('Spa.overview',compact('spa'));
     }
 }

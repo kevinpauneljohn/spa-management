@@ -1,10 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Therapist')
+@section('title', 'Spa')
 
 @section('content_header')
-    <h1>{{$spa['name']}}</h1>
-    <input type="hidden" class="form-control spa-id" value="{{$spa['id']}}" />
+    <h1></h1>
 @stop
 <style>
     .required {
@@ -14,115 +13,132 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            @can('add therapist')
-                <button type="button" class="btn bg-gradient-primary btn-sm" id="addNewTherapist"><i class="fa fa-plus-circle"></i> Add New</button>
-            @endcan
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Spa Management</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{url('owners')}}">Owners</a></li>
+                            <li class="breadcrumb-item active">Spa</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
         <div class="card-body">
-            <table id="therapist-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
-                <thead>
-                <tr role="row">
-                    <th>Date Added</th>
-                    <th>Fullname</th>
-                    <th>Birth Date</th>
-                    <th>Mobile Number</th>
-                    <th>Email Address</th>
-                    <th>Gender</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card card-primary card-outline">
+                                <div class="card-body box-profile">
+                                    <div class="text-center">
+                                        <i class="fas fa-fw fa-user profile-user-img img-fluid img-circle" style="width:80px;height:80px;font-size:60px;"></i>
+                                    </div>
 
-                <tfoot>
-                <tr>
-                    <th>Date Added</th>
-                    <th>Fullname</th>
-                    <th>Birth Date</th>
-                    <th>Mobile Number</th>
-                    <th>Email Address</th>
-                    <th>Gender</th>
-                    <th>Action</th>
-                </tr>
-                </tfoot>
-            </table>
+                                    <h3 class="profile-username text-center">{{$owners['firstname']}} {{$owners['lastname']}}</h3>
+                                    <input type="hidden" class="form-control user-id" value="{{$owners['id']}}" />
+                                    <p class="text-muted text-center">{{ucfirst($roles)}}</p>
+
+                                    <ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>Username</b> <a class="float-right">{{$owners['username']}}</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Mobile Number: </b> <a class="float-right" href="tel:{{$owners['mobile_number']}}">{{$owners['mobile_number']}}</a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>Email: </b> <a class="float-right" href="mailto:{{$owners['email']}}">{{$owners['email']}}</a>
+                                        </li> 
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-header p-2">
+                                    <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">List</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#licenses" data-toggle="tab">Licenses</a></li>
+                                    </ul>
+                                </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="active tab-pane" id="data">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @can('add spa')
+                                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewSpa"><i class="fa fa-plus-circle"></i> Add New</button>
+                                                @endcan
+                                            </div>
+                                        </div><br />
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <table id="spa-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+                                                    <thead>
+                                                        <tr role="row">
+                                                            <th>Date Added</th>
+                                                            <th>Name</th>
+                                                            <th>Address</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="settings">
+
+                                    </div>
+
+                                    <div class="tab-pane" id="licenses">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
-    @can('add therapist')
-        <div class="modal fade" id="add-new-therapist-modal">
+    @can('add spa')
+        <div class="modal fade" id="add-new-spa-modal">
             <form role="form" id="spa-form" class="form-submit">
                 @csrf
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-md">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">New Therapist Form</h4>
+                            <h4 class="modal-title">New Spa Form</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-lg-4 firstname">
-                                    <label for="firstname">First Name</label><span class="required">*</span>
-                                    <input type="text" name="firstname" id="firstname" class="form-control">
-                                </div>
-                                <div class="col-lg-4 middlename">
-                                    <label for="middlename">Middle Name</label>
-                                    <input type="text" name="middlename" id="middlename" class="form-control">
-                                </div>
-                                <div class="col-lg-4 lastname">
-                                    <label for="lastname">Last Name</label><span class="required">*</span>
-                                    <input type="text" name="lastname" id="lastname" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="name">Name</label><span class="required">*</span>
+                                <input type="text" name="name" id="name" class="form-control">
                             </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-4 date_of_birth">
-                                    <label for="date_of_birth">Birth Date</label>
-                                    <input type="date" name="date_of_birth" id="date_of_birth" class="form-control">
-                                </div>
-                                <div class="col-lg-4 mobile_number">
-                                    <label for="mobile_number">Mobile Number</label>
-                                    <input type="text" name="mobile_number" id="mobile_number" class="form-control">
-                                </div>
-                                <div class="col-lg-4 email">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" id="email" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="address">Address</label><span class="required">*</span>
+                                <input type="text" name="address" id="address" class="form-control">
                             </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-4 gender">
-                                    <label for="gender">Gender</label><span class="required">*</span>
-                                    <select class="form-control" name="gender" id="gender">
-                                        <option value="">Select here</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 certificate">
-                                    <label for="certificate">Certificate</label>
-                                    <input type="text" name="certificate" id="certificate" class="form-control">
-                                </div>
-                                <div class="col-lg-4 commission">
-                                    <label for="commission">Commission</label><span class="required">*</span>
-                                    <input type="number" name="commission" id="commission" class="form-control">
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-6 allowance">
-                                    <label for="allowance">Allowance</label>
-                                    <input type="number" name="allowance" id="allowance" class="form-control">
-                                </div>
-                                <div class="col-lg-6 offer_type">
-                                    <label for="offer_type">Offer Type</label><span class="required">*</span>
-                                    <input type="text" name="offer_type" id="offer_type" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="number_of_rooms">Number of Rooms</label><span class="required">*</span>
+                                <input type="number" min="1" name="number_of_rooms" id="number_of_rooms" class="form-control">
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input type="button" class="btn btn-primary add-therapist-btn" value="Save">
+                            <input type="button" class="btn btn-primary add-spa-btn" value="Save">
                         </div>
                     </div>
                 </div>
@@ -130,108 +146,36 @@
         </div>
     @endcan
 
-    @can('edit therapist')
-        <div class="modal fade" id="update-therapist-modal">
-            <form role="form" id="update-therapist-form" class="form-submit">
+    @can('edit spa')
+        <div class="modal fade" id="update-spa-modal">
+            <form role="form" id="update-spa-form" class="form-submit">
                 @csrf
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-md">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Update Therapist Details</h4>
+                            <h4 class="modal-title spa-title"></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-lg-4 edit_firstname">
-                                    <label for="edit_firstname">First Name</label><span class="required">*</span>
-                                    <input type="text" name="edit_firstname" id="edit_firstname" class="form-control">
-                                    <input type="hidden" name="edit_id" id="edit_id" class="form-control">
-                                </div>
-                                <div class="col-lg-4 edit_middlename">
-                                    <label for="edit_middlename">Middle Name</label>
-                                    <input type="text" name="edit_middlename" id="edit_middlename" class="form-control">
-                                </div>
-                                <div class="col-lg-4 edit_lastname">
-                                    <label for="edit_lastname">Last Name</label><span class="required">*</span>
-                                    <input type="text" name="edit_lastname" id="edit_lastname" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="edit_name">Name</label><span class="required">*</span>
+                                <input type="text" name="edit_name" id="edit_name" class="form-control">
+                                <input type="hidden" name="edit_id" id="edit_id" class="form-control">
                             </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-4 edit_date_of_birth">
-                                    <label for="edit_date_of_birth">Birth Date</label>
-                                    <input type="date" name="edit_date_of_birth" id="edit_date_of_birth" class="form-control">
-                                </div>
-                                <div class="col-lg-4 edit_mobile_number">
-                                    <label for="edit_mobile_number">Mobile Number</label>
-                                    <input type="text" name="edit_mobile_number" id="edit_mobile_number" class="form-control">
-                                </div>
-                                <div class="col-lg-4 edit_email">
-                                    <label for="edit_email">Email</label>
-                                    <input type="email" name="edit_email" id="edit_email" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="edit_address">Address</label><span class="required">*</span>
+                                <input type="text" name="edit_address" id="edit_address" class="form-control">
                             </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-4 edit_gender">
-                                    <label for="edit_gender">Gender</label><span class="required">*</span>
-                                    <select class="form-control" name="edit_gender" id="edit_gender">
-
-                                    </select>
-                                </div>
-                                <div class="col-lg-4 edit_certificate">
-                                    <label for="edit_certificate">Certificate</label>
-                                    <input type="text" name="edit_certificate" id="edit_certificate" class="form-control">
-                                </div>
-                                <div class="col-lg-4 edit_commission">
-                                    <label for="edit_commission">Commission</label><span class="required">*</span>
-                                    <input type="number" name="edit_commission" id="edit_commission" class="form-control">
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-6 edit_allowance">
-                                    <label for="edit_allowance">Allowance</label>
-                                    <input type="number" name="edit_allowance" id="edit_allowance" class="form-control">
-                                </div>
-                                <div class="col-lg-6 edit_offer_type">
-                                    <label for="edit_offer_type">Offer Type</label><span class="required">*</span>
-                                    <input type="text" name="offer_type" id="edit_offer_type" class="form-control">
-                                </div>
+                            <div class="form-group">
+                                <label for="edit_number_of_rooms">Number of Rooms</label><span class="required">*</span>
+                                <input type="number" min="1" name="edit_number_of_rooms" id="edit_number_of_rooms" class="form-control">
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input type="button" class="btn btn-primary update-therapist-btn" value="Save">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    @endcan
-
-    @can('delete therapist')
-        <div class="modal fade" id="delete-spa-modal">
-            <form role="form" id="delete-spa-form" class="form-submit">
-                @csrf
-                @method('DELETE')
-                <input type="hidden" name="deleteSpaId" id="deleteSpaId">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-danger">
-                            <h4 class="modal-title">Delete Spa</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p class="delete_owner">Delete Spa: <span class="delete-spa-name"></span></p>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                            <input type="button" class="btn btn-outline-light delete-spa-modal-btn" value="Delete">
+                            <input type="button" class="btn btn-primary update-spa-btn" value="Save">
                         </div>
                     </div>
                 </div>
@@ -244,64 +188,50 @@
 @stop
 
 @section('js')
-<script src="{{asset('js/therapist.js')}}"></script>
+<script src="{{asset('js/spa.js')}}"></script>
     <script>
         $(document).ready(function() {
-            var spa_id = $('.spa-id').val();
-            $('#therapist-list').DataTable({
+            var user_id = $('.user-id').val();
+            $('#spa-list').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{!! route('therapist.lists', ['id' => $spa["id"]]) !!}',
+                ajax: '{!! route('spa.lists', ['id' => $owners["id"]]) !!}',
                 columns: [
-                    { data: 'created_at', name: 'created_at'},
-                    { data: 'fullname', name: 'fullname'},
-                    { data: 'date_of_birth', name: 'date_of_birth'},
-                    { data: 'mobile_number', name: 'mobile_number'},
-                    { data: 'email', name: 'email'},
-                    { data: 'gender', name: 'gender'},
-                    { data: 'action', name: 'action', orderable: false, searchable: false}
+                    { data: 'created_at', name: 'created_at', className: 'text-center' },
+                    { data: 'name', name: 'name'},
+                    { data: 'address', name: 'address'},
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
                 ],
                 responsive:true,
                 order:[0,'desc'],
                 pageLength: 50
             });
 
-            $('#addNewTherapist').on('click', function() {
-                $('#firstname').val('');
-                $('#middlename').val('');
-                $('#lastname').val('');
-                $('#date_of_birth').val('');
-                $('#mobile_number').val('');
-                $('#email').val('');
-                $('#gender').val('');
-                $('#certificate').val('');
-                $('#commission').val('');
-                $('#allowance').val('');
-                $('#offer_type').val('');
-                $('#add-new-therapist-modal').modal('show');
+            $('#addNewSpa').on('click', function() {
+                $('#name').val('');
+                $('#address').val('');
+                $('#number_of_rooms').val('');
+                $('#license').val('');
+
+                $('.text-danger').remove();
+                $('#add-new-spa-modal').modal('show');
             });
 
-            $(document).on('click','.edit-therapist-btn',function() {
+            $(document).on('click','.edit-spa-btn',function() {
                 $('#edit_id').val('');
-                $('#edit_firstname').val('');
-                $('#edit_middlename').val('');
-                $('#edit_lastname').val('');
-                $('#edit_date_of_birth').val('');
-                $('#edit_mobile_number').val('');
-                $('#edit_email').val('');
-                $('#edit_gender').val('');
-                $('#edit_certificate').val('');
-                $('#edit_commission').val('');
-                $('#edit_allowance').val('');
-                $('#edit_offer_type').val('');
+                $('#edit_name').val('');
+                $('#edit_address').val('');
+                $('#edit_number_of_rooms').val('');
+                $('#edit_license').val('');
 
-                $('#update-therapist-modal').modal('show');
+                $('.text-danger').remove();
+                $('#update-spa-modal').modal('show');
             });
         });
 
-        function reloadTherapistTable ()
+        function reloadSpaTable ()
         {
-            var table = $('#therapist-list').DataTable();
+            var table = $('#spa-list').DataTable();
             table.ajax.reload();
         }
     </script>
