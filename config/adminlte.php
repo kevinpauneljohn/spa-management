@@ -392,6 +392,23 @@ return [
             'route'    => 'owner.lists',
             'can'     => 'view owner',
         ],
+        [
+            'text'    => 'Settings',
+            'icon'    => 'fas fa-cogs',
+            'can'     => 'view settings',
+            'submenu' => [
+                // [
+                //     'text' => 'Roles',
+                //     'route'  => 'roles.index',
+                //     'can'  => 'view role',
+                // ],
+                [
+                    'text' => 'Permissions',
+                    'route'  => 'permission.index',
+                    'can'  => 'view permission',
+                ],
+            ],
+        ],
     ],
 
     /*
