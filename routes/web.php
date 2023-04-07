@@ -56,6 +56,13 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/permission-roles',[\App\Http\Controllers\PermissionController::class,'getPermissionRoles'])->name('permission.roles');
     Route::put('/permission/{id}',[\App\Http\Controllers\PermissionController::class,'update'])->name('permission.update');
     Route::delete('/permission/{id}/{name}',[\App\Http\Controllers\PermissionController::class,'destroy'])->name('permission.delete');
+
+    Route::get('/role',[\App\Http\Controllers\RoleController::class,'index'])->name('role.index');
+    Route::get('/role-list',[\App\Http\Controllers\RoleController::class,'lists'])->name('role.list');
+    Route::post('/role',[\App\Http\Controllers\RoleController::class,'store'])->name('role.store');
+    Route::get('/role/{id}',[\App\Http\Controllers\RoleController::class,'show'])->name('role.show');
+    Route::put('/role/{id}',[\App\Http\Controllers\RoleController::class,'update'])->name('role.update');
+    Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
     
 });
 

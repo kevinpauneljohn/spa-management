@@ -397,11 +397,11 @@ return [
             'icon'    => 'fas fa-cogs',
             'can'     => 'view settings',
             'submenu' => [
-                // [
-                //     'text' => 'Roles',
-                //     'route'  => 'roles.index',
-                //     'can'  => 'view role',
-                // ],
+                [
+                    'text' => 'Roles',
+                    'route'  => 'role.index',
+                    'can'  => 'view role',
+                ],
                 [
                     'text' => 'Permissions',
                     'route'  => 'permission.index',

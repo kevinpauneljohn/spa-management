@@ -1,9 +1,8 @@
-$(document).on('click','.add-permission-btn',function(){
-    var permission = $('#permission').val();
-    var roles = $('#roles').val();
+$(document).on('click','.add-role-btn',function(){
+    var name = $('#name').val();
 
     swal.fire({
-        title: "Are you sure you want to create Permission?",
+        title: "Are you sure you want to create Role?",
         icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",
@@ -14,23 +13,22 @@ $(document).on('click','.add-permission-btn',function(){
     }).then(function (e) {
         if (e.value === true) {
             $.ajax({
-                'url' : '/permission',
+                'url' : '/role',
                 'type' : 'POST',
                 'data': {
-                    permission: permission,
-                    roles: roles
+                    name: name
                 },
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#permission-form').find('.add-permission-btn').val('Saving ... ').attr('disabled',true);
+                  $('#role-form').find('.add-role-btn').val('Saving ... ').attr('disabled',true);
                   $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
-                        $('#permission-form').trigger('reset');
-                        reloadPermissionTable();
+                        $('#role-form').trigger('reset');
+                        reloadRoleTable();
         
                         swal.fire("Done!", result.message, "success");
-                        $('#add-new-permission-modal').modal('hide');
+                        $('#add-new-role-modal').modal('hide');
                     } else {
                         swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                         $.each(result, function (key, value) {
@@ -45,7 +43,7 @@ $(document).on('click','.add-permission-btn',function(){
                         });
                     }
             
-                    $('#permission-form').find('.add-permission-btn').val('Save').attr('disabled',false);
+                    $('#role-form').find('.add-role-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
@@ -59,36 +57,27 @@ $(document).on('click','.add-permission-btn',function(){
     })
 });
 
-$(document).on('click','.edit-permission-btn',function(){
-    $tr = $(this).closest('tr');
-    var id = this.id;
-    let data = $tr.children('td').map(function () {
-        return $(this).text();
-    }).get();
-
-    $('#edit_permission').val(data[0]);
-    $('#edit_id').val(id);
-
+$(document).on('click','.edit-role-btn',function(){
+    let id = this.id;
     $.ajax({
-        'url' : '/permission-roles',
-        'type' : 'POST',
-        'data' : {'name': data[0]},
+        'url' : '/role/'+id,
+        'type' : 'GET',
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         success: function(result){
-            $('#edit_roles').val(result).change();
+            $('#edit_name').val(result.role.name);
+            $('#edit_id').val(id);
 
-            $('.permission-title').text('Update '+data[0]+' Details')
+            $('.role-title').text('Update '+result.role.name+' Details')
         }
     });
 });
 
-$(document).on('click','.update-permission-btn',function(){
+$(document).on('click','.update-role-btn',function(){
     var id = $('#edit_id').val();
-    var permission = $('#edit_permission').val();
-    var roles = $('#edit_roles').val();
+    var name = $('#edit_name').val();
 
     swal.fire({
-        title: "Are you sure you want to update permission?",
+        title: "Are you sure you want to update role?",
         icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",
@@ -99,23 +88,22 @@ $(document).on('click','.update-permission-btn',function(){
     }).then(function (e) {
         if (e.value === true) {
             $.ajax({
-                'url' : '/permission/'+id,
+                'url' : '/role/'+id,
                 'type' : 'PUT',
                 'data': {
-                    edit_permission: permission,
-                    edit_roles: roles
+                    name: name
                 },
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#update-permission-form').find('.update-permission-btn').val('Saving ... ').attr('disabled',true);
+                  $('#update-role-form').find('.update-role-btn').val('Saving ... ').attr('disabled',true);
                   $('.text-danger').remove();
                 },success: function (result) {
                     if(result.status) {
-                        $('#permission-form').trigger('reset');
-                        reloadPermissionTable();
+                        $('#role-form').trigger('reset');
+                        reloadRoleTable();
         
                         swal.fire("Done!", result.message, "success");
-                        $('#update-permission-modal').modal('hide');
+                        $('#update-role-modal').modal('hide');
                     } else {
                         if (result.status === false) {
                             swal.fire("Warning!", result.message, "warning");
@@ -134,7 +122,7 @@ $(document).on('click','.update-permission-btn',function(){
                         }
                     }
             
-                    $('#update-permission-form').find('.update-permission-btn').val('Save').attr('disabled',false);
+                    $('#update-role-form').find('.update-role-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
@@ -148,7 +136,7 @@ $(document).on('click','.update-permission-btn',function(){
     })
 });
 
-$(document).on('click','.delete-permission-btn',function(){
+$(document).on('click','.delete-role-btn',function(){
     $tr = $(this).closest('tr');
     var id = this.id;
     var name = $(this).data("name")
@@ -157,7 +145,7 @@ $(document).on('click','.delete-permission-btn',function(){
     }).get();
 
     swal.fire({
-        title: "Are you sure you want to delete permission: "+data[1]+"?",
+        title: "Are you sure you want to delete role: "+data[0]+"?",
         icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",
@@ -168,23 +156,23 @@ $(document).on('click','.delete-permission-btn',function(){
     }).then(function (e) {
         if (e.value === true) {
             $.ajax({
-                'url' : '/permission/'+id+'/'+name,
+                'url' : '/role/'+id,
                 'type' : 'DELETE',
                 'data': {},
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                    $('#delete-permission-form').find('.delete-permission-modal-btn').val('Deleting ... ').attr('disabled',true);
+                    $('#delete-role-form').find('.delete-role-modal-btn').val('Deleting ... ').attr('disabled',true);
                 },success: function (result) {
                     if(result.status) {
-                        reloadPermissionTable();
+                        reloadRoleTable();
         
                         swal.fire("Done!", result.message, "success");
-                        $('#delete-permission-modal').modal('hide');
+                        $('#delete-role-modal').modal('hide');
                     } else {
                         swal.fire("Warning!", result.message, "warning");
                     }
             
-                    $('#delete-permission-form').find('.delete-permission-modal-btn').val('Delete').attr('disabled',false);
+                    $('#delete-role-form').find('.delete-role-modal-btn').val('Delete').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }

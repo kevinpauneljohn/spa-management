@@ -59,6 +59,7 @@ $(document).on('click','.add-owner-btn',function(){
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-owner-modal').modal('hide');
                     } else {
+                        swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                         $.each(result, function (key, value) {
                             var element = $('#'+key);
             
@@ -352,6 +353,7 @@ $(document).on('click','.update-owner-btn',function(){
                         if (result.status === false) {
                             swal.fire("Warning!", result.message, "warning");
                         } else {
+                            swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                             $.each(result, function (key, value) {
                                 var element = $('#edit_'+key);
                 
