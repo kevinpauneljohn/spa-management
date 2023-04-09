@@ -46,31 +46,32 @@ $(document).on('click','.add-therapist-btn',function(){
                 beforeSend: function () {
                   $('#therapist-form').find('.add-therapist-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
-                    if(result.status) {
-                        $('#therapist-form').trigger('reset');
-                        reloadTherapistTable();
-        
-                        swal.fire("Done!", result.message, "success");
-                        $('#add-new-therapist-modal').modal('hide');
-                    } else {
-                        if (result.status === false) {
-                            swal.fire("Warning!", result.message, "warning");
-                        } else {
-                            swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
-                            $.each(result, function (key, value) {
-                                var element = $('#'+key);
-                
-                                element.closest('div.'+key)
-                                    .addClass(value.length > 0 ? 'has-error' : 'has-success')
-                                    .find('.text-danger')
-                                    .remove();
-                                
-                                element.after('<p class="text-danger">'+value+'</p>');
-                            });
-                        }
-                    }
-            
-                    $('#therapist-form').find('.add-therapist-btn').val('Save').attr('disabled',false);
+                    console.log(result);
+                    // if(result.status) {
+                    //     $('#therapist-form').trigger('reset');
+                    //     reloadTherapistTable();
+                    //
+                    //     swal.fire("Done!", result.message, "success");
+                    //     $('#add-new-therapist-modal').modal('hide');
+                    // } else {
+                    //     if (result.status === false) {
+                    //         swal.fire("Warning!", result.message, "warning");
+                    //     } else {
+                    //         swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
+                    //         $.each(result, function (key, value) {
+                    //             var element = $('#'+key);
+                    //
+                    //             element.closest('div.'+key)
+                    //                 .addClass(value.length > 0 ? 'has-error' : 'has-success')
+                    //                 .find('.text-danger')
+                    //                 .remove();
+                    //
+                    //             element.after('<p class="text-danger">'+value+'</p>');
+                    //         });
+                    //     }
+                    // }
+                    //
+                    // $('#therapist-form').find('.add-therapist-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
@@ -344,7 +345,7 @@ $(document).on('click','.update-therapist-btn',function(){
                     if(result.status) {
                         $('#therapist-form').trigger('reset');
                         reloadTherapistTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                         $('#update-therapist-modal').modal('hide');
                     } else {
@@ -354,17 +355,17 @@ $(document).on('click','.update-therapist-btn',function(){
                             swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                             $.each(result, function (key, value) {
                                 var element = $('#edit_'+key);
-                
+
                                 element.closest('div.'+key)
                                     .addClass(value.length > 0 ? 'has-error' : 'has-success')
                                     .find('.text-danger')
                                     .remove();
-                                
+
                                 element.after('<p class="text-danger">'+value+'</p>');
                             });
                         }
                     }
-            
+
                     $('#update-therapist-form').find('.update-therapist-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
@@ -517,13 +518,13 @@ $(document).on('click','.delete-therapist-btn',function(){
                 },success: function (result) {
                     if(result.status) {
                         reloadTherapistTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                         $('#delete-therapist-modal').modal('hide');
                     } else {
                         swal.fire("Warning!", result.message, "warning");
                     }
-            
+
                     $('#delete-therapist-form').find('.delete-therapist-modal-btn').val('Delete').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);

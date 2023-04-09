@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -68,6 +69,7 @@ class TherapistController extends Controller
 
     public function store(Request $request)
     {
+
         $id = $request['spa_id'];
         $firstname = $request['firstname'];
         $middlename = $request['middlename'];
@@ -121,7 +123,7 @@ class TherapistController extends Controller
                     'allowance' => $allowance,
                     'offer_type' => $offer_type
                 ]);
-                
+
                 $user_data = [
                     'firstname' => $firstname,
                     'middlename' => $middlename,
@@ -142,8 +144,8 @@ class TherapistController extends Controller
             $response = [
                 'status'   => $status,
                 'message'   => $message
-            ];    
-            
+            ];
+
             return response($response, $code);
         } else {
             return response()->json($validator->errors());
@@ -190,7 +192,7 @@ class TherapistController extends Controller
             'middlename' => $middlename,
             'lastname' => $lastname,
             'mobile_number' => $mobile_number,
-            'email' => $email, 
+            'email' => $email,
         ];
 
         $isAllowed = false;
@@ -214,7 +216,7 @@ class TherapistController extends Controller
             if ($updateUser) {
                 $isAllowed = true;
             }
-    
+
             if ($isAllowed) {
                 if($therapist->isDirty()){
                     $therapist->save();
@@ -223,7 +225,7 @@ class TherapistController extends Controller
                 } else {
                     $status = false;
                     $message = 'No changes has been made.';
-                } 
+                }
             } else {
                 $message = 'Email or Mobile already exists in Users Data.';
             }
@@ -271,21 +273,24 @@ class TherapistController extends Controller
 
     public function saveUser($data)
     {
-        $user = User::create([
-            'firstname' => $data['firstname'],
-            'middlename' => $data['middlename'],
-            'lastname' => $data['lastname'],
-            'mobile_number' => $data['mobile_number'],
-            'email' => $data['email'],
-            'username' => $data['username'],
-            'password' => $data['password'],
-        ]);
+        $roleName = 'therapist';
 
+        if(!$this->checkIfRoleNameExists($roleName))
+        {
+            \Spatie\Permission\Models\Role::create(['name' => $roleName]);
+        }
+
+        $user = User::create($data);
         if ($user) {
-            $user->assignRole('therapist');
+            $user->assignRole($roleName);
         }
 
         return true;
+    }
+
+    private function checkIfRoleNameExists($roleName): bool
+    {
+        return Role::where('name',$roleName)->count() > 0;
     }
 
     public function updateUser($data)

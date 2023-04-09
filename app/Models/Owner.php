@@ -13,4 +13,14 @@ class Owner extends Model
     protected $fillable = [
         'user_id'
     ];
+
+    public function spas()
+    {
+        return $this->hasMany(Spa::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

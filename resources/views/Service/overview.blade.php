@@ -20,101 +20,97 @@
     }
 </style>
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>Spa Services Management</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{url('spa/overview', [ 'id' => $owners['id'] ])}}">Spa</a></li>
-                            <li class="breadcrumb-item active">Services</li>
-                            </ol>
-                        </div>
-                    </div>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Services</h1>
                 </div>
-            </section>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{route('owners.index')}}">Owners</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('spa.overview',['id' => $owners->id])}}">Spa</a> </li>
+                        <li class="breadcrumb-item active">Services</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <div class="callout callout-info">
+        <h5><i class="fas fa-info"></i> Note:</h5>
+        Create the services you offer to your customers.
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                    <div class="text-center">
+                        <i class="fas fa-spa profile-user-img img-fluid img-circle" style="width:80px;height:80px;font-size:60px;"></i>
+                    </div>
+
+                    <h3 class="profile-username text-center">{{ucfirst($spa['name'])}}</h3>
+                    <input type="hidden" class="form-control spa-id" value="{{$spa['id']}}" />
+                    <p class="text-muted text-center">Spa</p>
+
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            <b>Address</b> <a class="float-right">{{ucfirst($spa['address'])}}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Rooms </b> <a class="float-right" href="#">{{$spa['number_of_rooms']}}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>License: </b> <a class="float-right" href="#">{{$spa['license']}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <section class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="card card-primary card-outline">
-                                <div class="card-body box-profile">
-                                    <div class="text-center">
-                                        <i class="fas fa-spa profile-user-img img-fluid img-circle" style="width:80px;height:80px;font-size:60px;"></i>
-                                    </div>
 
-                                    <h3 class="profile-username text-center">{{ucfirst($spa['name'])}}</h3>
-                                    <input type="hidden" class="form-control spa-id" value="{{$spa['id']}}" />
-                                    <p class="text-muted text-center">Spa</p>
-
-                                    <ul class="list-group list-group-unbordered mb-3">
-                                        <li class="list-group-item">
-                                            <b>Address</b> <a class="float-right">{{ucfirst($spa['address'])}}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>Rooms </b> <a class="float-right" href="#">{{$spa['number_of_rooms']}}</a>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <b>License: </b> <a class="float-right" href="#">{{$spa['license']}}</a>
-                                        </li> 
-                                    </ul>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header p-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">List</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="active tab-pane" id="data">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @can('add service')
+                                        <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewService"><i class="fa fa-plus-circle"></i> Add New</button>
+                                    @endcan
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table id="service-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+                                        <thead>
+                                        <tr role="row">
+                                            <th>Date Added</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Duration</th>
+                                            <th>Category</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-9">
-                            <div class="card">
-                                <div class="card-header p-2">
-                                    <ul class="nav nav-pills">
-                                        <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">List</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <div class="tab-content">
-                                        <div class="active tab-pane" id="data">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    @can('add service')
-                                                        <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewService"><i class="fa fa-plus-circle"></i> Add New</button>
-                                                    @endcan
-                                                </div>
-                                            </div>
-                                            <br />
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <table id="service-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
-                                                        <thead>
-                                                            <tr role="row">
-                                                                <th>Date Added</th>
-                                                                <th>Name</th>
-                                                                <th>Description</th>
-                                                                <th>Duration</th>
-                                                                <th>Category</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="tab-pane" id="settings">
 
-                                        <div class="tab-pane" id="settings">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
 
@@ -253,7 +249,7 @@
                                         <div class="form-group edit_category">
                                             <label for="edit_category">Category</label>
                                             <select name="edit_category" class="form-control" id="edit_category">
-    
+
                                             </select>
                                         </div>
                                     </div>

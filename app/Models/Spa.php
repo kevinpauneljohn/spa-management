@@ -16,4 +16,9 @@ class Spa extends Model
         'address',
         'number_of_rooms',
     ];
+
+    public function owner()
+    {
+        return $this->belongsTo(Owner::class);
+    }
 }
