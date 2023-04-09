@@ -31,10 +31,10 @@ class ServiceController extends Controller
                 return $service->description;
             })
             ->addColumn('duration',function ($service){
-                return $service->duration;
+                return $service->duration.' mins.';
             })
             ->addColumn('category',function ($service){
-                return $service->category;
+                return ucfirst($service->category);
             })
             ->addColumn('action', function($service){
                 $action = "";

@@ -20,7 +20,7 @@ class CreateTherapistsTable extends Migration
             $table->string('middlename')->nullable();
             $table->string('lastname');
             $table->string('date_of_birth')->nullable();
-            $table->string('mobile_number')->nullable();
+            $table->string('mobile_number');
             $table->string('email')->nullable();
             $table->string('gender');
             $table->string('certificate')->nullable();

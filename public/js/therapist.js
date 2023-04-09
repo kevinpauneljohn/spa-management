@@ -53,16 +53,21 @@ $(document).on('click','.add-therapist-btn',function(){
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-therapist-modal').modal('hide');
                     } else {
-                        $.each(result, function (key, value) {
-                            var element = $('#'+key);
-            
-                            element.closest('div.'+key)
-                                .addClass(value.length > 0 ? 'has-error' : 'has-success')
-                                .find('.text-danger')
-                                .remove();
-                            
-                            element.after('<p class="text-danger">'+value+'</p>');
-                        });
+                        if (result.status === false) {
+                            swal.fire("Warning!", result.message, "warning");
+                        } else {
+                            swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
+                            $.each(result, function (key, value) {
+                                var element = $('#'+key);
+                
+                                element.closest('div.'+key)
+                                    .addClass(value.length > 0 ? 'has-error' : 'has-success')
+                                    .find('.text-danger')
+                                    .remove();
+                                
+                                element.after('<p class="text-danger">'+value+'</p>');
+                            });
+                        }
                     }
             
                     $('#therapist-form').find('.add-therapist-btn').val('Save').attr('disabled',false);
@@ -104,6 +109,16 @@ $('#gender').on('input',function(e){
         $('.info_next_btn').prop('disabled', false);
     } else {
         $('.info_next_btn').prop('disabled', true);
+    }
+});
+
+$('#mobile_number').on('input',function(e){
+    var mobile_number = $('#mobile_number').val();
+
+    if (mobile_number.length > 0) {
+        $('.contact_next_btn').prop('disabled', false);
+    } else {
+        $('.contact_next_btn').prop('disabled', true);
     }
 });
 
@@ -175,15 +190,19 @@ $('#add-new-therapist-modal').on('hidden.bs.modal', function () {
     $('.offer_previous_btn').addClass('hiddenBtn');
     $('.offer_submit_btn').addClass('hiddenBtn');
     $('.offer_submit_btn').prop('disabled', true);
+    $('.commission').addClass('hiddenBtn');
+    $('.allowance').addClass('hiddenBtn');
 });
 
 $(document).on('click','.edit-therapist-btn',function(){
     let id = this.id;
+    let user_id = $(this).data("user_id");
     $.ajax({
         'url' : '/therapist/'+id,
         'type' : 'GET',
         success: function(result){
             $('#edit_id').val(result.therapist.id);
+            $('#edit_user_id').val(user_id);
             $('#edit_firstname').val(result.therapist.firstname);
             $('#edit_middlename').val(result.therapist.middlename);
             $('#edit_lastname').val(result.therapist.lastname);
@@ -274,6 +293,7 @@ $(document).on('click','.edit-therapist-btn',function(){
 
 $(document).on('click','.update-therapist-btn',function(){
     var id = $('#edit_id').val();
+    var user_id = $('#edit_user_id').val();
     var firstname = $('#edit_firstname').val();
     var middlename = $('#edit_middlename').val();
     var lastname = $('#edit_lastname').val();
@@ -288,6 +308,7 @@ $(document).on('click','.update-therapist-btn',function(){
 
     var data = {
         id: id,
+        user_id: user_id,
         firstname : firstname,
         middlename : middlename,
         lastname : lastname,
@@ -330,6 +351,7 @@ $(document).on('click','.update-therapist-btn',function(){
                         if (result.status === false) {
                             swal.fire("Warning!", result.message, "warning");
                         } else {
+                            swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                             $.each(result, function (key, value) {
                                 var element = $('#edit_'+key);
                 
@@ -382,6 +404,16 @@ $('#edit_gender').on('input',function(e){
         $('.edit_info_next_btn').prop('disabled', false);
     } else {
         $('.edit_info_next_btn').prop('disabled', true);
+    }
+});
+
+$('#edit_mobile_number').on('input',function(e){
+    var edit_mobile_number = $('#edit_mobile_number').val();
+
+    if (edit_mobile_number.length > 0) {
+        $('.edit_contact_next_btn').prop('disabled', false);
+    } else {
+        $('.edit_contact_next_btn').prop('disabled', true);
     }
 });
 
@@ -453,6 +485,8 @@ $('#update-therapist-modal').on('hidden.bs.modal', function () {
     $('.edit_offer_previous_btn').addClass('hiddenBtn');
     $('.edit_offer_submit_btn').addClass('hiddenBtn');
     $('.edit_offer_submit_btn').prop('disabled', false);
+    $('.edit_commission').addClass('hiddenBtn');
+    $('.edit_allowance').addClass('hiddenBtn');
 });
 
 $(document).on('click','.delete-therapist-btn',function(){

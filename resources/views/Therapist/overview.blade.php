@@ -220,7 +220,7 @@
                                         </div>
                                     </div>
                                     <div id="contact-part" class="content" role="tabpanel" aria-labelledby="contact-part-trigger">
-                                        <div class="form-group mobile_number">
+                                        <div class="form-group mobile_number"><span class="required">*</span>
                                             <label for="mobile_number">Mobile Number</label>
                                             <input type="text" name="mobile_number" id="mobile_number" class="form-control">
                                         </div>
@@ -258,7 +258,7 @@
                             <button type="button" class="btn btn-default info_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
                             <button type="button" class="btn btn-primary info_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
                             <button type="button" class="btn btn-default contact_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary contact_next_btn hiddenBtn" onclick="stepper.next()">Next</button>
+                            <button type="button" class="btn btn-primary contact_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
                             <button type="button" class="btn btn-default offer_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
                             <button type="button" class="btn btn-primary offer_submit_btn add-therapist-btn hiddenBtn" disabled>Submit</button>
                         </div>
@@ -317,6 +317,7 @@
                                             <label for="edit_firstname">First Name</label><span class="required">*</span>
                                             <input type="text" name="edit_firstname" class="form-control" id="edit_firstname">
                                             <input type="hidden" name="edit_id" id="edit_id" class="form-control">
+                                            <input type="hidden" name="edit_user_id" id="edit_user_id" class="form-control">
                                         </div>
                                         <div class="form-group edit_middlename">
                                             <label for="edit_middlename">Middle Name</label>
@@ -351,7 +352,7 @@
                                     </div>
                                     <div id="edit-contact-part" class="content" role="tabpanel" aria-labelledby="edit-contact-part-trigger">
                                         <div class="form-group edit_mobile_number">
-                                            <label for="edit_mobile_number">Mobile Number</label>
+                                            <label for="edit_mobile_number">Mobile Number</label><span class="required">*</span>
                                             <input type="text" name="edit_mobile_number" id="edit_mobile_number" class="form-control">
                                         </div>
                                         <div class="form-group edit_email">
@@ -442,6 +443,7 @@
 
             $(document).on('click','.edit-therapist-btn',function() {
                 $('#edit_id').val('');
+                $('#edit_user_id').val('');
                 $('#edit_firstname').val('');
                 $('#edit_middlename').val('');
                 $('#edit_lastname').val('');
