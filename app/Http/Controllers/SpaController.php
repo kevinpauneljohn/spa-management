@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\OwnerServices;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,7 @@ use App\Models\Owner;
 use App\Models\User;
 class SpaController extends Controller
 {
+
     public function lists($id)
     {
         $owner = Owner::where('user_id', $id)->first();
@@ -21,22 +23,20 @@ class SpaController extends Controller
                 return $spa->created_at->format('M d, Y');
             })
             ->addColumn('name',function ($spa){
-                if(auth()->user()->can('view therapist'))
-                {
-                    return '<a href="'.route('therapist.overview',['id' => $spa->id]).'" title="View">'.$spa->name.'</a>&nbsp;';
-                } else {
-                    return $spa->name;
-                }
+//                if(auth()->user()->can('view therapist'))
+//                {
+//                    return '<a href="'.route('therapist.overview',['id' => $spa->id]).'" title="View">'.$spa->name.'</a>&nbsp;';
+//                } else {
+//                    return $spa->name;
+//                }
+
+                return '<a href="'.route('spa.show',['id' => $spa->id]).'">'.ucwords($spa->name).'</a>';
             })
             ->addColumn('address',function ($spa){
                 return $spa->address;
             })
             ->addColumn('action', function($spa){
                 $action = "";
-                if(auth()->user()->can('view service'))
-                {
-                    $action .= '<a href="'.route('service.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-warning" title="Services"><i class="fas fa-hot-tub"></i></a>&nbsp;';
-                }
                 if(auth()->user()->can('view therapist'))
                 {
                     $action .= '<a href="'.route('therapist.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
@@ -82,23 +82,25 @@ class SpaController extends Controller
                 'number_of_rooms' => $number_of_rooms,
                 'license' => $license
             ]);
-            
+
             $response = [
                 'status'   => true,
                 'message'   => 'Spa information successfully saved.',
                 'data'      => $spa,
-            ];    
-            
+            ];
+
             return response($response, $code);
         } else {
             return response()->json($validator->errors());
         }
     }
 
-    public function show($id)
+    public function show($id, OwnerServices $ownerServices)
     {
-        $spa = Spa::findOrFail($id);
-        return response()->json(['spa' => $spa]);
+        $spa = Spa::findorFail($id);
+        $owner = $ownerServices->getOwnerBySpaID($id);
+        $range = range(5, 300, 5);
+        return view('Spa.profile',  compact('spa','owner','range'));
     }
 
     public function update(Request $request, $id)
@@ -127,7 +129,7 @@ class SpaController extends Controller
                 return response()->json(['status' => true, 'message' => 'Spa information successfully updated.']);
             } else {
                 return response()->json(['status' => false, 'message' => 'No changes made.']);
-            } 
+            }
         }
         return response()->json($validator->errors());
     }

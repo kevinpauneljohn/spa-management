@@ -1,0 +1,16 @@
+.required {
+    color: red;
+}
+.hidden{
+    display:none;
+}
+.hiddenBtn {
+    display: none !important;
+}
+.select2-container--default .select2-selection--single {
+    height: 35px !important;
+}
+
+#description{
+    min-height: 250px;
+}

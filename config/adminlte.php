@@ -133,7 +133,7 @@ return [
     'usermenu_header' => true,
     'usermenu_header_class' => 'bg-default',
     'usermenu_image' => true,
-    'usermenu_desc' => false,
+    'usermenu_desc' => true,
     'usermenu_profile_url' => true,
 
     /*
@@ -326,6 +326,7 @@ return [
             'text' => 'Owners',
             'route'  => 'owners.index',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'view owner'
         ],
         [
             'text' => 'change_password',

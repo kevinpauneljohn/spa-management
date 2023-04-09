@@ -13,6 +13,13 @@ Use Illuminate\Support\Facades\Hash;
 
 class OwnerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view owner')->only(['index','show','owner_lists']);
+        $this->middleware('can:add owner')->only(['store']);
+        $this->middleware('can:edit owner')->only(['edit','update']);
+        $this->middleware('can:delete owner')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -72,7 +79,7 @@ class OwnerController extends Controller
                 'username' => $username,
                 'password' => Hash::make($password),
             ]);
-            
+
             if ($user) {
                 $user->assignRole('owner');
                 $owner = Owner::create([
@@ -83,8 +90,8 @@ class OwnerController extends Controller
                 'status'   => true,
                 'message'   => 'Owner Registration successfully saved.',
                 'data'      => $user,
-            ];    
-            
+            ];
+
             return response($response, $code);
         } else {
             return response()->json($validator->errors());
@@ -153,7 +160,7 @@ class OwnerController extends Controller
                 return response()->json(['status' => true, 'message' => 'Onwer information successfully updated.']);
             } else {
                 return response()->json(['status' => false, 'message' => 'No changes has been made.']);
-            } 
+            }
         }
         return response()->json($validator->errors());
     }

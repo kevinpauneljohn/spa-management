@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function adminlte_desc()
     {
-        return 'That\'s a nice guy';
+        return auth()->user()->fullname;
     }
 
     public function adminlte_profile_url()
@@ -67,5 +67,10 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return "{$this->firstname} {$this->lastname}";
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(Owner::class);
     }
 }
