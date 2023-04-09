@@ -49,6 +49,13 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/service-duration-range',[\App\Http\Controllers\ServiceController::class,'durationRange'])->name('service.duration.range');
     Route::put('/service/{id}',[\App\Http\Controllers\ServiceController::class,'update'])->name('service.update');
     Route::delete('/service/{id}',[\App\Http\Controllers\ServiceController::class,'destroy'])->name('service.delete');
+
+    Route::get('/permission',[\App\Http\Controllers\PermissionController::class,'index'])->name('permission.index');
+    Route::get('/permission-list',[\App\Http\Controllers\PermissionController::class,'lists'])->name('permission.list');
+    Route::post('/permission',[\App\Http\Controllers\PermissionController::class,'store'])->name('permission.store');
+    Route::post('/permission-roles',[\App\Http\Controllers\PermissionController::class,'getPermissionRoles'])->name('permission.roles');
+    Route::put('/permission/{id}',[\App\Http\Controllers\PermissionController::class,'update'])->name('permission.update');
+    Route::delete('/permission/{id}/{name}',[\App\Http\Controllers\PermissionController::class,'destroy'])->name('permission.delete');
     
 });
 
