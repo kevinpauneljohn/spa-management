@@ -53,7 +53,7 @@
                                         </li>
                                         <li class="list-group-item">
                                             <b>Email: </b> <a class="float-right" href="mailto:{{$owners['email']}}">{{$owners['email']}}</a>
-                                        </li> 
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                             <div class="card">
                                 <div class="card-header p-2">
                                     <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">List</a></li>
+                                    <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">Spas</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#licenses" data-toggle="tab">Licenses</a></li>
                                     </ul>
@@ -74,7 +74,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 @can('add spa')
-                                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewSpa"><i class="fa fa-plus-circle"></i> Add New</button>
+                                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewSpa"><i class="fa fa-plus-circle"></i> Add Spa</button>
                                                 @endcan
                                             </div>
                                         </div><br />
@@ -129,7 +129,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="address">Address</label><span class="required">*</span>
-                                <input type="text" name="address" id="address" class="form-control">
+                                <textarea name="address" id="address" class="form-control"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="number_of_rooms">Number of Rooms</label><span class="required">*</span>

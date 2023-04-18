@@ -39,7 +39,7 @@ class SpaController extends Controller
                 $action = "";
                 if(auth()->user()->can('view therapist'))
                 {
-                    $action .= '<a href="'.route('therapist.overview',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.show',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit spa'))
                 {

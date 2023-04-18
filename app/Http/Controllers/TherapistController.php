@@ -67,9 +67,30 @@ class TherapistController extends Controller
             ->make(true);
     }
 
+    private function custom_offer_type_validation($request): string
+    {
+        if($request['offer_type'] === 'percentage_only' && $request['commission_percentage'] === null)
+        {
+            $request['offer_type'] = 'commission percentage field is required';
+        }
+        else if($request['offer_type'] === 'percentage_plus_allowance' && $request['commission_percentage'] === null && $request['allowance'] === null)
+        {
+            $request['offer_type'] = 'commission percentage and allowance field are required';
+        }
+        else if($request['offer_type'] === 'amount_only' && $request['commission_flat'] === null)
+        {
+            $request['offer_type'] = 'commission amount is required';
+        }
+        else if($request['offer_type'] === 'amount_plus_allowance' && $request['commission_flat'] === null && $request['allowance'] === null)
+        {
+            $request['offer_type'] = 'commission amount and allowance field are required';
+        }
+        return $request['offer_type'];
+    }
+
     public function store(Request $request)
     {
-
+//        return $this->custom_offer_type_validation($request->all());
         $id = $request['spa_id'];
         $firstname = $request['firstname'];
         $middlename = $request['middlename'];
@@ -84,16 +105,28 @@ class TherapistController extends Controller
 
         $gender = $request['gender'];
         $certificate = $request['certificate'];
-        $commission = $request['commission'];
+        $commission_percentage = $request['commission_percentage'];
+        $commission_flat = $request['commission_flat'];
         $allowance = $request['allowance'];
         $offer_type = $request['offer_type'];
 
+        $request['offer_type'] = $this->custom_offer_type_validation($request->all());
         $validator = Validator::make($request->all(), [
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
-            'commission' => 'required',
-            'offer_type' => 'required',
+            'offer_type' => [
+                'required',
+                function($attribute, $value, $fail){
+                    if ($value !== 'percentage_only' &&
+                        $value !== 'percentage_plus_allowance' &&
+                        $value !== 'amount_only' &&
+                        $value !== 'amount_plus_allowance') {
+                        $fail($value);
+                    }
+
+                }
+            ],
         ]);
 
         if($validator->passes())
@@ -119,7 +152,8 @@ class TherapistController extends Controller
                     'email' => $email,
                     'gender' => $gender,
                     'certificate' => $certificate,
-                    'commission' => $commission,
+                    'commission_percentage' => $commission_percentage,
+                    'commission_flat' => $commission_flat,
                     'allowance' => $allowance,
                     'offer_type' => $offer_type
                 ]);
@@ -140,7 +174,6 @@ class TherapistController extends Controller
             } else {
                 $message = 'Email or Mobile already exists in Users Data.';
             }
-
             $response = [
                 'status'   => $status,
                 'message'   => $message
@@ -154,8 +187,7 @@ class TherapistController extends Controller
 
     public function show($id)
     {
-        $therapist = Therapist::findOrFail($id);
-        return response()->json(['therapist' => $therapist]);
+        return response()->json(['therapist' => Therapist::findOrFail($id)]);
     }
 
     public function update(Request $request, $id)
@@ -172,19 +204,57 @@ class TherapistController extends Controller
             $email = $firstname.'_'.$lastname.'_default_email@defaultemailspa.com';
         }
 
+
         $gender = $request['gender'];
         $certificate = $request['certificate'];
-        $commission = $request['commission'];
-        $allowance = $request['allowance'];
-        $offer_type = $request['offer_type'];
+//        $commission_percentage = $request['commission_percentage'];
+//        $commission_flat = $request['commission_flat'];
+//        $allowance = $request['allowance'];
+//        $offer_type = $request['offer_type'];
 
+        $request['offer_type'] = $this->custom_offer_type_validation($request->all());
         $validator = Validator::make($request->all(), [
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
-            'commission' => 'required',
-            'offer_type' => 'required'
+            'offer_type' => [
+                'required',
+                function($attribute, $value, $fail){
+                    if ($value !== 'percentage_only' &&
+                        $value !== 'percentage_plus_allowance' &&
+                        $value !== 'amount_only' &&
+                        $value !== 'amount_plus_allowance') {
+                        $fail($value);
+                    }
+
+                }
+            ],
         ]);
+
+        //this will make sure the proper offer will be given
+        if($request['offer_type'] === 'percentage_only')
+        {
+            $request['commission_flat'] = null;
+            $request['allowance'] = null;
+        }
+        else if($request['offer_type'] === 'percentage_plus_allowance')
+        {
+            $request['commission_flat'] = null;
+        }
+        else if($request['offer_type'] === 'amount_only')
+        {
+            $request['commission_percentage'] = null;
+            $request['allowance'] = null;
+        }
+        else
+        {
+            $request['commission_percentage'] = null;
+        }
+
+        $commission_percentage = $request['commission_percentage'];
+        $commission_flat = $request['commission_flat'];
+        $allowance = $request['allowance'];
+        $offer_type = $request['offer_type'];
 
         $user_data = [
             'id' => $user_id,
@@ -208,7 +278,8 @@ class TherapistController extends Controller
             $therapist->email = $email;
             $therapist->gender = $gender;
             $therapist->certificate = $certificate;
-            $therapist->commission = $commission;
+            $therapist->commission_percentage = $commission_percentage;
+            $therapist->commission_flat = $commission_flat;
             $therapist->allowance = $allowance;
             $therapist->offer_type = $offer_type;
 

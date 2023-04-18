@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/role/{id}',[\App\Http\Controllers\RoleController::class,'show'])->name('role.show');
     Route::put('/role/{id}',[\App\Http\Controllers\RoleController::class,'update'])->name('role.update');
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
-    
+
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
