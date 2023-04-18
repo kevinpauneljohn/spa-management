@@ -1,3 +1,12 @@
+document.addEventListener('DOMContentLoaded', function () {
+    window.addServiceStepper = new Stepper(document.querySelector('#bs-stepper-add'))
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    window.editServiceStepper = new Stepper(document.querySelector('#bs-stepper-update'))
+});
+let container = $('#add-new-service-modal');
+
 $(document).on('click','.add-service-btn',function(){
     var name = $('#name').val();
     var description = $('#description').val();
@@ -32,28 +41,36 @@ $(document).on('click','.add-service-btn',function(){
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#service-form').find('.add-service-btn').val('Saving ... ').attr('disabled',true);
+                    $('#service-form').find('.add-service-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
                     if(result.status) {
                         $('#service-form').trigger('reset');
+                        $('#duration').val('').trigger('change');
                         reloadServiceTable();
-        
+
                         swal.fire("Done!", result.message, "success");
-                        $('#add-new-service-modal').modal('hide');
+                        $('#add-new-service-modal').modal('toggle');
+                        addServiceStepper.reset();
+
+                        container.find('.info_next_btn').removeClass('hiddenBtn');
+                        container.find('.closeModal').removeClass('hiddenBtn');
+                        container.find('.price_previous_btn').addClass('hiddenBtn');
+                        container.find('.price_submit_btn').addClass('hiddenBtn');
+                        container.find('.price_submit_btn').prop('disabled', true);
                     } else {
                         swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                         $.each(result, function (key, value) {
                             var element = $('#'+key);
-            
+
                             element.closest('div.'+key)
                                 .addClass(value.length > 0 ? 'has-error' : 'has-success')
                                 .find('.text-danger')
                                 .remove();
-                            
+
                             element.after('<p class="text-danger">'+value+'</p>');
                         });
                     }
-            
+
                     $('#service-form').find('.add-service-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
@@ -68,50 +85,52 @@ $(document).on('click','.add-service-btn',function(){
     })
 });
 
-$('#name, #description').on('input',function(e){
-    var name = $('#name').val();
-    var description = $('#description').val();
+
+$('#name, #description').on('#add-new-service-modal input',function(e){
+
+    let name = container.find('#name').val();
+    let description = container.find('#description').val();
 
     if (name.length > 0 && description.length > 0) {
-        $('.info_next_btn').prop('disabled', false);
+        container.find('.info_next_btn').prop('disabled', false);
     } else {
-        $('.info_next_btn').prop('disabled', true);
+        container.find('.info_next_btn').prop('disabled', true);
     }
 });
 
-$(document).on('click','.info_next_btn',function(){
-    $('.info_next_btn').addClass('hiddenBtn');
-    $('.closeModal').addClass('hiddenBtn');
-    $('.price_previous_btn').removeClass('hiddenBtn');
-    $('.price_submit_btn').removeClass('hiddenBtn');
+$(document).on('click','#add-new-service-modal .info_next_btn',function(){
+    container.find('.info_next_btn').addClass('hiddenBtn');
+    container.find('.closeModal').addClass('hiddenBtn');
+    container.find('.price_previous_btn').removeClass('hiddenBtn');
+    container.find('.price_submit_btn').removeClass('hiddenBtn');
 });
 
-$('#duration, #price, #category').on('input',function(e){
-    var duration = $('#duration').val();
-    var price = $('#price').val();
-    var category = $('#category').val();
+$('#add-new-service-modal #duration, #add-new-service-modal #price, #add-new-service-modal #category').on('#add-new-service-modal input',function(e){
+    var duration = container.find('#duration').val();
+    var price = container.find('#price').val();
+    var category = container.find('#category').val();
 
     if (duration.length > 0 && price.length > 0 && category.length > 0) {
-        $('.price_submit_btn').prop('disabled', false);
+        container.find('.price_submit_btn').prop('disabled', false);
     } else {
-        $('.price_submit_btn').prop('disabled', true);
+        container.find('.price_submit_btn').prop('disabled', true);
     }
 });
 
-$(document).on('click','.price_previous_btn',function(){
-    $('.price_previous_btn').addClass('hiddenBtn');
-    $('.price_submit_btn').addClass('hiddenBtn');
-    $('.info_next_btn').removeClass('hiddenBtn');
-    $('.closeModal').removeClass('hiddenBtn');
+$(document).on('click','#add-new-service-modal .price_previous_btn',function(){
+    container.find('.price_previous_btn').addClass('hiddenBtn');
+    container.find('.price_submit_btn').addClass('hiddenBtn');
+    container.find('.info_next_btn').removeClass('hiddenBtn');
+    container.find('.closeModal').removeClass('hiddenBtn');
 });
 
 $('#add-new-service-modal').on('hidden.bs.modal', function () {
-    stepper.to(0);
-    $('.info_next_btn').removeClass('hiddenBtn');
-    $('.closeModal').removeClass('hiddenBtn');
-    $('.price_previous_btn').addClass('hiddenBtn');
-    $('.price_submit_btn').addClass('hiddenBtn');
-    $('.price_submit_btn').prop('disabled', true);
+    addServiceStepper.to(0);
+    container.find('.info_next_btn').removeClass('hiddenBtn');
+    container.find('.closeModal').removeClass('hiddenBtn');
+    container.find('.price_previous_btn').addClass('hiddenBtn');
+    container.find('.price_submit_btn').addClass('hiddenBtn');
+    container.find('.price_submit_btn').prop('disabled', true);
 });
 
 $(document).on('click','.edit-service-btn',function(){
@@ -126,7 +145,7 @@ $(document).on('click','.edit-service-btn',function(){
             $('#edit_price').val(result.service.price);
             $('#edit_category').val(result.service.category);
 
-            $.each(result.range , function(index, val) { 
+            $.each(result.range , function(index, val) {
                 if (result.service.duration == val) {
                     $('#edit_duration').append('<option value="'+index+'" selected="selected">'+val+'</option>');
                 } else {
@@ -183,14 +202,21 @@ $(document).on('click','.update-service-btn',function(){
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#update-service-form').find('.update-service-btn').val('Saving ... ').attr('disabled',true);
+                    $('#update-service-form').find('.update-service-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
                     if(result.status) {
-                        $('#service-form').trigger('reset');
+                        // $('#service-form').trigger('reset');
                         reloadServiceTable();
-        
+
                         swal.fire("Done!", result.message, "success");
-                        $('#update-service-modal').modal('hide');
+                        $('#update-service-modal').modal('toggle');
+                        editServiceStepper.reset();
+
+                        $('.edit_info_next_btn').removeClass('hiddenBtn');
+                        $('.edit_closeModal').removeClass('hiddenBtn');
+                        $('.edit_price_previous_btn').addClass('hiddenBtn');
+                        $('.edit_price_submit_btn').addClass('hiddenBtn');
+                        $('.edit_price_submit_btn').prop('disabled', false);
                     } else {
                         if (result.status === false) {
                             swal.fire("Warning!", result.message, "warning");
@@ -198,17 +224,17 @@ $(document).on('click','.update-service-btn',function(){
                             swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                             $.each(result, function (key, value) {
                                 var element = $('#edit_'+key);
-                
+
                                 element.closest('div.'+key)
                                     .addClass(value.length > 0 ? 'has-error' : 'has-success')
                                     .find('.text-danger')
                                     .remove();
-                                
+
                                 element.after('<p class="text-danger">'+value+'</p>');
                             });
                         }
                     }
-            
+
                     $('#update-service-form').find('.update-service-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
@@ -297,13 +323,13 @@ $(document).on('click','.delete-service-btn',function(){
                 },success: function (result) {
                     if(result.status) {
                         reloadServiceTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                         $('#delete-service-modal').modal('hide');
                     } else {
                         swal.fire("Warning!", result.message, "warning");
                     }
-            
+
                     $('#delete-service-form').find('.delete-service-modal-btn').val('Delete').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);

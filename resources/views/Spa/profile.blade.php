@@ -10,7 +10,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>{{ucwords($spa->name)}}</h1>
+                    <h1><i class="fas fa-spa"></i> {{ucwords($spa->name)}}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -37,18 +37,19 @@
                     <input type="hidden" class="form-control user-id" value="{{$owner->id}}">
                     <input type="hidden" class="form-control spa-id" value="{{$spa->id}}" />
                     <p class="text-muted text-center">Owner</p>
+                    <hr>
+                    <strong><i class="fas fa-user mr-1"></i> Username</strong>
 
-                    <ul class="list-group list-group-unbordered mb-3">
-                        <li class="list-group-item">
-                            <b>Username</b> <a class="float-right">{{$owner->user->username}}</a>
-                        </li>
-                        <li class="list-group-item">
-                            <b>Mobile Number: </b> <a class="float-right" href="tel:09218173000">{{$owner->user->mobile_number}}</a>
-                        </li>
-                        <li class="list-group-item">
-                            <b>Email: </b> <a class="float-right" href="mailto:pampangadreamhomeseller@gmail.com">{{$owner->user->email}}</a>
-                        </li>
-                    </ul>
+                    <p class="text-muted"><a href="#">{{ucfirst($owner->user->username)}}</a> </p>
+                    <hr>
+                    <strong><i class="fas fa-phone mr-1"></i> Contact Number</strong>
+
+                    <p class="text-muted"><a href="tel:{{$owner->user->mobile_number}}">{{$owner->user->mobile_number}}</a> </p>
+                    <hr>
+                    <strong><i class="fas fa-envelope mr-1"></i> Email</strong>
+
+                    <p class="text-muted"><a href="mailto:{{$owner->user->email}}">{{$owner->user->email}}</a> </p>
+                    <hr>
                 </div>
             </div>
 
@@ -74,21 +75,20 @@
                 <!-- /.card-body -->
             </div>
         </div>
-
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#therapists" data-toggle="tab">Therapist</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#therapists" data-toggle="tab">Massage Therapists</a></li>
                     </ul>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="active tab-pane" id="data">
-                            <div class="alert alert-default-dark">
+                            <div class="alert alert-default-info">
                                 <h5><i class="fas fa-info"></i> Note:</h5>
-                                Create the services you offer to your customers.
+                                Create services you offer to your customers.
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -119,6 +119,10 @@
                         <div class="tab-pane" id="therapists">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="alert alert-default-info">
+                                        <h5><i class="fas fa-info"></i> Note:</h5>
+                                        Add masseur/masseuse to your spa who will serve your valued customers
+                                    </div>
                                     @can('add therapist')
                                         <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewTherapist"><i class="fa fa-plus-circle"></i> Add Therapist</button>
                                     @endcan
@@ -130,7 +134,7 @@
                                         <thead>
                                         <tr role="row">
                                             <th>Date Added</th>
-                                            <th>Fullname</th>
+                                            <th>Full Name</th>
                                             <th>Birth Date</th>
                                             <th>Mobile Number</th>
                                             <th>Email Address</th>
@@ -195,7 +199,7 @@
                                             <select class="form-control duration-select" name="duration" id="duration" style="width:100%;">
                                                 <option value="">Select here</option>
                                                 @foreach($range as $key => $data)
-                                                    <option value="{{$data}}">{{$data}}</option>
+                                                    <option value="{{$data}}">{{$data}} minutes</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -217,8 +221,8 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary info_next_btn" onclick="stepper.next()" disabled>Next</button>
-                            <button type="button" class="btn btn-default price_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary info_next_btn" onclick="addServiceStepper.next()" disabled>Next</button>
+                            <button type="button" class="btn btn-default price_previous_btn hiddenBtn" onclick="addServiceStepper.previous()">Previous</button>
                             <button type="button" class="btn btn-primary price_submit_btn add-service-btn hiddenBtn" disabled>Submit</button>
                         </div>
                     </div>
@@ -292,8 +296,8 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default edit_closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary edit_info_next_btn" onclick="steppers.next()">Next</button>
-                            <button type="button" class="btn btn-default edit_price_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary edit_info_next_btn" onclick="editServiceStepper.next()">Next</button>
+                            <button type="button" class="btn btn-default edit_price_previous_btn hiddenBtn" onclick="editServiceStepper.previous()">Previous</button>
                             <button type="button" class="btn btn-primary edit_price_submit_btn update-service-btn hiddenBtn">Save</button>
                         </div>
                     </div>
@@ -403,11 +407,15 @@
                                                 <option value="amount_plus_allowance">Amount + Allowance</option>
                                             </select>
                                         </div>
-                                        <div class="form-group commission hidden">
-                                            <label for="commission" class="commission_name">Commission</label><span class="required">*</span>
-                                            <input type="number" name="commission" id="commission" class="form-control">
+                                        <div class="form-group commission_percentage offers hidden">
+                                            <label for="commission_percentage" class="commission_percentage_name">Commission %</label><span class="required">*</span>
+                                            <input type="number" name="commission_percentage" id="commission_percentage" class="form-control" >
                                         </div>
-                                        <div class="form-group allowance hidden">
+                                        <div class="form-group commission_flat offers hidden">
+                                            <label for="commission_flat" class="commission_flat_name">Commission Amount</label><span class="required">*</span>
+                                            <input type="number" name="commission_flat" id="commission_flat" class="form-control">
+                                        </div>
+                                        <div class="form-group allowance offers hidden">
                                             <label for="allowance" class="allowance_name">Allowance Amount</label>
                                             <input type="number" name="allowance" id="allowance" class="form-control">
                                         </div>
@@ -416,14 +424,14 @@
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary name_next_btn" onclick="stepper.next()" disabled>Next</button>
-                            <button type="button" class="btn btn-default info_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary info_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
-                            <button type="button" class="btn btn-default contact_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary contact_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
-                            <button type="button" class="btn btn-default offer_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary offer_submit_btn add-therapist-btn hiddenBtn" disabled>Submit</button>
+                            <button type="button" class="btn btn-default therapist_closeModal" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary therapist_name_next_btn" onclick="addTherapistStepper.next()" disabled>Next</button>
+                            <button type="button" class="btn btn-default therapist_info_previous_btn hiddenBtn" onclick="addTherapistStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary therapist_info_next_btn hiddenBtn" onclick="addTherapistStepper.next()" disabled>Next</button>
+                            <button type="button" class="btn btn-default therapist_contact_previous_btn hiddenBtn" onclick="addTherapistStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary therapist_contact_next_btn hiddenBtn" onclick="addTherapistStepper.next()" disabled>Next</button>
+                            <button type="button" class="btn btn-default therapist_offer_previous_btn hiddenBtn" onclick="addTherapistStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary therapist_offer_submit_btn add-therapist-btn hiddenBtn" disabled>Submit</button>
                         </div>
                     </div>
                 </div>
@@ -506,7 +514,7 @@
                                         </div>
                                         <div class="form-group edit_certificate">
                                             <label for="edit_certificate">Certificate</label>
-                                            <select name="edit_ceritificate" class="form-control" id="edit_certificate">
+                                            <select name="edit_certificate" class="form-control" id="edit_certificate">
                                                 <option value="">Select here</option>
                                                 <option value="DOH">DOH</option>
                                                 <option value="NC2">NC2</option>
@@ -534,11 +542,15 @@
                                                 <option value="amount_plus_allowance">Amount + Allowance</option>
                                             </select>
                                         </div>
-                                        <div class="form-group edit_commission hidden">
-                                            <label for="edit_commission" class="edit_commission_name">Commission</label><span class="required">*</span>
-                                            <input type="number" name="edit_commission" id="edit_commission" class="form-control">
+                                        <div class="form-group edit_commission_percentage hidden edit-offers">
+                                            <label for="edit_commission_percentage" class="edit_commission_name">Commission Percentage</label><span class="required">*</span>
+                                            <input type="number" name="edit_commission_percentage" id="edit_commission_percentage" class="form-control">
                                         </div>
-                                        <div class="form-group edit_allowance hidden">
+                                        <div class="form-group edit_commission_flat hidden edit-offers">
+                                            <label for="edit_commission_flat" class="edit_commission_name">Commission Amount</label><span class="required">*</span>
+                                            <input type="number" name="edit_commission_flat" id="edit_commission_flat" class="form-control">
+                                        </div>
+                                        <div class="form-group edit_allowance hidden edit-offers">
                                             <label for="edit_allowance" class="edit_allowance_name">Allowance Amount</label>
                                             <input type="number" name="edit_allowance" id="edit_allowance" class="form-control">
                                         </div>
@@ -548,12 +560,12 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default edit_closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary edit_name_next_btn" onclick="steppers.next()">Next</button>
-                            <button type="button" class="btn btn-default edit_info_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary edit_info_next_btn hiddenBtn" onclick="steppers.next()">Next</button>
-                            <button type="button" class="btn btn-default edit_contact_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary edit_contact_next_btn hiddenBtn" onclick="steppers.next()">Next</button>
-                            <button type="button" class="btn btn-default edit_offer_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary edit_name_next_btn" onclick="editTherapistStepper.next()">Next</button>
+                            <button type="button" class="btn btn-default edit_info_previous_btn hiddenBtn" onclick="editTherapistStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary edit_info_next_btn hiddenBtn" onclick="editTherapistStepper.next()">Next</button>
+                            <button type="button" class="btn btn-default edit_contact_previous_btn hiddenBtn" onclick="editTherapistStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-primary edit_contact_next_btn hiddenBtn" onclick="editTherapistStepper.next()">Next</button>
+                            <button type="button" class="btn btn-default edit_offer_previous_btn hiddenBtn" onclick="editTherapistStepper.previous()">Previous</button>
                             <button type="button" class="btn btn-primary edit_offer_submit_btn update-therapist-btn hiddenBtn">Submit</button>
                         </div>
                     </div>
@@ -611,6 +623,7 @@
 
                 $('#update-service-modal').modal('show');
             });
+
         });
 
         function reloadServiceTable ()
@@ -618,14 +631,6 @@
             var table = $('#service-list').DataTable();
             table.ajax.reload();
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            window.stepper = new Stepper(document.querySelector('#bs-stepper-add'))
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            window.steppers = new Stepper(document.querySelector('#bs-stepper-update'))
-        });
 
         $(document).ready(function() {
             $('#therapist-list').DataTable({
@@ -679,34 +684,6 @@
                 $('#update-therapist-modal').modal('show');
             });
 
-            $('#offer_type').on('change', function() {
-                var val = $(this).find(":selected").val();
-                if (val === 'percentage_only') {
-                    $('.commission').removeClass('hidden');
-                    $('.commission_name').text('Commission Rate');
-
-                    $('.allowance').addClass('hidden');
-                    $('#allowance').val(0);
-                } else if (val === 'percentage_plus_allowance') {
-                    $('.commission').removeClass('hidden');
-                    $('.commission_name').text('Commission Rate');
-
-                    $('.allowance').removeClass('hidden');
-                    $('.allowance_name').text('Allowance');
-                } else if (val === 'amount_only') {
-                    $('.commission').removeClass('hidden');
-                    $('.commission_name').text('Commission Amount');
-
-                    $('.allowance').addClass('hidden');
-                    $('#allowance').val(0);
-                } else if (val === 'amount_plus_allowance') {
-                    $('.commission').removeClass('hidden');
-                    $('.commission_name').text('Commission Amount');
-                    $('.allowance').removeClass('hidden');
-                    $('.allowance_name').text('Allowance');
-                }
-            });
-
             $('#edit_offer_type').on('change', function() {
                 var val = $(this).find(":selected").val();
                 if (val === 'percentage_only') {
@@ -741,12 +718,5 @@
             table.ajax.reload();
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            window.stepper = new Stepper(document.querySelector('#bs-stepper-add-therapist'))
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            window.steppers = new Stepper(document.querySelector('#bs-stepper-update-therapist'))
-        });
     </script>
 @stop

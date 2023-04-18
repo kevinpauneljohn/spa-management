@@ -1,3 +1,11 @@
+document.addEventListener('DOMContentLoaded', function () {
+    window.addTherapistStepper = new Stepper(document.querySelector('#bs-stepper-add-therapist'))
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    window.editTherapistStepper = new Stepper(document.querySelector('#bs-stepper-update-therapist'))
+});
+
 $(document).on('click','.add-therapist-btn',function(){
     var firstname = $('#firstname').val();
     var middlename = $('#middlename').val();
@@ -7,7 +15,8 @@ $(document).on('click','.add-therapist-btn',function(){
     var email = $('#email').val();
     var gender = $('#gender').val();
     var certificate = $('#certificate').val();
-    var commission = $('#commission').val();
+    var commission_percentage = $('#commission_percentage').val();
+    var commission_flat = $('#commission_flat').val();
     var allowance = $('#allowance').val();
     var offer_type = $('#offer_type').val();
     var spa_id = $('.spa-id').val()
@@ -21,7 +30,8 @@ $(document).on('click','.add-therapist-btn',function(){
         email : email,
         gender : gender,
         certificate : certificate,
-        commission : commission,
+        commission_percentage : commission_percentage,
+        commission_flat : commission_flat,
         allowance : allowance,
         offer_type : offer_type,
         spa_id : spa_id
@@ -44,34 +54,34 @@ $(document).on('click','.add-therapist-btn',function(){
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                  $('#therapist-form').find('.add-therapist-btn').val('Saving ... ').attr('disabled',true);
+                  $('#therapist-form').find('.add-therapist-btn').text('Saving ... ').attr('disabled',true);
                 },success: function (result) {
                     console.log(result);
-                    // if(result.status) {
-                    //     $('#therapist-form').trigger('reset');
-                    //     reloadTherapistTable();
-                    //
-                    //     swal.fire("Done!", result.message, "success");
-                    //     $('#add-new-therapist-modal').modal('hide');
-                    // } else {
-                    //     if (result.status === false) {
-                    //         swal.fire("Warning!", result.message, "warning");
-                    //     } else {
-                    //         swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
-                    //         $.each(result, function (key, value) {
-                    //             var element = $('#'+key);
-                    //
-                    //             element.closest('div.'+key)
-                    //                 .addClass(value.length > 0 ? 'has-error' : 'has-success')
-                    //                 .find('.text-danger')
-                    //                 .remove();
-                    //
-                    //             element.after('<p class="text-danger">'+value+'</p>');
-                    //         });
-                    //     }
-                    // }
-                    //
-                    // $('#therapist-form').find('.add-therapist-btn').val('Save').attr('disabled',false);
+                    if(result.status) {
+                        $('#therapist-form').trigger('reset');
+                        reloadTherapistTable();
+
+                        swal.fire("Done!", result.message, "success");
+                        $('#add-new-therapist-modal').modal('toggle');
+                    } else {
+                        if (result.status === false) {
+                            swal.fire("Warning!", result.message, "warning");
+                        } else {
+                            swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
+                            $.each(result, function (key, value) {
+                                var element = $('#'+key);
+
+                                element.closest('div.'+key)
+                                    .addClass(value.length > 0 ? 'has-error' : 'has-success')
+                                    .find('.text-danger')
+                                    .remove();
+
+                                element.after('<p class="text-danger">'+value+'</p>');
+                            });
+                        }
+                    }
+
+                    $('#therapist-form').find('.add-therapist-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
                 }
@@ -90,26 +100,24 @@ $('#firstname, #lastname').on('input',function(e){
     var lastname = $('#lastname').val();
 
     if (firstname.length > 0 && lastname.length > 0) {
-        $('.name_next_btn').prop('disabled', false);
+        $('.therapist_name_next_btn').prop('disabled', false);
     } else {
-        $('.name_next_btn').prop('disabled', true);
+        $('.therapist_name_next_btn').prop('disabled', true);
     }
 });
 
-$(document).on('click','.name_next_btn',function(){
-    $('.name_next_btn').addClass('hiddenBtn');
-    $('.closeModal').addClass('hiddenBtn');
-    $('.info_previous_btn').removeClass('hiddenBtn');
-    $('.info_next_btn').removeClass('hiddenBtn');
+$(document).on('click','.therapist_name_next_btn',function(){
+    $('.therapist_name_next_btn, .therapist_closeModal').addClass('hiddenBtn');
+    $('.therapist_info_previous_btn, .therapist_info_next_btn').removeClass('hiddenBtn');
 });
 
 $('#gender').on('input',function(e){
     var gender = $('#gender').val();
 
     if (gender.length > 0) {
-        $('.info_next_btn').prop('disabled', false);
+        $('.therapist_info_next_btn').prop('disabled', false);
     } else {
-        $('.info_next_btn').prop('disabled', true);
+        $('.therapist_info_next_btn').prop('disabled', true);
     }
 });
 
@@ -117,91 +125,103 @@ $('#mobile_number').on('input',function(e){
     var mobile_number = $('#mobile_number').val();
 
     if (mobile_number.length > 0) {
-        $('.contact_next_btn').prop('disabled', false);
+        $('.therapist_contact_next_btn').prop('disabled', false);
     } else {
-        $('.contact_next_btn').prop('disabled', true);
+        $('.therapist_contact_next_btn').prop('disabled', true);
     }
 });
 
-$('#offer_type, #commission, #allowance').on('input',function(e){
-    var offer_type = $('#offer_type').val();
-    var commission = $('#commission').val();
-    var allowance = $('#allowance').val();
+let offer_value;
 
-    if (offer_type.length > 0 && commission.length > 0) {
-        if (offer_type === 'percentage_plus_allowance' || offer_type === 'amount_plus_allowance') {
-            if (allowance.length > 0) {
-                $('.offer_submit_btn').prop('disabled', false);
-            } else {
-                $('.offer_submit_btn').prop('disabled', true);
-            }
-        } else {
-            $('.offer_submit_btn').prop('disabled', false);
-        }
-    } else {
-        $('.offer_submit_btn').prop('disabled', true);
+$('#therapist-form #offer_type').on('change', function() {
+    offer_value = $(this).find(":selected").val();
+
+    $('.offers').hide();
+    $('.offers input').val('');
+    $('.therapist_offer_submit_btn').attr('disabled',true);
+    if (offer_value === 'percentage_only') {
+        $('.commission_percentage').show();
+    } else if (offer_value === 'percentage_plus_allowance') {
+        $('.commission_percentage, .allowance').show();
+    } else if (offer_value === 'amount_only') {
+        $('.commission_flat').show();
+    } else if (offer_value === 'amount_plus_allowance') {
+        $('.commission_flat, .allowance').show();
     }
 });
 
-$(document).on('click','.info_next_btn',function(){
-    $('.info_next_btn').addClass('hiddenBtn');
-    $('.info_previous_btn').addClass('hiddenBtn');
-    $('.contact_next_btn').removeClass('hiddenBtn');
-    $('.contact_previous_btn').removeClass('hiddenBtn');
+$('#offer-part input').bind('keyup', function() {
+    let btn_disabled = true;
+    let targetElement = allFilled('#offer-part  input');
+    if(
+        (offer_value === 'percentage_only' && targetElement['commission_percentage'] > 0) ||
+        (offer_value === 'percentage_plus_allowance' && targetElement['commission_percentage'] > 0 && targetElement['allowance'] > 0) ||
+        (offer_value === 'amount_only' && targetElement['commission_flat'] > 0) ||
+        (offer_value === 'amount_plus_allowance' && targetElement['commission_flat'] > 0 && targetElement['allowance'] > 0)
+    ){
+        btn_disabled = false;
+    }
+
+    $('.therapist_offer_submit_btn').attr('disabled',btn_disabled);
 });
 
-$(document).on('click','.info_previous_btn',function(){
-    $('.name_next_btn').removeClass('hiddenBtn');
-    $('.closeModal').removeClass('hiddenBtn');
-    $('.info_previous_btn').addClass('hiddenBtn');
-    $('.info_next_btn').addClass('hiddenBtn');
+
+
+function allFilled(element) {
+    let data = [];
+    $(element).each(function() {
+        data[this.id] = $(this).val().length;
+    });
+    return data;
+}
+
+$(document).on('click','.therapist_info_next_btn',function(){
+    $('.therapist_info_next_btn, .therapist_info_previous_btn').addClass('hiddenBtn');
+    $('.therapist_contact_next_btn, .therapist_contact_previous_btn').removeClass('hiddenBtn');
 });
 
-$(document).on('click','.contact_next_btn',function(){
-    $('.contact_next_btn').addClass('hiddenBtn');
-    $('.contact_previous_btn').addClass('hiddenBtn');
-    $('.offer_previous_btn').removeClass('hiddenBtn');
-    $('.offer_submit_btn').removeClass('hiddenBtn');
+$(document).on('click','.therapist_info_previous_btn',function(){
+    $('.therapist_name_next_btn, .therapist_closeModal').removeClass('hiddenBtn');
+    $('.therapist_info_previous_btn, .therapist_info_next_btn').addClass('hiddenBtn');
 });
 
-$(document).on('click','.contact_previous_btn',function(){
-    $('.info_next_btn').removeClass('hiddenBtn');
-    $('.info_previous_btn').removeClass('hiddenBtn');
-    $('.contact_previous_btn').addClass('hiddenBtn');
-    $('.contact_next_btn').addClass('hiddenBtn');
+$(document).on('click','.therapist_contact_next_btn',function(){
+    $('.therapist_contact_next_btn, .therapist_contact_previous_btn').addClass('hiddenBtn');
+    $('.therapist_offer_previous_btn, .therapist_offer_submit_btn').removeClass('hiddenBtn');
 });
 
-$(document).on('click','.offer_previous_btn',function(){
-    $('.offer_previous_btn').addClass('hiddenBtn');
-    $('.offer_submit_btn').addClass('hiddenBtn');
-    $('.contact_previous_btn').removeClass('hiddenBtn');
-    $('.contact_next_btn').removeClass('hiddenBtn');
+$(document).on('click','.therapist_contact_previous_btn',function(){
+    $('.therapist_info_next_btn, .therapist_info_previous_btn').removeClass('hiddenBtn');
+    $('.therapist_contact_previous_btn, .therapist_contact_next_btn').addClass('hiddenBtn');
+});
+
+$(document).on('click','.therapist_offer_previous_btn',function(){
+    $('.therapist_offer_previous_btn, .therapist_offer_submit_btn').addClass('hiddenBtn');
+    $('.therapist_contact_previous_btn, .therapist_contact_next_btn').removeClass('hiddenBtn');
 });
 
 $('#add-new-therapist-modal').on('hidden.bs.modal', function () {
-    stepper.to(0);
-    $('.name_next_btn').removeClass('hiddenBtn');
-    $('.closeModal').removeClass('hiddenBtn');
-    $('.name_next_btn').prop('disabled', true);
-    $('.info_next_btn').addClass('hiddenBtn');
-    $('.info_previous_btn').addClass('hiddenBtn');
-    $('.info_next_btn').prop('disabled', true);
-    $('.contact_previous_btn').addClass('hiddenBtn')
-    $('.contact_next_btn').addClass('hiddenBtn')
-    $('.offer_previous_btn').addClass('hiddenBtn');
-    $('.offer_submit_btn').addClass('hiddenBtn');
-    $('.offer_submit_btn').prop('disabled', true);
-    $('.commission').addClass('hiddenBtn');
-    $('.allowance').addClass('hiddenBtn');
+    addTherapistStepper.to(0);
+    $('.therapist_name_next_btn').removeClass('hiddenBtn');
+    $('.therapist_closeModal').removeClass('hiddenBtn').prop('disabled', true);
+    $('.therapist_info_next_btn').addClass('hiddenBtn').prop('disabled', true);
+    $('.therapist_info_previous_btn, .therapist_contact_previous_btn, .therapist_contact_next_btn, .therapist_offer_previous_btn').addClass('hiddenBtn')
+    $('.therapist_offer_submit_btn').addClass('hiddenBtn').prop('disabled', true);
+    $('.commission, .allowance').addClass('hiddenBtn');
 });
 
 $(document).on('click','.edit-therapist-btn',function(){
     let id = this.id;
     let user_id = $(this).data("user_id");
+    let therapistForm = $('#update-therapist-form');
+
+    $('.edit_commission').remove();
     $.ajax({
         'url' : '/therapist/'+id,
         'type' : 'GET',
         success: function(result){
+            console.log(result);
+            offer_value = result.therapist.offer_type;
             $('#edit_id').val(result.therapist.id);
             $('#edit_user_id').val(user_id);
             $('#edit_firstname').val(result.therapist.firstname);
@@ -245,36 +265,48 @@ $(document).on('click','.edit-therapist-btn',function(){
                 $('#edit_offer_type').append('<option value="amount_only">Amount Only</option>');
                 $('#edit_offer_type').append('<option value="amount_plus_allowance">Amount + Allowance</option>');
 
-                $('.edit_commission').removeClass('hidden');
-                $('.edit_commission_name').text('Commission Rate');
-                $('.edit_allowance').addClass('hidden');
+
+                // $('#update-therapist-form').find('.edit_offer_type').append(percentage_input);
+                therapistForm.find('.edit_commission_percentage').show()
+                    .find('#edit_commission_percentage').val(result.therapist.commission_percentage);
+
             } else if (result.therapist.offer_type === 'percentage_plus_allowance') {
                 $('#edit_offer_type').append('<option value="percentage_plus_allowance" selected="selected">Percentage + Allowance</option>');
                 $('#edit_offer_type').append('<option value="percentage_only">Percentage Only</option>');
                 $('#edit_offer_type').append('<option value="amount_only">Amount Only</option>');
                 $('#edit_offer_type').append('<option value="amount_plus_allowance">Amount + Allowance</option>');
 
-                $('.edit_commission').removeClass('hidden');
-                $('.edit_allowance').removeClass('hidden');
-                $('.edit_commission_name').text('Commission Rate');
+                therapistForm.find('.edit_commission_percentage').show()
+                    .find('#edit_commission_percentage').val(result.therapist.commission_percentage);
+                therapistForm.find('.edit_allowance').show()
+                    .find('#edit_allowance').val(result.therapist.allowance);
+                // $('#update-therapist-form').find('.edit_offer_type').append(percentage_input).append(allowance_input);
+
             } else if (result.therapist.offer_type === 'amount_only') {
                 $('#edit_offer_type').append('<option value="amount_only" selected="selected">Amount Only</option>');
                 $('#edit_offer_type').append('<option value="percentage_only">Percentage Only</option>');
                 $('#edit_offer_type').append('<option value="percentage_plus_allowance">Percentage + Allowance</option>');
                 $('#edit_offer_type').append('<option value="amount_plus_allowance">Amount + Allowance</option>');
 
-                $('.edit_commission').removeClass('hidden');
-                $('.edit_allowance').addClass('hidden');
-                $('.edit_commission_name').text('Commission Amount');
+                therapistForm.find('.edit_commission_flat').show()
+                    .find('#edit_commission_flat').val(result.therapist.commission_flat);
+
+                // $('.edit_commission').removeClass('hidden');
+                // $('.edit_allowance').addClass('hidden');
+                // $('.edit_commission_name').text('Commission Amount');
             } else if (result.therapist.offer_type === 'amount_plus_allowance') {
                 $('#edit_offer_type').append('<option value="amount_plus_allowance" selected="selected">Amount + Allowance</option>');
                 $('#edit_offer_type').append('<option value="percentage_only">Percentage Only</option>');
                 $('#edit_offer_type').append('<option value="percentage_plus_allowance">Percentage + Allowance</option>');
                 $('#edit_offer_type').append('<option value="amount_only">Amount Only</option>');
 
-                $('.edit_commission').removeClass('hidden');
-                $('.edit_allowance').removeClass('hidden');
-                $('.edit_commission_name').text('Commission Amount');
+                therapistForm.find('.edit_commission_flat').show()
+                    .find('#edit_commission_flat').val(result.therapist.commission_flat);
+                therapistForm.find('.edit_allowance').show()
+                    .find('#edit_allowance').val(result.therapist.allowance);
+                // $('.edit_commission').removeClass('hidden');
+                // $('.edit_allowance').removeClass('hidden');
+                // $('.edit_commission_name').text('Commission Amount');
             } else {
                 $('#edit_certificate').append('<option value="" selected="selected">Select here</option>');
                 $('#edit_offer_type').append('<option value="percentage_only">Percentage Only</option>');
@@ -286,41 +318,58 @@ $(document).on('click','.edit-therapist-btn',function(){
                 $('.edit_allowance').addClass('hidden');
             }
 
-            $('#edit_commission').val(result.therapist.commission);
+            // $('#edit_commission').val(result.therapist.commission);
             $('#edit_allowance').val(result.therapist.allowance);
         }
     });
 });
 
-$(document).on('click','.update-therapist-btn',function(){
-    var id = $('#edit_id').val();
-    var user_id = $('#edit_user_id').val();
-    var firstname = $('#edit_firstname').val();
-    var middlename = $('#edit_middlename').val();
-    var lastname = $('#edit_lastname').val();
-    var date_of_birth = $('#edit_date_of_birth').val();
-    var mobile_number = $('#edit_mobile_number').val();
-    var email = $('#edit_email').val();
-    var gender = $('#edit_gender').val();
-    var certificate = $('#edit_certificate').val();
-    var commission = $('#edit_commission').val();
-    var allowance = $('#edit_allowance').val();
-    var offer_type = $('#edit_offer_type').val();
+$('#update-therapist-form #edit_offer_type').on('change', function() {
+    offer_value = $(this).find(":selected").val();
+    $('.edit-offers').hide();
+    $('.update-therapist-btn').attr('disabled',true);
+    if (offer_value === 'percentage_only') {
+        $('.edit_commission_percentage').show();
+    } else if (offer_value === 'percentage_plus_allowance') {
+        $('.edit_commission_percentage, .edit_allowance').show();
+    } else if (offer_value === 'amount_only') {
+        $('.edit_commission_flat').show();
+    } else if (offer_value === 'amount_plus_allowance') {
+        $('.edit_commission_flat, .edit_allowance').show();
+    }
+});
 
-    var data = {
-        id: id,
-        user_id: user_id,
-        firstname : firstname,
-        middlename : middlename,
-        lastname : lastname,
-        date_of_birth : date_of_birth,
-        mobile_number : mobile_number,
-        email : email,
-        gender : gender,
-        certificate : certificate,
-        commission : commission,
-        allowance : allowance,
-        offer_type : offer_type
+$('#edit-offer-part input').bind('keyup', function() {
+    let btn_disabled = true;
+    let targetElement = allFilled('#edit-offer-part input');
+
+    if(
+        (offer_value === 'percentage_only' && targetElement['edit_commission_percentage'] > 0) ||
+        (offer_value === 'percentage_plus_allowance' && targetElement['edit_commission_percentage'] > 0 && targetElement['edit_allowance'] > 0) ||
+        (offer_value === 'amount_only' && targetElement['edit_commission_flat'] > 0) ||
+        (offer_value === 'amount_plus_allowance' && targetElement['edit_commission_flat'] > 0 && targetElement['edit_allowance'] > 0)
+    ){
+        btn_disabled = false;
+    }
+    $('.update-therapist-btn').attr('disabled',btn_disabled);
+});
+
+$(document).on('click','.update-therapist-btn',function(){
+    let data = {
+        id: $('#edit_id').val(),
+        user_id: $('#edit_user_id').val(),
+        firstname : $('#edit_firstname').val(),
+        middlename : $('#edit_middlename').val(),
+        lastname : $('#edit_lastname').val(),
+        date_of_birth : $('#edit_date_of_birth').val(),
+        mobile_number : $('#edit_mobile_number').val(),
+        email : $('#edit_email').val(),
+        gender : $('#edit_gender').val(),
+        certificate : $('#edit_certificate').val(),
+        commission_percentage : $('#edit_commission_percentage').val(),
+        commission_flat : $('#edit_commission_flat').val(),
+        allowance : $('#edit_allowance').val(),
+        offer_type : $('#edit_offer_type').val()
     };
 
     swal.fire({
@@ -335,19 +384,19 @@ $(document).on('click','.update-therapist-btn',function(){
     }).then(function (e) {
         if (e.value === true) {
             $.ajax({
-                'url' : '/therapist/'+id,
+                'url' : '/therapist/'+data['id'],
                 'type' : 'PUT',
                 'data': data,
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
                   $('#update-therapist-form').find('.update-therapist-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
+                    console.log(result);
                     if(result.status) {
-                        $('#therapist-form').trigger('reset');
                         reloadTherapistTable();
 
                         swal.fire("Done!", result.message, "success");
-                        $('#update-therapist-modal').modal('hide');
+                        $('#update-therapist-modal').modal('toggle');
                     } else {
                         if (result.status === false) {
                             swal.fire("Warning!", result.message, "warning");
@@ -418,26 +467,6 @@ $('#edit_mobile_number').on('input',function(e){
     }
 });
 
-$('#edit_offer_type, #edit_commission, #edit_allowance').on('input',function(e){
-    var offer_type = $('#edit_offer_type').val();
-    var commission = $('#edit_commission').val();
-    var allowance = $('#edit_allowance').val();
-
-    if (offer_type.length > 0 && commission.length > 0) {
-        if (offer_type === 'percentage_plus_allowance' || offer_type === 'amount_plus_allowance') {
-            if (allowance.length > 0) {
-                $('.edit_offer_submit_btn').prop('disabled', false);
-            } else {
-                $('.edit_offer_submit_btn').prop('disabled', true);
-            }
-        } else {
-            $('.edit_offer_submit_btn').prop('disabled', false);
-        }
-    } else {
-        $('.edit_offer_submit_btn').prop('disabled', true);
-    }
-});
-
 $(document).on('click','.edit_info_next_btn',function(){
     $('.edit_info_next_btn').addClass('hiddenBtn');
     $('.edit_info_previous_btn').addClass('hiddenBtn');
@@ -473,22 +502,6 @@ $(document).on('click','.edit_offer_previous_btn',function(){
     $('.edit_contact_next_btn').removeClass('hiddenBtn');
 });
 
-$('#update-therapist-modal').on('hidden.bs.modal', function () {
-    steppers.to(0);
-    $('.edit_name_next_btn').removeClass('hiddenBtn');
-    $('.edit_closeModal').removeClass('hiddenBtn');
-    $('.edit_name_next_btn').prop('disabled', false);
-    $('.edit_info_next_btn').addClass('hiddenBtn');
-    $('.edit_info_previous_btn').addClass('hiddenBtn');
-    $('.edit_info_next_btn').prop('disabled', false);
-    $('.edit_contact_previous_btn').addClass('hiddenBtn')
-    $('.edit_contact_next_btn').addClass('hiddenBtn')
-    $('.edit_offer_previous_btn').addClass('hiddenBtn');
-    $('.edit_offer_submit_btn').addClass('hiddenBtn');
-    $('.edit_offer_submit_btn').prop('disabled', false);
-    $('.edit_commission').addClass('hiddenBtn');
-    $('.edit_allowance').addClass('hiddenBtn');
-});
 
 $(document).on('click','.delete-therapist-btn',function(){
     $tr = $(this).closest('tr');

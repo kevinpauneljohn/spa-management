@@ -24,7 +24,8 @@ class CreateTherapistsTable extends Migration
             $table->string('email')->nullable();
             $table->string('gender');
             $table->string('certificate')->nullable();
-            $table->string('commission');
+            $table->string('commission_percentage')->nullable();
+            $table->string('commission_flat')->nullable();
             $table->string('allowance')->nullable();
             $table->string('offer_type');
             $table->timestamps();

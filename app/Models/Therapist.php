@@ -20,7 +20,8 @@ class Therapist extends Model
         'email',
         'gender',
         'certificate',
-        'commission',
+        'commission_percentage',
+        'commission_flat',
         'allowance',
         'offer_type',
     ];
