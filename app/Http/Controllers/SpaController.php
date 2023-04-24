@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\OwnerServices;
+use App\Services\SpaService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -11,48 +12,16 @@ use App\Models\Owner;
 use App\Models\User;
 class SpaController extends Controller
 {
-
-    public function lists($id)
+    public function __construct()
+    {
+        $this->middleware('check.if.user.is.owner')->only(['my_spas','get_owner_spas']);
+        $this->middleware(['check.if.user.is.owner','check.if.spa.belongs.to.owner'])->only(['show']);
+    }
+    public function lists(SpaService $spaService, $id)
     {
         $owner = Owner::where('user_id', $id)->first();
-        $owner_id = $owner->id;
-
-        $spa = Spa::where('owner_id', $owner_id)->get();
-        return DataTables::of($spa)
-            ->editColumn('created_at',function($spa){
-                return $spa->created_at->format('M d, Y');
-            })
-            ->addColumn('name',function ($spa){
-//                if(auth()->user()->can('view therapist'))
-//                {
-//                    return '<a href="'.route('therapist.overview',['id' => $spa->id]).'" title="View">'.$spa->name.'</a>&nbsp;';
-//                } else {
-//                    return $spa->name;
-//                }
-
-                return '<a href="'.route('spa.show',['id' => $spa->id]).'">'.ucwords($spa->name).'</a>';
-            })
-            ->addColumn('address',function ($spa){
-                return $spa->address;
-            })
-            ->addColumn('action', function($spa){
-                $action = "";
-                if(auth()->user()->can('view therapist'))
-                {
-                    $action .= '<a href="'.route('spa.show',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('edit spa'))
-                {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-spa-btn" id="'.$spa->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('delete spa'))
-                {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-spa-btn" id="'.$spa->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
-                }
-                return $action;
-            })
-            ->rawColumns(['action','name'])
-            ->make(true);
+        $spa = $owner->spas;
+        return $spaService->spas($spa);
     }
 
     public function store(Request $request)
@@ -157,5 +126,15 @@ class SpaController extends Controller
         // $spa = Spa::where('id', $id)->first();
 
         // return view('Spa.overview',compact('spa'));
+    }
+
+    public function get_owner_spas(SpaService $spaService)
+    {
+        return $spaService->spas(auth()->user()->owner->spas);
+    }
+    public function my_spas()
+    {
+//        return auth()->user()->owner->spas;
+        return view('Owner.spa.index');
     }
 }

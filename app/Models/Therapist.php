@@ -26,4 +26,9 @@ class Therapist extends Model
         'allowance',
         'offer_type',
     ];
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
 }

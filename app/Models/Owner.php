@@ -24,4 +24,10 @@ class Owner extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    //get all owners therapist
+    public function therapists()
+    {
+        return $this->hasOneThrough(Therapist::class, Spa::class);
+    }
 }

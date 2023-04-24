@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\SpaService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -12,48 +13,9 @@ use App\Models\Service;
 
 class ServiceController extends Controller
 {
-    public function lists($id)
+    public function lists(SpaService $spaService, $id)
     {
-        $service = Service::where('spa_id', $id)->get();
-        return DataTables::of($service)
-            ->editColumn('created_at',function($service){
-                return $service->created_at->format('M d, Y');
-            })
-            ->addColumn('name',function ($service){
-                if(auth()->user()->can('view service'))
-                {
-                    return '<a href="'.route('spa.overview',['id' => $service->id]).'" title="View">'.ucfirst($service->name).'</a>&nbsp;';
-                } else {
-                    return ucfirst($service->name);
-                }
-            })
-            ->editColumn('description',function($service){
-                return $service->description;
-            })
-            ->addColumn('duration',function ($service){
-                return $service->duration.' mins.';
-            })
-            ->addColumn('category',function ($service){
-                return ucfirst($service->category);
-            })
-            ->addColumn('action', function($service){
-                $action = "";
-                if(auth()->user()->can('view service'))
-                {
-                    $action .= '<a href="'.route('spa.overview',['id' => $service->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('edit service'))
-                {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-service-btn" id="'.$service->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('delete service'))
-                {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-service-btn" id="'.$service->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
-                }
-                return $action;
-            })
-            ->rawColumns(['action','name'])
-            ->make(true);
+        return $spaService->spa_services($id);
     }
 
     public function store(Request $request)
@@ -84,13 +46,13 @@ class ServiceController extends Controller
                 'price' => $price,
                 'category' => $category
             ]);
-            
+
             $response = [
                 'status'   => true,
                 'message'   => 'Services information successfully saved.',
                 'data'      => $service,
-            ];    
-            
+            ];
+
             return response($response, $code);
         } else {
             return response()->json($validator->errors());
@@ -139,7 +101,7 @@ class ServiceController extends Controller
                 return response()->json(['status' => true, 'message' => 'Services information successfully updated.']);
             } else {
                 return response()->json(['status' => false, 'message' => 'No changes made.']);
-            } 
+            }
         }
         return response()->json($validator->errors());
     }

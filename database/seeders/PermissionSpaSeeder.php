@@ -13,9 +13,9 @@ class PermissionSpaSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'add spa']);
-        Permission::create(['name' => 'view spa']);
-        Permission::create(['name' => 'edit spa']);
-        Permission::create(['name' => 'delete spa']);
+//        Permission::create(['name' => 'add spa']);
+//        Permission::create(['name' => 'view spa']);
+//        Permission::create(['name' => 'edit spa']);
+//        Permission::create(['name' => 'delete spa']);
     }
 }
