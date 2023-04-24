@@ -180,4 +180,24 @@ class ServiceController extends Controller
         }
         return response()->json(['range' => $data]);
     }
+    
+    public function servicePricing($id, $spa_id)
+    {
+        $service = Service::where(['id' => $id, 'spa_id' => $spa_id])->first();
+
+        return $service->price;
+    }
+
+    public function servicePricingPlusTime($id, $spa_id, $selected_id)
+    {
+        $service = Service::where(['id' => $id, 'spa_id' => $spa_id])->first();
+
+        $total = $selected_id * $service->price_per_plus_time;
+        $total_amount = 0;
+        if ($total > 0) {
+            $total_amount = $total;
+        }
+
+        return $total_amount;
+    }
 }

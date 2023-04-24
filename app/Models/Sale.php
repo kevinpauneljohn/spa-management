@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUuid;
-class Service extends Model
+
+class Sale extends Model
 {
     use HasFactory, UsesUuid;
 
     protected $fillable = [
         'spa_id',
-        'name',
-        'description',
-        'duration',
-        'price',
-        'category',
-        'price_per_plus_time'
+        'amount_paid',
+        'payment_status',
+        'user_id'
     ];
 }

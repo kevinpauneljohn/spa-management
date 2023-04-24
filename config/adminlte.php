@@ -558,6 +558,21 @@ return [
                 ],
             ],
         ],
+        'DatePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*

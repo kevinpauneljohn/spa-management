@@ -102,7 +102,7 @@ class PermissionController extends Controller
 
         if($validator->passes())
         {
-            $permission->name = $request->edit_permission;
+            $permission->name = strtolower($request->edit_permission);
             if($permission->isDirty()){
                 $permission->save();    
                 $message = 'Permission successfully updated!';
