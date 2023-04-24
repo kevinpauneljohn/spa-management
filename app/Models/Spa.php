@@ -21,4 +21,11 @@ class Spa extends Model
     {
         return $this->belongsTo(Owner::class);
     }
+
+    public function therapists()
+    {
+        return $this->hasMany(Therapist::class);
+    }
+
+
 }

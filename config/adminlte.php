@@ -323,6 +323,12 @@ return [
 //        ],
 //        ['header' => 'account_settings'],
         [
+            'text' => 'Dashboard',
+            'route'  => 'dashboard',
+            'icon' => 'fas fa-fw fa-tachometer-alt',
+//            'can' => 'view owner'
+        ],
+        [
             'text' => 'Owners',
             'route'  => 'owners.index',
             'icon' => 'fas fa-fw fa-user',
@@ -336,8 +342,9 @@ return [
         ],
         [
             'text' => 'Spa Management',
-            'url'  => 'admin/settings',
+            'route'  => 'owner.my.spas',
             'icon' => 'fas fa-fw fa-spa',
+            'can' => 'view spa'
         ],
         [
             'text' => 'Masseur / Masseuse',

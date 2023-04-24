@@ -6,22 +6,17 @@
     <h1></h1>
 @stop
 @section('content')
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1><i class="fas fa-spa"></i> {{ucwords($spa->name)}}</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{route('owners.index')}}">Owners</a></li>
-                        <li class="breadcrumb-item"><a href="{{route('spa.overview',['id' => $owner->user_id])}}">Spa</a> </li>
-                        <li class="breadcrumb-item active">{{ucwords($spa->name)}} </li>
-                    </ol>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h3 class="text-cyan"><i class="fas fa-spa"></i> {{ucwords($spa->name)}}</h3>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{route('spa.overview',['id' => $owner->user_id])}}">Spa</a> </li>
+                <li class="breadcrumb-item active">{{ucwords($spa->name)}} </li>
+            </ol>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-3">

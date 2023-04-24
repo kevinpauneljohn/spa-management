@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Services\TherapistService;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Owner;
@@ -14,57 +14,13 @@ Use Illuminate\Support\Facades\Hash;
 
 class TherapistController extends Controller
 {
-    public function lists($id)
+    public function __construct()
     {
-
-        $therapist = Therapist::where('spa_id', $id)->get();
-        return DataTables::of($therapist)
-            ->editColumn('created_at',function($therapist){
-                return $therapist->created_at->format('M d, Y');
-            })
-            ->addColumn('fullname',function ($therapist){
-                if(auth()->user()->can('view therapist'))
-                {
-                    return '<a href="'.route('spa.overview',['id' => $therapist->id]).'" title="View">'.$therapist->firstname.' '.$therapist->lastname.'</a>&nbsp;';
-                } else {
-                    return $therapist->firstname.' '.$therapist->lastname;
-                }
-            })
-            ->editColumn('date_of_birth',function($therapist){
-                return $therapist->created_at->format('F d, Y');
-            })
-            ->addColumn('mobile_number',function ($therapist){
-                return $therapist->mobile_number;
-            })
-            ->addColumn('email',function ($therapist){
-                return $therapist->email;
-            })
-            ->addColumn('gender',function ($therapist){
-                return $therapist->gender;
-            })
-            ->addColumn('action', function($therapist){
-                $action = "";
-                if(auth()->user()->can('view therapist'))
-                {
-                    $action .= '<a href="'.route('spa.overview',['id' => $therapist->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('edit therapist'))
-                {
-                    $user = $this->getUserId($therapist->mobile_number, $therapist->email);
-                    $user_id = '';
-                    if (!empty($user)) {
-                        $user_id = $user->id;
-                    }
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-therapist-btn" id="'.$therapist->id.'" data-user_id="'.$user_id.'"><i class="fa fa-edit"></i></a>&nbsp;';
-                }
-                if(auth()->user()->can('delete therapist'))
-                {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-therapist-btn" id="'.$therapist->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
-                }
-                return $action;
-            })
-            ->rawColumns(['action','fullname'])
-            ->make(true);
+        $this->middleware(['check.if.user.is.owner'])->only(['lists','therapist_profile']);
+    }
+    public function lists(TherapistService $therapistService, $spa_id)
+    {
+        return $therapistService->all_therapist_thru_spa(Therapist::where('spa_id', $spa_id)->get());
     }
 
     private function custom_offer_type_validation($request): string
@@ -185,9 +141,9 @@ class TherapistController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(TherapistService $therapistService, $id)
     {
-        return response()->json(['therapist' => Therapist::findOrFail($id)]);
+        return response()->json(['therapist' => $therapistService->get_therapist_by_id($id)]);
     }
 
     public function update(Request $request, $id)
@@ -332,16 +288,6 @@ class TherapistController extends Controller
         return view('Therapist.overview',compact('spa', 'owners', 'roles'));
     }
 
-    public function getUserId($mobile, $email)
-    {
-        $user = User::where([
-            'mobile_number' => $mobile,
-            'email' => $email,
-        ])->first();
-
-        return $user;
-    }
-
     public function saveUser($data)
     {
         $roleName = 'therapist';
@@ -408,5 +354,16 @@ class TherapistController extends Controller
         }
 
         return $status;
+    }
+
+    public function therapist_profile(TherapistService $therapistService, $therapist_id)
+    {
+        return view('Owner.therapist.index')
+            ->with([
+                'title' => 'Therapist Profile',
+                'therapist' => $therapist = $therapistService->get_therapist_by_id($therapist_id),
+                'owner' => $therapist->spa->owner->user,
+                'spa' => $therapist->spa
+            ]);
     }
 }

@@ -13,9 +13,9 @@ class PermissionTherapistSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'add therapist']);
-        Permission::create(['name' => 'view therapist']);
-        Permission::create(['name' => 'edit therapist']);
-        Permission::create(['name' => 'delete therapist']);
+//        Permission::create(['name' => 'add therapist']);
+//        Permission::create(['name' => 'view therapist']);
+//        Permission::create(['name' => 'edit therapist']);
+//        Permission::create(['name' => 'delete therapist']);
     }
 }
