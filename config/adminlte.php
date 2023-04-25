@@ -366,6 +366,11 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-store',
         ],
+        [
+            'text' => 'Payroll',
+            'route'  => 'payroll.index',
+            'icon' => 'fas fa-fw fa-store',
+        ],
 //        [
 //            'text'    => 'multilevel',
 //            'icon'    => 'fas fa-fw fa-share',
@@ -564,6 +569,7 @@ return [
                     'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js',
                 ],
             ],
+
         ],
         'DatePicker' => [
             'active' => true,
