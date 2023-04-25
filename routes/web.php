@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/role/{id}',[\App\Http\Controllers\RoleController::class,'update'])->name('role.update');
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
 
+    Route::resource('payroll',\App\Http\Controllers\PayrollController::class);
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');

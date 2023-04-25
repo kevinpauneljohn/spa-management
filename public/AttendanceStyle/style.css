@@ -1,0 +1,49 @@
+#table-wrapper {
+  height: 400px; /* set a fixed height for the table wrapper */
+  overflow-y: auto;
+}
+
+#first, #second {
+  display: flex !important;
+  margin-top: 15px;
+}
+
+@media (max-width: 1304px) {
+  #first {
+    display: block !important;
+  }
+  #second {
+    display: block !important;
+  }
+  #generate {
+    position: relative;
+    top: 50px !important;
+  }
+}
+@media (max-width: 1045px) {
+  .gen {
+    position: relative;
+    right: 40px;
+    top: 5px;
+  }
+}
+@media (max-width: 713px) {
+  .third {
+    position: relative;
+    bottom: 36px;
+  }
+}
+@media (max-width: 543px) {
+  .selectionTop {
+    display: block !important;
+  }
+  .third {
+    position: relative;
+    right: 36px;
+  }
+}
+#generate {
+  position: relative;
+  top: 15px;
+  left: 10%;
+}/*# sourceMappingURL=style.css.map */
