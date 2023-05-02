@@ -103,7 +103,10 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
     Route::get('/roles',[\App\Http\Controllers\RoleController::class,'getRoleList'])->name('role.lists');
 
-    Route::resource('payroll',\App\Http\Controllers\PayrollController::class);
+    Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index'); 
+    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date'); 
+    Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
+    // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
