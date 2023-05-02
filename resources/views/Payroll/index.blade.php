@@ -82,7 +82,7 @@
                 <table class="table-striped w-100" id="table-id">
                     <thead>
                       <tr>
-                        <th id="changeabol" scope="col">Therapist</th>
+                        <th id="changeabol" scope="col">Name</th>
                         <th scope="col">Total Sales</th>
                         <th scope="col">Total Commision</th>
                         <th scope="col">View Summary</th>
@@ -109,7 +109,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
 <script>
 $(function() {
     $('input[name="daterange"]').daterangepicker({
