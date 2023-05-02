@@ -586,6 +586,26 @@ return [
                 ],
             ],
         ],
+        'Moment' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+            ],
+        ],
+        'BootstrapBundle' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*

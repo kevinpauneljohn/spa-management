@@ -31,4 +31,9 @@ class Therapist extends Model
     {
         return $this->belongsTo(Spa::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(transaction::class, 'therapist_1');
+    }
 }
