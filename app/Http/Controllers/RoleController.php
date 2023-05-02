@@ -10,6 +10,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+
+    }
+
     public function index()
     {
         return view('Role.index')->with([
@@ -107,5 +112,17 @@ class RoleController extends Controller
             return response()->json(['status' => true, 'message' => 'Roles has been successfully deleted!']);
         }
         return response()->json(['status' => false, 'message' => 'Roles could not be deleted!']);
+    }
+
+    public function getRoleList()
+    {
+        if(auth()->user()->hasRole(['owner'])) {
+            $role_exclude = ['super admin', 'owner'];
+            $role = Role::whereNotIn('name', $role_exclude)->orderBy('name' , 'ASC')->pluck('id', 'name');
+        } else {
+            $role = Role::pluck('id, name');
+        }
+
+        return $role;
     }
 }

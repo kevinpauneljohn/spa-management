@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Service extends Model
 {
-    use HasFactory, UsesUuid;
+    use HasFactory, UsesUuid, SoftDeletes;
 
     protected $fillable = [
         'spa_id',
@@ -18,4 +20,9 @@ class Service extends Model
         'category',
         'price_per_plus_time'
     ];
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

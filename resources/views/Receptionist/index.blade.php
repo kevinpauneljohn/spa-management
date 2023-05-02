@@ -35,6 +35,14 @@
         .gj-modal .gj-picker-bootstrap {
             padding: 15px !important;
         }
+        .progress span {
+            position: absolute;
+            text-align:center;
+            display: block;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 8px;
+        }
     </style>
 
     <div class="card">
@@ -45,41 +53,38 @@
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box">
-                                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-calendar-check"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">CPU Traffic</span>
-                                        <span class="info-box-number">
-                                        10
-                                        <small>%</small>
-                                        </span>
+                                        <span class="info-box-text">Daily Appointment</span>
+                                        <span class="info-box-number dailyAppointment"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-calendar-check"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Likes</span>
-                                        <span class="info-box-number">41,410</span>
+                                        <span class="info-box-text">Monthly Appointment</span>
+                                        <span class="info-box-number monthlyAppointment"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="clearfix hidden-md-up"></div>
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Sales</span>
-                                        <span class="info-box-number">760</span>
+                                        <span class="info-box-text">New Client</span>
+                                        <span class="info-box-number newClients"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">New Members</span>
-                                        <span class="info-box-number">2,000</span>
+                                        <span class="info-box-text">Daily Sales</span>
+                                        <span class="info-box-number dailySales"></span>
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +94,7 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">
-                                            <button class="btn btn-block hidden" id="addNewSales">
+                                            <button class="btn btn-block btn-outline-info btn" id="addNewSales">
                                                 <i class="fas fa-shopping-cart"></i> 
                                                 <span class="badge badge-danger text-default countSelected"></span>
                                             </button>
@@ -102,13 +107,19 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link salesView" href="#sales-data" data-toggle="tab">
-                                                        View
+                                                        Guest
                                                         <span class="badge badge-danger text-default viewBadgeCount"></span>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
+                                                    <a class="nav-link transactionView" href="#transactions-data" data-toggle="tab">
+                                                        Transactions
+                                                    </a>
+                                                </li>
+                                                
+                                                <li class="nav-item hidden">
                                                     <a class="nav-link" href="#reservation-data" data-toggle="tab">
-                                                        Reservations
+                                                        Upcoming
                                                         <span class="badge badge-danger text-default"></span>
                                                     </a>
                                                 </li>
@@ -127,7 +138,7 @@
                                                 </div>
                                             </div>
                                             <div class="tab-pane" id="sales-data" style="position: relative; height: auto;">
-                                                <table id="transaction-lists" class="table table-striped table-valign-middle" style="width:100%;">
+                                                <table id="sales-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
                                                     <thead>
                                                         <tr>
                                                             <th>Client</th>
@@ -146,6 +157,23 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
+                                                <table id="transaction-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Spa</th>
+                                                            <th>Status</th>
+                                                            <th>Amount</th>
+                                                            <th>Date</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
                                             <div class="tab-pane" id="reservation-data" style="position: relative;height: auto;">
                                                 <div class="card-header border-transparent">
                                                     <h3 class="card-title">{{date('F, Y')}} Reservations</h3>
@@ -232,7 +260,7 @@
         <div class="modal fade" id="add-new-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="sales-form" class="form-submit">
                 @csrf
-                <div class="modal-dialog modal-md changeModalSize">
+                <div class="modal-dialog modal-lg changeModalSize">
                     <div class="modal-content">
                         <div class="modal-header bg-primary">
                             <h4 class="modal-title">Create new Sales</h4>
@@ -393,16 +421,241 @@
             </form>
         </div>
     @endcan
+
+    @can('view sales')
+        <div class="modal fade" id="view-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="sales-view-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title viewRoomNumber"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_full_name">Full Name : </label>
+                                        <p class="viewFullname"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_date_of_birth">Date of Birth : </label>
+                                        <p class="viewDateOfBirth"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_mobile_number">Mobile Number : </label>
+                                        <p class="viewMobileNumber"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="view_email">Email Address : </label>
+                                        <p class="viewEmail"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="view_email">Address : </label>
+                                        <p class="viewAddress"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_service">Services : </label>
+                                        <p class="viewService"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_therapist_1">Masseur 1 : </label>
+                                        <p class="viewTherapist1"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_therapist_2">Masseur 2 : </label>
+                                        <p class="viewTherapist2"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_start_time">Start Time : </label>
+                                        <p class="viewStartTime"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_end_time">End Time : </label>
+                                        <p class="viewEndTime"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_remaining_time">Remaining : </label>
+                                        <p class="viewRemainingTime"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="view_plus_time">Plus Time : </label>
+                                        <p class="viewPlusTime"></p>
+                                    </div>
+                                    <div class="col-md-6 border border-danger float-right">
+                                        <h2 class="mb-0 text-center totalAmountViewFormatted"></h2>
+                                        <h4 class="mt-0 text-center">TOTAL</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endcan
+
+    @can('view invoices')
+        <div class="modal fade" id="view-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="invoice-view-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title viewNameInvoice"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <!-- <div class="callout callout-info">
+                                        <h5><i class="fas fa-info"></i> Note:</h5>
+                                        This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                                        </div> -->
+
+                                        <div class="invoice p-3 mb-3">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <h4>
+                                                        <i class="fas fa-globe"></i> <span class="spaName"></span>
+                                                        <small class="float-right"><b>Date : </b>{{date('F d, Y')}}</small>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div class="row invoice-info">
+                                                <div class="col-sm-6 invoice-col">
+                                                    From
+                                                    <address>
+                                                        <strong><span class="spaName"></span></strong><br>
+                                                        <span class="spaAddress"></span><br>
+                                                        <span class="spaMobile"></span><br>
+                                                        <span class="spaEmail"></span>
+                                                    </address>
+                                                </div>
+                                                <!-- <div class="col-sm-4 invoice-col">
+                                                    To
+                                                    <address>
+                                                        <strong><span class="clientName"></span></strong><br>
+                                                        <span class="clientAddress"></span><br>
+                                                        <span class="clientMobile"></span><br>
+                                                        <span class="clientEmail"></span>
+                                                    </address>
+                                                </div> -->
+                                                <div class="col-sm-6 invoice-col">
+                                                    <span class="salesInvoiceNumber float-right"></span>
+                                                    <!-- <br><br>
+                                                    <b>Order ID:</b> <span class="salesId"></span><br>
+                                                    <b>Payment Due:</b> <span class="transactionEndDate"></span><br>
+                                                    <b>Account:</b> -->
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 table-responsive">
+                                                    <table id="invoiceTable" class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Client</th>
+                                                                <th>Service</th>
+                                                                <th>Room #</th>
+                                                                <th>Start Time</th>
+                                                                <th>End Time #</th>
+                                                                <th>Subtotal</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p class="lead">Payment Methods:</p>
+                                                    Cash
+
+                                                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                                                        Sample Notes Here.....
+                                                    </p>
+                                                </div>
+                                                <div class="col-6">
+                                                    <!-- <p class="lead">Amount Due <span class="transactionEndDate"></span></p> -->
+
+                                                    <div class="table-responsive">
+                                                        <table id="summaryTotal" class="table">
+                             
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="row no-print">
+                                                <div class="col-12">
+                                                    <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                                                    <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
+                                                        Payment
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                                        <i class="fas fa-download"></i> Generate PDF
+                                                    </button>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endcan
 @stop
 
 @section('css')
-
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 @stop
 
 @section('js')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="{{asset('js/receptionist.js')}}"></script>
 <script>
     $(function() {
+        $('#calendar').datepicker({
+
+        });
+
         $('.dateTimePicker').datetimepicker({
             footer: true, modal: true,
             // datepicker: {
@@ -412,15 +665,13 @@
             //     }
             // }
         });
-        
+
         loadRoom();
         getTotalSales($('#spa_id_val').val());
         getMasseurAvailability($('#spa_id_val').val());
         getLatestReservation($('#spa_id_val').val());
-        getReservedTherapist($('#spa_id_val').val());
-
-        $('.select-client-type').select2();   
-        
+        loadData($('#spa_id_val').val());
+        $('.select-client-type').select2();         
     });
 </script>
 @stop

@@ -335,10 +335,10 @@ return [
             'can' => 'view owner'
         ],
         [
-            'text' => 'User Management',
-            'route'  => 'owners.index',
+            'text' => 'Staff Management',
+            'route'  => 'owner.my.staffs',
             'icon' => 'fas fa-fw fa-user-plus',
-            'can' => 'view owner'
+            'can' => 'view staff'
         ],
         [
             'text' => 'Spa Management',
@@ -586,6 +586,21 @@ return [
                 ],
             ],
         ],
+        'BootstrapDatePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js',
+                ],
+            ],
+        ]
     ],
 
     /*

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Service;
+use App\Models\Spa;
 use Yajra\DataTables\Facades\DataTables;
 
 class SpaService
@@ -82,5 +83,11 @@ class SpaService
             })
             ->rawColumns(['action','name'])
             ->make(true);
+    }
+
+    public function get_spa_lists($id)
+    {
+        $spa = Spa::where('owner_id', $id)->orderBy('name' , 'ASC')->pluck('id', 'name');
+        return $spa;
     }
 }
