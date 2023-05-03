@@ -26,12 +26,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/receptionist-plus-range',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'plusTime'])->name('receptionist.plus.range');
     Route::get('/receptionist-room-range/{num}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'roomRange'])->name('receptionist.room.range');
     Route::get('/receptionist-therapist/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'getTherapist'])->name('receptionist.therapist');
-    Route::get('/receptionist-reserved/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'getReservedTherapist'])->name('receptionist.reserved');
     Route::post('/create/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'store'])->name('receptionist.create');
     Route::put('/update/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'update'])->name('receptionist.update');
 
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
+    Route::get('/client-filter/{id}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
+
+    Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
 
     Route::get('/transaction/{id}',[\App\Http\Controllers\TransactionController::class,'show'])->name('transaction.show');
     Route::get('/transaction-list/{id}',[\App\Http\Controllers\TransactionController::class,'lists'])->name('transaction.lists');
@@ -39,6 +41,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/transaction-masseur-availability/{id}',[\App\Http\Controllers\TransactionController::class,'getTherapistAvailability'])->name('transaction.availability');
     Route::get('/transaction-latest-reservation/{id}',[\App\Http\Controllers\TransactionController::class,'getLatestReservation'])->name('transaction.latest.reservation');
     Route::get('/transaction-room-availability/{id}',[\App\Http\Controllers\TransactionController::class,'getRoomAvailability'])->name('transaction.room.availability');
+    Route::get('/transaction-data/{id}',[\App\Http\Controllers\TransactionController::class,'getData'])->name('transaction.data');
+    Route::get('/transaction-invoice/{id}',[\App\Http\Controllers\TransactionController::class,'getInvoice'])->name('transaction.invoice');
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
@@ -53,9 +57,17 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/spa/{id}',[\App\Http\Controllers\SpaController::class,'show'])->name('spa.show');
     Route::put('/spa/{id}',[\App\Http\Controllers\SpaController::class,'update'])->name('spa.update');
     Route::delete('/spa/{id}',[\App\Http\Controllers\SpaController::class,'destroy'])->name('spa.delete');
+    Route::get('/spas',[\App\Http\Controllers\SpaController::class,'getSpaList'])->name('spa.list');
 
     Route::get('my-spas',[\App\Http\Controllers\SpaController::class,'my_spas'])->name('owner.my.spas');
     Route::get('my-spa-lists',[\App\Http\Controllers\SpaController::class,'get_owner_spas'])->name('owner.list.spas');
+
+    Route::get('my-staff',[\App\Http\Controllers\MyStaffController::class,'my_staffs'])->name('owner.my.staffs');
+    Route::get('my-staff-lists',[\App\Http\Controllers\MyStaffController::class,'get_owner_staffs'])->name('owner.list.staffs');
+    Route::post('my-staff-create',[\App\Http\Controllers\MyStaffController::class,'store'])->name('owner.staff.create');
+    Route::get('my-staff-show/{id}',[\App\Http\Controllers\MyStaffController::class,'show'])->name('owner.staff.show');
+    Route::put('my-staff-update/{id}',[\App\Http\Controllers\MyStaffController::class,'update'])->name('owner.staff.update');
+    Route::delete('my-staff-delete/{id}',[\App\Http\Controllers\MyStaffController::class,'destroy'])->name('owner.staff.delete');
 
     Route::get('/therapist-list/{id}',[\App\Http\Controllers\TherapistController::class,'lists'])->name('therapist.lists');
     Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');
@@ -89,6 +101,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/role/{id}',[\App\Http\Controllers\RoleController::class,'show'])->name('role.show');
     Route::put('/role/{id}',[\App\Http\Controllers\RoleController::class,'update'])->name('role.update');
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
+    Route::get('/roles',[\App\Http\Controllers\RoleController::class,'getRoleList'])->name('role.lists');
 
     Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index'); 
     Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date'); 

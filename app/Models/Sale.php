@@ -16,4 +16,9 @@ class Sale extends Model
         'payment_status',
         'user_id'
     ];
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
 }

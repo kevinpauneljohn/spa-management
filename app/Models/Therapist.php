@@ -13,12 +13,7 @@ class Therapist extends Model
 
     protected $fillable = [
         'spa_id',
-        'firstname',
-        'middlename',
-        'lastname',
-        'date_of_birth',
-        'mobile_number',
-        'email',
+        'user_id',
         'gender',
         'certificate',
         'commission_percentage',
@@ -32,6 +27,9 @@ class Therapist extends Model
         return $this->belongsTo(Spa::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     public function transactions()
     {
         return $this->hasMany(transaction::class, 'therapist_1');
