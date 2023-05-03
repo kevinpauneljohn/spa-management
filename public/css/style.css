@@ -14,3 +14,13 @@
 #description{
     min-height: 250px;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: #3d9970;
+}
+
+.personal-information .fas,.personal-information .far, .personal-information .fa{
+    color: #3d9970;
+}
+

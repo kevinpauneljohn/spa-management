@@ -15,7 +15,7 @@ class SpaService
             })
             ->addColumn('name',function ($spa){
 
-                return '<a href="'.route('spa.show',['id' => $spa->id]).'">'.ucwords($spa->name).'</a>';
+                return '<a href="'.route('spa.show',['spa' => $spa->id]).'">'.ucwords($spa->name).'</a>';
             })
             ->addColumn('address',function ($spa){
                 return $spa->address;
@@ -24,7 +24,7 @@ class SpaService
                 $action = "";
                 if(auth()->user()->can('view spa'))
                 {
-                    $action .= '<a href="'.route('spa.show',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit spa'))
                 {

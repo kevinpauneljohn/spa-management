@@ -18,8 +18,13 @@ class RoleSeeder extends Seeder
         $superAdmin = Role::create(['name' => 'super admin']);
         $admin = Role::create(['name' => 'admin']);
         $owner = Role::create(['name' => 'owner']);
-        $receptionist = Role::create(['name' => 'receptionist']);
+        $receptionist = Role::create(['name' => 'front desk']);
         $manager = Role::create(['name' => 'manager']);
+
+        Permission::create(['name' => 'add owner']);
+        Permission::create(['name' => 'view owner']);
+        Permission::create(['name' => 'edit owner']);
+        Permission::create(['name' => 'delete owner']);
 
         Permission::create(['name' => 'add spa'])->assignRole($owner);
         Permission::create(['name' => 'view spa'])->assignRole($owner);
