@@ -53,11 +53,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/spa-list/{id}',[\App\Http\Controllers\SpaController::class,'lists'])->name('spa.lists');
     Route::get('/spa/overview/{id}',[\App\Http\Controllers\SpaController::class,'overview'])->name('spa.overview');
-    Route::post('/spa',[\App\Http\Controllers\SpaController::class,'store'])->name('spa.store');
-    Route::get('/spa/{id}',[\App\Http\Controllers\SpaController::class,'show'])->name('spa.show');
-    Route::put('/spa/{id}',[\App\Http\Controllers\SpaController::class,'update'])->name('spa.update');
-    Route::delete('/spa/{id}',[\App\Http\Controllers\SpaController::class,'destroy'])->name('spa.delete');
-    Route::get('/spas',[\App\Http\Controllers\SpaController::class,'getSpaList'])->name('spa.list');
+
+    Route::resource('spa',\App\Http\Controllers\SpaController::class);
 
     Route::get('my-spas',[\App\Http\Controllers\SpaController::class,'my_spas'])->name('owner.my.spas');
     Route::get('my-spa-lists',[\App\Http\Controllers\SpaController::class,'get_owner_spas'])->name('owner.list.spas');
@@ -70,13 +67,10 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('my-staff-delete/{id}',[\App\Http\Controllers\MyStaffController::class,'destroy'])->name('owner.staff.delete');
 
     Route::get('/therapist-list/{id}',[\App\Http\Controllers\TherapistController::class,'lists'])->name('therapist.lists');
-    Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');
-    Route::post('/therapist',[\App\Http\Controllers\TherapistController::class,'store'])->name('therapist.store');
-    Route::get('/therapist/{id}',[\App\Http\Controllers\TherapistController::class,'show'])->name('therapist.show');
-    Route::put('/therapist/{id}',[\App\Http\Controllers\TherapistController::class,'update'])->name('therapist.update');
-    Route::delete('/therapist/{id}',[\App\Http\Controllers\TherapistController::class,'destroy'])->name('therapist.delete');
-
+//    Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');
     Route::get('/therapists-profile/{id}',[\App\Http\Controllers\TherapistController::class,'therapist_profile'])->name('therapists.profile');
+
+    Route::resource('therapists',\App\Http\Controllers\TherapistController::class);
 
     Route::get('/service-list/{id}',[\App\Http\Controllers\ServiceController::class,'lists'])->name('service.lists');
     Route::get('/service/overview/{id}',[\App\Http\Controllers\ServiceController::class,'overview'])->name('service.overview');
@@ -103,8 +97,8 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
     Route::get('/roles',[\App\Http\Controllers\RoleController::class,'getRoleList'])->name('role.lists');
 
-    Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index'); 
-    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date'); 
+    Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date');
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
 });

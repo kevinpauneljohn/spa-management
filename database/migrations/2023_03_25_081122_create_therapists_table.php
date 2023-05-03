@@ -16,12 +16,7 @@ class CreateTherapistsTable extends Migration
         Schema::create('therapists', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('spa_id');
-            $table->string('firstname');
-            $table->string('middlename')->nullable();
-            $table->string('lastname');
-            $table->string('date_of_birth')->nullable();
-            $table->string('mobile_number');
-            $table->string('email')->nullable();
+            $table->string('user_id');
             $table->string('gender');
             $table->string('certificate')->nullable();
             $table->string('commission_percentage')->nullable();
@@ -31,6 +26,7 @@ class CreateTherapistsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('spa_id')->references('id')->on('spas');
         });
     }

@@ -27,11 +27,20 @@ class Therapist extends Model
         return $this->belongsTo(Spa::class);
     }
 
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class,'therapist_1');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
-    public function transactions()
-    {
-        return $this->hasMany(transaction::class, 'therapist_1');
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->user->firstname} {$this->user->lastname}";
+    }
+
 }
