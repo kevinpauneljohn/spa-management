@@ -81,4 +81,9 @@ class SpaController extends Controller
     {
         return view('Owner.spa.index');
     }
+
+    public function getSpaList(SpaService $spaService)
+    {
+        return $spaService->get_spa_lists(auth()->user()->owner->id);
+    }
 }

@@ -41,4 +41,13 @@ class Transaction extends Model
     {
         return $this->belongsTo(Therapist::class,'therapist_1');
     }
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
 }

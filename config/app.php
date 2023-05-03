@@ -120,6 +120,8 @@ return [
     */
 
     'key' => env('APP_KEY'),
+    'offer_type' => explode(',', env('OFFER_TYPE')),
+    'certificate_type' => explode(',', env('CERTIFICATE_TYPE')),
 
     'cipher' => 'AES-256-CBC',
 

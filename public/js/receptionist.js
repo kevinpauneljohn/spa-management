@@ -59,6 +59,7 @@ function loadRoom()
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         success: function(result){
+            $('.countSelected').text(0);
             if (result.length > 3) {
                 $('#room-availability').addClass('overflow');
             } else {
@@ -66,7 +67,7 @@ function loadRoom()
             }
 
             $.each(result , function(index, val) { 
-                var roomLink = '<a href="#" data-id="'+val.room_id+'" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>';
+                var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
                 var divAvailable = '';
                 var divPointer = '';
                 var isAvailable = 'no';
@@ -82,11 +83,12 @@ function loadRoom()
                 var fullName = '';
                 var startTime = '0';
                 var endTime = '0';
+                var roomTime = 0;
                 if (val.data != '') {
                     fullName = val.data.client.firstname+' '+val.data.client.lastname;
                     startTime = val.data.start_time;
                     endTime = val.data.end_time;
-
+                    roomTime = val.data.start_and_end_time;
                     UnAvailableRoom.push(val.room_id);
                 }
 
@@ -95,9 +97,9 @@ function loadRoom()
                     displayRoomList += '<div class="parentAvailDiv'+val.room_id+' small-box '+val.is_color_set+'">';
                         displayRoomList += '<div class="inner">';
                             displayRoomList += '<h4>Room #: '+val.room_id+'</h4>';
-                            displayRoomList += '<h5>Name: '+fullName+'</h5>';
-                            displayRoomList += '<p>Start Time: <b>'+startTime+'</b></p>';
-                            displayRoomList += '<p>End TIme: <b>'+endTime+'</b></p>';
+                            displayRoomList += '<h6>Name: <b>'+fullName+'</b></h6>';
+                            displayRoomList += '<h6>Time: <b>'+roomTime+'</b></h6>';
+                            displayRoomList += '<h6>Remaining Time: <b><span id="countdown'+val.room_id+'"></span></b></h6>';
                         displayRoomList += '</div>';
                         displayRoomList += '<div class="icon">';
                             displayRoomList += backgroundIcon;
@@ -107,20 +109,11 @@ function loadRoom()
                     displayRoomList += '</div>';
                 displayRoomList += '</div>';
                 $( displayRoomList ).appendTo(".displayRoomList");
-            });
-        }
-    });
-}
 
-function getReservedTherapist(spa_id)
-{
-    $.ajax({
-        'url' : '/receptionist-reserved/'+spa_id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            console.log(result);
+                if (endTime != 0) {
+                    countdown(val.room_id, val.data.start_time, val.data.end_time);
+                }
+            });
         }
     });
 }
@@ -161,17 +154,23 @@ function getMasseurAvailability(spa_id)
         success: function(result){
             $('.availableMasseur').html('');
             $.each(result, function (key, value) {
-                var availableMasseur = '<span class="masseurName">'+value.firstname+' '+value.lastname+'</span>';
-                availableMasseur += '<span class="float-right"><b>160</b>/200</span>';
-                availableMasseur += '<div class="progress progress-sm">';
-                    availableMasseur += '<div class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"></div>';
+                var names;
+                if (value.data != '') {
+                    UnAvailableTherapist.push(value.id);
+                    countdownTherapist(value.id, value.data.start_time, value.data.end_time, value.data.total_seconds);
+
+                    names = value.firstname+' '+value.lastname+' <small class="font-weight-bold text-danger">[ Room # '+value.data.room_id+' ]</small>';
+                } else {
+                    names = value.firstname+' '+value.lastname;
+                }
+
+                var availableMasseur = '<span class="masseurName">'+names+'</span>';
+                availableMasseur += '<div class="progress progress-xl">';
+                    availableMasseur += '<div id="progressBarCalc'+value.id+'" class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>';
+                    availableMasseur += '<span id="countdownTherapistPercentage'+value.id+'">Available</span>';
                 availableMasseur += '</div>';
 
                 $( availableMasseur ).appendTo(".availableMasseur");
-
-                if (value.data != '') {
-                    UnAvailableTherapist.push(value.id);
-                }
             });
         }
     });
@@ -211,19 +210,17 @@ $(document).on('click', '.divClickable', function () {
     }            
 
     if (myVals.length > 0) {
-        $('#addNewSales').removeClass('hidden');
-        $('#addNewSales').addClass('btn-outline-info');
         $('#addNewSales').addClass('pointer');
         myVals.sort(function(a, b) {
             return a - b;
         });
+        $('.countSelected').text(myVals.length);
     } else {
-        $('#addNewSales').addClass('hidden');
-        $('#addNewSales').removeClass('btn-outline-info');
         $('#addNewSales').removeClass('pointer');
+        $('.countSelected').text(0);
     }
 
-    $('.countSelected').text(myVals.length);
+    
 });
 
 $(document).on('click', '.salesView', function () {
@@ -248,7 +245,7 @@ function getTotalSales(spa_id)
 
 function loadSales(spa_id)
 {
-    $('#transaction-lists').DataTable({
+    $('#sales-data-lists').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
@@ -282,14 +279,7 @@ $('.process-sales-btn').on('click', function() {
         array = [];
         var total_amount = 0;
         $.each(data, function (key, value) {
-            var value_client_type = $('#client_type'+value).find(":selected").val();
-            if (value_client_type.length < 1) {
-                $('#error-client_type'+value).removeClass('hidden');
-                $('#error-client_type'+value).text('Client Type field is required!');
-            } else {
-                $('#error-client_type'+value).addClass('hidden');
-                $('#error-client_type'+value).text('');
-            }
+            var value_client_type = $('#client_type'+value).val();
 
             var value_first_name = $('#first_name'+value).val();
             if (value_first_name.length < 1) {
@@ -552,20 +542,20 @@ $('.add-sales-btn').on('click', function() {
                 },success: function (result) {
                     if(result.status) {
                         $('#sales-form').trigger('reset');
-                        $('.countSelected').text('');
-                        $('#addNewSales').addClass('hidden');
+                        $('.countSelected').text(0);
                         $('#room_ids_val').val('');
                         $('#isValid').val(false);
                         $('.process-sales-btn').removeClass('hidden');
                         $('.add-sales-btn').addClass('hidden');
+                        $('.summaryTabLink').addClass('hidden');
                         myVals = [];
-                        $('.countSelected').text('');
 
                         loadRoom();
                         getTotalSales(spa_id);
                         getMasseurAvailability(spa_id);
                         getLatestReservation(spa_id);
-        
+                        loadData(spa_id);
+
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-sales-modal').modal('hide');
                     } else {
@@ -657,6 +647,7 @@ $(document).on('click', '.edit-sales-btn', function () {
                 $(".select-edit-plus_time").select2().val(result.plus_time).trigger("change");
                 $('#edit_plus_time_price').val(0);
             }
+
             $(".select-edit-room").select2().val(result.room_id).trigger("change");
 
             $.each(UnAvailableRoom, function (key, value) {
@@ -722,7 +713,6 @@ $('.update-sales-btn').on('click', function() {
                 beforeSend: function () {
                     $('#sales-update-form').find('.update-sales-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
-                    console.log(result);
                     if(result.status) {
                         $('#sales-update-form').trigger('reset');
                         loadRoom();
@@ -730,6 +720,7 @@ $('.update-sales-btn').on('click', function() {
                         getTotalSales(spa_id);
                         getMasseurAvailability(spa_id);
                         getLatestReservation(spa_id);
+                        loadData(spa_id);
         
                         swal.fire("Done!", result.message, "success");
                         $('#update-sales-modal').modal('hide');
@@ -751,9 +742,9 @@ $('.update-sales-btn').on('click', function() {
 });
 
 $('#addNewSales').on('click', function() {
-    $('#add-new-sales-modal').modal('show');
     var spa_id = $('#spa_id_val').val();
     if (myVals.length > 0) {
+        $('#add-new-sales-modal').modal('show');
         $('.dataTabs').html('');
         $('.tabFormReservation').html('');
         $.each(myVals, function (key, value) {
@@ -771,31 +762,34 @@ $('#addNewSales').on('click', function() {
                 content += '<div class="form-group">';
                     content += '<div class="row">';
                         content += '<div class="col-md-12">';
-                            content += '<label for="client_type'+value+'">Client Type</label><span class="isRequired">*</span>';
-                            content += '<select data-id="'+value+'" name="client_type'+value+'" id="client_type'+value+'" class="form-control select-client-type" style="width:100%;">';
-                                content += '<option value="" disabled selected>-- Choose Client type --</option>';
-                                content += '<option value="new">New</option>';
-                                content += '<option value="recurring">Recurring</option>';
-                            content += '</select>';
-                            content += '<p class="text-danger hidden" id="error-client_type'+value+'"></p>';
+                            content += '<label for="filter_client'+value+'">Client:</label><span class="isRequired">*</span>';
+                            content += '<input type="text" class="form-control filterClient clientFilter'+value+'" id="'+value+'">';
+                            content += '<div id="suggesstion-box'+value+'" class="list-group suggesstion-box hidden"></div>';
+                            // content += '<select data-id="'+value+'" name="client_type'+value+'" id="client_type'+value+'" class="form-control select-client-type" style="width:100%;">';
+                            
+                            //     content += '<option value="" disabled selected>-- Choose Client type --</option>';
+                            //     content += '<option value="new">New</option>';
+                            //     content += '<option value="recurring">Recurring</option>';
+                            // content += '</select>';
                             content += '<input type="hidden" class="form-control" id="formId" value="'+value+'">';
                             content += '<input type="hidden" class="form-control" id="masseurDataCurSelected'+value+'">';
                             content += '<input type="hidden" class="form-control" id="masseurDataPrevSelected'+value+'">';
                             content += '<input type="hidden" class="form-control" id="masseurMultipleDataCurSelected'+value+'">';
                             content += '<input type="hidden" class="form-control" id="masseurMultipleDataPrevSelected'+value+'">';
-                        content += '</div>';
-                    content += '</div>';
-                content += '</div>';
-
-                content += '<div class="form-group hidden clientSearch'+value+'">';
-                    content += '<div class="row">';
-                        content += '<div class="col-md-12">';
-                            content += '<label for="client_type'+value+'">Search Client Name</label><span class="isRequired">*</span>';
-                            content += '<select data-search-id="'+value+'" name="search'+value+'" id="search'+value+'" class="form-control select-client-name" style="width:100%;"></select>';
                             content += '<input type="hidden" class="form-control" id="existing_user_id_'+value+'">';
                         content += '</div>';
                     content += '</div>';
                 content += '</div>';
+
+                // content += '<div class="form-group hidden clientSearch'+value+'">';
+                //     content += '<div class="row">';
+                //         content += '<div class="col-md-12">';
+                //             content += '<label for="client_type'+value+'">Search Client Name</label><span class="isRequired">*</span>';
+                //             content += '<select data-search-id="'+value+'" name="search'+value+'" id="search'+value+'" class="form-control select-client-name" style="width:100%;"></select>';
+                //             content += '<input type="hidden" class="form-control" id="existing_user_id_'+value+'">';
+                //         content += '</div>';
+                //     content += '</div>';
+                // content += '</div>';
 
                 content += '<div class="form-group hidden clientInfo'+value+'">';
                     content += '<div class="row">';
@@ -837,7 +831,11 @@ $('#addNewSales').on('click', function() {
 
                 content += '<div class="form-group hidden clientAddress'+value+'">';
                     content += '<div class="row">';
-                        content += '<div class="col-md-12">';
+                        content += '<div class="col-md-4">';
+                            content += '<label for="client_type'+value+'">Client Type</label><span class="isRequired">*</span>';
+                            content += '<input type="text" data-id="'+value+'" name="client_type'+value+'" id="client_type'+value+'" class="form-control select-client-type">';
+                        content += '</div>';
+                        content += '<div class="col-md-8">';
                             content += '<label for="address'+value+'">Address</label>';
                             content += '<input type="text" name="address'+value+'" id="address'+value+'" class="form-control">';
                         content += '</div>';
@@ -914,6 +912,8 @@ $('#addNewSales').on('click', function() {
             summaryContent += '</div>';
         summaryContent += '</div>';
         $( summaryContent ).appendTo(".tabFormReservation");
+    } else {
+        alert('Please select at least 1 available room.');
     }
 
     getTherapists(spa_id, 'new');
@@ -1194,99 +1194,106 @@ function getTherapists(spa_id, status)
 }
 
 $('#add-new-sales-modal').on('hidden.bs.modal', function () {
-    $('.changeModalSize').addClass('modal-md');
-    $('.changeModalSize').removeClass('modal-xl');
+    // $('.changeModalSize').addClass('modal-md');
+    // $('.changeModalSize').removeClass('modal-xl');
 });
 
-$(document).on('click', '.select-client-type', function () {
-    var id = $(this).data("id");
-    var val = $(this).find(":selected").val();
+// $(document).on('click', '.select-client-type', function () {
+//     var id = $(this).data("id");
+//     var val = $(this).find(":selected").val();
     
-    $('#first_name'+id).val('');
-    $('#middle_name'+id).val('');
-    $('#last_name'+id).val('');
-    $('#date_of_birth'+id).val('');
-    $('#mobile_number'+id).val('');
-    $('#email'+id).val('');
-    $('#address'+id).val('');
-    $('#start_time'+id).val('');
-    $('#existing_user_id_'+id).val('');
+//     $('#first_name'+id).val('');
+//     $('#middle_name'+id).val('');
+//     $('#last_name'+id).val('');
+//     $('#date_of_birth'+id).val('');
+//     $('#mobile_number'+id).val('');
+//     $('#email'+id).val('');
+//     $('#address'+id).val('');
+//     $('#start_time'+id).val('');
+//     $('#existing_user_id_'+id).val('');
     
-    if (val === 'new') { 
-        $('.clientInfo'+id).removeClass('hidden');
-        $('.clientContact'+id).removeClass('hidden');
-        $('.clientAddress'+id).removeClass('hidden');
-        $('.clientSearch'+id).addClass('hidden');
-    } else if (val === 'recurring') {
-        $('.clientSearch'+id).removeClass('hidden');
-        $('.clientInfo'+id).removeClass('hidden');
-        $('.clientContact'+id).removeClass('hidden');
-        $('.clientAddress'+id).removeClass('hidden');
-        clientList(id);
-    }
+//     if (val === 'new') { 
+//         $('.clientInfo'+id).removeClass('hidden');
+//         $('.clientContact'+id).removeClass('hidden');
+//         $('.clientAddress'+id).removeClass('hidden');
+//         $('.clientSearch'+id).addClass('hidden');
+        
+//         $('#first_name'+id).prop( "disabled", false );
+//         $('#middle_name'+id).prop( "disabled", false );
+//         $('#last_name'+id).prop( "disabled", false );
+//     } else if (val === 'recurring') {
+//         $('.clientSearch'+id).removeClass('hidden');
+//         $('.clientInfo'+id).removeClass('hidden');
+//         $('.clientContact'+id).removeClass('hidden');
+//         $('.clientAddress'+id).removeClass('hidden');
+//         clientList(id);
+//     }
 
-    if (val.length > 0) {
-        $('.clientService'+id).removeClass('hidden');
-        $('.clientTime'+id).removeClass('hidden');
-    }
+//     if (val.length > 0) {
+//         $('.clientService'+id).removeClass('hidden');
+//         $('.clientTime'+id).removeClass('hidden');
+//     }
 
-    $('.changeModalSize').removeClass('modal-md');
-    $('.changeModalSize').addClass('modal-xl');
-});
+//     // $('.changeModalSize').removeClass('modal-md');
+//     // $('.changeModalSize').addClass('modal-xl');
+// });
 
-function clientList(id)
-{
-    var room_id = id;
-    $.ajax({
-        'url' : '/client-list',
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            if (result != '') {
-                $('#search'+id).html('');
-                $('#search'+id).append('<option></option>');
-                $('#search'+id).select2({
-                    placeholder: "Choose Client Name",
-                    allowClear: true
-                }); 
+// function clientList(id)
+// {
+//     var room_id = id;
+//     $.ajax({
+//         'url' : '/client-list',
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             if (result != '') {
+//                 $('#search'+id).html('');
+//                 $('#search'+id).append('<option></option>');
+//                 $('#search'+id).select2({
+//                     placeholder: "Choose Client Name",
+//                     allowClear: true
+//                 }); 
 
-                $.each(result , function(index, val) { 
-                    $('#search'+id).append('<option value="'+val+'">'+index+'</option>');
-                });
-            } else {
-                $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
-            }
-        }
-    });
-}
+//                 $.each(result , function(index, val) { 
+//                     $('#search'+id).append('<option value="'+val+'">'+index+'</option>');
+//                 });
+//             } else {
+//                 $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
+//             }
+//         }
+//     });
+// }
 
-$(document).on('change', '.select-client-name', function () {
-    var id = $(this).data("search-id");
-    var selected = $(this).select2('data');
-    var value = selected[0].id;
+// $(document).on('change', '.select-client-name', function () {
+//     var id = $(this).data("search-id");
+//     var selected = $(this).select2('data');
+//     var value = selected[0].id;
 
-    $.ajax({
-        'url' : '/client/'+value,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            if (result.client != '') {
-                $('#existing_user_id_'+id).val(result.client.id);
-                $('#first_name'+id).val(result.client.firstname);
-                $('#middle_name'+id).val(result.client.firstname);
-                $('#last_name'+id).val(result.client.lastname);
-                $('#date_of_birth'+id).val(result.client.date_of_birth);
-                $('#mobile_number'+id).val(result.client.mobile_number);
-                $('#email'+id).val(result.client.email);
-                $('#address'+id).val(result.client.address);
-            } else {
-                $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
-            }
-        }
-    });
-});
+//     $.ajax({
+//         'url' : '/client/'+value,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             if (result.client != '') {
+//                 $('#existing_user_id_'+id).val(result.client.id);
+//                 $('#first_name'+id).val(result.client.firstname);
+//                 $('#first_name'+id).prop( "disabled", true );
+//                 $('#middle_name'+id).val(result.client.middlename);
+//                 $('#middle_name'+id).prop( "disabled", true );
+//                 $('#last_name'+id).val(result.client.lastname);
+//                 $('#last_name'+id).prop( "disabled", true );
+//                 $('#date_of_birth'+id).val(result.client.date_of_birth);
+//                 $('#mobile_number'+id).val(result.client.mobile_number);
+//                 $('#email'+id).val(result.client.email);
+//                 $('#address'+id).val(result.client.address);
+//             } else {
+//                 $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
+//             }
+//         }
+//     });
+// });
 
 function getServices(spa_id, status)
 {
@@ -1539,6 +1546,42 @@ $('.select-edit-masseur2').on("select2:selecting", function(e) {
     }
 });
 
+$(document).on('click', '.reservedInfo', function () {
+    var id = $(this).data("transaction_id");
+
+    $.ajax({
+        'url' : '/transaction/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+
+        },
+        success: function(result){
+
+            $('.viewRoomNumber').text('Room # ' +result.room_id+' ['+result.firstname+' '+result.lastname+']');
+            $('.viewFullname').text(result.firstname+' '+result.lastname);
+            $('.viewDateOfBirth').text(result.date_of_birth_formatted);
+            $('.viewMobileNumber').text(result.mobile_number);
+            $('.viewEmail').text(result.email);
+            $('.viewAddress').text(result.address);
+            $('.viewService').text(result.service_name);
+            $('.viewTherapist1').text(result.therapist_1_name);
+            $('.viewTherapist2').text(result.therapist_2_name);
+            $('.viewStartTime').text(result.start_date_formatted);
+            $('.viewEndTime').text(result.end_date_formatted);
+
+            if (result.end_date_formatted != '') {
+                countdownModal(result.start_time_formatted, result.end_time);
+            }
+
+            $('.viewPlusTime').text(result.plus_time_formatted);
+            $('.totalAmountViewFormatted').html('&#8369; '+result.amount);
+        }
+    });
+    $('#view-sales-modal').modal('show');
+});
+
 function ReplaceNumberWithCommas(value) {
     var n= value.toString().split(".");
     n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1551,3 +1594,315 @@ function removeValue(list, value) {
     list.splice(list.indexOf(value), 1);
     return list.join(',');
 }
+
+$(document).on('change keyup input', '.filterClient', function () {
+    var id = this.id;
+    var val = $(this).val();
+
+    var value;
+    if (val.length > 0) {
+        value = val;
+    } else {
+        value = 'NoData';
+    }
+
+    $.ajax({
+        'url' : '/client-filter/'+value,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $("#suggesstion-box"+id).html('');
+            $('#existing_user_id_'+id).val('');
+            $('#first_name'+id).val('');
+            $('#first_name'+id).prop( "disabled", false );
+            $('#middle_name'+id).val('');
+            $('#middle_name'+id).prop( "disabled", false );
+            $('#last_name'+id).val('');
+            $('#last_name'+id).prop( "disabled", false );
+            $('#date_of_birth'+id).val('');
+            $('#mobile_number'+id).val('');
+            $('#email'+id).val('');
+            $('#address'+id).val('');
+            $('#client_type'+id).val('');
+            $('#client_type'+id).prop( "disabled", false );
+
+            $('.clientInfo'+id).addClass('hidden');
+            $('.clientContact'+id).addClass('hidden');
+            $('.clientAddress'+id).addClass('hidden');
+            // $('.clientSearch'+id).addClass('hidden');
+            $('.clientService'+id).addClass('hidden');
+            $('.clientTime'+id).addClass('hidden');
+            
+            $('#first_name'+id).prop( "disabled", true );
+            $('#middle_name'+id).prop( "disabled", true );
+            $('#last_name'+id).prop( "disabled", true );
+        },
+        success: function(result){
+            if (result.count > 0) {
+                $("#suggesstion-box"+id).removeClass('hidden');
+                if (result.status) {
+                    $("#suggesstion-box"+id).html('');
+                    $.each(result.data , function(index, val) { 
+                        $("#suggesstion-box"+id).append('<a class="list-group-item pointer filterValue" data-room="'+id+'" data-index="'+index+'" id="'+val+'">'+index+'</a>');
+                    });
+                }
+            } else {
+                $('#client_type'+id).val('new');
+                $('#client_type'+id).prop( "disabled", true );
+
+                $("#suggesstion-box"+id).html('');
+                $("#suggesstion-box"+id).addClass('hidden');
+
+                $('.clientInfo'+id).removeClass('hidden');
+                $('.clientContact'+id).removeClass('hidden');
+                $('.clientAddress'+id).removeClass('hidden');
+                $('.clientService'+id).removeClass('hidden');
+                $('.clientTime'+id).removeClass('hidden');
+
+                $('#first_name'+id).prop( "disabled", false );
+                $('#middle_name'+id).prop( "disabled", false );
+                $('#last_name'+id).prop( "disabled", false );
+            }           
+        }
+    });
+});
+
+$(document).on('click', '.filterValue', function () {
+    var id = this.id;
+    var index = $(this).data("index");
+    var room_id = $(this).data("room");
+
+    $('.clientFilter'+room_id).val(index);
+    $("#suggesstion-box"+room_id).html('');
+    $("#suggesstion-box"+room_id).addClass('hidden');
+
+    $.ajax({
+        'url' : '/client/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(result){
+            if (result.client != '') {
+                $('#existing_user_id_'+room_id).val(result.client.id);
+                $('#first_name'+room_id).val(result.client.firstname);
+                $('#first_name'+room_id).prop( "disabled", true );
+                $('#middle_name'+room_id).val(result.client.middlename);
+                $('#middle_name'+room_id).prop( "disabled", true );
+                $('#last_name'+room_id).val(result.client.lastname);
+                $('#last_name'+room_id).prop( "disabled", true );
+                $('#date_of_birth'+room_id).val(result.client.date_of_birth);
+                $('#mobile_number'+room_id).val(result.client.mobile_number);
+                $('#email'+room_id).val(result.client.email);
+                $('#address'+room_id).val(result.client.address);
+                $('#client_type'+room_id).val('recurring');
+                $('#client_type'+room_id).prop( "disabled", true );
+                $('.clientInfo'+room_id).removeClass('hidden');
+                $('.clientContact'+room_id).removeClass('hidden');
+                $('.clientAddress'+room_id).removeClass('hidden');
+                $('.clientService'+room_id).removeClass('hidden');
+                $('.clientTime'+room_id).removeClass('hidden');
+            } else {
+                // $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
+            }
+        }
+    });
+});
+
+function countdown(id, start_time, end_time)
+{
+    var countDownStartDate = new Date(start_time).getTime();
+    var countDownEndDate = new Date(end_time).getTime();
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        if (now >= countDownStartDate) {
+            $("#countdown"+id).text('');
+            var distance = countDownEndDate - now;
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+            $("#countdown"+id).text(days + "d " + hours + "h "+ minutes + "m " + seconds + "s ");
+    
+            if (distance < 0) {
+                clearInterval(x);
+                loadRoom();
+                getTotalSales($('#spa_id_val').val());
+                getMasseurAvailability($('#spa_id_val').val());
+                getLatestReservation($('#spa_id_val').val());
+                loadSales($('#spa_id_val').val());
+                loadData($('#spa_id_val').val());
+            }
+        } else {
+            $("#countdown"+id).text('Waiting...');
+        }
+    }, 1000);
+}
+
+function countdownModal(start_time, end_time)
+{
+    var countDownStartDate = new Date(start_time).getTime();
+    var countDownEndDate = new Date(end_time).getTime();
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        if (now >= countDownStartDate) {
+            $(".viewRemainingTime").text('');
+            var distance = countDownEndDate - now;
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            $(".viewRemainingTime").text(days + "d " + hours + "h "+ minutes + "m " + seconds + "s ");
+    
+            if (distance < 0) {
+                clearInterval(x);
+                $(".viewRemainingTime").text('00:00');
+            }
+        } else {
+            $(".viewRemainingTime").text('Waiting...');
+        }
+    }, 1000);
+}
+
+function countdownTherapist(id, start_time, end_time, total_seconds)
+{
+    var x = setInterval(function() {
+        var progress_end_time = new Date(end_time);
+        var progress_new_time = new Date();
+        var progress_remaining_seconds = Math.floor(progress_end_time.getTime() - progress_new_time.getTime())/1000;
+        var progress_seconds_parse = parseInt(progress_remaining_seconds);
+        var progress_percentage = progress_seconds_parse / total_seconds * 100;
+        var width_percentage = progress_percentage.toFixed(2);
+        var percentage = 100 - width_percentage;
+        var percentage_text = percentage.toFixed(2);
+
+        if (percentage <= 100 && percentage > 0) {
+            $('#countdownTherapistPercentage'+id).text('');
+            $('#progressBarCalc'+id).css('width', percentage+'%');
+            $('#countdownTherapistPercentage'+id).text(percentage_text+'%');
+        } else {
+            $('#countdownTherapistPercentage'+id).text('Waiting...');
+        }
+    }, 1000);
+}
+
+function loadData(id)
+{
+    $.ajax({
+        'url' : '/transaction-data/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(result){
+            $('.dailyAppointment').text(result.daily_appointment);
+            $('.monthlyAppointment').text(result.monthly_appointment);
+            $('.newClients').text(result.new_clients);
+            $('.dailySales').html(result.total_sales);
+        }
+    });
+}
+
+$(document).on('click', '.transactionView', function () {
+    var spa_id = $('#spa_id_val').val();
+    loadTransactions(spa_id);
+});
+
+function loadTransactions(spa_id)
+{
+    $('#transaction-data-lists').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/sales-list/'+spa_id
+        },
+        columns: [
+            { data: 'spa', name: 'spa', className: 'text-center'},
+            { data: 'payment_status', name: 'payment_status'},
+            { data: 'amount', name: 'amount', className: 'text-center'},
+            { data: 'date', name: 'date', className: 'text-center'},
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        "bDestroy": true,
+        scrollX: true,
+        scrollY: true,
+        responsive:true,
+        order:[3,'desc'],
+        pageLength: 10
+    });
+}
+
+$(document).on('click', '.view-invoice', function () {
+    var id = this.id;
+    var spa_id = $('#spa_id_val').val();
+
+    $.ajax({
+        'url' : '/transaction-invoice/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(result){
+            // var date = moment(result.info.end_time).format('DD-MMMM-YYYY');  
+            // var start_time = moment(result.info.start_time).format('HH:mm:ss');  
+            // var end_time = moment(result.info.end_time).format('HH:mm:ss');
+
+            $('.viewNameInvoice').text('[ Invoice # '+result.invoice +' ]');
+            $('.spaName').text(result.sales.spa.name);
+            // $('.transactionEndDate').text(date);
+
+            $('.spaAddress').text(result.sales.spa.address);
+            $('.spaMobile').text(result.owner.mobile_number);
+            $('.spaEmail').text(result.owner.email);
+            $('.salesInvoiceNumber').html('<b>Invoice #</b> '+result.invoice);
+            // $('.clientName').text(result.info.client.firstname+' '+result.info.client.lastname);
+            // $('.clientAddress').text(result.info.client.address);
+            // $('.clientMobile').text(result.info.client.mobile_number);
+            // $('.clientEmail').text(result.info.client.email);
+
+            // // $('.result.info.client.').text();
+            // $('.salesId').text(result.sales);
+
+            // $('#invoiceTable tbody tr').append("<td>"+result.service.name+"</td>");
+            // var totalAmount = result.info.amount + result.info.tip;
+
+            $.each(result.transactions , function(index, val) { 
+                console.log('test')
+                var start_time = moment(val.start_time).format('HH:mm:ss');  
+                var end_time = moment(val.end_time).format('HH:mm:ss');
+
+                var displayInvoiceTable = '<tr>';
+                displayInvoiceTable += '<td>'+val.client.firstname+' '+val.client.lastname+'</td>';
+                displayInvoiceTable += '<td>'+val.service.name+'</td>';
+                displayInvoiceTable += '<td>'+val.room_id+'</td>';
+                displayInvoiceTable += '<td>'+start_time+'</td>';
+                displayInvoiceTable += '<td>'+end_time+'</td>';
+                displayInvoiceTable += '<td>&#8369; '+val.amount+'</td>';
+                displayInvoiceTable += '</tr>';
+
+                $( displayInvoiceTable ).appendTo("#invoiceTable");
+            });
+
+
+            var summaryInvoiceTable = '<tr>';
+                summaryInvoiceTable += '<th style="width:50%">Subtotal:</th>';
+                summaryInvoiceTable += '<td>&#8369; '+result.sales.amount_paid+'</td>';
+            summaryInvoiceTable += '</tr>';
+            summaryInvoiceTable += '<tr>';
+                summaryInvoiceTable += '<th style="width:50%">Tax(1%):</th>';
+                summaryInvoiceTable += '<td>&#8369; 50.00</td>';
+            summaryInvoiceTable += '</tr>';
+            summaryInvoiceTable += '<tr>';
+                summaryInvoiceTable += '<th style="width:50%">Tip:</th>';
+                summaryInvoiceTable += '<td>&#8369; 0</td>';
+            summaryInvoiceTable += '</tr>';
+            summaryInvoiceTable += '<tr>';
+                summaryInvoiceTable += '<th style="width:50%">Total:</th>';
+                summaryInvoiceTable += '<td>&#8369;  '+result.sales.amount_paid+'</td>';
+            summaryInvoiceTable += '</tr>';
+      
+            $( summaryInvoiceTable ).appendTo("#summaryTotal");
+        }
+    });
+
+    $('#view-invoice-modal').modal('show');
+});

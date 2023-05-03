@@ -352,10 +352,10 @@ return [
             'can' => 'view owner'
         ],
         [
-            'text' => 'User Management',
-            'route'  => 'owners.index',
+            'text' => 'Staff Management',
+            'route'  => 'owner.my.staffs',
             'icon' => 'fas fa-fw fa-user-plus',
-            'can' => 'view owner'
+            'can' => 'view staff'
         ],
         [
             'text' => 'Spa Management',
@@ -388,6 +388,71 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-store',
         ],
+        [
+            'text' => 'Payroll',
+            'route'  => 'payroll.index',
+            'icon' => 'fas fa-fw fa-store',
+        ],
+//        [
+//            'text'    => 'multilevel',
+//            'icon'    => 'fas fa-fw fa-share',
+//            'submenu' => [
+//                [
+//                    'text' => 'level_one',
+//                    'url'  => '#',
+//                ],
+//                [
+//                    'text'    => 'level_one',
+//                    'url'     => '#',
+//                    'submenu' => [
+//                        [
+//                            'text' => 'level_two',
+//                            'url'  => '#',
+//                        ],
+//                        [
+//                            'text'    => 'level_two',
+//                            'url'     => '#',
+//                            'submenu' => [
+//                                [
+//                                    'text' => 'level_three',
+//                                    'url'  => '#',
+//                                ],
+//                                [
+//                                    'text' => 'level_three',
+//                                    'url'  => '#',
+//                                ],
+//                            ],
+//                        ],
+//                    ],
+//                ],
+//                [
+//                    'text' => 'level_one',
+//                    'url'  => '#',
+//                ],
+//            ],
+//        ],
+//        ['header' => 'labels'],
+//        [
+//            'text'       => 'important',
+//            'icon_color' => 'red',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'warning',
+//            'icon_color' => 'yellow',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'information',
+//            'icon_color' => 'cyan',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'    => 'Owner Management',
+//            'icon'    => 'fas fa-user',
+//            'route'    => 'owner.lists',
+//            'can'     => 'view owner',
+//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
@@ -528,6 +593,7 @@ return [
                     'location' => 'vendor/bs-stepper/js/bs-stepper.min.js',
                 ],
             ],
+
         ],
         'DatePicker' => [
             'active' => true,
@@ -601,6 +667,41 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'css/style.css',
+                ],
+            ],
+        ],
+//        'BootstrapBundle' => [
+//            'active' => true,
+//            'files' => [
+//                [
+//                    'type' => 'js',
+//                    'asset' => false,
+//                    'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
+//                ],
+//            ],
+//        ],
+        'BootstrapDatePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js',
+                ],
+            ],
+        ],
+        'Moment' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'vendor/moment/moment.min.js',
                 ],
             ],
         ],
