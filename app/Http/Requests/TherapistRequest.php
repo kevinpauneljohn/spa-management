@@ -84,6 +84,8 @@ class TherapistRequest extends FormRequest
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
+            'email' => 'unique:users,email',
+            'mobile_number' => 'unique:users,mobile_number',
             'offer_type' => [
                 'required'
                 ]

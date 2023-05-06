@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/spa/overview/{id}',[\App\Http\Controllers\SpaController::class,'overview'])->name('spa.overview');
 
     Route::resource('spa',\App\Http\Controllers\SpaController::class);
+    Route::get('/spas',[\App\Http\Controllers\SpaController::class,'getSpaList'])->name('spa.list');
 
     Route::get('my-spas',[\App\Http\Controllers\SpaController::class,'my_spas'])->name('owner.my.spas');
     Route::get('my-spa-lists',[\App\Http\Controllers\SpaController::class,'get_owner_spas'])->name('owner.list.spas');
@@ -101,6 +102,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date');
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
+
+    Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
+    Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
+
+    Route::resource('inventory-categories',\App\Http\Controllers\Inventories\InventoryCategoryController::class);
+    Route::get('/inventory-category-lists',[\App\Http\Controllers\Inventories\InventoryCategoryController::class,'lists'])->name('inventory.category.lists');
+
+    Route::post('/check-user-password',[\App\Http\Controllers\UserController::class,'check_user_logged_in_password'])->name('check.user.password');
 });
 
-Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');

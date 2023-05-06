@@ -152,7 +152,7 @@ return [
     'layout_boxed' => null,
     'layout_fixed_sidebar' => true,
     'layout_fixed_navbar' => null,
-    'layout_fixed_footer' => null,
+    'layout_fixed_footer' => true,
     'layout_dark_mode' => null,
 
     /*
@@ -315,10 +315,10 @@ return [
             'topnav_right' => true,                   // Or "topnav => true" to place on the left (required).
             'dropdown_mode'   => true,                // Enables the dropdown mode (optional).
             'dropdown_flabel' => 'All notifications', // The label for the dropdown footer link (optional).
-            'update_cfg'   => [
-                'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
-                'period' => 30,                       // The update period for get new data (in seconds, optional).
-            ],
+//            'update_cfg'   => [
+//                'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
+//                'period' => 30,                       // The update period for get new data (in seconds, optional).
+//            ],
         ],
 
         // Sidebar items:
@@ -364,19 +364,29 @@ return [
             'can' => 'view spa'
         ],
         [
-            'text' => 'Masseur / Masseuse',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-users',
-        ],
-        [
             'text' => 'Sales Management',
             'url'  => '#',
-            'icon' => 'fas fa-fw fa-money-bill',
+            'icon' => 'fas fa-fw fa-search-dollar',
         ],
         [
             'text' => 'Inventory Management',
-            'url'  => '#',
             'icon' => 'fas fa-fw fa-shopping-cart',
+            'can' => 'view inventory',
+            'submenu' => [
+                [
+                    'text'    => 'Categories',
+                    'shift'   => 'ml-3',
+                    'route'  => 'inventory-categories.index',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view category'
+                ],
+                [
+                    'text'    => 'Inventories',
+                    'shift'   => 'ml-3',
+                    'route'  => 'inventories.index',
+                    'icon'  => 'fas fa-angle-right',
+                ],
+        ],
         ],
         [
             'text' => 'Expense Management',
@@ -389,70 +399,10 @@ return [
             'icon' => 'fas fa-fw fa-store',
         ],
         [
-            'text' => 'Payroll',
+            'text' => 'Payroll Management',
             'route'  => 'payroll.index',
-            'icon' => 'fas fa-fw fa-store',
+            'icon' => 'fas fa-fw  fa-money-check-alt',
         ],
-//        [
-//            'text'    => 'multilevel',
-//            'icon'    => 'fas fa-fw fa-share',
-//            'submenu' => [
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//                [
-//                    'text'    => 'level_one',
-//                    'url'     => '#',
-//                    'submenu' => [
-//                        [
-//                            'text' => 'level_two',
-//                            'url'  => '#',
-//                        ],
-//                        [
-//                            'text'    => 'level_two',
-//                            'url'     => '#',
-//                            'submenu' => [
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                            ],
-//                        ],
-//                    ],
-//                ],
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//            ],
-//        ],
-//        ['header' => 'labels'],
-//        [
-//            'text'       => 'important',
-//            'icon_color' => 'red',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'warning',
-//            'icon_color' => 'yellow',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'information',
-//            'icon_color' => 'cyan',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'    => 'Owner Management',
-//            'icon'    => 'fas fa-user',
-//            'route'    => 'owner.lists',
-//            'can'     => 'view owner',
-//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
@@ -525,6 +475,21 @@ return [
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
+//                [
+//                    'type' => 'js',
+//                    'asset' => true,
+//                    'location' => 'public/vendor/datatables/js/jquery.dataTables.min.js',
+//                ],
+//                [
+//                    'type' => 'js',
+//                    'asset' => true,
+//                    'location' => 'vendor/datatables/js/dataTables.bootstrap4.min.js',
+//                ],
+//                [
+//                    'type' => 'css',
+//                    'asset' => true,
+//                    'location' => 'vendor/datatables/css/dataTables.bootstrap4.min.css',
+//                ],
             ],
         ],
         'Select2' => [
@@ -700,8 +665,28 @@ return [
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => 'vendor/moment/moment.min.js',
+                ],
+            ],
+        ],
+        'Inventories' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'inventory/js/inventory.js',
+                ],
+            ],
+        ],
+        'Categories' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'inventory/js/category.js',
                 ],
             ],
         ],
