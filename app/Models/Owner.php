@@ -30,4 +30,14 @@ class Owner extends Model
     {
         return $this->hasOneThrough(Therapist::class, Spa::class);
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(InventoryCategory::class);
+    }
 }

@@ -56,29 +56,55 @@ class ReceptionistController extends Controller
     
     public function getData($room, $spa_id)
     {
-        //need to add condition to get end time each transaction
-        //need to add condition to compare the current date and created at
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        // $nows->setTimezone('Asia/Manila');
-        // // $nows->format('Y-m-d h:i:s A');
-        // $createdAt = Carbon::parse(date_format($nows,'d/m/Y'));
-        // $createdAt= $createdAt->format('M d Y');
         $transaction = Transaction::where(
             'room_id', $room
         )->where('spa_id', $spa_id)->where(
             'end_time', '>=', $now
         )->with(['client'])->first();
-
-        // $transaction = Transaction::where([
-        //     'room_id' => $room,
-        //     'spa_id' => $spa_id
-        // ])->with(['client'])->first();
         
         $dataList = [];
         $isAvailable = true;
         $isColorSet = 'bg-info';
         if (!empty($transaction)) {
-            $dataList = $transaction;
+            // $dataList = $transaction;
+            $start_time_formatted = date('h:i:s A', strtotime($transaction->start_time));
+            $end_time_formatted = date('h:i:s A', strtotime($transaction->end_time));
+
+            $dataList = [
+                'id' => $transaction->id,
+                'spa_id' => $transaction->spa_id,
+                'sales_id' => $transaction->sales_id,
+                'room_id' => $transaction->room_id,
+                'client_id' => $transaction->client_id,
+                'client' => [
+                    'id' => $transaction->client['id'],
+                    'firstname' => $transaction->client['firstname'],
+                    'middlename' => $transaction->client['middlename'],
+                    'lastname' => $transaction->client['lastname'],
+                    'date_of_birth' => $transaction->client['date_of_birth'],
+                    'mobile_number' => $transaction->client['mobile_number'],
+                    'email' => $transaction->client['email'],
+                    'address' => $transaction->client['address'],
+                    'client_type' => $transaction->client['client_type'],
+                ],
+                'service_id' => $transaction->service_id,
+                'service_name' => $transaction->service_name,
+                'amount' => $transaction->amount,
+                'therapist_1' => $transaction->therapist_1,
+                'therapist_2' => $transaction->therapist_2,
+                'start_time' => $transaction->start_time,
+                'end_time' => $transaction->end_time,
+                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,  
+                'plus_time' => $transaction->plus_time,
+                'discount_rate' => $transaction->discount_rate,
+                'discount_amount' => $transaction->discount_amount,
+                'tip' => $transaction->idtip,
+                'rating' => $transaction->rating,
+                'sales_type' => $transaction->sales_type,
+                'created_at' => $transaction->created_at,
+                'updated_at' => $transaction->updated_at,
+            ];
             $isAvailable = false;
             $isColorSet = 'bg-secondary';
         }
@@ -113,10 +139,10 @@ class ReceptionistController extends Controller
 
     public function getTherapist($id)
     {
-        $therapist = Therapist::where('spa_id', $id)->get();
+        $therapist = Therapist::where('spa_id', $id)->with(['user'])->get();
         $data = [];
         foreach ($therapist as $list) {
-            $data [ucfirst($list->firstname).' '.ucfirst($list->lastname)] = $list->id;
+            $data [ucfirst($list->user['firstname']).' '.ucfirst($list->user['lastname'])] = $list->id;
         }
 
         return $data;
@@ -235,54 +261,6 @@ class ReceptionistController extends Controller
 
         return $response;
     }
-
-    // public function saveTransaction($spa_id, $client_id, $sale_id, $data)
-    // {
-    //     $response = false;
-    //     if (!empty($data)) {
-    //         foreach ($data as $list) {
-    //             $start_time_val = date('Y-m-d H:i:s', strtotime($list['value_start_time']));
-
-    //             $therapist = [$list['value_therapist_1']];
-    //             if (!empty($list['value_therapist_2'])) {
-    //                 $therapist = [$list['value_therapist_1'], $list['value_therapist_2']];
-    //             }
-
-    //             foreach ($therapist as $key => $data_list) {
-    //                 if ($key == 1) {
-    //                     $amount = 0;
-    //                 } else {
-    //                     $amount = $list['price'];
-    //                 }
-
-    //                 $transaction = Transaction::create([
-    //                     'spa_id' => $spa_id,
-    //                     'service_id' => $list['value_services'],
-    //                     'service_name' => $list['value_services_name'],
-    //                     'amount' => $amount,
-    //                     'therapist_1' => $data_list,
-    //                     'client_id' => $client_id,
-    //                     'start_time' => $start_time_val,
-    //                     'end_time' => $this->getEndTime($list['value_services'], $start_time_val, $list['value_plus_time']),
-    //                     'plus_time' => $list['value_plus_time'],
-    //                     'discount_rate' => null,
-    //                     'discount_amount' => null,
-    //                     'tip' => null,
-    //                     'rating' => 0,
-    //                     'sales_type' => 'walk-in',
-    //                     'sales_id' => $sale_id,
-    //                     'room_id' => $list['value_room_id'],
-    //                 ]);
-    //             }
-
-    //             if ($transaction) {
-    //                 $response = true;
-    //             }
-    //         }
-    //     }
-
-    //     return $response;
-    // }
 
     public function roomRange($num)
     {
@@ -482,11 +460,6 @@ class ReceptionistController extends Controller
         }
 
         return $result;
-    }
-
-    public function getReservedTherapist($id)
-    {
-        return 'test';
     }
 }
 

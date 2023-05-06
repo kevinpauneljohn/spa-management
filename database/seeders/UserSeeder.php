@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -24,5 +25,20 @@ class UserSeeder extends Seeder
         $user->password = bcrypt('123');
         $user->assignRole('super admin');
         $user->save();
+
+        $owner = new User();
+        $owner->firstname = 'jamaica';
+        $owner->middlename = 'fernando';
+        $owner->lastname = 'soto';
+        $owner->email = 'sotojamaica@yahoo.com';
+        $owner->username = 'jamaica';
+        $owner->mobile_number = '09166520823';
+        $owner->password = bcrypt('123');
+        $owner->assignRole('owner');
+        $owner->save();
+
+        $ownerUser = new Owner();
+        $ownerUser->user_id = $owner->id;
+        $ownerUser->save();
     }
 }

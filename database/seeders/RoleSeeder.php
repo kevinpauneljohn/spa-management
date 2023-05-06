@@ -18,8 +18,14 @@ class RoleSeeder extends Seeder
         $superAdmin = Role::create(['name' => 'super admin']);
         $admin = Role::create(['name' => 'admin']);
         $owner = Role::create(['name' => 'owner']);
-        $receptionist = Role::create(['name' => 'receptionist']);
+        $receptionist = Role::create(['name' => 'front desk']);
         $manager = Role::create(['name' => 'manager']);
+        $manager = Role::create(['name' => 'therapist']);
+
+        Permission::create(['name' => 'add owner']);
+        Permission::create(['name' => 'view owner']);
+        Permission::create(['name' => 'edit owner']);
+        Permission::create(['name' => 'delete owner']);
 
         Permission::create(['name' => 'add spa'])->assignRole($owner);
         Permission::create(['name' => 'view spa'])->assignRole($owner);
@@ -36,5 +42,15 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'edit service'])->assignRole($owner);
         Permission::create(['name' => 'delete service'])->assignRole($owner);
 
+        Permission::create(['name' => 'add sales'])->assignRole($receptionist);
+        Permission::create(['name' => 'view sales'])->assignRole($receptionist);
+        Permission::create(['name' => 'edit sales'])->assignRole($receptionist);
+        Permission::create(['name' => 'delete sales'])->assignRole($receptionist);
+        Permission::create(['name' => 'view invoices'])->assignRole($receptionist);
+
+        Permission::create(['name' => 'add staff'])->assignRole($owner);
+        Permission::create(['name' => 'view staff'])->assignRole($owner);
+        Permission::create(['name' => 'edit staff'])->assignRole($owner);
+        Permission::create(['name' => 'delete staff'])->assignRole($owner);
     }
 }

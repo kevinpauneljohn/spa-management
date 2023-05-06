@@ -61,7 +61,7 @@
                                         </li>
                                         <li class="list-group-item">
                                             <b>Email: </b> <a class="float-right" href="mailto:{{$owners['email']}}">{{$owners['email']}}</a>
-                                        </li> 
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -464,7 +464,7 @@
                 if (val === 'percentage_only') {
                     $('.commission').removeClass('hidden');
                     $('.commission_name').text('Commission Rate');
-                    
+
                     $('.allowance').addClass('hidden');
                     $('#allowance').val(0);
                 } else if (val === 'percentage_plus_allowance') {
@@ -492,7 +492,7 @@
                 if (val === 'percentage_only') {
                     $('.edit_commission').removeClass('hidden');
                     $('.edit_commission_name').text('Commission Rate');
-                    
+
                     $('.edit_allowance').addClass('hidden');
                     $('#edit_allowance').val(0);
                 } else if (val === 'percentage_plus_allowance') {

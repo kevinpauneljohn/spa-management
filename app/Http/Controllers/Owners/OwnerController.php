@@ -184,6 +184,7 @@ class OwnerController extends Controller
     public function owner_lists()
     {
         $owners = User::role(['owner'])->get();
+        dd($owners);
         return DataTables::of($owners)
             ->editColumn('created_at',function($owners){
                 return $owners->created_at->format('M d, Y');
