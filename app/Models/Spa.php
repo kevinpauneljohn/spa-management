@@ -28,5 +28,13 @@ class Spa extends Model
         return $this->hasMany(Therapist::class);
     }
 
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 
+    public function staff()
+    {
+        return $this->hasMany(User::class);
+    }
 }

@@ -114,7 +114,7 @@ class StaffService
                     'username' => $data['username'],
                     'password' => Hash::make($data['password']),
                 ]);
-    
+
                 if ($user) {
                     $user->assignRole($data['role']);
 
@@ -124,12 +124,12 @@ class StaffService
                         if ($data['offer_type'] == 'percentage_only' || $data['offer_type'] == 'percentage_plus_allowance') {
                             $commission_percentage = $data['commission'];
                         }
-    
+
                         $commission_flat = 0;
                         if ($data['offer_type'] == 'amount_only' || $data['offer_type'] == 'amount_plus_allowance') {
                             $commission_flat = $data['commission'];
                         }
-    
+
                         $therapist_data = [
                             'spa_id' => $data['spa'],
                             'user_id' => $user->id,
@@ -140,22 +140,22 @@ class StaffService
                             'allowance' => $data['allowance'],
                             'offer_type' => $data['offer_type']
                         ];
-   
+
                         $this->createTherapist($therapist_data);
                     }
-    
+
                     $code = 200;
                     $status = true;
                     $message = 'Staff Registration successfully saved.';
                 }
             }
-    
+
             $response = [
                 'status'   => $status,
                 'message'   => $message,
                 'data'      => $user,
             ];
-    
+
             return response($response, $code);
         } else {
             return response()->json($validator->errors());
@@ -299,7 +299,7 @@ class StaffService
                     } else {
                         $this->createTherapist($therapist_data);
                     }
-                    
+
                 }
             } else {
                 if (!empty($data['therapist_id'])) {

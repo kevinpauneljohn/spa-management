@@ -59,6 +59,7 @@ $(document).on('submit','.therapist-form',function(form){
 
         }
     }).done(function(data){
+        console.log(data);
             if(data.success === true)
             {
                 therapistForm.trigger('reset');

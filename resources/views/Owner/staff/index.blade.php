@@ -13,7 +13,7 @@
     .errorForm {
         border: 2px solid red !important;
     }
-    
+
     .hiddenBtn {
         display: none !important;
     }
@@ -122,14 +122,14 @@
                                                 <div class="col-md-6">
                                                     <label for="role">Role</label><span class="required">*</span>
                                                     <select name="role" id="role" class="form-control select-role" style="width:100%;">
-        
+
                                                     </select>
                                                     <input type="hidden" id="selected-role" class="form-control selected-role">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="spa">Spa</label><span class="required">*</span>
                                                     <select name="spa" id="spa" class="form-control select-spa" style="width:100%;">
-        
+
                                                     </select>
                                                     <input type="hidden" id="selected-spa" class="form-control selected-spa">
                                                 </div>
@@ -292,14 +292,14 @@
                                                 <div class="col-md-6">
                                                     <label for="edit_role">Role</label><span class="required">*</span>
                                                     <select name="edit_role" id="edit_role" class="form-control select-edit-role" style="width:100%;">
-        
+
                                                     </select>
                                                     <input type="hidden" id="selected-edit-role" class="form-control selected-edit-role">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="edit_spa">Spa</label><span class="required">*</span>
                                                     <select name="edit_spa" id="edit_spa" class="form-control select-edit-spa" style="width:100%;">
-        
+
                                                     </select>
                                                     <input type="hidden" id="selected-edit-spa" class="form-control selected-edit-spa">
                                                 </div>
@@ -401,7 +401,7 @@
         </div>
     @endcan
 @stop
-
+@section('plugins.BsStepper',true)
 @section('css')
 @stop
 
@@ -409,7 +409,7 @@
     <script src="{{asset('js/staff.js')}}"></script>
     <script>
         $(document).ready(function(){
-            $('.select-role').select2();         
+            $('.select-role').select2();
 
             $('#staff-list').DataTable({
                 processing: true,
@@ -438,7 +438,7 @@
                 $('#username').val('');
                 $('#password').val('');
                 $('#password_confirmation').val();
-                
+
                 $('.password_icon').prop("disabled", true);
                 $('.confirm_password_icon').prop("disabled", true);
                 $('#add-new-staff-modal').modal('show');

@@ -252,13 +252,12 @@
 
 @section('plugins.Toastr',true)
 @section('css')
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
+
 @stop
 
 @section('js')
     <script src="{{asset('js/clear_errors.js')}}"></script>
     <script src="{{asset('js/service.js')}}"></script>
-    <script src="{{asset('js/alerts.js')}}"></script>
     <script>
         $(document).ready(function() {
             var spa_id = $('.spa-id').val();

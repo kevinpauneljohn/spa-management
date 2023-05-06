@@ -22,10 +22,7 @@ class MyStaffController extends Controller
 
     public function get_owner_staffs()
     {
-        $id = auth()->user()->id;
-        $user = User::findOrFail($id);
-
-        return $this->staffService->staffs($user->id);
+        return $this->staffService->staffs(auth()->user()->owner->id);
     }
 
     public function my_staffs()

@@ -116,6 +116,7 @@
     @endpush
 @endonce
 @section('plugins.BsStepper',true)
+@section('plugins.BsStepper',true)
 @section('plugins.ClearErrors',true)
 @section('plugins.Toastr',true)
 @section('plugins.CustomAlert',true)

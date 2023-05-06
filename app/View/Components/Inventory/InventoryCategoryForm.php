@@ -4,17 +4,17 @@ namespace App\View\Components\Inventory;
 
 use Illuminate\View\Component;
 
-class InventoryManagement extends Component
+class InventoryCategoryForm extends Component
 {
-    public $spaId;
+    public $formDefault;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($spaId = null)
+    public function __construct($formDefault = true)
     {
-        $this->spaId = $spaId;
+        $this->formDefault = $formDefault;
     }
 
     /**
@@ -24,6 +24,6 @@ class InventoryManagement extends Component
      */
     public function render()
     {
-        return view('components.inventory.inventory-management');
+        return view('components.inventory.inventory-category-form');
     }
 }

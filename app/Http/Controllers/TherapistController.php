@@ -32,8 +32,12 @@ class TherapistController extends Controller
 
     public function store(TherapistRequest $request, UserService $userService)
     {
+        if(Role::where('name','therapist')->count() === 0)
+        {
+            \Spatie\Permission\Models\Role::create(['name' => 'therapist']);
+        }
         $user = $userService->create_user(collect($request->all())
-            ->only(['firstname','middlename','lastname','date_of_birth','email','mobile_number'])->toArray())
+            ->only(['spa_id','firstname','middlename','lastname','date_of_birth','email','mobile_number'])->toArray())
             ->assignRole('therapist');
 
         $therapist = collect($request->all())

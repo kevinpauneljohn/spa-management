@@ -20,6 +20,7 @@ class RoleSeeder extends Seeder
         $owner = Role::create(['name' => 'owner']);
         $receptionist = Role::create(['name' => 'front desk']);
         $manager = Role::create(['name' => 'manager']);
+        $manager = Role::create(['name' => 'therapist']);
 
         Permission::create(['name' => 'add owner']);
         Permission::create(['name' => 'view owner']);

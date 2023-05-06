@@ -80,4 +80,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Therapist::class);
     }
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
 }
