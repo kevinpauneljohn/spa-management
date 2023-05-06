@@ -371,6 +371,11 @@ return [
             'route'  => 'payroll.index',
             'icon' => 'fas fa-fw fa-store',
         ],
+        [
+            'text' => 'Attendance',
+            'route'  => 'attendance.index',
+            'icon' => 'fas fa-fw fa-store',
+        ],
 //        [
 //            'text'    => 'multilevel',
 //            'icon'    => 'fas fa-fw fa-share',

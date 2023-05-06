@@ -40,6 +40,7 @@
         position: relative;
         right: 36px;
     }
+
  }
 #generate{
    position: relative;
@@ -47,3 +48,22 @@
    left: 10%;
    
 }
+.form-group {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    position: absolute;
+    top: 0.5rem;
+    left: 1rem;
+    color: #6c757d;
+    transition: all 0.2s ease-out;
+  }
+  
+  .form-control:focus ~ label,
+  .form-control:not(:placeholder-shown) ~ label {
+    top: -0.5rem;
+    font-size: 0.8rem;
+    color: #198754;
+  }

@@ -46,4 +46,30 @@
   position: relative;
   top: 15px;
   left: 10%;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+label {
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  color: #6c757d;
+  transition: all 0.2s ease-out;
+}
+
+.form-control:not(:-moz-placeholder-shown) ~ label {
+  top: -0.5rem;
+  font-size: 0.8rem;
+  color: #198754;
+}
+
+.form-control:focus ~ label,
+.form-control:not(:placeholder-shown) ~ label {
+  top: -0.5rem;
+  font-size: 0.8rem;
+  color: #198754;
 }/*# sourceMappingURL=style.css.map */
