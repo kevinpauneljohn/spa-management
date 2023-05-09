@@ -27,15 +27,19 @@ class ClientController extends Controller
 
     public function filter($id)
     {
-        $val_array = explode(' ', $id);
-
-        $client = [];
-        foreach ($val_array as $array) {
-            $client = Client::where('firstname', 'LIKE', '%'.$array.'%')
-            ->orWhere('middlename', 'LIKE', '%'.$array.'%')
-            ->orWhere('lastname', 'LIKE', '%'.$array.'%')
+         $client = Client::where('firstname', 'LIKE', '%'.$id.'%')
+            ->orWhere('middlename', 'LIKE', '%'.$id.'%')
+            ->orWhere('lastname', 'LIKE', '%'.$id.'%')
             ->get();
-        }
+        // $val_array = explode(' ', $id);
+
+        // $client = [];
+        // foreach ($val_array as $array) {
+        //     $client = Client::where('firstname', 'LIKE', '%'.$array.'%')
+        //     ->orWhere('middlename', 'LIKE', '%'.$array.'%')
+        //     ->orWhere('lastname', 'LIKE', '%'.$array.'%')
+        //     ->get();
+        // }
 
         $data = [];
         $status = false;

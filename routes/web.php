@@ -34,12 +34,12 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/client-filter/{id}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
 
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
+    Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
 
     Route::get('/transaction/{id}',[\App\Http\Controllers\TransactionController::class,'show'])->name('transaction.show');
     Route::get('/transaction-list/{id}',[\App\Http\Controllers\TransactionController::class,'lists'])->name('transaction.lists');
     Route::get('/transaction-total-sales/{id}',[\App\Http\Controllers\TransactionController::class,'getTotalSales'])->name('transaction.count');
     Route::get('/transaction-masseur-availability/{id}',[\App\Http\Controllers\TransactionController::class,'getTherapistAvailability'])->name('transaction.availability');
-    Route::get('/transaction-latest-reservation/{id}',[\App\Http\Controllers\TransactionController::class,'getLatestReservation'])->name('transaction.latest.reservation');
     Route::get('/transaction-room-availability/{id}',[\App\Http\Controllers\TransactionController::class,'getRoomAvailability'])->name('transaction.room.availability');
     Route::get('/transaction-data/{id}',[\App\Http\Controllers\TransactionController::class,'getData'])->name('transaction.data');
     Route::get('/transaction-invoice/{id}',[\App\Http\Controllers\TransactionController::class,'getInvoice'])->name('transaction.invoice');
@@ -107,6 +107,16 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date'); 
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
+
+    Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
+    Route::post('appointment-store/{id}',[\App\Http\Controllers\AppointmentController::class,'store'])->name('appointment.store');
+    Route::get('appointment-lists/{id}',[\App\Http\Controllers\AppointmentController::class,'lists'])->name('appointment.list');
+    Route::get('appointment-show/{id}',[\App\Http\Controllers\AppointmentController::class,'show'])->name('appointment.show');
+    Route::get('appointment-count/{id}',[\App\Http\Controllers\AppointmentController::class,'upcoming'])->name('appointment.count');
+    Route::put('appointment-update/{id}',[\App\Http\Controllers\AppointmentController::class,'edit'])->name('appointment.update');
+    Route::post('appointment-sales',[\App\Http\Controllers\AppointmentController::class,'sales'])->name('appointment.sales');
+    Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
+    Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');

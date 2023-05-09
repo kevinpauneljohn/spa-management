@@ -316,7 +316,6 @@ class ReceptionistController extends Controller
                 if ($updateTransaction) {
                     $status = true;
                 } else {
-                    dd('saveses');
                     $message = 'Unable to save Transaction information. Please try again.';
                 }
             } else {
