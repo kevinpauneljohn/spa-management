@@ -17,19 +17,19 @@ class TherapistService
             ->addColumn('fullname',function ($therapist){
                 if(auth()->user()->can('view therapist'))
                 {
-                    return '<a href="'.route('therapists.profile',['id' => $therapist->id]).'" title="View">'.$therapist->firstname.' '.$therapist->lastname.'</a>&nbsp;';
+                    return '<a href="'.route('therapists.profile',['id' => $therapist->id]).'" title="View">'.ucwords($therapist->user->fullname).'</a>&nbsp;';
                 } else {
-                    return $therapist->firstname.' '.$therapist->lastname;
+                    return ucwords($therapist->user->fullname);
                 }
             })
             ->editColumn('date_of_birth',function($therapist){
                 return $therapist->created_at->format('F d, Y');
             })
             ->addColumn('mobile_number',function ($therapist){
-                return $therapist->mobile_number;
+                return $therapist->user->mobile_number;
             })
             ->addColumn('email',function ($therapist){
-                return $therapist->email;
+                return $therapist->user->email;
             })
             ->addColumn('gender',function ($therapist){
                 return $therapist->gender;
@@ -47,11 +47,11 @@ class TherapistService
                     if (!empty($user)) {
                         $user_id = $user->id;
                     }
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-therapist-btn" id="'.$therapist->id.'" data-user_id="'.$user_id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<button class="btn btn-sm btn-outline-primary edit-therapist-btn" id="'.$therapist->id.'" data-user_id="'.$user_id.'"><i class="fa fa-edit"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('delete therapist'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-therapist-btn" id="'.$therapist->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                    $action .= '<button class="btn btn-sm btn-outline-danger delete-therapist-btn" id="'.$therapist->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
                 }
                 return $action;
             })
@@ -74,5 +74,38 @@ class TherapistService
     public function get_therapist_by_id($therapist_id)
     {
         return Therapist::findOrfail($therapist_id);
+    }
+
+    //
+    public function offer_type_filter(array $request): array
+    {
+        if($request['offer_type'] === 'percentage_only')
+        {
+            $request['commission_flat'] = null;
+            $request['allowance'] = null;
+        }
+        elseif($request['offer_type'] === 'percentage_plus_allowance')
+        {
+            $request['commission_flat'] = null;
+        }
+        elseif($request['offer_type'] === 'amount_only')
+        {
+            $request['commission_percentage'] = null;
+            $request['allowance'] = null;
+        }
+        elseif($request['offer_type'] === 'amount_plus_allowance')
+        {
+            $request['commission_percentage'] = null;
+        }
+
+        return $request;
+    }
+
+    public function delete_therapist($id): bool
+    {
+        $therapist = Therapist::findOrFail($id);
+        if($therapist->user->delete() && $therapist->delete()) return true;
+
+        return false;
     }
 }

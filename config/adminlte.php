@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'PAUNEL',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,8 +63,8 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>PAUNEL</b> V1',
+    'logo_img' => 'vendor/adminlte/dist/img/plant.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -152,7 +152,7 @@ return [
     'layout_boxed' => null,
     'layout_fixed_sidebar' => true,
     'layout_fixed_navbar' => null,
-    'layout_fixed_footer' => null,
+    'layout_fixed_footer' => true,
     'layout_dark_mode' => null,
 
     /*
@@ -192,9 +192,9 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-olive elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-olive navbar-light ',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -294,15 +294,32 @@ return [
 
     'menu' => [
         // Navbar items:
-//        [
-//            'type'         => 'navbar-search',
-//            'text'         => 'search',
-//            'topnav_right' => true,
-//        ],
-//        [
-//            'type'         => 'fullscreen-widget',
-//            'topnav_right' => true,
-//        ],
+        [
+            'type'         => 'navbar-search',
+            'text'         => 'search',
+            'topnav_right' => true,
+        ],
+        [
+            'type'         => 'darkmode-widget',
+            'topnav_right' => false,
+
+        ],
+        [
+            'type'         => 'navbar-notification',
+            'id'           => 'my-notification',      // An ID attribute (required).
+            'icon'         => 'fas fa-bell',          // A font awesome icon (required).
+            'icon_color'   => 'warning',              // The initial icon color (optional).
+            'label'        => 0,                      // The initial label for the badge (optional).
+            'label_color'  => 'danger',               // The initial badge color (optional).
+            'url'          => 'notifications/show',   // The url to access all notifications/elements (required).
+            'topnav_right' => true,                   // Or "topnav => true" to place on the left (required).
+            'dropdown_mode'   => true,                // Enables the dropdown mode (optional).
+            'dropdown_flabel' => 'All notifications', // The label for the dropdown footer link (optional).
+//            'update_cfg'   => [
+//                'url' => 'notifications/get',         // The url to periodically fetch new data (optional).
+//                'period' => 30,                       // The update period for get new data (in seconds, optional).
+//            ],
+        ],
 
         // Sidebar items:
 //        [
@@ -347,14 +364,29 @@ return [
             'can' => 'view spa'
         ],
         [
-            'text' => 'Masseur / Masseuse',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-users',
-        ],
-        [
             'text' => 'Sales Management',
             'url'  => '#',
-            'icon' => 'fas fa-fw fa-money-bill',
+            'icon' => 'fas fa-fw fa-search-dollar',
+        ],
+        [
+            'text' => 'Inventory Management',
+            'icon' => 'fas fa-fw fa-shopping-cart',
+            'can' => 'view inventory',
+            'submenu' => [
+                [
+                    'text'    => 'Categories',
+                    'shift'   => 'ml-3',
+                    'route'  => 'inventory-categories.index',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view category'
+                ],
+                [
+                    'text'    => 'Inventories',
+                    'shift'   => 'ml-3',
+                    'route'  => 'inventories.index',
+                    'icon'  => 'fas fa-angle-right',
+                ],
+        ],
         ],
         [
             'text' => 'Expense Management',
@@ -367,70 +399,10 @@ return [
             'icon' => 'fas fa-fw fa-store',
         ],
         [
-            'text' => 'Payroll',
+            'text' => 'Payroll Management',
             'route'  => 'payroll.index',
-            'icon' => 'fas fa-fw fa-store',
+            'icon' => 'fas fa-fw  fa-money-check-alt',
         ],
-//        [
-//            'text'    => 'multilevel',
-//            'icon'    => 'fas fa-fw fa-share',
-//            'submenu' => [
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//                [
-//                    'text'    => 'level_one',
-//                    'url'     => '#',
-//                    'submenu' => [
-//                        [
-//                            'text' => 'level_two',
-//                            'url'  => '#',
-//                        ],
-//                        [
-//                            'text'    => 'level_two',
-//                            'url'     => '#',
-//                            'submenu' => [
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                            ],
-//                        ],
-//                    ],
-//                ],
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//            ],
-//        ],
-//        ['header' => 'labels'],
-//        [
-//            'text'       => 'important',
-//            'icon_color' => 'red',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'warning',
-//            'icon_color' => 'yellow',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'information',
-//            'icon_color' => 'cyan',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'    => 'Owner Management',
-//            'icon'    => 'fas fa-user',
-//            'route'    => 'owner.lists',
-//            'can'     => 'view owner',
-//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
@@ -503,6 +475,21 @@ return [
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
+//                [
+//                    'type' => 'js',
+//                    'asset' => true,
+//                    'location' => 'public/vendor/datatables/js/jquery.dataTables.min.js',
+//                ],
+//                [
+//                    'type' => 'js',
+//                    'asset' => true,
+//                    'location' => 'vendor/datatables/js/dataTables.bootstrap4.min.js',
+//                ],
+//                [
+//                    'type' => 'css',
+//                    'asset' => true,
+//                    'location' => 'vendor/datatables/css/dataTables.bootstrap4.min.css',
+//                ],
             ],
         ],
         'Select2' => [
@@ -556,17 +543,19 @@ return [
             ],
         ],
         'BsStepper' => [
-            'active' => true,
+            'active' => false,
             'files' => [
                 [
                     'type' => 'css',
-                    'asset' => false,
-                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css',
+                    'asset' => true,
+//                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css',
+                    'location' => 'vendor/bs-stepper/css/bs-stepper.min.css',
                 ],
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js',
+                    'asset' => true,
+//                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js',
+                    'location' => 'vendor/bs-stepper/js/bs-stepper.min.js',
                 ],
             ],
 
@@ -586,6 +575,76 @@ return [
                 ],
             ],
         ],
+        'Toastr' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/toastr/toastr.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/toastr/toastr.min.js',
+                ],
+            ],
+        ],
+        'ClearErrors' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'js/clear_errors.js',
+                ],
+            ],
+        ],
+        'CustomAlert' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'js/alerts.js',
+                ],
+            ],
+        ],
+        'Therapist' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'therapist/css/therapist.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'therapist/js/therapist.js',
+                ],
+            ],
+        ],
+        'CustomCSS' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'css/style.css',
+                ],
+            ],
+        ],
+//        'BootstrapBundle' => [
+//            'active' => true,
+//            'files' => [
+//                [
+//                    'type' => 'js',
+//                    'asset' => false,
+//                    'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
+//                ],
+//            ],
+//        ],
         'BootstrapDatePicker' => [
             'active' => true,
             'files' => [
@@ -606,7 +665,7 @@ return [
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => 'vendor/moment/moment.min.js',
                 ],
             ],
@@ -621,6 +680,26 @@ return [
         //         ],
         //     ],
         // ],
+        'Inventories' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'inventory/js/inventory.js',
+                ],
+            ],
+        ],
+        'Categories' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'inventory/js/category.js',
+                ],
+            ],
+        ],
     ],
 
     /*

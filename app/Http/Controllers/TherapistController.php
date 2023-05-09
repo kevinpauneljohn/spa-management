@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TherapistRequest;
 use App\Models\Role;
 use App\Services\TherapistService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Services\UserService;
 use App\Models\User;
-use App\Models\Owner;
-use App\Models\Spa;
 use App\Models\Therapist;
-Use Illuminate\Support\Facades\Hash;
 
 class TherapistController extends Controller
 {
@@ -23,122 +20,35 @@ class TherapistController extends Controller
         return $therapistService->all_therapist_thru_spa(Therapist::where('spa_id', $spa_id)->get());
     }
 
-    private function custom_offer_type_validation($request): string
+    public function index()
     {
-        if($request['offer_type'] === 'percentage_only' && $request['commission_percentage'] === null)
-        {
-            $request['offer_type'] = 'commission percentage field is required';
-        }
-        else if($request['offer_type'] === 'percentage_plus_allowance' && $request['commission_percentage'] === null && $request['allowance'] === null)
-        {
-            $request['offer_type'] = 'commission percentage and allowance field are required';
-        }
-        else if($request['offer_type'] === 'amount_only' && $request['commission_flat'] === null)
-        {
-            $request['offer_type'] = 'commission amount is required';
-        }
-        else if($request['offer_type'] === 'amount_plus_allowance' && $request['commission_flat'] === null && $request['allowance'] === null)
-        {
-            $request['offer_type'] = 'commission amount and allowance field are required';
-        }
-        return $request['offer_type'];
+        return view('Owner.therapist.all-therapist');
     }
 
-    public function store(Request $request)
+    public function edit(Therapist $therapist)
     {
-//        return $this->custom_offer_type_validation($request->all());
-        $id = $request['spa_id'];
-        $firstname = $request['firstname'];
-        $middlename = $request['middlename'];
-        $lastname = $request['lastname'];
-        $date_of_birth = $request['date_of_birth'];
-        $mobile_number = $request['mobile_number'];
+        return collect($therapist->user)->merge($therapist)->toArray();
+    }
 
-        $email = $request['email'];
-        if (empty($request['email'])) {
-            $email = $firstname.'_'.$lastname.'_default_email@defaultemailspa.com';
-        }
-
-        $gender = $request['gender'];
-        $certificate = $request['certificate'];
-        $commission_percentage = $request['commission_percentage'];
-        $commission_flat = $request['commission_flat'];
-        $allowance = $request['allowance'];
-        $offer_type = $request['offer_type'];
-
-        $request['offer_type'] = $this->custom_offer_type_validation($request->all());
-        $validator = Validator::make($request->all(), [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'gender' => 'required',
-            'offer_type' => [
-                'required',
-                function($attribute, $value, $fail){
-                    if ($value !== 'percentage_only' &&
-                        $value !== 'percentage_plus_allowance' &&
-                        $value !== 'amount_only' &&
-                        $value !== 'amount_plus_allowance') {
-                        $fail($value);
-                    }
-
-                }
-            ],
-        ]);
-
-        if($validator->passes())
+    public function store(TherapistRequest $request, UserService $userService)
+    {
+        if(Role::where('name','therapist')->count() === 0)
         {
-            $code = 201;
-            $isAllowed = false;
-            $checkExistingUserMobile = User::where('mobile_number', $mobile_number)->first();
-            $checkExistingUserEmail = User::where('email', $email)->first();
-
-            if (empty($checkExistingUserMobile) && empty($checkExistingUserEmail)) {
-                $isAllowed = true;
-            }
-
-            $status = false;
-            if ($isAllowed) {
-                $therapist = Therapist::create([
-                    'spa_id' => $id,
-                    'firstname' => $firstname,
-                    'middlename' => $middlename,
-                    'lastname' => $lastname,
-                    'date_of_birth' => $date_of_birth,
-                    'mobile_number' => $mobile_number,
-                    'email' => $email,
-                    'gender' => $gender,
-                    'certificate' => $certificate,
-                    'commission_percentage' => $commission_percentage,
-                    'commission_flat' => $commission_flat,
-                    'allowance' => $allowance,
-                    'offer_type' => $offer_type
-                ]);
-
-                $user_data = [
-                    'firstname' => $firstname,
-                    'middlename' => $middlename,
-                    'lastname' => $lastname,
-                    'mobile_number' => $mobile_number,
-                    'email' => $email,
-                    'username' => $firstname.'_'.$lastname.'_'.$therapist->id,
-                    'password' => Hash::make('DefaultPassword'),
-                ];
-
-                $this->saveUser($user_data);
-                $status = true;
-                $message = 'Therapist information successfully saved.';
-            } else {
-                $message = 'Email or Mobile already exists in Users Data.';
-            }
-            $response = [
-                'status'   => $status,
-                'message'   => $message
-            ];
-
-            return response($response, $code);
-        } else {
-            return response()->json($validator->errors());
+            \Spatie\Permission\Models\Role::create(['name' => 'therapist']);
         }
+        $user = $userService->create_user(collect($request->all())
+            ->only(['spa_id','firstname','middlename','lastname','date_of_birth','email','mobile_number'])->toArray())
+            ->assignRole('therapist');
+
+        $therapist = collect($request->all())
+            ->only(['spa_id','gender','certificate','commission_percentage','commission_flat','allowance','offer_type'])
+            ->merge(['user_id' => $user->id])->toArray();
+
+        if($user && Therapist::create($therapist))
+        {
+            return response()->json(['success' => true, 'message' => 'Therapist successfully added!']);
+        }
+        return response()->json(['success' => false, 'message' => 'An error occurred!'],500);
     }
 
     public function show(TherapistService $therapistService, $id)
@@ -146,147 +56,47 @@ class TherapistController extends Controller
         return response()->json(['therapist' => $therapistService->get_therapist_by_id($id)]);
     }
 
-    public function update(Request $request, $id)
-    {
-        $user_id = $request['user_id'];
-        $firstname = $request['firstname'];
-        $middlename = $request['middlename'];
-        $lastname = $request['lastname'];
-        $date_of_birth = $request['date_of_birth'];
-        $mobile_number = $request['mobile_number'];
-
-        $email = $request['email'];
-        if (empty($request['email'])) {
-            $email = $firstname.'_'.$lastname.'_default_email@defaultemailspa.com';
-        }
-
-
-        $gender = $request['gender'];
-        $certificate = $request['certificate'];
-//        $commission_percentage = $request['commission_percentage'];
-//        $commission_flat = $request['commission_flat'];
-//        $allowance = $request['allowance'];
-//        $offer_type = $request['offer_type'];
-
-        $request['offer_type'] = $this->custom_offer_type_validation($request->all());
-        $validator = Validator::make($request->all(), [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'gender' => 'required',
-            'offer_type' => [
-                'required',
-                function($attribute, $value, $fail){
-                    if ($value !== 'percentage_only' &&
-                        $value !== 'percentage_plus_allowance' &&
-                        $value !== 'amount_only' &&
-                        $value !== 'amount_plus_allowance') {
-                        $fail($value);
-                    }
-
-                }
-            ],
-        ]);
-
-        //this will make sure the proper offer will be given
-        if($request['offer_type'] === 'percentage_only')
-        {
-            $request['commission_flat'] = null;
-            $request['allowance'] = null;
-        }
-        else if($request['offer_type'] === 'percentage_plus_allowance')
-        {
-            $request['commission_flat'] = null;
-        }
-        else if($request['offer_type'] === 'amount_only')
-        {
-            $request['commission_percentage'] = null;
-            $request['allowance'] = null;
-        }
-        else
-        {
-            $request['commission_percentage'] = null;
-        }
-
-        $commission_percentage = $request['commission_percentage'];
-        $commission_flat = $request['commission_flat'];
-        $allowance = $request['allowance'];
-        $offer_type = $request['offer_type'];
-
-        $user_data = [
-            'id' => $user_id,
-            'firstname' => $firstname,
-            'middlename' => $middlename,
-            'lastname' => $lastname,
-            'mobile_number' => $mobile_number,
-            'email' => $email,
-        ];
-
-        $isAllowed = false;
-        $status = false;
-        if($validator->passes())
-        {
-            $therapist = Therapist::findOrFail($id);
-            $therapist->firstname = $firstname;
-            $therapist->middlename = $middlename;
-            $therapist->lastname = $lastname;
-            $therapist->date_of_birth = $date_of_birth;
-            $therapist->mobile_number = $mobile_number;
-            $therapist->email = $email;
-            $therapist->gender = $gender;
-            $therapist->certificate = $certificate;
-            $therapist->commission_percentage = $commission_percentage;
-            $therapist->commission_flat = $commission_flat;
-            $therapist->allowance = $allowance;
-            $therapist->offer_type = $offer_type;
-
-            $updateUser = $this->updateUser($user_data);
-            if ($updateUser) {
-                $isAllowed = true;
-            }
-
-            if ($isAllowed) {
-                if($therapist->isDirty()){
-                    $therapist->save();
-                    $status = true;
-                    $message = 'Therapist information successfully updated.';
-                } else {
-                    $status = false;
-                    $message = 'No changes has been made.';
-                }
-            } else {
-                $message = 'Email or Mobile already exists in Users Data.';
-            }
-
-            return response()->json(['status' => $status, 'message' => $message]);
-        }
-        return response()->json($validator->errors());
-    }
-
-    public function destroy($id)
+    public function update(TherapistRequest $request, $id, UserService $userService, TherapistService $therapistService)
     {
         $therapist = Therapist::findOrFail($id);
+        $user = User::findOrFail($therapist->user_id)->fill(collect($request->all())
+            ->only(['firstname','middlename','lastname','date_of_birth','email','mobile_number'])->toArray());
 
-        $status = false;
-        $message = 'Therapist information could not be deleted.';
-        if ($therapist->delete()) {
-            $status = true;
-            $message = 'Therapist information successfully deleted.';
-        }
+        $therapist->fill(
+            collect(
+                $therapistService->offer_type_filter(collect($request->all())->toArray())
+            )
+            ->only(['spa_id','gender','certificate','commission_percentage','commission_flat','allowance','offer_type'])
+            ->merge(['user_id' => $user->id])->toArray()
+        );
 
-        return response()->json(['status' => $status, 'message' => $message]);
+        if($user->isClean() && $therapist->isClean()) return response()->json(['success' => false, 'message' => 'No changes!']);
+
+        if($user->isDirty()) $user->save();
+        if($therapist->isDirty()) $therapist->save();
+
+        return response()->json(['success' => true, 'message' => 'Therapist successfully updated!']);
+
     }
 
-    public function overview($id)
+    public function destroy($id, TherapistService $therapistService)
     {
-        $spa = Spa::where('id', $id)->first();
-        $owner_id = $spa->owner_id;
+        if($therapistService->delete_therapist($id)) return response()->json(['success' => true,'message' => 'Therapist moved to trash']);
 
-        $owner = Owner::where('id', $owner_id)->first();
-        $owners = User::role(['owner'])->where('id', $owner->user_id)->first();
-        $roles = $owners->getRoleNames()->first();
-
-        return view('Therapist.overview',compact('spa', 'owners', 'roles'));
+        return response()->json(['success' => false,'message' => 'An error occured']);
     }
+
+//    public function overview($id)
+//    {
+//        $spa = Spa::where('id', $id)->first();
+//        $owner_id = $spa->owner_id;
+//
+//        $owner = Owner::where('id', $owner_id)->first();
+//        $owners = User::role(['owner'])->where('id', $owner->user_id)->first();
+//        $roles = $owners->getRoleNames()->first();
+//
+//        return view('Therapist.overview',compact('spa', 'owners', 'roles'));
+//    }
 
     public function saveUser($data)
     {
