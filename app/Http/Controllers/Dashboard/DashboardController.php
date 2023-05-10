@@ -13,7 +13,7 @@ class DashboardController extends Controller
             return view('Dashboard.dashboard');
         } else if (auth()->user()->hasRole('owner')) {
             return view('Owner.index');
-        } else if (auth()->user()->hasRole('frontdesk')) {
+        } else if (auth()->user()->hasRole('front desk')) {
             return redirect('/receptionist-dashboard');
         }
     }
