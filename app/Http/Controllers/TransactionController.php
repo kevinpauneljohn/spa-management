@@ -178,41 +178,6 @@ class TransactionController extends Controller
         return $data;
     }
 
-    public function getLatestReservation($id)
-    {
-        $firstDay = date('Y-m-01 00:00:00');
-        $lastDay = date('Y-m-t 23:59:59');
-
-        $transaction = Transaction::where(
-            'spa_id', $id
-        )->where(
-            'amount','>', 0
-        )->where(
-            'start_time', '>=', $firstDay
-        )->where(
-            'end_time', '<=', $lastDay
-        )->with(['client'])->get();
-
-        return DataTables::of($transaction)
-            ->editColumn('client',function($transaction){
-                return $transaction->client['firstname'].' '.$transaction->client['lastname'];
-            })
-            ->addColumn('service',function ($transaction){
-                return $transaction->service_name;
-            })
-            ->addColumn('room',function ($transaction){
-                return $transaction->room_id;
-            })
-            ->addColumn('Amount',function ($transaction){
-                return $transaction->amount;
-            })
-            ->addColumn('date',function ($transaction){
-                return date('F d, Y H:i:s A', strtotime($transaction->created_at));
-            })
-            ->rawColumns(['client', 'date'])
-            ->make(true);
-    }
-
     public function show($id)
     {
         $data = [];
@@ -350,7 +315,7 @@ class TransactionController extends Controller
         $allClientsTransactions = Transaction::where('spa_id', $id,)->groupBy('client_id')->pluck('client_id');
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
-        $sale = Sale::where('user_id', $user_id)->whereDate('created_at', '>=', $months_from)->whereDate('created_at', '<=', $months_to)->get();
+        $sale = Sale::where('user_id', auth()->user()->id)->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {
