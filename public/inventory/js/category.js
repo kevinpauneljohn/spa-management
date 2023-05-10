@@ -122,3 +122,46 @@ $(document).on('submit','.edit-category-form',function(form){
     });
     clear_errors('name')
 });
+
+
+$(document).on('click','.delete-category-btn',function(){
+    $tr = $(this).closest('tr');
+    id = this.id;
+    let data = $tr.children('td').map(function () {
+        return $(this).text();
+    }).get();
+
+    swal.fire({
+        title: "Are you sure you want to delete: "+data[1]+"?",
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                url : '/inventory-categories/'+id,
+                method : 'DELETE',
+                headers: csrf_token,
+            }).done(function(data){
+                console.log(data)
+                if(data.success === true)
+                {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.message
+                    });
+                    tableName.DataTable().ajax.reload(null, false);
+                }else if(data.success === false)
+                {
+                    Toast.fire({
+                        type: 'warning',
+                        title: data.message
+                    });
+                }
+            });
+        }
+    });
+});

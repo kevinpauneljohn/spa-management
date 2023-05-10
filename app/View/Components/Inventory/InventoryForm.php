@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Inventory;
 
+use App\Models\UnitOfMeasurement;
 use App\Services\InventoryService;
 use App\Services\UserService;
 use Illuminate\View\Component;
@@ -11,6 +12,7 @@ class InventoryForm extends Component
     public $formDefault;
     public $spas;
     public $categories;
+    public $measurements;
     /**
      * Create a new component instance.
      *
@@ -21,6 +23,7 @@ class InventoryForm extends Component
         $this->formDefault = $formDefault;
         $this->spas = $userService->get_staff_owner()->spas;
         $this->categories = $inventoryService->categories($userService);
+        $this->measurements = UnitOfMeasurement::all();
     }
 
     /**
