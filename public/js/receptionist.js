@@ -1752,6 +1752,7 @@ $(document).on('change keyup input', '.filterClient', function () {
                     });
                 }
             } else {
+                alert('test')
                 $('#client_type'+id).val('new');
                 $('#client_type'+id).prop( "disabled", true );
 
@@ -1772,46 +1773,46 @@ $(document).on('change keyup input', '.filterClient', function () {
     });
 });
 
-$(document).on('click', '.filterValue', function () {
-    var id = this.id;
-    var index = $(this).data("index");
-    var room_id = $(this).data("room");
+// $(document).on('click', '.filterValue', function () {
+//     var id = this.id;
+//     var index = $(this).data("index");
+//     var room_id = $(this).data("room");
 
-    $('.clientFilter'+room_id).val(index);
-    $("#suggesstion-box"+room_id).html('');
-    $("#suggesstion-box"+room_id).addClass('hidden');
+//     $('.clientFilter'+room_id).val(index);
+//     $("#suggesstion-box"+room_id).html('');
+//     $("#suggesstion-box"+room_id).addClass('hidden');
 
-    $.ajax({
-        'url' : '/client/'+id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            if (result.client != '') {
-                $('#existing_user_id_'+room_id).val(result.client.id);
-                $('#first_name'+room_id).val(result.client.firstname);
-                $('#first_name'+room_id).prop( "disabled", true );
-                $('#middle_name'+room_id).val(result.client.middlename);
-                $('#middle_name'+room_id).prop( "disabled", true );
-                $('#last_name'+room_id).val(result.client.lastname);
-                $('#last_name'+room_id).prop( "disabled", true );
-                $('#date_of_birth'+room_id).val(result.client.date_of_birth);
-                $('#mobile_number'+room_id).val(result.client.mobile_number);
-                $('#email'+room_id).val(result.client.email);
-                $('#address'+room_id).val(result.client.address);
-                $('#client_type'+room_id).val('recurring');
-                $('#client_type'+room_id).prop( "disabled", true );
-                $('.clientInfo'+room_id).removeClass('hidden');
-                $('.clientContact'+room_id).removeClass('hidden');
-                $('.clientAddress'+room_id).removeClass('hidden');
-                $('.clientService'+room_id).removeClass('hidden');
-                $('.clientTime'+room_id).removeClass('hidden');
-            } else {
-                // $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
-            }
-        }
-    });
-});
+//     $.ajax({
+//         'url' : '/client/'+id,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             if (result.client != '') {
+//                 $('#existing_user_id_'+room_id).val(result.client.id);
+//                 $('#first_name'+room_id).val(result.client.firstname);
+//                 $('#first_name'+room_id).prop( "disabled", true );
+//                 $('#middle_name'+room_id).val(result.client.middlename);
+//                 $('#middle_name'+room_id).prop( "disabled", true );
+//                 $('#last_name'+room_id).val(result.client.lastname);
+//                 $('#last_name'+room_id).prop( "disabled", true );
+//                 $('#date_of_birth'+room_id).val(result.client.date_of_birth);
+//                 $('#mobile_number'+room_id).val(result.client.mobile_number);
+//                 $('#email'+room_id).val(result.client.email);
+//                 $('#address'+room_id).val(result.client.address);
+//                 $('#client_type'+room_id).val('recurring');
+//                 $('#client_type'+room_id).prop( "disabled", true );
+//                 $('.clientInfo'+room_id).removeClass('hidden');
+//                 $('.clientContact'+room_id).removeClass('hidden');
+//                 $('.clientAddress'+room_id).removeClass('hidden');
+//                 $('.clientService'+room_id).removeClass('hidden');
+//                 $('.clientTime'+room_id).removeClass('hidden');
+//             } else {
+//                 // $('#search'+id).append('<option value="" disabled selected>-- No data found --</option>');
+//             }
+//         }
+//     });
+// });
 
 function countdown(id, start_time, end_time)
 {
@@ -2439,6 +2440,8 @@ $(document).on('change keyup input', '.filterClientAppointment', function () {
                 $('#first_name_appointment'+id).prop( "disabled", false );
                 $('#middle_name_appointment'+id).prop( "disabled", false );
                 $('#last_name_appointment'+id).prop( "disabled", false );
+
+                getAppointmentTypeforNewGuest(id);
             }           
         }
     });
@@ -2480,25 +2483,30 @@ $(document).on('click', '.filterValue', function () {
                 $('.clientService_appointment'+data_id).removeClass('hidden');
                 $('.clientAppointment_appointment'+data_id).removeClass('hidden');
 
-                var firstLi = $('ul.dataTabsAppointment li:first');
-                var firstLiId = firstLi[0].id;
-            
-                var appointmentVal = '';
-                if ($('#appointment_name_appointment'+firstLiId).val() != '') {
-                    appointmentVal = $('#appointment_name_appointment'+firstLiId).val();
-                }
-
-                var socialMediaVal = '';
-                if ($('#social_media_appointment'+firstLiId).val() != '') {
-                    socialMediaVal = $('#social_media_appointment'+firstLiId).val();
-                }
-
-                $('#social_media_appointment'+data_id).val(socialMediaVal).change()
-                $('#appointment_name_appointment'+data_id).val(appointmentVal).change()
+                getAppointmentTypeforNewGuest(id);
             }
         }
     });
 });
+
+function getAppointmentTypeforNewGuest(id)
+{
+    var firstLi = $('ul.dataTabsAppointment li:first');
+    var firstLiId = firstLi[0].id;
+
+    var appointmentVal = '';
+    if ($('#appointment_name_appointment'+firstLiId).val() != '') {
+        appointmentVal = $('#appointment_name_appointment'+firstLiId).val();
+    }
+
+    var socialMediaVal = '';
+    if ($('#social_media_appointment'+firstLiId).val() != '') {
+        socialMediaVal = $('#social_media_appointment'+firstLiId).val();
+    }
+
+    $('#social_media_appointment'+id).val(socialMediaVal).change()
+    $('#appointment_name_appointment'+id).val(appointmentVal).change()
+}
 
 $(document).on('change', '.select-services-appointment', function () {
     var data_id = $(this).data("id")
@@ -2914,7 +2922,7 @@ $('.process-appointment-btn').on('click', function() {
             if ($('#appointment_name_appointment'+value).val() == 'Walk-in') {
                 if (value_services.length < 1) {
                     $('#error-service_name_appointment_walkin'+value).removeClass('hidden');
-                    $('#error-service_name_appointment_walkin'+value).text('Servkces Type field is required!');
+                    $('#error-service_name_appointment_walkin'+value).text('Services Type field is required!');
                 }
 
                 if (value_start_time.length < 1) {
