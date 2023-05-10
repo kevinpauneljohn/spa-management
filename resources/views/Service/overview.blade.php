@@ -170,7 +170,7 @@
                                             <input type="number" class="form-control" id="price" name="price">
                                         </div>
                                         <div class="form-group price_per_plus_time">
-                                            <label for="price_per_plus_time">Plsu time price every 15 minutes</label>
+                                            <label for="price_per_plus_time">Plus time price every 15 minutes</label>
                                             <input type="number" class="form-control" id="price_per_plus_time" name="price_per_plus_time">
                                         </div>
                                         <div class="form-group category">

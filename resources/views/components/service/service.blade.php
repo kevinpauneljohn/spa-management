@@ -45,6 +45,10 @@
                                 <label for="price">Price</label>
                                 <input type="number" class="form-control" id="price" name="price">
                             </div>
+                            <div class="form-group price_per_plus_time">
+                                <label for="price_per_plus_time">Plus time price every 15 minutes</label>
+                                <input type="number" class="form-control" id="price_per_plus_time" name="price_per_plus_time">
+                            </div>
                             <div class="form-group category">
                                 <label for="category">Category</label>
                                 <select name="category" class="form-control" id="category">
