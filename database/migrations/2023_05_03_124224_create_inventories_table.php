@@ -20,14 +20,16 @@ class CreateInventoriesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->integer('quantity');
+            $table->integer('restock_limit');
             $table->string('unit',50);
-            $table->char('category',200)->nullable();
+            $table->unsignedBigInteger('category');
             $table->string('sku',100)->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('spa_id')->references('id')->on('spas');
             $table->foreign('owner_id')->references('id')->on('owners');
+            $table->foreign('category')->references('id')->on('inventory_categories');
         });
     }
 

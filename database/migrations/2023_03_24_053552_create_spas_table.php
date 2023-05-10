@@ -19,12 +19,10 @@ class CreateSpasTable extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('number_of_rooms');
-            $table->string('license')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('owner_id')->references('id')->on('owners');
-            $table->foreign('license')->references('id')->on('licenses');
         });
     }
 

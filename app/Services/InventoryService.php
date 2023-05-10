@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\InventoryCategory;
-use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 
 class InventoryService
@@ -18,13 +17,7 @@ class InventoryService
                 return ucwords($inventory->name);
             })
             ->editColumn('category',function($inventory){
-                $start = microtime(true);
-//                $category_name = $inventory->owner->categories()->where('id',$inventory->category)->first()->name;
-                $category_name = InventoryCategory::find($inventory->category)->name;
-                $time = microtime(true) - $start;
-                $time = Carbon::parse($time)->getPreciseTimestamp();
-//                return Carbon::parse($time)->getPreciseTimestamp();
-                return $category_name.' <br/>'.$time;
+                return InventoryCategory::find($inventory->category)->name;
             })
             ->addColumn('action', function($inventory){
                 $action = "";
@@ -42,7 +35,7 @@ class InventoryService
                 }
                 return $action;
             })
-            ->rawColumns(['action','spa_id','category'])
+            ->rawColumns(['action','spa_id'])
             ->make(true);
     }
 

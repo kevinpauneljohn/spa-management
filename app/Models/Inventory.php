@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Inventory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['spa_id','owner_id','name','description','quantity','unit','category','sku'];
+    protected $fillable = ['spa_id','owner_id','name','description','quantity','restock_limit','unit','category','sku'];
 
 //    protected static $logAttributes = ['spa_id','name','description','unit','category','sku'];
 

@@ -90,11 +90,14 @@ $(document).on('submit','.edit-inventory-form', async function (form) {
         inputAttributes: {
             maxlength: 10,
             autocapitalize: 'off',
-            autocorrect: 'off'
+            autocorrect: 'off',
+            autocomplete: 'off',
         }
     })
 
     if (password) {
+        console.log(password)
+
         $.post('/check-user-password',{password:password, '_token' : $('meta[name="csrf-token"]').attr('content')},function(result){
             console.log(result);
 
@@ -148,6 +151,7 @@ $(document).on('submit','.edit-inventory-form', async function (form) {
             }
         })
     }
+
 });
 
 
@@ -159,7 +163,7 @@ $(document).on('click','.delete-inventory-btn',function(){
     }).get();
 
     swal.fire({
-        title: "Are you sure you want to delete New Masseur/Masseuse: "+data[1]+"?",
+        title: "Are you sure you want to delete: "+data[1]+"?",
         text: "Please ensure and then confirm!",
         type: "warning",
         showCancelButton: !0,

@@ -96,11 +96,13 @@ class InventoryCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(InventoryCategory $inventoryCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        if($inventoryCategory->delete()) return response()->json(['success' => true, 'message' => 'Category successfully removed!']);
+
+        return response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
 
     public function lists(InventoryService $inventoryService, UserService $userService)

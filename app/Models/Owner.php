@@ -11,9 +11,7 @@ class Owner extends Model
 {
     use HasFactory, UsesUuid, SoftDeletes;
 
-    protected $fillable = [
-        'user_id'
-    ];
+    protected $fillable = ['user_id','license'];
 
     public function spas()
     {
