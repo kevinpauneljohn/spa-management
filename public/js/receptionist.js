@@ -833,6 +833,7 @@ $('#addNewSales').on('click', function() {
             $('#start_time'+value).datetimepicker({
                 footer: true, modal: true,
                 datepicker: {
+                    format: 'dd mmmm yyyy hh:MM TT',
                     // disableDates:  function (date) {
                     //     const currentDate = new Date();
                     // return date > currentDate ? true : false;
@@ -2243,9 +2244,7 @@ function addAppointmentForm(id, isActive, isTabFirst, isNewTab)
 
     $('#start_time_appointment'+id).datetimepicker({
         footer: true, modal: true,
-        datepicker: {
-
-        }
+        format: 'dd mmmm yyyy hh:MM TT',
     });
 
     getAppointmentType(id);
@@ -2253,9 +2252,7 @@ function addAppointmentForm(id, isActive, isTabFirst, isNewTab)
     getServicesAppointment(spa_id, 'appointment', id);
     $('#start_time_appointment_walkin'+id).datetimepicker({
         footer: true, modal: true,
-        datepicker: {
-
-        }
+        format: 'dd mmmm yyyy hh:MM TT',
     });
 }
 
