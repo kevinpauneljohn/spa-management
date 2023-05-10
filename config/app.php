@@ -122,6 +122,8 @@ return [
     'key' => env('APP_KEY'),
     'offer_type' => explode(',', env('OFFER_TYPE')),
     'certificate_type' => explode(',', env('CERTIFICATE_TYPE')),
+    'appointment_type' => explode(',', env('APPOINTMENT_TYPE')),
+    'social_media_type' => explode(',', env('SOCIAL_MEDIA')),
 
     'cipher' => 'AES-256-CBC',
 

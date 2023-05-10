@@ -26,13 +26,15 @@ class ServiceController extends Controller
         $duration = $request['duration'];
         $price = $request['price'];
         $category = $request['category'];
+        $price_per_plus_time = $request['price_per_plus_time'];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
-            'category' => 'required'
+            'category' => 'required',
+            'price_per_plus_time' => 'required'
         ]);
 
         if($validator->passes())
@@ -44,7 +46,8 @@ class ServiceController extends Controller
                 'description' => $description,
                 'duration' => $duration,
                 'price' => $price,
-                'category' => $category
+                'category' => $category,
+                'price_per_plus_time' => $price_per_plus_time
             ]);
 
             $response = [
@@ -78,13 +81,15 @@ class ServiceController extends Controller
         $duration = $request['duration'];
         $price = $request['price'];
         $category = $request['category'];
+        $price_per_plus_time = $request['price_per_plus_time'];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
-            'category' => 'required'
+            'category' => 'required',
+            'price_per_plus_time' => 'required'
         ]);
 
         if($validator->passes())
@@ -95,6 +100,7 @@ class ServiceController extends Controller
             $service->duration = $duration;
             $service->price = $price;
             $service->category = $category;
+            $service->price_per_plus_time = $price_per_plus_time;
 
             if($service->isDirty()){
                 $service->save();

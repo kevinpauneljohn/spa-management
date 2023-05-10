@@ -47,6 +47,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'edit sales'])->assignRole($receptionist);
         Permission::create(['name' => 'delete sales'])->assignRole($receptionist);
         Permission::create(['name' => 'view invoices'])->assignRole($receptionist);
+        Permission::create(['name' => 'move sales'])->assignRole($receptionist);
 
         Permission::create(['name' => 'add staff'])->assignRole($owner);
         Permission::create(['name' => 'view staff'])->assignRole($owner);

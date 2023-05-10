@@ -14,7 +14,11 @@ class Sale extends Model
         'spa_id',
         'amount_paid',
         'payment_status',
-        'user_id'
+        'user_id',
+        'appointment_batch',
+        'payment_method',
+        'payment_account_number',
+        'payment_bank_name'
     ];
 
     public function spa()
