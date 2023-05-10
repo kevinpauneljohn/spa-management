@@ -43,6 +43,18 @@
             font-weight: 600;
             margin-top: 8px;
         }
+        .closeTabs {
+            float: right;
+            font-size: .9rem;
+            font-weight: 700;
+            line-height: 1;
+            color: red;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .3;
+            margin-top: -40px;
+            margin-right: 1px;
+            border-radius: 75px;
+        }
     </style>
 
     <div class="card">
@@ -74,7 +86,7 @@
                                 <div class="info-box mb-3">
                                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user"></i></span>
                                     <div class="info-box-content">
-                                        <span class="info-box-text">New Client</span>
+                                        <span class="info-box-text">Monthly New Client</span>
                                         <span class="info-box-number newClients"></span>
                                     </div>
                                 </div>
@@ -94,16 +106,19 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">
-                                            <button class="btn btn-block btn-outline-info btn" id="addNewSales">
+                                            <!-- <button class="btn btn-block btn-outline-info btn" id="addNewSales">
                                                 <i class="fas fa-shopping-cart"></i> 
                                                 <span class="badge badge-danger text-default countSelected"></span>
+                                            </button> -->
+                                            <button class="btn btn-block btn-outline-info btn" id="addNewAppointment">
+                                                <i class="fas fa-shopping-cart"></i> 
                                             </button>
                                         </h3>
                                        
                                         <div class="card-tools">
                                             <ul class="nav nav-pills ml-auto">
                                                 <li class="nav-item">
-                                                    <a class="nav-link active" href="#room-availability" data-toggle="tab">List</a>
+                                                    <a class="nav-link active" href="#room-availability" data-toggle="tab">Rooms</a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link salesView" href="#sales-data" data-toggle="tab">
@@ -117,10 +132,17 @@
                                                     </a>
                                                 </li>
                                                 
-                                                <li class="nav-item hidden">
-                                                    <a class="nav-link" href="#reservation-data" data-toggle="tab">
+                                                <li class="nav-item">
+                                                    <a class="nav-link appointmentView" href="#appointment-data" data-toggle="tab">
                                                         Upcoming
-                                                        <span class="badge badge-danger text-default"></span>
+                                                        <span class="badge badge-danger text-default countSelectedAppoitment"></span>
+                                                    </a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                    <a class="nav-link appointmentView" href="#calendar-data" data-toggle="tab">
+                                                        Calendar
+                                                        <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
                                                     </a>
                                                 </li>
                                             </ul>
@@ -174,18 +196,18 @@
                                                 </table>
                                             </div>
 
-                                            <div class="tab-pane" id="reservation-data" style="position: relative;height: auto;">
-                                                <div class="card-header border-transparent">
-                                                    <h3 class="card-title">{{date('F, Y')}} Reservations</h3>
-                                                </div>
-                                                <table id="latest-reservation" class="table table-striped table-valign-middle" style="width:100%">
+                                            <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
+                                                <table id="appointment-data-lists" class="table table-striped table-valign-middle" style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             <th>Client Name</th>
                                                             <th>Service</th>
-                                                            <th>Room #</th>
+                                                            <th>Batch #</th>
                                                             <th>Amount</th>
+                                                            <th>Type</th>
+                                                            <th>Status</th>
                                                             <th>Date Added</th>
+                                                            <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -281,6 +303,54 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <input type="button" class="btn btn-primary add-sales-btn hidden" value="Save">
                             <input type="button" class="btn btn-primary process-sales-btn" value="Process">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="appointment-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Set New Appointment</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tabList">
+                                <input type="hidden" class="form-control" id="guest_ids_val" value="1">
+                                <ul class="nav nav-pills dataTabsAppointment">
+
+                                </ul>
+                            </div>
+                            <br />
+
+                            <div class="tab-content tabFormAppointment">
+                                <div class="tab-pane" id="summaryTab">
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
+                                        The total amount can change depending on the selected services.
+                                    </div>
+                                    <div class="tableSummaryAppointment"></div>
+                                    <div class="py-2 px-3 mt-4">
+                                        <div class="col-md-4 border border-danger float-right">
+                                            <h2 class="mb-0 total_amount_appointment text-center"></h2>
+                                            <h4 class="mt-0 text-center">TOTAL</h4>
+                                            <input type="hidden" class="form-control" id="totalAmountToPayAppointment">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary process-appointment-btn">Process</button>
+                            <button type="button" class="btn btn-primary add-appointment-btn hidden">Save</button>
                         </div>
                     </div>
                 </div>
@@ -420,6 +490,104 @@
                 </div>
             </form>
         </div>
+
+        <div class="modal" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="update-appointment-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title viewAppointmentUpdateTitle"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
+                                The total amount can change depending on the selected services.
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="edit_app_firstname">First Name : </label>
+                                        <input type="text" class="form-control edit_app_firstname" id="edit_app_firstname" disabled>
+                                        <input type="hidden" class="form-control edit_app_client_id" id="edit_app_client_id">
+                                        <input type="hidden" class="form-control edit_app_id" id="edit_app_id">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="edit_app_middlename">Middle Name : </label>
+                                        <input type="text" class="form-control edit_app_middlename" id="edit_app_middlename" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="edit_app_lastname">Last Name : </label>
+                                        <input type="text" class="form-control edit_app_lastname" id="edit_app_lastname" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="edit_app_date_of_birth">Date of Birth : </label>
+                                        <input type="date" class="form-control edit_app_date_of_birth" id="edit_app_date_of_birth">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="edit_app_mobile_number">Mobile Number : </label>
+                                        <input type="text" class="form-control edit_app_mobile_number" id="edit_app_mobile_number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="edit_app_email">Email Address : </label>
+                                        <input type="email" class="form-control edit_app_email" id="edit_app_email">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="edit_app_address">Address : </label>
+                                        <input type="email" class="form-control edit_app_address" id="edit_app_address">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="edit_app_appointment_type">Appointment Type : </label>
+                                        <select data-id="_up" name="edit_app_appointment_type" id="appointment_name_appointmentup" class="form-control appointment_name_appointmentup" style="width:100%;"></select>
+                                    </div>
+                                    <div class="col-md-6 socialMedialUpdate">
+                                        <label for="edit_app_social_media_appointment">Social Media Type : </label>
+                                        <select data-id="_up" name="edit_app_social_media_appointment" id="social_media_appointmentup" class="form-control social_media_appointmentup" style="width:100%;"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="edit_app_services">Services : </label>
+                                        <select data-id="_up" name="edit_app_services" id="edit_app_servicesup" class="form-control select-services-appointment" style="width:100%;"></select>
+                                        <input type="hidden" name="price_appointment_up" id="price_appointment_up" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="edit_app_start_time">Start Time : </label>
+                                        <input name="start_time_appointment_up" id="start_time_appointment_up" class="form-control">
+                                    </div>
+                                    <div class="col-md-4 border border-danger pull-right">
+                                        <h2 class="mb-0 text-center totalAmountUpdateAppointmentFormatted"></h2>
+                                        <h4 class="mt-0 text-center">TOTAL</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary update-appointment-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     @endcan
 
     @can('view sales')
@@ -511,6 +679,93 @@
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="view-appointment-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title viewAppointmentTitle"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
+                                The total amount can change depending on the selected services.
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_full_name">Full Name : </label>
+                                        <p class="viewAppointmentFullname"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_date_of_birth">Date of Birth : </label>
+                                        <p class="viewAppointmentDateOfBirth"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_mobile_number">Mobile Number : </label>
+                                        <p class="viewAppointmentMobileNumber"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="view_email">Email Address : </label>
+                                        <p class="viewAppointmentEmail"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="view_email">Address : </label>
+                                        <p class="viewAppointmentAddress"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_batch">Batch # : </label>
+                                        <p class="viewAppointmentBatch"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_type">Type : </label>
+                                        <p class="viewAppointmentType"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_status">Status : </label>
+                                        <p class="viewAppointmentStatus"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="view_service">Services : </label>
+                                        <p class="viewAppointmentService"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="view_start_time">Start Time : </label>
+                                        <p class="viewAppointmentStartTime"></p>
+                                    </div>
+                                    <div class="col-md-4 border border-danger pull-right">
+                                        <h2 class="mb-0 text-center totalAmountViewAppointmentFormatted"></h2>
+                                        <h4 class="mt-0 text-center">TOTAL</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -639,6 +894,199 @@
                 </div>
             </form>
         </div>
+
+        <div class="modal" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="invoice-update-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title updateInvoiceTitle"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="payment_method">Payment Method</label><span class="isRequired">*</span>
+                                <select class="form-control" name="payment_method" id="payment_method">
+                                    <option value="" selected disabled>-- Choose Here --</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="gcash">Gcash</option>
+                                    <option value="paymaya">Paymaya</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                                <input type="hidden" class="form-control" id="sales_invoice_id">
+                            </div>
+                            <div class="form-group">
+                                <label for="payment_account_number">Account Number</label><span class="isRequired">*</span>
+                                <input type="text" class="form-control" name="payment_account_number" id="payment_account_number">
+                            </div>
+                            <div class="form-group payment_bank_name hidden">
+                                <label for="payment_bank_name">Bank Name</label><span class="isBankName isRequired">*</span>
+                                <input type="text" class="form-control" name="payment_bank_name" id="payment_bank_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="payment_status">Payment Status</label><span class="isRequired">*</span>
+                                <select class="form-control" name="payment_status" id="payment_status">
+                                    <option value="" selected disabled>-- Choose Here --</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary update-invoice-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endcan
+
+    @can('move sales')
+    <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" id="move-appointment-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-md modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title viewAppointmentMoveTitle"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
+                                The total amount can change depending on the selected services and plus time.
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="move_app_firstname">First Name : </label>
+                                        <input type="text" class="form-control move_app_firstname" id="move_app_firstname" disabled>
+                                        <input type="hidden" class="form-control move_app_client_id" id="move_app_client_id">
+                                        <input type="hidden" class="form-control move_app_id" id="move_app_id">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_app_middlename">Middle Name : </label>
+                                        <input type="text" class="form-control move_app_middlename" id="move_app_middlename" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_app_lastname">Last Name : </label>
+                                        <input type="text" class="form-control move_app_lastname" id="move_app_lastname" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="move_app_date_of_birth">Date of Birth : </label>
+                                        <input type="date" class="form-control move_app_date_of_birth" id="move_app_date_of_birth">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="move_app_mobile_number">Mobile Number : </label>
+                                        <input type="text" class="form-control move_app_mobile_number" id="move_app_mobile_number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="move_app_email">Email Address : </label>
+                                        <input type="email" class="form-control move_app_email" id="move_app_email">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="move_app_address">Address : </label>
+                                        <input type="email" class="form-control move_app_address" id="move_app_address">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="move_app_appointment_type">Appointment Type : </label><span class="isRequired">*</span>
+                                        <select data-id="_move" name="move_app_appointment_type" id="appointment_name_appointmentmove" class="form-control appointment_name_appointmentmove" style="width:100%;"></select>
+                                        <p class="text-danger hidden" id="error-move_app_appointment_type"></p>
+                                    </div>
+                                    <div class="col-md-6 socialMedialMove">
+                                        <label for="move_app_social_media_appointment">Social Media Type : </label>
+                                        <select data-id="_move" name="move_app_social_media_appointment" id="social_media_appointmentmove" class="form-control social_media_appointmentmove" style="width:100%;"></select>
+                                        <p class="text-danger hidden" id="error-move_app_social_media_appointment"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="move_app_services">Services : </label><span class="isRequired">*</span>
+                                        <select data-id="_up" name="move_app_services" id="move_app_servicesmove" class="form-control select-services-move-appointment" style="width:100%;"></select>
+                                        <input type="hidden" name="price_appointment_move" id="price_appointment_move" class="form-control" value="0">
+                                        <input type="hidden" name="move_app_services_id" id="move_app_services_id" class="form-control">
+                                        <p class="text-danger hidden" id="error-move_app_servicesmove"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_plus_time">Plus Time : </label>
+                                        <select name="move_plus_time" id="move_plus_time" class="form-control select-move-plus_time" style="width:100%;"></select>
+                                        <input type="hidden" name="move_plus_time_price" id="move_plus_time_price" class="form-control" value="0">
+                                        <input type="hidden" name="move_plus_time_id" id="move_plus_time_id" class="form-control" value="0">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_app_start_time">Start Time : </label><span class="isRequired">*</span>
+                                        <input name="start_time_appointment_move" id="start_time_appointment_move" class="form-control">
+                                        <p class="text-danger hidden" id="error-start_time_appointment_move"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="move_masseur1">Masseur 1</label><span class="isRequired">*</span>
+                                        <select name="move_masseur1" id="move_masseur1" class="form-control select-move-masseur1" style="width:100%;"></select>
+                                        <input type="hidden" name="move_masseur1_id" id="move_masseur1_id" class="form-control">
+                                        <input type="hidden" name="move_masseur1_id_prev" id="move_masseur1_id_prev" class="form-control">
+
+                                        <div class="custom-control custom-checkbox">
+                                            <input disabled class="custom-control-input isMoveMultipleMasseur" type="checkbox" id="moveCustomCheckbox" value="1">
+                                            <label for="moveCustomCheckbox" class="custom-control-label">Is multiple Masseur ?</label>
+                                        </div>
+                                        <p class="text-danger hidden" id="error-move_masseur1_id"></p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_masseur2">Masseur 2</label>
+                                        <select name="move_masseur2" id="move_masseur2" class="form-control select-move-masseur2" style="width:100%;" disabled></select>
+                                        <input type="hidden" name="move_masseur2_id" id="move_masseur2_id" class="form-control">
+                                        <input type="hidden" name="move_masseur2_id_prev" id="move_masseur2_id_prev" class="form-control">
+                                        <input type="hidden" name="move_masseur2_id_val" id="move_masseur2_id_val" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="move_room">Room #</label><span class="isRequired">*</span>
+                                        <select name="move_room" id="move_room" class="form-control select-move-room" style="width:100%;"></select>
+                                        <input type="hidden" class="form-control" id="move_room_id">
+                                        <p class="text-danger hidden" id="error-move_room"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12 border">
+                                        <h2 class="mb-0 text-center totalAmountMoveAppointmentFormatted float-right"></h2>
+                                        <input type="hidden" class="form-control" id="totalAmountMoveToPay">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary move-sales-appointment-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     @endcan
 @stop
 
@@ -656,6 +1104,25 @@
 
         });
 
+        getAppointmentCount();
+        getAppointmentType('move');
+        getServicesAppointment($('#spa_id_val').val(), 'move', 'move');
+        getAppointmentType('up');
+        getServicesAppointment($('#spa_id_val').val(), 'update', 'up');
+        $('#start_time_appointment_up').datetimepicker({
+            footer: true, modal: true,
+            datepicker: {
+
+            }
+        });
+
+        $('#start_time_appointment_move').datetimepicker({
+            footer: true, modal: true,
+            datepicker: {
+
+            }
+        });
+    
         $('.dateTimePicker').datetimepicker({
             footer: true, modal: true,
             // datepicker: {
@@ -669,7 +1136,6 @@
         loadRoom();
         getTotalSales($('#spa_id_val').val());
         getMasseurAvailability($('#spa_id_val').val());
-        getLatestReservation($('#spa_id_val').val());
         loadData($('#spa_id_val').val());
         $('.select-client-type').select2();         
     });
