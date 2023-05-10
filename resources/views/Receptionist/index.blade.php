@@ -55,6 +55,10 @@
             margin-right: 1px;
             border-radius: 75px;
         }
+        .modal-body{
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
     </style>
 
     <div class="card">

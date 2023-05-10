@@ -2976,7 +2976,11 @@ $('.process-appointment-btn').on('click', function() {
                 if (value_appointment_type == 'Social Media') {
                     if (value_social_type.length > 0) {
                         $('.summaryTabAppointmentLink').removeClass('hidden');
-                    } else  if (
+                    } else {
+                        $('.summaryTabAppointmentLink').addClass('hidden');
+                    }
+                } else if (value_appointment_type == 'Walk-in') {
+                    if (
                         value_services.length > 0 &&
                         value_start_time.length > 0 &&
                         therapist_1.length > 0 &&
@@ -2986,8 +2990,6 @@ $('.process-appointment-btn').on('click', function() {
                     } else {
                         $('.summaryTabAppointmentLink').addClass('hidden');
                     }
-                } else if (value_appointment_type == 'Walk-in') {
-                    
                 } else {
                     $('.summaryTabAppointmentLink').removeClass('hidden');
                 }
