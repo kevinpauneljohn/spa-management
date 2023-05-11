@@ -19,7 +19,7 @@
             </div>
             <div class="table table-responsive" id="table-wrapper">
                 <!--GENERATED TABLE -->
-                <x-table :columnNames="['Name','Total Sales','Total Commision','View Summary']"/>
+                <x-table :columnNames="['Name','Total Sales','Total Commision','Total Wage','View Summary']"/>
             </div>
         </div>
     </div>
@@ -36,7 +36,8 @@
 @section('js')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
 
 <script>
 $(function() {
@@ -55,11 +56,12 @@ $(function() {
         var html = "";
         $.each(data, function(key, value){
 
-            html += "<tr>";
+            html += "<tr class='text-center'>";
             html += "<td>" + value.fullname + "</td>";
             html += "<td>" + value.amount + "</td>";
             html += "<td>" + value.TotalCommission + "</td>";
-            html += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary viewsummary" data-bs-toggle="modal" data-bs-target="#exampleModal">View Summary </button> </td>';
+            html += "<td>" + "0" + "</td>";
+            html += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary viewsummary" data-toggle="modal" data-target="#exampleModal">View Summary </button> </td>';
             html += "</tr>";
             
         });

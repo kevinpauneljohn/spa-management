@@ -22,7 +22,6 @@ class CreateSpasTable extends Migration
             $table->string('license')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
             $table->foreign('owner_id')->references('id')->on('owners');
             $table->foreign('license')->references('id')->on('licenses');
         });

@@ -101,8 +101,15 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index');
     Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date');
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
+    Route::get('/employee-time',[\App\Http\Controllers\PayrollController::class, 'getEmployeeTime']);
 
-    Route::get('/attendance', [\App\Http\Controllers\AttendanceController::class, 'index'])->name('attendance.index');
+
+    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
+    Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
+    Route::get('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
+    Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
+    Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
+    Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
 
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);

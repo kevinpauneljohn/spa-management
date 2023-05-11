@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['employee_id','time_in','time_out','break_in','break_out'];
+    protected $table = 'attendances';
+
+    public function employee_tables()
+    {
+        return $this->belongsTo(EmployeeTable::class, 'id');
+    }
 }

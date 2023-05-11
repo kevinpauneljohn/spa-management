@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
+use App\Models\EmployeeTable;
 use App\Models\Therapist;
 use App\Models\Transaction;
 use App\Services\PayrollService;
@@ -30,7 +32,7 @@ class PayrollController extends Controller
         [$start, $end] = array_map(function($date) {
             return Carbon::parse($date)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         }, explode('-', $request->daterange));
-    
+        
         $data = Therapist::with(['transactions' => function ($query) use ($start, $end) {
             $query->whereBetween('created_at', [$start, $end]);
         }])->get()
@@ -48,7 +50,29 @@ class PayrollController extends Controller
 
     }
 
-    
+    public function getEmployeeTime(){
+        
+        $salary = Attendance::all()
+        ->groupBy('employee_id')
+        ->map(function($employeeAttendance) {
+            return $employeeAttendance->map(function($ftable) {
+                $timein = Carbon::parse($ftable->time_in);
+                $timeout = Carbon::parse($ftable->time_out);
+                return $timeout->diffInHours($timein);
+            })->sum();
+        });
+
+    $employeeSalary = collect();
+
+    foreach($salary as $employeeId => $totalHours) {
+        $monthlyRate = EmployeeTable::where('id', $employeeId)->value('Monthly_Rate');
+        $employeeSalary[$employeeId] = ($monthlyRate / 192) * $totalHours;
+    }
+
+    return $employeeSalary;
+
+    }
+
     public function getSummary(Request $request, $id) {
         
         $start = Carbon::parse($request->datestart)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');

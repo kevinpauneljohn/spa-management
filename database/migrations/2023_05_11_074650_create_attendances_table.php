@@ -15,12 +15,14 @@ class CreateAttendancesTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreign('spa_id')->references('id')->on('spas');
-            $table->date('time_in');
-            $table->date('time_out');
-            $table->date('break_in');
-            $table->date('break_out');
+            $table->unsignedBigInteger('employee_id');
+            $table->string('time_in');
+            $table->string('time_out');
+            $table->string('break_in');
+            $table->string('break_out');
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('id')->on('employee_tables');
         });
     }
 
