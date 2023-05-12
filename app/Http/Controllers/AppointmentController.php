@@ -76,4 +76,9 @@ class AppointmentController extends Controller
     {
         return $this->appointmentService->appointmentSales($request);
     }
+
+    public function getUpcomingGuests($id)
+    {
+        return $this->appointmentService->getUpcomingGuest($id);
+    }
 }

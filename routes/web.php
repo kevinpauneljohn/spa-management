@@ -112,6 +112,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('appointment-sales',[\App\Http\Controllers\AppointmentController::class,'sales'])->name('appointment.sales');
     Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
     Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
+    Route::get('/appointment-upcoming/{id}',[\App\Http\Controllers\AppointmentController::class,'getUpcomingGuests'])->name('appointment.upcoming.guest');
+
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
 
