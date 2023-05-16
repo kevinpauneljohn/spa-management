@@ -21,7 +21,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function(){
     Route::get('/dashboard',[\App\Http\Controllers\Dashboard\DashboardController::class,'index'])->name('dashboard');
     Route::get('/receptionist-dashboard',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'index'])->name('receptionist.dashboard');
-    Route::get('/receptionist-lists',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'lists'])->name('receptionist.lists');
+    Route::get('/receptionist-lists/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'lists'])->name('receptionist.lists');
     Route::get('/receptionist-service/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'getServices'])->name('receptionist.service');
     Route::get('/receptionist-plus-range',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'plusTime'])->name('receptionist.plus.range');
     Route::get('/receptionist-room-range/{num}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'roomRange'])->name('receptionist.room.range');
@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'show'])->name('owner.show');
     Route::put('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'update'])->name('owner.update');
     Route::delete('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'destroy'])->name('owner.delete');
+    Route::get('/owner-dashboard',[\App\Http\Controllers\Owners\OwnerController::class,'dashboard'])->name('owner.dashboard');
 
     Route::get('/spa-list/{id}',[\App\Http\Controllers\SpaController::class,'lists'])->name('spa.lists');
     Route::get('/spa/overview/{id}',[\App\Http\Controllers\SpaController::class,'overview'])->name('spa.overview');

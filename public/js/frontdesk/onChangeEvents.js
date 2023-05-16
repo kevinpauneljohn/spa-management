@@ -95,7 +95,6 @@ function triggerPlusTime(spa_id, plus_time, data_id, service_price, selected_id,
 
 function onChangeMasseur(data_id, id, cur_val, field, therapist_1, therapist_2)
 {
-    console.log(field)
     $('.'+therapist_1).children('option[value="' + id + '"]').attr('disabled', true);
     $('.'+therapist_2).children('option[value="' + id + '"]').attr('disabled', true);
 

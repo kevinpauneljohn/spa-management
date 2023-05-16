@@ -80,10 +80,12 @@ function getRoomList(id, fields)
 
 function loadRoom()
 {
+    var spa_id = $('#spa_id_val').val();
+
     UnAvailableRoom = [];
     $('.displayRoomList').html('');
     $.ajax({
-        'url' : '/receptionist-lists',
+        'url' : '/receptionist-lists/'+spa_id,
         'type' : 'GET',
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
