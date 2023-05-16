@@ -39,7 +39,7 @@ class Transaction extends Model
 
     public function therapist()
     {
-        return $this->belongsTo(Therapist::class,'therapist_1');
+        return $this->belongsTo(Therapist::class);
     }
     public function service()
     {
