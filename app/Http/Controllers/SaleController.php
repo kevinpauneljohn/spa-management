@@ -34,7 +34,10 @@ class SaleController extends Controller
                 $bank = $sale->payment_bank_name;
                 $status = $sale->payment_status;
                 if(auth()->user()->can('view invoices')) {
-                    $action .= '<a href="#" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    if ($sale->payment_status != 'paid') {
+                        $action .= '<a href="#" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    }
+                    
                     $action .= '<a href="#" class="btn btn-xs btn-outline-success rounded view-invoice" id="'.$sale->id.'"><i class="fas fa-file-invoice"></i></a>&nbsp;';
                 }
 

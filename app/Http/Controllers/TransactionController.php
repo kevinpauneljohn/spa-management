@@ -214,7 +214,7 @@ class TransactionController extends Controller
             }
 
             $amount_formatted = number_format($getAmount);
-            $start_time = date('H:i m/d/Y', strtotime($getTranscations[0]->start_time));
+            $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
             $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
             $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
             $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
@@ -315,7 +315,7 @@ class TransactionController extends Controller
         $allClientsTransactions = Transaction::where('spa_id', $id,)->groupBy('client_id')->pluck('client_id');
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
-        $sale = Sale::where('user_id', auth()->user()->id)->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
+        $sale = Sale::where(['user_id' => auth()->user()->id, 'payment_status' => 'paid'])->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {
@@ -348,7 +348,7 @@ class TransactionController extends Controller
         // return $response;
 
         $sales = Sale::with(['spa'])->findOrFail($id);
-        $transaction = Transaction::where('sales_id', $id)->with(['client', 'service'])->get();
+        $transaction = Transaction::where('sales_id', $id)->where('amount','>', 0)->with(['client', 'service'])->get();
         $owner = Owner::findOrFail($sales->spa['owner_id']);
         // $sales = Sale::findOrFail($transaction->sales_id);
         // $sales_id = substr($sales->id, -12);

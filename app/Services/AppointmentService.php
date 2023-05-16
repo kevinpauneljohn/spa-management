@@ -247,7 +247,7 @@ class AppointmentService
     public function view($id)
     {
         $appointment = Appointment::with(['client'])->findOrFail($id);
-
+        $appointment->start_time = date('d F Y, h:i A', strtotime($appointment->start_time));
         return $appointment;
     }
 
@@ -426,7 +426,7 @@ class AppointmentService
             $status = true;
         }
 
-        return $data['id'];
+        return $id;
     }
 
     public function createTransaction($data)
@@ -507,5 +507,28 @@ class AppointmentService
         }
 
         return response()->json(['status' => $status, 'message' => $message]);
+    }
+
+    public function getUpcomingGuest($id)
+    {
+        $appointment = Appointment::where(['spa_id' => $id, 'appointment_status' => 'reserved'])->with('client')->get();
+
+        $data = [];
+        foreach ($appointment as $list) {
+            $created_at = Carbon::parse($list->created_at)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+            $seconds = strtotime($list->start_time) - strtotime($created_at);
+            $total_minutes_in_seconds = $seconds;
+
+            $data [] = [
+                'id' => $list->id,
+                'created_at' => $list->created_at,
+                'start_time' => $list->start_time,
+                'fullname' => $list->client->firstname.' '.$list->client->lastname,
+                'mobile_number' => $list->client->mobile_number,
+                'total_seconds' => $total_minutes_in_seconds
+            ];
+        }
+
+        return $data;
     }
 }
