@@ -30,7 +30,7 @@ class AppointmentService
             })
             ->editColumn('service',function ($appointment){
 
-                return $appointment->service_name;
+                return '<span class="badge bg-primary">'.$appointment->service_name.'</span>';
             })
             ->editColumn('batch',function ($appointment){
 
@@ -52,7 +52,7 @@ class AppointmentService
                 return $status;
             })
             ->editColumn('status',function ($appointment){
-                return ucfirst($appointment->appointment_status);
+                return '<span class="badge bg-danger">'.ucfirst($appointment->appointment_status).'</span>';
             })
             ->editColumn('date',function ($appointment){
                 $createdAt = Carbon::parse($appointment->created_at);
@@ -81,7 +81,7 @@ class AppointmentService
 
                 return $action;
             })
-            ->rawColumns(['action','client','batch','amount','type','date'])
+            ->rawColumns(['action','client','service','batch','amount','type','status','date'])
             ->make(true);
     }
 

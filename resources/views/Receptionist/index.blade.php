@@ -28,13 +28,15 @@
         .select2-container--default .select2-selection--single {
             height: 40px;
         }
-        .modal {
-            overflow-y:auto;
+
+        .modal-body{
+            max-height: calc(400vh - 200px) !important;
+            overflow-y: auto;
         }
 
-        .gj-modal .gj-picker-bootstrap {
+        /* .gj-modal .gj-picker-bootstrap {
             padding: 15px !important;
-        }
+        } */
         .progress span {
             position: absolute;
             text-align:center;
@@ -163,11 +165,21 @@
                                                 <input type="hidden" class="form-control" id="room_ids_val">
                                                 <input type="hidden" class="form-control" id="isValid">
                                                 <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
+                                                <div class="alert alert-primary alert-dismissible">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
+                                                    Blue color means available, Gray color means occupied.
+                                                </div>
                                                 <div class="row displayRoomList">
 
                                                 </div>
                                             </div>
                                             <div class="tab-pane" id="sales-data" style="position: relative; height: auto;">
+                                                <div class="alert alert-primary alert-dismissible">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
+                                                    List of clients that currently occupy rooms.
+                                                </div>
                                                 <table id="sales-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
                                                     <thead>
                                                         <tr>
@@ -188,6 +200,11 @@
                                                 </table>
                                             </div>
                                             <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
+                                                <div class="alert alert-primary alert-dismissible">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
+                                                    List of all sales. Please update the payment status once the client has paid.
+                                                </div>
                                                 <table id="transaction-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
                                                     <thead>
                                                         <tr>
@@ -205,6 +222,11 @@
                                             </div>
 
                                             <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
+                                                <div class="alert alert-primary alert-dismissible">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
+                                                    List of upcoming clients. Please move and update the start time of the appointment once the client has arrived.
+                                                </div>
                                                 <table id="appointment-data-lists" class="table table-striped table-valign-middle" style="width:100%">
                                                     <thead>
                                                         <tr>

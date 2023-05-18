@@ -47,11 +47,11 @@ function filterClient(id, value, spa_id)
                 $("#suggesstion-box-appointment"+id).html('');
                 $("#suggesstion-box-appointment"+id).addClass('hidden');
 
-                $('.clientInfo_appointment'+id).removeClass('hidden');
-                $('.clientContact_appointment'+id).removeClass('hidden');
-                $('.clientAddress_appointment'+id).removeClass('hidden');
-                $('.clientService_appointment'+id).removeClass('hidden');
-                $('.clientAppointment_appointment'+id).removeClass('hidden');
+                $('.clientInfo_appointment'+id).slideDown(500);
+                $('.clientContact_appointment'+id).slideDown(1000);
+                $('.clientAddress_appointment'+id).slideDown(1500);
+                $('.clientService_appointment'+id).slideDown(2000);
+                $('.clientAppointment_appointment'+id).slideDown(2500);
 
                 $('#first_name_appointment'+id).prop( "disabled", false );
                 $('#middle_name_appointment'+id).prop( "disabled", false );
@@ -93,11 +93,11 @@ $(document).on('click', '.filterValue', function () {
                 $('#client_type_appointment'+data_id).val('member');
                 $('#client_type_appointment'+data_id).prop( "disabled", true );
 
-                $('.clientInfo_appointment'+data_id).removeClass('hidden');
-                $('.clientContact_appointment'+data_id).removeClass('hidden');
-                $('.clientAddress_appointment'+data_id).removeClass('hidden');
-                $('.clientService_appointment'+data_id).removeClass('hidden');
-                $('.clientAppointment_appointment'+data_id).removeClass('hidden');
+                $('.clientInfo_appointment'+data_id).slideDown(500);
+                $('.clientContact_appointment'+data_id).slideDown(1000);
+                $('.clientAddress_appointment'+data_id).slideDown(1500);
+                $('.clientService_appointment'+data_id).slideDown(2000);
+                $('.clientAppointment_appointment'+data_id).slideDown(2500);
 
                 getAppointmentTypeforNewGuest(id);
             }

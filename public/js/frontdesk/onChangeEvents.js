@@ -173,5 +173,9 @@ function onChangeAppointmentType(
             $('.'+requiredTherapist).addClass('hidden');
             $('.'+defaultOptionalService).removeClass('hidden');
         }
+
+        $('#appointmentCustomCheckbox'+id).prop('checked', false);
+        $('#appointmentCustomCheckbox'+id).prop('disabled', true);
+        console.log(UnAvailableTherapist)
     }
 }
