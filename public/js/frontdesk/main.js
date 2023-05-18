@@ -445,10 +445,21 @@ $(document).on('click', '.update-invoice', function () {
 
         $('#payment_bank_name').val(bank_name);
     } else {
+        $('#payment_bank_name').val('');
         $('.payment_bank_name').addClass('hidden');
     }
-    $('#payment_account_number').val(account_number);
-    
+
+    if (account_number != '' && account_number != null) {
+        if($('.account_number_div').hasClass('hidden')) {
+            $('.account_number_div').removeClass('hidden');
+        }
+
+        $('#payment_account_number').val(account_number);
+    } else {
+        $('#payment_account_number').val('');
+        $('.account_number_div').addClass('hidden');
+    }
+
     $('#payment_status').val(status).change();
     $('#update-invoice-modal').modal('show');
 });
