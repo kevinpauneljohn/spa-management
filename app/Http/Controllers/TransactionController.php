@@ -30,7 +30,7 @@ class TransactionController extends Controller
                 return $transaction->client['firstname'].' '.$transaction->client['lastname'];
             })
             ->addColumn('service',function ($transaction){
-                return $transaction->service_name;
+                return '<span class="badge bg-primary">'.$transaction->service_name.'</span>';
             })
             ->addColumn('masseur',function ($transaction){
                 $masseur = $this->getMasseurName(
@@ -40,7 +40,7 @@ class TransactionController extends Controller
                     $transaction->sales_id
                 );
 
-                return $masseur;
+                return '<span class="badge bg-danger">'.$masseur.'</span>';
             })
             ->addColumn('start_time',function ($transaction){
                 return date('F d, Y h:i:s A', strtotime($transaction->start_time));
@@ -57,8 +57,8 @@ class TransactionController extends Controller
             ->addColumn('room',function ($transaction){
                 return $transaction->room_id;
             })
-            ->addColumn('Amount',function ($transaction){
-                return $transaction->amount;
+            ->addColumn('amount',function ($transaction){
+                return '&#8369; '.$transaction->amount;
             })
             ->addColumn('action', function($transaction){
                 $date_start_time = date('H:i m/d/Y', strtotime($transaction->start_time));
@@ -74,7 +74,7 @@ class TransactionController extends Controller
 
                 return $action;
             })
-            ->rawColumns(['action','client', 'masseur'])
+            ->rawColumns(['action','client','service','masseur','amount'])
             ->make(true);
     }
 

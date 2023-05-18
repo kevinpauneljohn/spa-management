@@ -290,7 +290,7 @@ $(document).on('click', '.closeTabs', function () {
     closeTabs(id, count);
 });
 
-$(document).on('change keyup input', '.filterClientAppointment', function () {
+$(document).on('input paste', '.filterClientAppointment', function () {
     var id = this.id;
     var val = $(this).val();
     var spa_id = $('#spa_id_val').val();
@@ -435,27 +435,28 @@ $(document).on('click', '.update-invoice', function () {
     var bank_name = $(this).data("bank");
     var status = $(this).data("status");
 
+    $('.payment_bank_name').addClass('hidden');
+    $('.account_number_div').addClass('hidden');
+
     $('.updateInvoiceTitle').html('Update '+invoice_no);
     $('#sales_invoice_id').val(id);
     $('#payment_method').val(payment_method).change();
     if (payment_method == 'bank') {
-        if(!$('.payment_bank_name').hasClass('hidden')) {
-            $('.payment_bank_name').removeClass('hidden');
-        }
-
+        $('.payment_bank_name').removeClass('hidden');
         $('#payment_bank_name').val(bank_name);
+
+        $('#payment_account_number').val(account_number);
+        $('.account_number_div').removeClass('hidden');
+    } else if (payment_method == 'gcash' || payment_method == 'paymaya') {
+        $('.payment_bank_name').addClass('hidden');
+        $('#payment_bank_name').val('');
+
+        $('#payment_account_number').val(account_number);
+        $('.account_number_div').removeClass('hidden');
     } else {
         $('#payment_bank_name').val('');
         $('.payment_bank_name').addClass('hidden');
-    }
 
-    if (account_number != '' && account_number != null) {
-        if($('.account_number_div').hasClass('hidden')) {
-            $('.account_number_div').removeClass('hidden');
-        }
-
-        $('#payment_account_number').val(account_number);
-    } else {
         $('#payment_account_number').val('');
         $('.account_number_div').addClass('hidden');
     }
@@ -469,18 +470,19 @@ $(document).on('change', '#payment_method', function () {
 
     if (val == 'bank') {
         $('.payment_bank_name').removeClass('hidden');
-        if ($('.account_number_div').hasClass('hidden')) {
-            $('.account_number_div').removeClass('hidden');
-        }
+        $('.account_number_div').removeClass('hidden');
+        $('#payment_account_number').val('');
+        $('#payment_bank_name').val('');
+
     } else if (val == 'gcash' || val == 'paymaya') {
-        if ($('.account_number_div').hasClass('hidden')) {
-            $('.account_number_div').removeClass('hidden');
-        }
+        $('.account_number_div').removeClass('hidden');
+        $('#payment_account_number').val('');
 
         $('.payment_bank_name').addClass('hidden');
         $('#payment_bank_name').val('');
     } else if (val == 'cash') {
         $('.account_number_div').addClass('hidden');
+        $('#payment_account_number').val('');
 
         $('.payment_bank_name').addClass('hidden');
         $('#payment_bank_name').val('');
@@ -513,6 +515,34 @@ $(document).on('change, keyup', '#payment_bank_name', function () {
 $(document).on('click','.update-invoice-btn',function(){
     var id =  $('#sales_invoice_id').val();
     updateInvoice(id);
+});
+
+//New Appointment Modal with Walk-In type
+$(document).on('select2:close', '.select-services-walkin-appointment, .select-appointment-plus_time, .select-appointment-masseur1, .select-appointment-masseur2, .select-appointment-room', function (e) {
+    var evt = "scroll.select2";
+    $(e.target).parents().off(evt);
+    $(window).off(evt);
+});
+
+//Update guest Modal
+$(document).on('select2:close', '.select-edit-services, .select-edit-masseur1, .select-edit-masseur2, .select-edit-plus_time, .select-edit-room', function (e) {
+    var evt = "scroll.select2";
+    $(e.target).parents().off(evt);
+    $(window).off(evt);
+});
+
+//Update appointment
+$(document).on('select2:close', '.select-services-appointment', function (e) {
+    var evt = "scroll.select2";
+    $(e.target).parents().off(evt);
+    $(window).off(evt);
+});
+
+//Move Appointment Modal
+$(document).on('select2:close', '.select-services-move-appointment, .select-move-plus_time, .select-move-masseur1, .select-move-masseur2, .select-move-room', function (e) {
+    var evt = "scroll.select2";
+    $(e.target).parents().off(evt);
+    $(window).off(evt);
 });
 
 function ReplaceNumberWithCommas(value) {
