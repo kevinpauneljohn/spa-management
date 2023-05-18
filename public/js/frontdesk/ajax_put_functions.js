@@ -192,7 +192,7 @@ function updateInvoice(id)
             if (payment_bank_name.length > 1 && payment_account_number.length > 1) {
                 valid = true;
             }
-        } else {
+        } else  if (payment_method == 'gcash' || payment_method == 'paymaya') {
             if (payment_account_number.length < 1) {
                 $('#error-payment_account_number').removeClass('hidden');
                 $('#error-payment_account_number').text('Account Number field is required!');
@@ -202,6 +202,9 @@ function updateInvoice(id)
 
                 valid = true;
             }
+        } else {
+            $('#error-payment_method').removeClass('hidden');
+            $('#error-payment_method').text('Payment method field is required!');
         }
     } else if (payment_method == 'cash') {
         valid = true;
