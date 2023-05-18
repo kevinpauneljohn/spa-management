@@ -915,7 +915,7 @@
                                 <input type="hidden" class="form-control" id="sales_invoice_id">
                                 <p class="text-danger hidden" id="error-payment_method"></p>
                             </div>
-                            <div class="form-group account_number_div">
+                            <div class="form-group account_number_div hidden">
                                 <label for="payment_account_number">Account Number</label><span class="isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_account_number" id="payment_account_number">
                                 <p class="text-danger hidden" id="error-payment_account_number"></p>

@@ -461,16 +461,35 @@ $(document).on('change', '#payment_method', function () {
         if ($('.account_number_div').hasClass('hidden')) {
             $('.account_number_div').removeClass('hidden');
         }
-    } else if (val == 'cash') {
-        $('.account_number_div').addClass('hidden');
-    } else {
-        if (!$('.payment_bank_name').hasClass('hidden')) {
-            $('.payment_bank_name').addClass('hidden');
-        }
-
+    } else if (val == 'gcash' || val == 'paymaya') {
         if ($('.account_number_div').hasClass('hidden')) {
             $('.account_number_div').removeClass('hidden');
         }
+    } else if (val == 'cash') {
+        $('.account_number_div').addClass('hidden');
+    }
+
+    $('#error-payment_method').addClass('hidden');
+    $('#error-payment_method').text('');
+});
+
+$(document).on('change, keyup', '#payment_account_number', function () {
+    if ($(this).val().length > 0) {
+        $('#error-payment_account_number').addClass('hidden');
+        $('#error-payment_account_number').text('');
+    } else {
+        $('#error-payment_account_number').removeClass('hidden');
+        $('#error-payment_account_number').text('Account Number field is required!');
+    }
+});
+
+$(document).on('change, keyup', '#payment_bank_name', function () {
+    if ($(this).val().length > 0) {
+        $('#error-payment_bank_name').addClass('hidden');
+        $('#error-payment_bank_name').text('');
+    } else {
+        $('#error-payment_bank_name').removeClass('hidden');
+        $('#error-payment_bank_name').text('Bank Name field is required!');
     }
 });
 
