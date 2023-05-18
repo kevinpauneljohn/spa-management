@@ -157,8 +157,6 @@ function processAppointment(data)
             var services = $('#service_name_appointment'+value).select2('data');
             var value_services = $('#service_name_appointment_id'+value).val();
             var value_start_time = $('#start_time_appointment'+value).val();
-            var value_start_time_format = gettime(value_start_time);
-            var value_start_time_date_format = getdate(value_start_time);
             if (value_start_time.length < 1) {
                 $('#error-start_time_appointment'+value).removeClass('hidden');
                 $('#error-start_time_appointment'+value).text('Start Time field is required!');
@@ -189,6 +187,9 @@ function processAppointment(data)
                 total_amount += parseInt($('#appointment_total_service_price'+value).val());
                 price_converted = ReplaceNumberWithCommas(price);
             }
+
+            var value_start_time_format = gettime(value_start_time);
+            var value_start_time_date_format = getdate(value_start_time);
             
             var price_formatted = '&#8369;'+0;
             if (price_converted > 0) {

@@ -476,8 +476,14 @@ $(document).on('change', '#payment_method', function () {
         if ($('.account_number_div').hasClass('hidden')) {
             $('.account_number_div').removeClass('hidden');
         }
+
+        $('.payment_bank_name').addClass('hidden');
+        $('#payment_bank_name').val('');
     } else if (val == 'cash') {
         $('.account_number_div').addClass('hidden');
+
+        $('.payment_bank_name').addClass('hidden');
+        $('#payment_bank_name').val('');
     }
 
     $('#error-payment_method').addClass('hidden');
