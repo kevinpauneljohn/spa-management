@@ -91,6 +91,7 @@ function appointmentSummary(id)
                     summaryContent += '<tr>';
                         summaryContent += '<th>Client</th>';
                         summaryContent += '<th>Service</th>';
+                        summaryContent += '<th>Date</th>';
                         summaryContent += '<th>Start Time</th>';
                         summaryContent += '<th>Type</th>';
                         summaryContent += '<th>Amount</th>';
@@ -106,13 +107,15 @@ function appointmentSummary(id)
             value_first_name, 
             value_last_name,
             value_services_name,
-            value_start_time,
+            value_start_time_date_format,
+            value_start_time_format,
             value_appointment_socials,
             price
         }) => [
             value_first_name+' '+value_last_name,
             value_services_name,
-            value_start_time,
+            value_start_time_date_format,
+            value_start_time_format,
             value_appointment_socials,
             '&#8369;'+ ReplaceNumberWithCommas(price)
         ]);
@@ -122,6 +125,7 @@ function appointmentSummary(id)
             columns: [
               { title: 'Client' },
               { title: 'Service' },
+              { title: 'Date' },
               { title: 'Start Time' },
               { title: 'Type' },
               { title: 'Amount' },

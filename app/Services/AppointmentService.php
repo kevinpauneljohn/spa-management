@@ -7,11 +7,19 @@ use App\Models\Client;
 use App\Models\Sale;
 use App\Models\Transaction;
 use App\Models\Service;
+use App\Models\Spa;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+// use App\Action\AppointmentAction;
 
 class AppointmentService
 {
+    // private $appointmentAction;
+    // public function __construct(AppointmentAction $appointmentAction)
+    // {
+    //     $this->appointmentAction = $appointmentAction;
+    // }
+
     public function data($id)
     {
         $appointment = Appointment::where(['spa_id' => $id, 'appointment_status' => 'reserved'])->with(['client'])->get();
@@ -48,26 +56,26 @@ class AppointmentService
             })
             ->editColumn('date',function ($appointment){
                 $createdAt = Carbon::parse($appointment->created_at);
-                $created_at = $createdAt->setTimezone('Asia/Manila')->format('F d, Y g:i A');
+                $created_at = $createdAt->setTimezone('Asia/Manila')->format('F d, Y h:i A');
 
                 return $created_at;
             })
             ->addColumn('action', function($appointment){
                 $batch_id = $appointment->batch;
                 $action = "";
-                if (auth()->user()->can('view sales')) {
+                if (auth()->user()->can('view sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-warning view-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
 
-                if (auth()->user()->can('edit sales')) {
+                if (auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-primary edit-appointment-btn" id="'.$appointment->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
 
-                if (auth()->user()->can('move sales')) {
+                if (auth()->user()->can('move sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-success move-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-exchange-alt"></i></a>&nbsp;';
                 }
 
-                if (auth()->user()->can('delete sales')) {
+                if (auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-danger delete-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-trash-alt"></i></a>&nbsp;';
                 }
 
@@ -247,7 +255,7 @@ class AppointmentService
     public function view($id)
     {
         $appointment = Appointment::with(['client'])->findOrFail($id);
-        $appointment->start_time = date('d F Y, h:i A', strtotime($appointment->start_time));
+        $appointment->start_time_formatted = date('d F Y, h:i A', strtotime($appointment->start_time));
         return $appointment;
     }
 
@@ -528,6 +536,93 @@ class AppointmentService
                 'total_seconds' => $total_minutes_in_seconds
             ];
         }
+
+        return $data;
+    }
+
+    public function getAppointmentResponses($id)
+    {
+        $spa = Spa::findOrFail($id);
+        $rooms = range(1, $spa->number_of_rooms);
+
+        $data = [
+            'rooms' => $this->getRooms($rooms, $id),
+        ];
+
+        return $data;
+    }
+
+    private function getRooms($room, $id)
+    {
+        $data = [];
+        foreach ($room as $list) {
+            $data [] = $this->getData($list, $id);
+        }
+
+        return $data;
+    }
+
+    private function getData($room, $spa_id)
+    {
+        $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $transaction = Transaction::where(
+            'room_id', $room
+        )->where('spa_id', $spa_id)->where(
+            'end_time', '>=', $now
+        )->with(['client'])->first();
+        
+        $dataList = [];
+        $isAvailable = true;
+        $isColorSet = 'bg-info';
+        if (!empty($transaction)) {
+            // $dataList = $transaction;
+            $start_time_formatted = date('h:i:s A', strtotime($transaction->start_time));
+            $end_time_formatted = date('h:i:s A', strtotime($transaction->end_time));
+
+            $dataList = [
+                'id' => $transaction->id,
+                'spa_id' => $transaction->spa_id,
+                'sales_id' => $transaction->sales_id,
+                'room_id' => $transaction->room_id,
+                'client_id' => $transaction->client_id,
+                'client' => [
+                    'id' => $transaction->client['id'],
+                    'firstname' => $transaction->client['firstname'],
+                    'middlename' => $transaction->client['middlename'],
+                    'lastname' => $transaction->client['lastname'],
+                    'date_of_birth' => $transaction->client['date_of_birth'],
+                    'mobile_number' => $transaction->client['mobile_number'],
+                    'email' => $transaction->client['email'],
+                    'address' => $transaction->client['address'],
+                    'client_type' => $transaction->client['client_type'],
+                ],
+                'service_id' => $transaction->service_id,
+                'service_name' => $transaction->service_name,
+                'amount' => $transaction->amount,
+                'therapist_1' => $transaction->therapist_1,
+                'therapist_2' => $transaction->therapist_2,
+                'start_time' => $transaction->start_time,
+                'end_time' => $transaction->end_time,
+                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,  
+                'plus_time' => $transaction->plus_time,
+                'discount_rate' => $transaction->discount_rate,
+                'discount_amount' => $transaction->discount_amount,
+                'tip' => $transaction->idtip,
+                'rating' => $transaction->rating,
+                'sales_type' => $transaction->sales_type,
+                'created_at' => $transaction->created_at,
+                'updated_at' => $transaction->updated_at,
+            ];
+            $isAvailable = false;
+            $isColorSet = 'bg-secondary';
+        }
+
+        $data = [
+            'room_id' => $room,
+            'data' => $dataList,
+            'is_available' => $isAvailable,
+            'is_color_set' => $isColorSet
+        ];
 
         return $data;
     }

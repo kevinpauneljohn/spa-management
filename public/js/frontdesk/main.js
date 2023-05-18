@@ -293,6 +293,7 @@ $(document).on('click', '.closeTabs', function () {
 $(document).on('change keyup input', '.filterClientAppointment', function () {
     var id = this.id;
     var val = $(this).val();
+    var spa_id = $('#spa_id_val').val();
 
     var value;
     if (val.length > 0) {
@@ -301,7 +302,7 @@ $(document).on('change keyup input', '.filterClientAppointment', function () {
         value = 'NoData';
     }
 
-    filterClient(id, value)
+    filterClient(id, value, spa_id)
 });
 
 function getAppointmentTypeforNewGuest(id)
@@ -490,3 +491,36 @@ function removeValue(list, value) {
     list.splice(list.indexOf(value), 1);
     return list.join(',');
 }
+
+function getDatetime(val) {
+    return getdate(val) + ' ' + gettime(val);
+}
+  
+function getdate(val) {
+    var y = val.substr(0, 4);
+    var m = val.substr(5, 2);
+    var d = val.substr(8, 2);
+    return d + '/' + m + '/' + y;
+}
+  
+function gettime(val) {
+    return timeTo12HrFormat(val.substr(11, 5));
+}
+  
+function timeTo12HrFormat(time) { // Take a time in 24 hour format and format it in 12 hour format
+    var time_part_array = time.split(":");
+    var ampm = 'AM';
+
+    if (time_part_array[0] >= 12) {
+        ampm = 'PM';
+    }
+
+    if (time_part_array[0] > 12) {
+        time_part_array[0] = time_part_array[0] - 12;
+    }
+
+    formatted_time = time_part_array[0] + ':' + time_part_array[1] + ' ' + ampm;
+
+    return formatted_time;
+}
+  

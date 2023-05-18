@@ -33,7 +33,7 @@ class ReceptionistController extends Controller
 
         $spa = Spa::findOrFail($spa_id);
 
-        $title = 'Receptionists';
+        $title = $spa->name;
         return view('Receptionist.index',['title' => $title, 'spa_id' => $spa_id, 'total_rooms' => $spa->number_of_rooms]);
     }
 

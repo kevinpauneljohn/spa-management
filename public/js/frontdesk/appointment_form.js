@@ -140,7 +140,7 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
                 content +='</div>';
                 content +='<div class="col-md-6">';
                     content +='<label for="start_time_appointment'+id+'">Start Time</label><span class="isRequired">*</span>';
-                    content +='<input name="start_time_appointment'+id+'" id="start_time_appointment'+id+'" class="form-control">';
+                    content +='<input class="form-control" type="datetime-local" name="start_time_appointment'+id+'" id="start_time_appointment'+id+'">';
                     content +='<p class="text-danger hidden" id="error-start_time_appointment'+id+'"></p>';
                 content +='</div>';
             content +='</div>';
@@ -160,7 +160,7 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
                 content +='</div>';
                 content +='<div class="col-md-4">';
                     content +='<label for="start_time_appointment_walkin'+id+'">Start Time</label><span class="isRequired">*</span>';
-                    content +='<input name="start_time_appointment_walkin'+id+'" id="start_time_appointment_walkin'+id+'" class="form-control">';
+                    content += '<input type="datetime-local" name="start_time_appointment_walkin'+id+'" id="start_time_appointment_walkin'+id+'" class="form-control">';
                     content +='<input type="hidden" name="appointment_total_service_price'+id+'" id="appointment_total_service_price'+id+'" class="form-control appointment_total_service_price'+id+'" value="0">';
                     content +='<p class="text-danger hidden" id="error-start_time_appointment_walkin'+id+'"></p>';
                 content +='</div>';

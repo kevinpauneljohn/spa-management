@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = User::where('id', auth()->user()->id)->permission('access pos]')->first();
+        $user = User::where('id', auth()->user()->id)->permission('access pos')->first();
 
         if (auth()->user()->hasRole('super admin')) {
             return view('Dashboard.dashboard');
