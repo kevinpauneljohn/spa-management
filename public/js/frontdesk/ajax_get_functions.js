@@ -691,7 +691,7 @@ function viewAppointment(id)
             $(".viewAppointmentEmail").html(result.client.email);
             $(".viewAppointmentAddress").html(result.client.address);
             $(".viewAppointmentService").html(result.service_name);
-            $(".viewAppointmentStartTime").html(result.start_time);
+            $(".viewAppointmentStartTime").html(result.start_time_formatted);
             $(".totalAmountViewAppointmentFormatted").html('&#8369; '+result.amount);
             $(".viewAppointmentBatch").html('Batch # '+result.batch);
 
@@ -791,6 +791,22 @@ function getUpcomingGuest(spa_id)
 
                 $( upcomingGuest ).appendTo(".upcomingGuest");
             });
+        }
+    });
+}
+
+function getResponses(id)
+{
+    $.ajax({
+        'url' : '/appointment-response/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+
+        },
+        success: function(result){
+
         }
     });
 }

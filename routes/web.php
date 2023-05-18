@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
-    Route::get('/client-filter/{id}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
+    Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
 
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
     Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
     Route::get('/appointment-upcoming/{id}',[\App\Http\Controllers\AppointmentController::class,'getUpcomingGuests'])->name('appointment.upcoming.guest');
+    Route::get('/appointment-response/{id}',[\App\Http\Controllers\AppointmentController::class,'getResponses'])->name('appointment.responses');
 
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');

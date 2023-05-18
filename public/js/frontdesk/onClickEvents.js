@@ -157,6 +157,8 @@ function processAppointment(data)
             var services = $('#service_name_appointment'+value).select2('data');
             var value_services = $('#service_name_appointment_id'+value).val();
             var value_start_time = $('#start_time_appointment'+value).val();
+            var value_start_time_format = gettime(value_start_time);
+            var value_start_time_date_format = getdate(value_start_time);
             if (value_start_time.length < 1) {
                 $('#error-start_time_appointment'+value).removeClass('hidden');
                 $('#error-start_time_appointment'+value).text('Start Time field is required!');
@@ -305,7 +307,9 @@ function processAppointment(data)
                 plus_time: plus_time,
                 therapist_1: therapist_1,
                 therapist_2: therapist_2,
-                room_id: room
+                room_id: room,
+                value_start_time_format: value_start_time_format,
+                value_start_time_date_format: value_start_time_date_format
             })
         });
 

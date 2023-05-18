@@ -1,7 +1,7 @@
-function filterClient(id, value)
+function filterClient(id, value, spa_id)
 {
     $.ajax({
-        'url' : '/client-filter/'+value,
+        'url' : '/client-filter/'+value+'/'+spa_id,
         'type' : 'GET',
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},

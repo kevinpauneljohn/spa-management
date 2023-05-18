@@ -11,6 +11,8 @@ use App\Models\Client;
 use App\Models\Owner;
 use App\Models\User;
 use App\Models\Sale;
+use Carbon\CarbonInterface;
+use Carbon\CarbonInterval;
 
 class TransactionController extends Controller
 {
@@ -46,8 +48,8 @@ class TransactionController extends Controller
             ->addColumn('plus_time',function ($transaction){
                 $plus_time = $transaction->plus_time * 60;
                 $converted_plus_time = gmdate("H:i:s", $plus_time);
-
-                return $converted_plus_time;
+                return CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
             })
             ->addColumn('end_time',function ($transaction){
                 return date('F d, Y h:i:s A', strtotime($transaction->end_time));
@@ -62,11 +64,11 @@ class TransactionController extends Controller
                 $date_start_time = date('H:i m/d/Y', strtotime($transaction->start_time));
                 $action = "";
 
-                if(auth()->user()->can('edit sales')) {
+                if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-start_date="'.$date_start_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
 
-                if(auth()->user()->can('delete sales')) {
+                if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" class="btn btn-xs btn-outline-danger rounded delete-sales-btn" id="'.$transaction->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
 
@@ -238,7 +240,7 @@ class TransactionController extends Controller
                 'service_name' => $getTranscations[0]->service_name,
                 'therapist_1' => $getTranscations[0]->therapist_1,
                 'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
-                'start_time' => $start_time,     
+                'start_time' => $getTranscations[0]->start_time,     
                 'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
                 'start_date_formatted' => $start_date_formatted,
                 'start_time_formatted' => $start_time_formatted,

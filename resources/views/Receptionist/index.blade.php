@@ -4,7 +4,7 @@
 @section('title', 'Receptionist')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <h1>{{$title}}</h1>
 @stop
 
 @section('content')
@@ -59,6 +59,9 @@
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
+        .bootstrap-datetimepicker-widget table td {
+  color: red;
+}
         /*  */
     </style>
 
@@ -298,7 +301,7 @@
         </div>
     </div>
 
-    @can('add sales')
+    @if(auth()->user()->hasRole('owner') || auth()->user()->can('add sales'))
         <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="appointment-form" class="form-submit">
                 @csrf
@@ -346,9 +349,9 @@
                 </div>
             </form>
         </div>
-    @endcan
+    @endif
 
-    @can('edit sales')
+    @if(auth()->user()->hasRole('owner') || auth()->user()->can('edit sales'))
         <div class="modal fade" id="update-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="sales-update-form" class="form-submit">
                 @csrf
@@ -442,7 +445,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="edit_start_time">Start Time</label><span class="isRequired">*</span>
-                                        <input name="edit_start_time" id="edit_start_time" class="form-control dateTimePicker" />
+                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control">
                                         <p class="text-danger hidden" id="error-edit_start_time"></p>
                                     </div>
                                     <div class="col-md-4">
@@ -562,7 +565,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="edit_app_start_time">Start Time : </label>
-                                        <input name="start_time_appointment_up" id="start_time_appointment_up" class="form-control">
+                                        <input type="datetime-local" id="start_time_appointment_up" name="start_time_appointment_up" class="form-control">
                                     </div>
                                     <div class="col-md-4 border border-danger pull-right">
                                         <h2 class="mb-0 text-center totalAmountUpdateAppointmentFormatted"></h2>
@@ -581,9 +584,9 @@
                 </div>
             </form>
         </div>
-    @endcan
+    @endif
 
-    @can('view sales')
+    @if(auth()->user()->hasRole('owner') || auth()->user()->can('view sales'))
         <div class="modal fade" id="view-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="sales-view-form" class="form-submit">
                 @csrf
@@ -765,9 +768,9 @@
                 </div>
             </form>
         </div>
-    @endcan
+    @endif
 
-    @can('view invoices')
+    @if(auth()->user()->hasRole('owner') || auth()->user()->can('view invoices'))
         <div class="modal fade" id="view-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="invoice-view-form" class="form-submit">
                 @csrf
@@ -939,9 +942,9 @@
                 </div>
             </form>
         </div>
-    @endcan
+    @endif
 
-    @can('move sales')
+    @if(auth()->user()->hasRole('owner') || auth()->user()->can('move sales'))
     <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <form role="form" id="move-appointment-form" class="form-submit">
                 @csrf
@@ -1032,7 +1035,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="move_app_start_time">Start Time : </label><span class="isRequired">*</span>
-                                        <input name="start_time_appointment_move" id="start_time_appointment_move" class="form-control">
+                                        <input type="datetime-local" id="start_time_appointment_move" name="start_time_appointment_move" class="form-control">
                                         <p class="text-danger hidden" id="error-start_time_appointment_move"></p>
                                     </div>
                                 </div>
@@ -1083,15 +1086,18 @@
                 </div>
             </form>
         </div>
-    @endcan
+    @endif
 @stop
 
 @section('css')
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
 @stop
 
 @section('js')
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js" integrity="sha512-k6/Bkb8Fxf/c1Tkyl39yJwcOZ1P4cRrJu77p83zJjN2Z55prbFHxPs9vN7q3l3+tSMGPDdoH51AEU8Vgo1cgAA==" crossorigin="anonymous"></script>
+
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src="{{asset('js/frontdesk/main.js')}}"></script>
 <script src="{{asset('js/frontdesk/ajax_get_functions.js')}}"></script>
@@ -1106,9 +1112,13 @@
 <script src="{{asset('js/frontdesk/onChangeEvents.js')}}"></script>
 <script>
     $(function() {
-        $('#calendar').datepicker({
+        $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, { icons: { time: 'fas fa-clock', date: 'fas fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'far fa-chevron-left', next: 'far fa-chevron-right', today: 'far fa-calendar-check-o', clear: 'far fa-trash', close: 'far fa-times' } });
+        $('#datetimepicker1').datetimepicker();
 
-        });
+        // $('#calendar').datepicker({
+
+        // });
+        getResponses($('#spa_id_val').val());
 
         getAppointmentCount();
         getAppointmentType('up');
@@ -1116,14 +1126,13 @@
         getServicesAppointment($('#spa_id_val').val(), 'move', 'move_app_services');
         getServicesAppointment($('#spa_id_val').val(), 'up', 'edit_app_services');
 
-        setDateTimePicker('start_time_appointment_up', '');
-        setDateTimePicker('start_time_appointment_move', '');
+        // setDateTimePicker('start_time_appointment_up', '');
+        // setDateTimePicker('start_time_appointment_move', '');
         setDateTimePicker('edit_start_time', '');
 
 
 
         loadRoom();
-
         getTotalSales($('#spa_id_val').val());
         getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
