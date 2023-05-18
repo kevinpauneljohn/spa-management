@@ -61,9 +61,9 @@
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
-        .bootstrap-datetimepicker-widget table td {
+        /* .bootstrap-datetimepicker-widget table td {
         color: red;
-        }
+        } */
         /*  */
     </style>
 
