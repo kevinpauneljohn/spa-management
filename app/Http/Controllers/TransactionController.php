@@ -11,6 +11,8 @@ use App\Models\Client;
 use App\Models\Owner;
 use App\Models\User;
 use App\Models\Sale;
+use Carbon\CarbonInterface;
+use Carbon\CarbonInterval;
 
 class TransactionController extends Controller
 {
@@ -28,7 +30,7 @@ class TransactionController extends Controller
                 return $transaction->client['firstname'].' '.$transaction->client['lastname'];
             })
             ->addColumn('service',function ($transaction){
-                return $transaction->service_name;
+                return '<span class="badge bg-primary">'.$transaction->service_name.'</span>';
             })
             ->addColumn('masseur',function ($transaction){
                 $masseur = $this->getMasseurName(
@@ -38,7 +40,7 @@ class TransactionController extends Controller
                     $transaction->sales_id
                 );
 
-                return $masseur;
+                return '<span class="badge bg-danger">'.$masseur.'</span>';
             })
             ->addColumn('start_time',function ($transaction){
                 return date('F d, Y h:i:s A', strtotime($transaction->start_time));
@@ -46,8 +48,8 @@ class TransactionController extends Controller
             ->addColumn('plus_time',function ($transaction){
                 $plus_time = $transaction->plus_time * 60;
                 $converted_plus_time = gmdate("H:i:s", $plus_time);
-
-                return $converted_plus_time;
+                return CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
             })
             ->addColumn('end_time',function ($transaction){
                 return date('F d, Y h:i:s A', strtotime($transaction->end_time));
@@ -55,24 +57,24 @@ class TransactionController extends Controller
             ->addColumn('room',function ($transaction){
                 return $transaction->room_id;
             })
-            ->addColumn('Amount',function ($transaction){
-                return $transaction->amount;
+            ->addColumn('amount',function ($transaction){
+                return '&#8369; '.$transaction->amount;
             })
             ->addColumn('action', function($transaction){
                 $date_start_time = date('H:i m/d/Y', strtotime($transaction->start_time));
                 $action = "";
 
-                if(auth()->user()->can('edit sales')) {
+                if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-start_date="'.$date_start_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
 
-                if(auth()->user()->can('delete sales')) {
+                if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" class="btn btn-xs btn-outline-danger rounded delete-sales-btn" id="'.$transaction->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
 
                 return $action;
             })
-            ->rawColumns(['action','client', 'masseur'])
+            ->rawColumns(['action','client','service','masseur','amount'])
             ->make(true);
     }
 
@@ -214,7 +216,7 @@ class TransactionController extends Controller
             }
 
             $amount_formatted = number_format($getAmount);
-            $start_time = date('H:i m/d/Y', strtotime($getTranscations[0]->start_time));
+            $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
             $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
             $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
             $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
@@ -238,7 +240,7 @@ class TransactionController extends Controller
                 'service_name' => $getTranscations[0]->service_name,
                 'therapist_1' => $getTranscations[0]->therapist_1,
                 'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
-                'start_time' => $start_time,     
+                'start_time' => $getTranscations[0]->start_time,     
                 'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
                 'start_date_formatted' => $start_date_formatted,
                 'start_time_formatted' => $start_time_formatted,
@@ -315,7 +317,7 @@ class TransactionController extends Controller
         $allClientsTransactions = Transaction::where('spa_id', $id,)->groupBy('client_id')->pluck('client_id');
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
-        $sale = Sale::where('user_id', auth()->user()->id)->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
+        $sale = Sale::where(['user_id' => auth()->user()->id, 'payment_status' => 'paid'])->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {
@@ -348,7 +350,7 @@ class TransactionController extends Controller
         // return $response;
 
         $sales = Sale::with(['spa'])->findOrFail($id);
-        $transaction = Transaction::where('sales_id', $id)->with(['client', 'service'])->get();
+        $transaction = Transaction::where('sales_id', $id)->where('amount','>', 0)->with(['client', 'service'])->get();
         $owner = Owner::findOrFail($sales->spa['owner_id']);
         // $sales = Sale::findOrFail($transaction->sales_id);
         // $sales_id = substr($sales->id, -12);

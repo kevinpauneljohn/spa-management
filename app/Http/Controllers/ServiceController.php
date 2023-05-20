@@ -160,7 +160,7 @@ class ServiceController extends Controller
     {
         $service = Service::where(['id' => $id, 'spa_id' => $spa_id])->first();
 
-        $total = $selected_id * $service->price_per_plus_time;
+        $total = ($selected_id * $service->price_per_plus_time) / 15;
         $total_amount = 0;
         if ($total > 0) {
             $total_amount = $total;

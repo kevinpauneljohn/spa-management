@@ -18,37 +18,33 @@ class ReceptionistController extends Controller
 {
     public function index()
     {
-        $id = auth()->user()->id;
-        $user = User::findOrFail($id);
-
-        $spa_id = '';
-        if (!empty($user->spa_id)) {
-            $spa_id = $user->spa_id;
+        $request = request()->filled('id');
+        if ($request) {
+            $spa_id = request()->id;
+        } else {
+            $id = auth()->user()->id;
+            $user = User::findOrFail($id);
+    
+            $spa_id = '';
+            if (!empty($user->spa_id)) {
+                $spa_id = $user->spa_id;
+            }
         }
 
         $spa = Spa::findOrFail($spa_id);
 
-        $title = 'Receptionists';
+        $title = $spa->name;
         return view('Receptionist.index',['title' => $title, 'spa_id' => $spa_id, 'total_rooms' => $spa->number_of_rooms]);
     }
 
-    public function lists()
+    public function lists($id)
     {
-        $id = auth()->user()->id;
-        $user = User::findOrFail($id);
-
-        $spa_id = '';
-        if (!empty($user->spa_id)) {
-            $spa_id = $user->spa_id;
-        }
-
-        $spa = Spa::findOrFail($spa_id);
-
+        $spa = Spa::findOrFail($id);
         $rooms = range(1, $spa->number_of_rooms);
 
         $data = [];
         foreach ($rooms as $room) {
-            $data [] = $this->getData($room, $spa_id);
+            $data [] = $this->getData($room, $id);
         }
 
         return $data;

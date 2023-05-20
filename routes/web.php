@@ -21,7 +21,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function(){
     Route::get('/dashboard',[\App\Http\Controllers\Dashboard\DashboardController::class,'index'])->name('dashboard');
     Route::get('/receptionist-dashboard',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'index'])->name('receptionist.dashboard');
-    Route::get('/receptionist-lists',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'lists'])->name('receptionist.lists');
+    Route::get('/receptionist-lists/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'lists'])->name('receptionist.lists');
     Route::get('/receptionist-service/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'getServices'])->name('receptionist.service');
     Route::get('/receptionist-plus-range',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'plusTime'])->name('receptionist.plus.range');
     Route::get('/receptionist-room-range/{num}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'roomRange'])->name('receptionist.room.range');
@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
-    Route::get('/client-filter/{id}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
+    Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
 
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'show'])->name('owner.show');
     Route::put('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'update'])->name('owner.update');
     Route::delete('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'destroy'])->name('owner.delete');
+    Route::get('/owner-dashboard',[\App\Http\Controllers\Owners\OwnerController::class,'dashboard'])->name('owner.dashboard');
 
     Route::get('/spa-list/{id}',[\App\Http\Controllers\SpaController::class,'lists'])->name('spa.lists');
     Route::get('/spa/overview/{id}',[\App\Http\Controllers\SpaController::class,'overview'])->name('spa.overview');
@@ -101,6 +102,15 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index');
     Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date');
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
+    Route::get('/employee-time',[\App\Http\Controllers\PayrollController::class, 'getEmployeeTime']);
+
+
+    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
+    Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
+    Route::get('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
+    Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
+    Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
+    Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
 
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
@@ -112,6 +122,9 @@ Route::middleware(['auth'])->group(function(){
     Route::post('appointment-sales',[\App\Http\Controllers\AppointmentController::class,'sales'])->name('appointment.sales');
     Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
     Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
+
+    Route::get('/appointment-upcoming/{id}',[\App\Http\Controllers\AppointmentController::class,'getUpcomingGuests'])->name('appointment.upcoming.guest');
+    Route::get('/appointment-response/{id}',[\App\Http\Controllers\AppointmentController::class,'getResponses'])->name('appointment.responses');
 
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
