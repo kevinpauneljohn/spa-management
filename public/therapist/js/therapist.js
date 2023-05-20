@@ -47,7 +47,6 @@ $('#therapist-modal-btn').click(function(){
 $(document).on('submit','.therapist-form',function(form){
     form.preventDefault();
     let data = $(this).serializeArray();
-    console.log(data);
 
     $.ajax({
         url: '/therapists',
@@ -59,7 +58,6 @@ $(document).on('submit','.therapist-form',function(form){
 
         }
     }).done(function(data){
-        console.log(data);
             if(data.success === true)
             {
                 therapistForm.trigger('reset');
@@ -83,7 +81,7 @@ $(document).on('submit','.therapist-form',function(form){
     }).always(function(){
         $('.overlay').remove();
     });
-    clear_errors('firstname','lastname','gender','offer_type','commission_percentage','commission_flat','allowance');
+    clear_errors('firstname','lastname','gender','mobile_number','email','offer_type','commission_percentage','commission_flat','allowance');
 });
 
 $(document).on('click','.edit-therapist-btn',function(){
@@ -126,7 +124,10 @@ $(document).on('submit','.edit-therapist-form',function(form){
     $.ajax({
         url: '/therapists/'+therapistId,
         method: 'PATCH',
-        data: data,
+        data: data.concat({
+            'name' : 'therapistId',
+            'value' : therapistId
+        }),
         beforeSend:function(){
             $(overlay).appendTo('#therapist-modal .modal-content');
             $('.main-therapist-content .card-body').after(overlay);
@@ -161,7 +162,7 @@ $(document).on('submit','.edit-therapist-form',function(form){
         formSubmitBtn.attr('disabled',false).text('Save');
     });
 
-    clear_errors('firstname','lastname','gender','offer_type','commission_percentage','commission_flat','allowance');
+    clear_errors('firstname','lastname','gender','mobile_number','email','offer_type','commission_percentage','commission_flat','allowance');
 });
 
 

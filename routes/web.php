@@ -112,11 +112,14 @@ Route::middleware(['auth'])->group(function(){
     Route::post('appointment-sales',[\App\Http\Controllers\AppointmentController::class,'sales'])->name('appointment.sales');
     Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
     Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
+
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
+    Route::put('/update-inventory-quantity/{inventory}',[\App\Http\Controllers\InventoryController::class,'increase_quantity'])->name('update.inventory.quantity');
 
     Route::resource('inventory-categories',\App\Http\Controllers\Inventories\InventoryCategoryController::class);
     Route::get('/inventory-category-lists',[\App\Http\Controllers\Inventories\InventoryCategoryController::class,'lists'])->name('inventory.category.lists');
+
 
     Route::post('/check-user-password',[\App\Http\Controllers\UserController::class,'check_user_logged_in_password'])->name('check.user.password');
 });

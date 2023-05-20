@@ -14,7 +14,7 @@ class InventoryService
                 return '<a href="'.route('spa.show',['spa' => $inventory->spa->id]).'">'.$inventory->spa->name.'</a>';
             })
             ->editColumn('name',function($inventory){
-                return ucwords($inventory->name);
+                return '<a href="'.route('inventories.show',['inventory' => $inventory->id]).'">'.ucwords($inventory->name).'</a>';
             })
             ->editColumn('category',function($inventory){
                 return InventoryCategory::find($inventory->category)->name;
@@ -35,7 +35,7 @@ class InventoryService
                 }
                 return $action;
             })
-            ->rawColumns(['action','spa_id'])
+            ->rawColumns(['name','action','spa_id'])
             ->make(true);
     }
 

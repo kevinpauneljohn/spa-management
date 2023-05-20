@@ -5,6 +5,8 @@ let overlay = '<div class="overlay dark"><i class="fas fa-2x fa-sync fa-spin"></
 let csrf_token = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
 let editItemId;
 
+
+
 $(document).on('submit','.inventory-form',function(form){
     form.preventDefault();
     let data = $(this).serializeArray();
@@ -81,7 +83,6 @@ $(document).on('click','.edit-inventory-btn',function(){
 $(document).on('submit','.edit-inventory-form', async function (form) {
     form.preventDefault();
     let data = $(this).serializeArray();
-
     const {value: password} = await Swal.fire({
         title: 'Enter your password',
         input: 'password',
@@ -95,11 +96,16 @@ $(document).on('submit','.edit-inventory-form', async function (form) {
         }
     })
 
+
     if (password) {
         console.log(password)
 
+
         $.post('/check-user-password',{password:password, '_token' : $('meta[name="csrf-token"]').attr('content')},function(result){
             console.log(result);
+
+            $('input[type="search"]').val('');
+            tableName.DataTable().ajax.reload(null, false);
 
             if(result.success === true)
             {

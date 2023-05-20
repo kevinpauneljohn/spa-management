@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\OfferType;
+use App\Models\Therapist;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TherapistRequest extends FormRequest
@@ -70,6 +71,30 @@ class TherapistRequest extends FormRequest
                     }
                 }
             }
+
+            if($this->isMethod('post'))
+            {
+                if(User::where('email', $this->input('email'))->count() > 0) $validator->errors()->add('email', 'The email has already been taken!');
+                if(User::where('mobile_number', $this->input('mobile_number'))->count() > 0) $validator->errors()->add('mobile_number', 'The mobile number has already been taken!');
+
+
+            }
+            elseif ($this->isMethod('patch'))
+            {
+                $user = Therapist::findOrFail($this->input('therapistId'));
+                if(User::whereNotIn('id',[$user->user_id])->where('email', $this->input('email'))->count() > 0) $validator->errors()->add('email', 'The email has already been taken!');
+                if(User::whereNotIn('id',[$user->user_id])->where('mobile_number', $this->input('mobile_number'))->count() > 0) $validator->errors()->add('mobile_number', 'The mobile number has already been taken!');
+
+            }
+
+            if(!empty($this->input('email')))
+            {
+                if(!filter_var($this->input('email'), FILTER_VALIDATE_EMAIL))
+                {
+                    $validator->errors()->add('email', 'Must be a valid email!');
+                }
+            }
+
         });
     }
 
@@ -84,8 +109,6 @@ class TherapistRequest extends FormRequest
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
-            'email' => 'unique:users,email',
-            'mobile_number' => 'unique:users,mobile_number',
             'offer_type' => 'required',
             'commission_percentage' => 'min:0|max:100'
         ];

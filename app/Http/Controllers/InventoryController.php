@@ -7,6 +7,7 @@ use App\Models\Inventory;
 use App\Services\InventoryService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class InventoryController extends Controller
 {
@@ -14,7 +15,7 @@ class InventoryController extends Controller
     {
         $this->middleware(['role_or_permission:owner|view inventory'])->only(['index','show','lists']);
         $this->middleware(['role_or_permission:owner|add inventory'])->only(['store']);
-        $this->middleware(['role_or_permission:owner|edit inventory'])->only(['edit','update']);
+        $this->middleware(['role_or_permission:owner|edit inventory'])->only(['edit','update','increase_quantity']);
         $this->middleware(['role_or_permission:owner|delete inventory'])->only(['destroy']);
     }
 
@@ -62,9 +63,9 @@ class InventoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Inventory $inventory)
     {
-        //
+        return view('inventories.profile',compact('inventory'));
     }
 
     /**
@@ -118,5 +119,24 @@ class InventoryController extends Controller
     {
         $inventories = Inventory::where('owner_id',$userService->get_staff_owner()->id)->get();
         return $inventoryService->inventory_lists($inventories);
+    }
+
+    public function increase_quantity(Inventory $inventory, Request $request)
+    {
+        $validation = Validator::make($request->all(),[
+            'quantity' => 'required'
+        ]);
+        if($validation->passes())
+        {
+            $inventory->quantity = $inventory->quantity + $request->quantity;
+            $inventory->save();
+            return response()->json(['success' => true, 'message' => 'Inventory quantity successfully updated!', 'inventory' => $inventory->quantity]);
+        }
+        return response()->json($validation->errors(),500);
+    }
+
+    public function decrease_quantity(Inventory $inventory)
+    {
+
     }
 }

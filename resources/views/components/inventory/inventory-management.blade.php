@@ -1,9 +1,9 @@
 <div class="row mb-1">
     <div class="col-md-12">
-{{--        <div class="alert alert-default-info">--}}
-{{--            <h5><i class="fas fa-info"></i> Note:</h5>--}}
-{{--            Add masseur/masseuse to your spa who will serve your valued customers--}}
-{{--        </div>--}}
+        <div class="alert alert-default-info">
+            <h5><i class="fas fa-info"></i> Note:</h5>
+           Manage your branch inventory
+        </div>
         @can('add inventory')
             <x-adminlte-button label="Add Item" data-toggle="modal" data-target="#inventory-modal" id="inventory-modal-btn" class="bg-olive float-right mb-3"/>
         @endcan
@@ -64,8 +64,11 @@
                     autoFill:'off',
                     responsive:true,
                     order:[0,'desc'],
-                    pageLength: 50
+                    pageLength: 50,
                 });
+
+                $("input[type='search']").wrap("<form>");
+                $("input[type='search']").closest("form").attr("autocomplete","off");
             });
         </script>
     @endpush

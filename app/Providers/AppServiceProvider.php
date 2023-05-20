@@ -8,6 +8,7 @@ use App\View\Components\Inventory\InventoryCategory;
 use App\View\Components\Inventory\InventoryCategoryForm;
 use App\View\Components\Inventory\InventoryForm;
 use App\View\Components\Inventory\InventoryManagement;
+use App\View\Components\Inventory\UpdateQuantity;
 use App\View\Components\Service\Service;
 use App\View\Components\TherapistProfile;
 use App\View\Components\Therapists;
@@ -42,5 +43,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('inventory-category',InventoryCategory::class);
         Blade::component('inventory-category-form',InventoryCategoryForm::class);
         Blade::component('service',Service::class);
+
+        Blade::component('update-quantity',UpdateQuantity::class);
     }
 }
