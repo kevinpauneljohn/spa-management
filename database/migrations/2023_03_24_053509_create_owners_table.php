@@ -16,10 +16,12 @@ class CreateOwnersTable extends Migration
         Schema::create('owners', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('user_id');
+            $table->string('license')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('license')->references('id')->on('licenses');
         });
     }
 

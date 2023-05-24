@@ -230,4 +230,13 @@ class OwnerController extends Controller
 
         return $totalSpa;
     }
+
+    public function dashboard()
+    {
+        $id = auth()->user()->id;
+        $owner = Owner::where('user_id', $id)->first();
+        $spa = Spa::where('owner_id', $owner->id)->get();
+
+        return view('Owner.dashboard', ['spa' => $spa]);
+    }
 }

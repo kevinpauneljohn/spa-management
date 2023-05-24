@@ -11,12 +11,14 @@
 
     <x-adminlte-input type="text" name="name" label="Item Name" fgroup-class="name" id="name"/>
     <x-adminlte-textarea name="description" label="Description" fgroup-class="description" id="description"/>
-    <x-adminlte-input type="number" name="quantity" label="Quantity" fgroup-class="quantity" id="quantity"/>
+    <x-adminlte-input type="number" name="quantity" label="Quantity" fgroup-class="quantity" id="quantity" min="0"/>
+    <x-adminlte-input type="number" name="restock_limit" label="Re-stock limit" fgroup-class="restock_limit" id="restock_limit" min="0"/>
 
     <x-adminlte-select name="unit"  fgroup-class="unit" label="Unit" id="unit">
         <option value=""> --Select--</option>
-        <option disabled>Option 2</option>
-        <option>Option 3</option>
+        @foreach($measurements as $measurement)
+            <option value="{{$measurement->singular}}"> {{$measurement->singular}}</option>
+        @endforeach
     </x-adminlte-select>
 
     <x-adminlte-select name="category"  fgroup-class="category" label="Category" id="category">

@@ -628,15 +628,15 @@ return [
             'files' => [
                 [
                     'type' => 'css',
-                    'asset' => true,
-//                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css',
-                    'location' => 'vendor/bs-stepper/css/bs-stepper.min.css',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css',
+//                    'location' => 'vendor/bs-stepper/css/bs-stepper.min.css',
                 ],
                 [
                     'type' => 'js',
-                    'asset' => true,
-//                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js',
-                    'location' => 'vendor/bs-stepper/js/bs-stepper.min.js',
+                    'asset' => false,
+                    'location' => 'https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js',
+//                    'location' => 'vendor/bs-stepper/js/bs-stepper.min.js',
                 ],
             ],
 
@@ -761,6 +761,16 @@ return [
                 ],
             ],
         ],
+        // 'BootstrapBundle' => [
+        //     'active' => true,
+        //     'files' => [
+        //         [
+        //             'type' => 'js',
+        //             'asset' => false,
+        //             'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
+        //         ],
+        //     ],
+        // ],
         'Inventories' => [
             'active' => false,
             'files' => [

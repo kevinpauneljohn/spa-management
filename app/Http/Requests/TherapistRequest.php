@@ -86,9 +86,8 @@ class TherapistRequest extends FormRequest
             'gender' => 'required',
             'email' => 'unique:users,email',
             'mobile_number' => 'unique:users,mobile_number',
-            'offer_type' => [
-                'required'
-                ]
+            'offer_type' => 'required',
+            'commission_percentage' => 'min:0|max:100'
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Owner;
+use App\Models\Spa;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -40,5 +41,13 @@ class UserSeeder extends Seeder
         $ownerUser = new Owner();
         $ownerUser->user_id = $owner->id;
         $ownerUser->save();
+
+        $spa = new Spa();
+        $spa::create([
+           'owner_id' => $ownerUser->id,
+           'name' => 'Thai Khun Lounge & Spa',
+           'address' => 'Mabalacat city, Pampanga',
+           'number_of_rooms' => 7
+        ]);
     }
 }

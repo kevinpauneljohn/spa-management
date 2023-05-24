@@ -1,3 +1,4 @@
+let serviceTable = $('#service-list');
 document.addEventListener('DOMContentLoaded', function () {
     window.addServiceStepper = new Stepper(document.querySelector('#bs-stepper-add'))
 });
@@ -14,6 +15,7 @@ $(document).on('click','.add-service-btn',function(){
     var price = $('#price').val();
     var category = $('#category').val();
     var spa_id = $('.spa-id').val()
+    var price_per_plus_time = $('#price_per_plus_time').val();
 
     var data = {
         name : name,
@@ -21,7 +23,8 @@ $(document).on('click','.add-service-btn',function(){
         duration : duration,
         price : price,
         category : category,
-        spa_id : spa_id
+        spa_id : spa_id,
+        price_per_plus_time: price_per_plus_time
     };
 
     swal.fire({
@@ -46,7 +49,7 @@ $(document).on('click','.add-service-btn',function(){
                     if(result.status) {
                         $('#service-form').trigger('reset');
                         $('#duration').val('').trigger('change');
-                        reloadServiceTable();
+                        serviceTable.DataTable().ajax.reload(null, false);
 
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-service-modal').modal('toggle');
@@ -144,6 +147,8 @@ $(document).on('click','.edit-service-btn',function(){
             $('#edit_description').val(result.service.description);
             $('#edit_price').val(result.service.price);
             $('#edit_category').val(result.service.category);
+            serviceTable.DataTable().ajax.reload(null, false);
+            $('#edit_price_per_plus_time').val(result.service.price_per_plus_time);
 
             $.each(result.range , function(index, val) {
                 if (result.service.duration == val) {
@@ -175,6 +180,7 @@ $(document).on('click','.update-service-btn',function(){
     var duration = $('#edit_duration').val();
     var price = $('#edit_price').val();
     var category = $('#edit_category').val();
+    var price_per_plus_time = $('#edit_price_per_plus_time').val();
 
     var data = {
         id: id,
@@ -182,7 +188,8 @@ $(document).on('click','.update-service-btn',function(){
         description : description,
         duration : duration,
         price : price,
-        category : category
+        category : category,
+        price_per_plus_time: price_per_plus_time
     };
 
     swal.fire({
@@ -206,7 +213,7 @@ $(document).on('click','.update-service-btn',function(){
                 },success: function (result) {
                     if(result.status) {
                         // $('#service-form').trigger('reset');
-                        reloadServiceTable();
+                        serviceTable.DataTable().ajax.reload(null, false);
 
                         swal.fire("Done!", result.message, "success");
                         $('#update-service-modal').modal('toggle');
@@ -287,7 +294,7 @@ $(document).on('click','.edit_price_previous_btn',function(){
 });
 
 $('#update-service-modal').on('hidden.bs.modal', function () {
-    steppers.to(0);
+    editServiceStepper.to(0);
     $('.edit_info_next_btn').removeClass('hiddenBtn');
     $('.edit_closeModal').removeClass('hiddenBtn');
     $('.edit_price_previous_btn').addClass('hiddenBtn');

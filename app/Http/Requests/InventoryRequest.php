@@ -26,9 +26,10 @@ class InventoryRequest extends FormRequest
         return [
             'spa_id' => 'required',
             'name' => 'required',
-            'quantity' => 'required',
+            'quantity' => 'required|min:0',
             'unit' => 'required',
             'category' => 'required',
+            'restock_limit' => 'required|min:0'
         ];
     }
 
