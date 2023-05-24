@@ -11,18 +11,22 @@ class EmployeeTable extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    // protected $with = ['user'];
 
-    public function therapist()
-    {
-        return $this->belongsTo(Therapist::class, 'employee_id');
-    }
     public function attendances()
     {
-        return $this->hasMany(Attendance::class, 'employee_id');
+        return $this->hasMany(Attendance::class);
     }
     public function spas()
     {
-        return $this->belongsTo(Spa::class,'spas_id');
+        return $this->belongsTo(Spa::class, 'spa_id');
     }
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function shift()
+    {
+        return $this->hasMany(Shift::class);
+    }
 }

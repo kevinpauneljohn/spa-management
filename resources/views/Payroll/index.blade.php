@@ -10,6 +10,7 @@
 <div class="container">
   <!-- The Modal -->
     <x-modal/>
+    <x-empmodal/>
   <!-- Modal -->
 </div>
     <div class="container-fluid">
@@ -19,7 +20,8 @@
             </div>
             <div class="table table-responsive" id="table-wrapper">
                 <!--GENERATED TABLE -->
-                <x-table :columnNames="['Name','Total Sales','Total Commision','Total Wage','View Summary']"/>
+              
+                <x-table :columnNames="['Name','Total Sales','Total Commission','View Summary']"/>
             </div>
         </div>
     </div>
@@ -30,57 +32,163 @@
 
 @section('css')
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<link rel="stylesheet" href="{{asset('AttendanceStyle/style.css')}}">
+<link rel="stylesheet" href="{{asset('AllStyle/style.css')}}">
+<style>
+    th{
+        text-align: center;
+    }
+</style>
 @stop
 
 @section('js')
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+ <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
 
 <script>
+var selectedOption;
+$('#generate')
+$('#department').on('change', function() {
+  selectedOption = $(this).val();
+  var emptyheaders='';
+    if(selectedOption === 'employee'){
+        emptyheaders = '<th>Name</th><th>Total Hours</th><th>Gross Pay</th><th>View Summary</th></tr>';
+    }
+    if(selectedOption === 'therapist'){
+        emptyheaders = '<th>Name</th><th>Total Sales</th><th>Total Commission</th><th>View Summary</th>';
+    }
+    $('#table-id thead').html(emptyheaders);
+    $('#table-id tbody').empty();
+    $("#modal-viewsummary tbody").empty();
+    $('#no_data').text("");
+});
+//DATE RANGE PICKER LIMIT
 $(function() {
-    $('input[name="daterange"]').daterangepicker({
-        opens: 'left'
-    }, function(start, end, label) {
-        // console.log("A new date selection was made: " + start.format('MMMM DD, YYYY') + ' to ' + end.format('MMMM DD, YYYY'));
+    var dateRangePicker = $('input[name="daterange"]');
+    var defaultOptions = {
+        alwaysShowCalendars: true,
+        minDate: new Date() // Set a default minDate to prevent selecting past dates before AJAX request completes
+    };
+    dateRangePicker.daterangepicker(defaultOptions);
+    $.ajax({
+        'url': '/dateRangechecker',
+        'type': 'GET',
+        'data': {},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+            // Destroy the existing daterangepicker
+            dateRangePicker.data('daterangepicker').remove();
+
+            var updatedOptions = Object.assign({}, defaultOptions, { minDate: new Date(res.minDate) });
+            dateRangePicker.daterangepicker(updatedOptions);
+
+            if (dateRangePicker.data('daterangepicker').startDate < res.formattedDate) {
+                dateRangePicker.data('daterangepicker').setStartDate(res.formattedDate);
+            }
+        }
     });
 });
-    $(document).on('submit','.generate-payroll-form',function(form){
+$(document).on('click','#generate',function(form){
     form.preventDefault();
-    let values = $(this).serializeArray();
-    $("#table-id tbody").empty();
+    $(this).prop('disabled', true).text('Loading...');
 
-    $.get('/show-date',values, function(data, status){
-        var html = "";
-        $.each(data, function(key, value){
+    setTimeout(function() {
 
-            html += "<tr class='text-center'>";
-            html += "<td>" + value.fullname + "</td>";
-            html += "<td>" + value.amount + "</td>";
-            html += "<td>" + value.TotalCommission + "</td>";
-            html += "<td>" + "0" + "</td>";
-            html += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary viewsummary" data-toggle="modal" data-target="#exampleModal">View Summary </button> </td>';
-            html += "</tr>";
-            
+      $('#generate').prop('disabled', false).text('GENERATE');
+
+        getDate(function(alldate){
+            $("#table-id tbody").empty();
+            selectedOption = $('#department').val();
+
+            if(selectedOption === 'therapist')
+                {
+                    $('#no_data').text("");
+                    $.get('/show-date', alldate, function(data, status) {
+                            var html = "";
+                            $.each(data, function(key, value) {
+                                if (value.amount) {
+                                html += "<tr class='text-center'>";
+                                html += "<td>" + value.fullname + "</td>";
+                                html += "<td>" + value.amount + "</td>";
+                                html += "<td>" + value.TotalCommission + "</td>";
+                                html += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary viewsummary" data-toggle="modal" data-target="#exampleModal">View Summary </button> </td>';
+                                html += "</tr>";
+                                }
+                            });
+
+                            if (html !== "") {
+                                $("#table-id").append(html);
+                            } else {
+                                $('#no_data').text("No Existing Data");
+                            }
+                            });
+                }
+                else if(selectedOption === 'employee')
+                {
+                    $('#no_data').text("");
+                    $.get('/employee-salary',alldate, function(data, status){
+                    var htmlEmployee = "";
+                        if(Array.isArray(data) && data.length > 0)
+                        {
+                                $.each(data, (key, value)=>{
+                                htmlEmployee += "<tr class='text-center'>";
+                                htmlEmployee += "<td>" + value.Name + "</td>";
+                                htmlEmployee += "<td>" + value.total_hours + "</td>";
+                                htmlEmployee += "<td>" + value.salary + "</td>";
+                                htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
+                                htmlEmployee += "</tr>";
+                            });
+                            $("#table-id").append(htmlEmployee);
+                        }
+                        else
+                        {
+                            let message = data;
+                             $('#no_data').text(message);
+                        }
+                    });
+                }
         });
-        $("#table-id").append(html);
-        console.log($("#viewsummary").val());
-    }); 
+    }, 500);
 });
+// Employee View SUmmary
 
+$(document).on('click', '.empsummary', function(){
+    let id = $(this).val();    
+    $("#modal-viewsummaryemp tbody").empty();
+    getDate(function(alldate){
+        $.ajax({
+            'url' : '/employee-summary/' + id,
+            'type' : 'GET',
+            'data' : alldate,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            success : (res)=>{
+                console.table(res);
+                var html = "";
+                $.each(res, function(key, value){
+                const formats = "MMMM DD, YYYY";
+                var date = moment(value.time_in).format(formats);
+                html += "<tr>";
+                html += "<td>" + date + "</td>";
+                html += "<td>" + value.Total_Hours + "</td>";
+                html += "<td>" + value.Pay + "</td>";
+                html += "</tr>";
+                });
+
+                $("#modal-viewsummaryemp").append(html);
+            }
+        })
+    })
+});
+// Therapist View SUmmary
 $(document).on('click', '.viewsummary', function(){
     let id = $(this).val();
 
-    let dateStart = $('#daterange').data('daterangepicker').startDate.format('MMMM DD, YYYY');
-    let dateEnd = $('#daterange').data('daterangepicker').endDate.format('MMMM DD, YYYY');
-
-    let alldate= {
-        datestart : dateStart,
-        dateEnd : dateEnd
-    }
-
+    getDate(function(alldate){
     $("#modal-viewsummary tbody").empty();
         $.ajax({
             'url' : '/info/' + id,
@@ -108,7 +216,22 @@ $(document).on('click', '.viewsummary', function(){
             
             }
         })
+    });
 });
+
+
+
+
+function getDate(callback){
+    let dateStart = $('#daterange').data('daterangepicker').startDate.format('MMMM DD, YYYY');
+    let dateEnd = $('#daterange').data('daterangepicker').endDate.format('MMMM DD, YYYY');
+
+    let alldate= {
+        datestart : dateStart,
+        dateEnd : dateEnd
+    }
+    callback(alldate);
+}
 
 </script>
 @stop

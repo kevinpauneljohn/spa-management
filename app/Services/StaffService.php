@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Events\EmployeeCreated;
+use App\Events\UserCreated;
+use App\Models\EmployeeTable;
+use App\Models\Shift;
 use App\Models\User;
 use App\Models\Spa;
 use App\Models\Therapist;
@@ -114,6 +118,24 @@ class StaffService
                     'username' => $data['username'],
                     'password' => Hash::make($data['password']),
                 ]);
+              
+                $employee = EmployeeTable::where('user_id', $user->id)->first();
+                if (!$employee) {
+                    $employee = EmployeeTable::create([
+                        'user_id' => $user->id,
+                        'spa_id' => $user->spa_id,
+                    ]);
+                }
+
+                $shift = Shift::where('user_id', $user->id)->first();
+                if (!$shift) {
+                    $shift = Shift::create([
+                        'user_id' => $user->id,
+                        'employee_id' => $employee->id,
+                        'Schedules' => 'M,T,W,TH,F',
+                        'time' => now()->format('h:i:s'),
+                    ]);
+                }
 
                 if ($user) {
                     $user->assignRole($data['role']);
@@ -181,6 +203,7 @@ class StaffService
             } else {
                 return false;
             }
+            
         }
     }
 

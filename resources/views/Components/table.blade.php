@@ -1,6 +1,6 @@
 <table class="table-striped w-100" id="table-id">
     <thead>
-       <tr>
+       <tr class="text-center">
        @foreach ($columnNames as $columnName)
             @php
                 // Define an array of background color classes to match the column name
@@ -15,11 +15,17 @@
                 $bgClass = isset($bgClasses[$columnName]) ? $bgClasses[$columnName] : '';
             @endphp
             <!-- Add the background color class to the th element -->
-            <th scope="col" class="text-center p-3 {{$bgClass}}">{{$columnName}}</th>
+            <th scope="col" class="p-3 {{$bgClass}}">{{$columnName}}</th>
         @endforeach
       </tr>
     </thead>
      <tbody>
-        <!--results -->
+        <!--if no data -->
+   
      </tbody>
+  
 </table>
+
+   <div class="container text-center">
+        <p id="no_data"></p>
+    </div>
