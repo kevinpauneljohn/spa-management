@@ -29,10 +29,10 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
-                        <button class="btn pt-4 pb-4 btn-success w-100" id="time_in">Time-In</button>
+                        <button class="btn pt-4 pb-4 btn-success w-100" id="time_in">Time-In <i class="fas fa-hourglass-start ml-2"></i></button>
                      </div>
                      <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
-                        <button class="btn pt-4 pb-4 btn-danger w-100" id="time_out">Time-Out</button>
+                        <button class="btn pt-4 pb-4 btn-danger w-100" id="time_out">Time-Out <i class="fas fa-hourglass-end ml-2"></i></button>
                     </div>
                 </div>
                 </br>
@@ -66,7 +66,7 @@
 @section('plugins.Moment',true)
 
 @section('css')
-<link rel="stylesheet" href="{{asset('AttendanceStyle/style.css')}}">
+<link rel="stylesheet" href="{{asset('AllStyle/style.css')}}">
 @stop
 
 @section('js')
@@ -76,10 +76,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script>
-
+    
     //TIME-IN
     $(document).on('click', '#time_in' , ()=>{
-        let empID = $("#empID").val();
+     let empID = $("#empID").val();
         swal({
             title: "Are you sure you want to time in employee ID: "+empID,
             icon: "warning",
@@ -95,14 +95,16 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success : (res)=>{
-                        swal({
-                            title: res,
-                            icon: "warning",
-                            buttons: true,
-                            dangerMode: true,
-                        }).then(()=>{
-                        //    location.reload();
-                        });
+                        if(res == 0){
+                           isExist();
+                        }
+                        else if(res == 1){
+                            isSuccessful();
+                        }
+                        else if(res == 2){
+                            NotMatch();
+                        }
+                       
                     },
                     error: function(Error) {
                         alert("Error:", textStatus);
@@ -116,24 +118,43 @@
     //TIME-OUT
     $(document).on('click', '#time_out' , ()=>{
         let empID = $("#empID").val();
-         location.reload();
-        $.ajax({
-            'url' : '/time-out/' + empID,
-            'type' : 'GET',
-            'data' : {},
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success : (res)=>{
-                alert(res);
-            }
 
-        });
+         swal({
+            title: "Are you sure you want to time out employee ID: "+empID,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+         }).then((willTimeOut)=>{
+            if(willTimeOut){
+                $.ajax({
+                    'url' : '/time-out/' + empID,
+                    'type' : 'PUT',
+                    'data' : {},
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success : (res)=>{    
+                        if(res == 0){
+                             isSuccessful();
+                        }
+                        else if(res == 1){
+                           isExist();
+                        }
+                        else if(res == 2){
+                            NotMatch();
+                        }
+                        else if(res == 3)
+                        {
+                            NotTimeIn();
+                        }
+                    }
+                });
+             }
+         });  
     });
     //BREAK-IN
     $(document).on('click', '#break_in' , ()=>{
         let empID = $("#empID").val();
-         location.reload();
         $.ajax({
             'url' : '/break-in/' + empID,
             'type' : 'GET',
@@ -142,7 +163,15 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success : (res)=>{
-                alert(res);
+                if(res == 0){
+                         isSuccessful();
+                        }
+                        else if(res == 1){
+                           isExist();
+                        }
+                        else if(res == 2){
+                            NotMatch();
+                }
             }
 
         });
@@ -150,7 +179,6 @@
     //BREAK-OUT
     $(document).on('click', '#break_out' , ()=>{
         let empID = $("#empID").val();
-         location.reload();
         $.ajax({
             'url' : '/break-out/' + empID,
             'type' : 'GET',
@@ -159,7 +187,18 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success : (res)=>{
-                alert(res);
+                if(res == 0){
+                         isSuccessful();
+                        }
+                        else if(res == 1){
+                           isExist();
+                        }
+                        else if(res == 2){
+                            NotMatch();
+                         }
+                         else if(res == 3){
+                            NotBreakIn();
+                         }
             }
 
         });
@@ -176,8 +215,9 @@
             success : (AttendanceTbl)=>{
                 var html = "";
                 $.each(AttendanceTbl, function(item,data){
+
                     html += "<tr class='text-center' style='font-size: 25px'>";
-                    html += "<td>" + data.employee_id + "</td>";
+                    html += "<td>" + data.name + "</td>";
                     html += "<td>" + data.time_in + "</td>";
                     html += "<td>" + data.break_in + "</td>";
                     html += "<td>" + data.break_out + "</td>";
@@ -188,11 +228,7 @@
                 $("#table-id").append(html);
             }
         })
-
-        //Clock ------------------
-        // var date = new Date();
-        // const formats = "h:m:s MMMM DD, YYYY";
-        // var dateNow = moment(date).format(formats);
+        
         $(document).ready(function() {
             setInterval(function() {
                 var currentTime = new Date();
@@ -221,7 +257,50 @@
                 $("#clock").html(currentTimeString);
             }, 1000); 
     });
-    
+    function isSuccessful(){
+        swal({
+         title: "Successful",
+         text: 'Operation completed successfully.',
+          icon: "success",
+            buttons: {
+                confirm: {
+                  text: 'OK',
+                  className: 'btn-success'
+                   }
+               },
+             }).then(function(){
+                 location.reload();
+         });
+    }
+    function isExist(){
+        swal({
+            title: "Attendance record already exists for this employee for today.",
+            icon: "warning",
+            dangerMode: true,
+            });
+    }
+    function NotMatch(){
+        swal({
+            title: 'ID Not Found!',
+            icon: "warning",
+            dangerMode: true,
+            });
+         }
+    function NotTimeIn(){
+        swal({
+            title: 'Not Yet Time in',
+            icon: "warning",
+            dangerMode: true,
+            });
+    }
+    function NotBreakIn(){
+        swal({
+            title: 'Not Yet Break in',
+            icon: "warning",
+            dangerMode: true,
+            });
+    }
+
 </script>
 
 @stop

@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\EmployeeTable;
 use App\Models\Spa;
 use App\Models\Therapist;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -19,8 +20,11 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return view('Attendance.index');
-    }
+      
+            return view('Attendance.index');
+        
+        
+    }   
     
     public function phDate()
     {
@@ -36,16 +40,15 @@ class EmployeeController extends Controller
       
         try {
             $employee = EmployeeTable::findOrFail($id);
-            $today = now()->format('Y-m-d'); // Get the current date as string
-            // ->toDateString()
             
-            // Check if attendance record already exists for this employee and date
+            $today = now()->format('Y-m-d'); // Get the current date as string
+
             $attendance = Attendance::where('employee_id', $employee->id)
                     ->whereDate('created_at', $today)
                     ->first();
         
             if ($attendance) {
-                return "Attendance record already exists for this employee for today.";
+                return 0;
             }
             else{
                 Attendance::create([
@@ -56,42 +59,82 @@ class EmployeeController extends Controller
                     'break_out' => '-',
                 ]);
             }
-        
-            // Create new attendance record for this employee
-            return "Successfully Created!";
+            return 1;
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
-            return 'ID '.$id. ' Not Found!';
+            return 2;
         }
         
     }
 
-    public function time_out($id){
+    public function time_out($id)
+    {   
+        $today = now()->format('Y-m-d');
+        try {
+            $employee = EmployeeTable::findOrFail($id);
+            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
+            if(empty($attendance->time_in)){
+                return 3;
+            }
+            else{
+                if ($attendance->time_out == '-') {
+                    // Update the time_out column
+                    $attendance->update([
+                        'time_out' => $this->phDate(),
+                    ]);
+                    return 0;
+                } else  {
+                    return 1;
+                } 
+            }
         
-        $Attendancetable = Attendance::select('time_out')->where('employee_id', $id)->first();
-
-          Attendance::where('employee_id', $id)->update(['time_out' => $this->phDate()]);
-          if(empty($Attendancetable)){
-            return "Employee does not exist!";
-          } else{return "Time-out successful!";}     
+        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
+            return 2;
+        }
     }
-    public function break_in($id){
-        
-        $Attendancetable = Attendance::select('time_out')->where('employee_id', $id)->first();
 
-          Attendance::where('employee_id', $id)->update(['break_in' => $this->phDate()]);
-          if(empty($Attendancetable)){
-            return "Employee does not exist!";
-          } else{return "Break-in successful!";}     
+    public function break_in($id)
+    {
+        $today = now()->format('Y-m-d');
+        try {
+            $employee = EmployeeTable::findOrFail($id);
+            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
+            if ($attendance->break_in == '-') {
+                $attendance->update([
+                    'break_in' => $this->phDate(),
+                ]);
+                return 0;
+            } else  {
+                return 1;
+            } 
+        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
+            return 2;
+        }
     }
-    public function break_out($id){
-        
-        $Attendancetable = Attendance::select('time_out')->where('employee_id', $id)->first();
 
-          Attendance::where('employee_id', $id)->update(['break_out' => $this->phDate()]);
-          if(empty($Attendancetable)){
-            return "Employee does not exist!";
-          } else{return "Break-out successful!";}     
+    public function break_out($id)
+    {
+        $today = now()->format('Y-m-d');
+        try {
+            $employee = EmployeeTable::findOrFail($id);
+            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
+            if(empty($attendance->break_in)){
+                return 3;
+            }
+            else{
+                if ($attendance->break_out == '-') {
+                    $attendance->update([
+                        'break_out' => $this->phDate(),
+                    ]);
+                    return 0;
+                } else  {
+                    return 1;
+                } 
+            }
+       
+        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
+            return 2;
+        }   
     }
 
     /**
@@ -113,16 +156,22 @@ class EmployeeController extends Controller
      */
     public function show()
     {   
-
         $timeStomp = now()->format('Y-m-d');
-        $displayAttendance =  Attendance::whereDate('created_at', $timeStomp)->get()->toArray();
-        return response()->json($displayAttendance);
-        
+        $attendance = Attendance::with('employee.user')->whereDate('created_at', $timeStomp)
+        ->get()
+        ->groupBy('employee_id')
+        ->map(function($at) {
+            return [
+                'name' => $at->first()->employee->user->firstname,
+                'time_in' => $at->first()->time_in,
+                // 'id' => $at->first()->employee->id,
+                'break_in' => $at->first()->break_in,
+                'break_out' => $at->first()->break_out,
+                'time_out' => $at->first()->time_out,
+            ];
+        });
+        return $attendance->values();
     }
-    public function getCode(){
-       
-    }
-
     /**
      * Show the form for editing the specified resource.
      *

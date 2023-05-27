@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\EmployeeCreated;
+use App\Events\UserCreated;
+use App\Listeners\CreateUserEmployee;
+use App\Listeners\EmployeeCreatedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

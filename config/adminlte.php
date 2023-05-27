@@ -402,12 +402,28 @@ return [
             'text' => 'Payroll Management',
             'route'  => 'payroll.index',
             'icon' => 'fas fa-fw  fa-money-check-alt',
+            // 'can' => 'view payroll',
         ],
         [
             'text' => 'Attendance',
-            'route'  => 'attendance.index',
             'icon' => 'fas fa-fw fa-store',
+        
+            'submenu' => [
+                [
+                    'text' => 'Employee Attendance',
+                    'route'  => 'attendance.index',
+                    'icon' => 'fas fa-fw fa-store',
+      
+                ],
+                [
+                    'text' => 'Shift Management',
+                    'route'  => 'shift.index',
+                    'icon' => 'fas fa-fw fa-store',
+                ],
+            ],
+            
         ],
+  
 //        [
 //            'text'    => 'multilevel',
 //            'icon'    => 'fas fa-fw fa-share',
@@ -484,7 +500,7 @@ return [
                     'can'  => 'view permission',
                 ],
             ],
-        ],
+        ],       
     ],
 
     /*
@@ -722,6 +738,16 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js',
+                ],
+            ],
+        ],
+        'DateRangePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.js',
                 ],
             ],
         ],

@@ -207,6 +207,7 @@
                 order:[0,'desc'],
                 pageLength: 50
             });
+            
 
             $('#addNewSpa').on('click', function() {
                 $('#name').val('');

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ShiftController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,17 +102,17 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/roles',[\App\Http\Controllers\RoleController::class,'getRoleList'])->name('role.lists');
 
     Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index');
-    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'showDate'])->name('generate.payroll.by.date');
+    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'therapist'])->name('generate.payroll.by.date');
     Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
-    Route::get('/employee-time',[\App\Http\Controllers\PayrollController::class, 'getEmployeeTime']);
+    Route::get('/employee-salary',[\App\Http\Controllers\PayrollController::class, 'getEmployeeSalary']);
+    Route::get('/employee-summary/{id}', [\App\Http\Controllers\PayrollController::class, 'getEmployeeSummary']);
+    Route::get('/dateRangechecker', [\App\Http\Controllers\PayrollController::class, 'dateLimit']);
+    Route::get('/create', [\App\Http\Controllers\PayrollController::class, 'create']);
 
 
-    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
-    Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
-    Route::get('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
-    Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
-    Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
-    Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);
+    Route::resource('/shift',\App\Http\Controllers\ShiftController::class);
+    Route::get('/shift-list',[\App\Http\Controllers\ShiftController::class, 'list'])->name('shift.list');
+    Route::put('/update/{id}', [\App\Http\Controllers\ShiftController::class, 'update']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
 
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
@@ -127,11 +129,19 @@ Route::middleware(['auth'])->group(function(){
 
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
-
     Route::resource('inventory-categories',\App\Http\Controllers\Inventories\InventoryCategoryController::class);
     Route::get('/inventory-category-lists',[\App\Http\Controllers\Inventories\InventoryCategoryController::class,'lists'])->name('inventory.category.lists');
 
     Route::post('/check-user-password',[\App\Http\Controllers\UserController::class,'check_user_logged_in_password'])->name('check.user.password');
+
+
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');
+
+Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
+Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
+Route::put('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
+Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
+Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
+Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);

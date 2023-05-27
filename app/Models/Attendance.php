@@ -12,8 +12,8 @@ class Attendance extends Model
     protected $fillable = ['employee_id','time_in','time_out','break_in','break_out'];
     protected $table = 'attendances';
 
-    public function employee_tables()
+    public function employee()
     {
-        return $this->belongsTo(EmployeeTable::class, 'id');
+        return $this->belongsTo(EmployeeTable::class);
     }
 }

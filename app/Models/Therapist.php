@@ -42,10 +42,6 @@ class Therapist extends Model
     {
         return "{$this->user->firstname} {$this->user->lastname}";
     }
-    public function employeeTable()
-    {
-        return $this->hasMany(EmployeeTable::class, 'employee_id');
-    }
     public function spas()
     {
         return $this->belongsTo(Spa::class, 'spa_id');
