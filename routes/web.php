@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
     Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
-
+    
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
 
@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/therapist-list/{id}',[\App\Http\Controllers\TherapistController::class,'lists'])->name('therapist.lists');
 //    Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');
     Route::get('/therapists-profile/{id}',[\App\Http\Controllers\TherapistController::class,'therapist_profile'])->name('therapists.profile');
+    Route::get('/therapists-transaction-count/{id}/{date}',[\App\Http\Controllers\TherapistController::class,'getTherapistTransactionCount'])->name('therapists.transaction.count');
 
     Route::resource('therapists',\App\Http\Controllers\TherapistController::class);
 
@@ -125,6 +126,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/appointment-create-sales/{id}/{amount}',[\App\Http\Controllers\AppointmentController::class,'storeSales'])->name('appointment.create.sales');
     Route::delete('appointment-delete/{id}',[\App\Http\Controllers\AppointmentController::class,'destroy'])->name('appointment.delete');
     Route::get('/appointment-upcoming/{id}',[\App\Http\Controllers\AppointmentController::class,'getUpcomingGuests'])->name('appointment.upcoming.guest');
+    Route::get('/check-appointment-batch/{id}/{batch}',[\App\Http\Controllers\AppointmentController::class,'checkBatch'])->name('appointment.check.batch');
     Route::get('/appointment-response/{id}',[\App\Http\Controllers\AppointmentController::class,'getResponses'])->name('appointment.responses');
 
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);

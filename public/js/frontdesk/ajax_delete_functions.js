@@ -6,9 +6,10 @@ function deleteAppointment(id)
     let data = $tr.children('td').map(function () {
         return $(this).text();
     }).get();
+    console.log(name)
 
     swal.fire({
-        title: "Are you sure you want to delete appointment of "+data[0]+"?",
+        title: "Are you sure you want to delete appointment ?",
         icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",

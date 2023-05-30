@@ -10,6 +10,10 @@ use App\Models\Service;
 use App\Models\Spa;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Services\ClientService;
+use App\Services\TransactionService;
+use App\Services\SaleService;
 // use App\Action\AppointmentAction;
 
 class AppointmentService
@@ -19,6 +23,20 @@ class AppointmentService
     // {
     //     $this->appointmentAction = $appointmentAction;
     // }
+    private $clientService;
+    private $transactionService;
+    private $saleService;
+
+    public function __construct(
+        ClientService $clientService,
+        TransactionService $transactionService,
+        SaleService $saleService
+    ) {
+        $this->clientService = $clientService;
+        $this->transactionService = $transactionService;
+        $this->saleService = $saleService;
+    }
+
 
     public function data($id)
     {
@@ -26,7 +44,14 @@ class AppointmentService
 
         return DataTables::of($appointment)
             ->editColumn('client',function($appointment){
-                return ucfirst($appointment->client->firstname).' '.ucfirst($appointment->client->lastname);
+                $names = '';
+                if (!empty($appointment->client_id)) {
+                    $names .= ucfirst($appointment->client->firstname).' '.ucfirst($appointment->client->lastname);
+                } else {
+                    $names .= '<small><b>Care of "'.$this->getPrimaryAppointmentName($appointment->spa_id, $appointment->batch).'"</b></small>';
+                }
+
+                return $names;
             })
             ->editColumn('service',function ($appointment){
 
@@ -62,6 +87,12 @@ class AppointmentService
             })
             ->addColumn('action', function($appointment){
                 $batch_id = $appointment->batch;
+
+                $is_client_id = false;
+                if (!empty($appointment->client_id)) {
+                    $is_client_id = true;
+                }
+
                 $action = "";
                 if (auth()->user()->can('view sales') || auth()->user()->hasRole('owner')) {
                     $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-warning view-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-eye"></i></a>&nbsp;';
@@ -72,7 +103,7 @@ class AppointmentService
                 }
 
                 if (auth()->user()->can('move sales') || auth()->user()->hasRole('owner')) {
-                    $action .= '<a href="#" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-success move-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-exchange-alt"></i></a>&nbsp;';
+                    $action .= '<a href="#" data-name="'.$is_client_id.'" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-success move-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-exchange-alt"></i></a>&nbsp;';
                 }
 
                 if (auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
@@ -85,132 +116,218 @@ class AppointmentService
             ->make(true);
     }
 
+    public function getPrimaryAppointmentName($spa_id, $batch)
+    {
+        $appointment = Appointment::where([
+            'spa_id' => $spa_id, 
+            'batch' => $batch,
+            'primary' => 'yes'
+        ])->with(['client'])->first();
+
+        $data = '';
+        if (!empty($appointment)) {
+            $data = ucfirst($appointment->client->firstname).' '.ucfirst($appointment->client->lastname);
+        }
+
+        return $data;
+    }
+
+    // Enhanced Create Query for Walk In reserved Now with try catch error and DB: Transaction function
     public function appointmentCreateSales($data, $id, $amount)
     {
         $code = 201;
         $status = false;
         $message = 'Unable to save appointments. Please try again.';
-        if (!empty($data)) {
-            $sale = Sale::create([
-                'spa_id' => $id,
+        $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        DB::beginTransaction();
+        try {
+            $spa_id = $id;
+            $user_id = auth()->user()->id;
+            $payment_status = 'pending';
+
+            $sale_data = [
+                'spa_id' => $spa_id,
                 'amount_paid' => $amount,
-                'payment_status' => 'pending',
-                'user_id' => auth()->user()->id
-            ]);
+                'payment_status' => $payment_status,
+                'user_id' => $user_id,
+                'appointment_batch' => 0,
+                'payment_method' => NULL,
+                'payment_account_number' => NULL,
+                'payment_bank_name' => NULL
+            ];
 
-            if ($sale) {
-                $sale_id = $sale->id;
-                foreach ($data->value as $list) {
-                    $client_data = [
-                        'firstname' => $list['value_first_name'],
-                        'middlename' => $list['value_middle_name'],
-                        'lastname' => $list['value_last_name'],
-                        'date_of_birth' => $list['value_date_of_birth'],
-                        'mobile_number' => $list['value_mobile_number'],
-                        'email' => $list['value_email'],
-                        'address' => $list['value_address'],
-                        'client_type' => $list['value_client_type'],
-                    ];
+            $sale = $this->createSale($sale_data);
 
-                    if (!empty($list['existing_user_id'])) {
-                        $client = $this->saveClient($list['existing_user_id'], $client_data);
+            foreach ($data->value as $list) {
+                $client_id = 0;
+                $check_client = $this->checkClient($list);
+
+                if ($check_client['status']) {
+                    $client_id = $check_client['data']['id'];
+                    $client_name = $check_client['data']['firstname'].' '.$check_client['data']['lastname'];
+
+                    $check_transaction = $this->checkInTransaction($client_id, $spa_id, $now);
+                    $check_appointment = $this->checkInAppointment($client_id, $spa_id);
+
+                    $client = $this->clientUpdate($client_id, $list);
+                    if (!$check_transaction['status']) {
+                        if ($client) {
+                            $transaction = $this->transactionCreate($spa_id, $client_id, $sale['data']['id'], $list);
+
+                            if (!$transaction) {
+                                throw new \Exception('Unable to save transaction. Please try again.');
+                            }
+                        }
+                    } else if ($check_appointment < 1) {
+                        if ($client) {
+                            $transaction = $this->transactionCreate($spa_id, $client_id, $sale['data']['id'], $list);
+
+                            if (!$transaction) {
+                                throw new \Exception('Unable to save transaction. Please try again.');
+                            }
+                        }
                     } else {
-                        $client = $this->saveClient(0, $client_data);
+                        throw new \Exception('Client "'.$client_name.'" already in transaction or appointment. Please try again.');
                     }
+                } else {
+                    if (!empty($list['existing_user_id'])) {
+                        $client_id = $list['existing_user_id'];
+                    }
+                    $client_name = $list['firstname'].' '.$list['lastname'];
 
-                    $transaction_data = [
-                        'spa_id' => $id,
-                        'service_id' => $list['value_services'],
-                        'service_name' => $list['value_services_name'],
-                        'amount' => $list['total_price'],
-                        'therapist_1' => $list['therapist_1'],
-                        'therapist_2' => $list['therapist_2'],
-                        'client_id' => $client,
-                        'start_time' => $list['value_start_time'],
-                        'end_time' => '',
-                        'plus_time' => $list['plus_time'],
-                        'discount_rate' => '',
-                        'discount_amount' =>'',
-                        'tip' => '',
-                        'rating' => 0,
-                        'sales_type' => $list['value_appointment_type'],
-                        'sales_id' => $sale_id,
-                        'room_id' => $list['room_id'],
-                    ];
+                    $check_transaction = $this->checkInTransaction($client_id, $spa_id, $now);
+                    $check_appointment = $this->checkInAppointment($client_id, $spa_id);
 
-                    $transactionStatus = $this->createTransaction($transaction_data);
+                    $client = $this->clientCreate($list);
+                    if (!$check_transaction['status']) {
+                        if ($client) {
+                            $transaction = $this->transactionCreate($spa_id, $client['data']['id'], $sale['data']['id'], $list);
 
-                    $status = true;
-                    $message = 'Sales and Client Information successfully saved.';
+                            if (!$transaction) {
+                                throw new \Exception('Unable to save transaction. Please try again.');
+                            }
+                        }
+                    } else if ($check_appointment < 1) {
+                        if ($client) {
+                            $transaction = $this->transactionCreate($spa_id, $client['data']['id'], $sale['data']['id'], $list);
+
+                            if (!$transaction) {
+                                throw new \Exception('Unable to save transaction. Please try again.');
+                            }
+                        }
+                    } else {
+                        throw new \Exception('Client "'.$client_name.'" already in transaction or appointment. Please try again.');
+                    }
                 }
             }
+
+            $status = true;
+            $message = 'Sales Transaction and Client Information successfully saved.';
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $code = 500;
+            $status = false;
+            $message = $e->getMessage();
         }
 
         $response = [
-            'status'   => $status,
-            'message'   => $message
+            'status' => $status,
+            'message' => $message,
+            'code' => $code
         ]; 
 
         return $response;
     }
 
-    public function create($data, $id)
+    // Enhanced Query for creating appointment with try catch error and DB: Transaction function
+    public function create($data, $spa_id)
     {
         $code = 201;
         $status = false;
         $message = 'Unable to save appointments. Please try again.';
-        if (!empty($data)) {
-            $batch = Appointment::select('batch')->where('spa_id', $id)->orderBy('batch', 'DESC')->first();
+
+        DB::beginTransaction();
+        try {
+            $batch = Appointment::select('batch')->where('spa_id', $spa_id)->orderBy('batch', 'DESC')->first();
             
             $batchNumber = 1;
             if (!empty($batch)) {
                 $batchNumber = $batch['batch'] + 1;
             }
-
-            foreach ($data['value'] as $list) {
-                $client_data = [
-                    'firstname' => $list['value_first_name'],
-                    'middlename' => $list['value_middle_name'],
-                    'lastname' => $list['value_last_name'],
-                    'date_of_birth' => $list['value_date_of_birth'],
-                    'mobile_number' => $list['value_mobile_number'],
-                    'email' => $list['value_email'],
-                    'address' => $list['value_address'],
-                    'client_type' => $list['value_client_type'],
-                ];
-
-                if (!empty($list['existing_user_id'])) {
-                    $client = $this->saveClient($list['existing_user_id'], $client_data);
-                } else {
-                    $client = $this->saveClient(0, $client_data);
-                }
-
+            
+            foreach ($data['value'] as $key => $list) {
                 $start_time = '';
-                if (!empty($list['value_start_time'])) {
-                    $start_time = date('Y-m-d H:i:s', strtotime($list['value_start_time']));
+                if (!empty($list['start_time'])) {
+                    $start_time = date('Y-m-d H:i:s', strtotime($list['start_time']));
                 }
 
-                $appointment = Appointment::create([
-                    'spa_id' => $id,
-                    'client_id' => $client,
-                    'service_id' => $list['value_services'],
-                    'service_name' => $list['value_services_name'],
-                    'batch' => $batchNumber,
-                    'amount' => $list['price'],
-                    'start_time' => $start_time,
-                    'appointment_type' => $list['value_appointment_type'],
-                    'social_media_type' => $list['value_social_type'],
-                    'appointment_status' => 'reserved',
-                ]);
+                $primary = 'no';
+                if ($key == 0) {
+                    $primary = 'yes';
+                }
 
-                $status = true;
-                $message = 'Appointments has been successfully saved.';
+                $client_id = 0;
+                $check_client = false;
+                if (!empty($list['firstname']) && !empty($list['lastname'] && !empty($list['mobile_number']))) {
+                    $check_client = $this->checkClient($list);
+                }
+
+                if ($check_client['status']) {
+                    $client_id = $check_client['data']['id'];
+                    $client_name = $check_client['data']['firstname'].' '.$check_client['data']['lastname'];
+
+                    $client = $this->clientUpdate($client_id, $list);
+                    $check_appointment = $this->checkInAppointment($client_id, $spa_id);
+                    if ($client) {
+                        if ($check_appointment < 1) {
+                            $appointment = $this->appointmentCreate($spa_id, $client_id, $list, $batchNumber, $start_time, $primary);
+
+                            if (!$appointment) {
+                                throw new \Exception('Unable to save appointment. Please try again.');
+                            }
+                        } else {
+                            throw new \Exception('Client "'.$client_name.'" already in appointment. Please try again.');
+                        }
+                    }
+                } else {
+                    if (!empty($list['existing_user_id'])) {
+                        $client_id = $list['existing_user_id'];
+                    }
+                    $client_name = $list['firstname'].' '.$list['lastname'];
+
+                    $client = $this->clientCreate($list);
+                    $check_appointment = $this->checkInAppointment($client['data']['id'], $spa_id);
+                    if ($client) {
+                        if ($check_appointment < 1) {
+                            $appointment = $this->appointmentCreate($spa_id, $client['data']['id'], $list, $batchNumber, $start_time, $primary);
+
+                            if (!$appointment) {
+                                throw new \Exception('Unable to save appointment. Please try again.');
+                            }
+                        } else {
+                            throw new \Exception('Client "'.$client_name.'" already in appointment. Please try again.');
+                        }
+                    }
+                }
             }
+
+            $status = true;
+            $message = 'Appointments has been successfully saved.';
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $code = 500;
+            $status = false;
+            $message = $e->getMessage();
         }
 
         $response = [
-            'status'   => $status,
-            'message'   => $message
+            'status' => $status,
+            'message' => $message,
+            'code' => $code
         ]; 
 
         return $response;
@@ -256,6 +373,26 @@ class AppointmentService
     {
         $appointment = Appointment::with(['client'])->findOrFail($id);
         $appointment->start_time_formatted = date('d F Y, h:i A', strtotime($appointment->start_time));
+
+        $appointment->clientid = '';
+        $appointment->firstname = '';
+        $appointment->lastname = '';
+        $appointment->date_of_birth = '';
+        $appointment->mobile_number = '';
+        $appointment->email = '';
+        $appointment->address = '';
+        $appointment->client_type = 'new';
+        if (!empty($appointment->client_id)) {
+            $appointment->clientid = $appointment->client->id;
+            $appointment->firstname = $appointment->client->firstname;
+            $appointment->lastname = $appointment->client->lastname;
+            $appointment->date_of_birth = $appointment->client->date_of_birth;
+            $appointment->mobile_number = $appointment->client->mobile_number;
+            $appointment->email = $appointment->client->email;
+            $appointment->address = $appointment->client->address;
+            $appointment->client_type = $appointment->client->client_type;
+        }
+
         return $appointment;
     }
 
@@ -275,9 +412,6 @@ class AppointmentService
             $start_time = date('Y-m-d H:i:s', strtotime($data->start_time));
         }
 
-        $appointment->service_id = $data->value_services;
-        $appointment->service_name = $data->value_services_name;
-        $appointment->amount = $data->price;
         $appointment->start_time = $start_time;
         $appointment->appointment_type = $data->appointment_type;
         $appointment->social_media_type = $data->appointment_social;
@@ -290,13 +424,21 @@ class AppointmentService
             'mobile_number' => $data->mobile_number,
             'email' => $data->email,
             'address' => $data->address,
+            'client_type' => $data->client_type
         ];
 
         $status = false;
         $message = 'Unable to update Appointment. Please try again.';
         if ($appointment->save()) {
-            $client_info = $this->updateClientInfo($data->client_id, $client_data);
+            if (!empty($data->client_id)) {
+                $client_info = $this->updateClientInfo($data->client_id, $client_data);
+            } else {
+                $client_info = $this->saveClient(0, $client_data);
 
+                $appointment->client_id = $client_info;
+                $appointment->save();
+            }
+            
             if ($client_info) {
                 $status = true;
                 $message = 'Appointment has been successfully updated.';
@@ -332,6 +474,7 @@ class AppointmentService
 
     public function appointmentSales($data)
     {
+        
         $appointment = Appointment::findOrFail($data->appointment_id);
         $appointment_batch = $appointment->batch;
 
@@ -522,17 +665,24 @@ class AppointmentService
         $appointment = Appointment::where(['spa_id' => $id, 'appointment_status' => 'reserved'])->with('client')->get();
 
         $data = [];
-        foreach ($appointment as $list) {
+        foreach ($appointment as $key => $list) {
             $created_at = Carbon::parse($list->created_at)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
             $seconds = strtotime($list->start_time) - strtotime($created_at);
             $total_minutes_in_seconds = $seconds;
+
+            $fullname = 'Batch # '.$list->batch. ' <small><b>Care of "'.$this->getPrimaryAppointmentName($list->spa_id, $list->batch).'"</b></small>';
+            $mobile_number = '[N/A]';
+            if (!empty($list->client_id)) {
+                $fullname = 'Batch # '.$list->batch.' '.$list->client->firstname.' '.$list->client->lastname;
+                $mobile_number = $list->client->mobile_number;
+            }
 
             $data [] = [
                 'id' => $list->id,
                 'created_at' => $list->created_at,
                 'start_time' => $list->start_time,
-                'fullname' => $list->client->firstname.' '.$list->client->lastname,
-                'mobile_number' => $list->client->mobile_number,
+                'fullname' => $fullname,
+                'mobile_number' => $mobile_number,
                 'total_seconds' => $total_minutes_in_seconds
             ];
         }
@@ -625,5 +775,99 @@ class AppointmentService
         ];
 
         return $data;
+    }
+
+    public function checkBatch($id, $batch)
+    {
+        $appointment = Appointment::where([
+            'spa_id' => $id, 
+            'batch' => $batch,
+            'appointment_status' => 'reserved'
+        ])->with(['client'])->get()->count();
+
+        $status = false;
+        if ($appointment >= 1) {
+            $status = true;
+        }
+
+        return $status;
+    }
+
+    //create new appointment
+    public function appointmentCreate($spa_id, $client_id, $list, $batchNumber, $start_time, $primary)
+    {
+        $status = false;
+        $appointment = Appointment::create([
+            'spa_id' => $spa_id,
+            'client_id' => $client_id,
+            'service_id' => $list['service_id'],
+            'service_name' => $list['service_name'],
+            'batch' => $batchNumber,
+            'amount' => $list['price'],
+            'start_time' => $start_time,
+            'appointment_type' => $list['appointment_type'],
+            'social_media_type' => $list['social_type'],
+            'appointment_status' => 'reserved',
+            'primary' => $primary
+        ]);
+
+        if ($appointment) {
+            $status = true;
+        }
+
+        return $status;
+    }
+
+    //Check for existing reserved appointment 
+    public function checkInAppointment($client_id, $spa_id)
+    {
+        $appointment = Appointment::where([
+            'client_id' => $client_id,
+            'spa_id' => $spa_id,
+            'appointment_status' => 'reserved'
+        ])->count();
+
+        $count = 0;
+        if ($appointment > 0) {
+            $count = $appointment;
+        }
+
+        return $count;
+    }
+
+    // Create Sales Service
+    public function createSale($data)
+    {
+        return $this->saleService->create($data);
+    }
+
+    // Check for active client service
+    public function checkClient($data)
+    {
+        return $this->clientService->get_client($data);
+    }
+
+    // Create Client Service
+    public function clientCreate($data)
+    {
+        return $this->clientService->create($data);
+    }
+
+    // Update Client Service
+    public function clientUpdate($id, $data)
+    {
+        return $this->clientService->update($id, $data);
+    }
+
+    // Check for active transaction service
+    public function checkInTransaction($client_id, $spa_id, $dateTime)
+    {
+        return $this->transactionService->get_transaction($client_id, $spa_id, $dateTime);
+    }
+
+    // Create Transaction Service
+    public function transactionCreate($spa_id, $client_id, $sales_id, $transaction_data)
+    {
+        return $this->transactionService->create($spa_id, $client_id, $sales_id, $transaction_data);
     }
 }

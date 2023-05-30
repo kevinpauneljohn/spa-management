@@ -5,9 +5,18 @@ namespace App\Services;
 use App\Models\Therapist;
 use App\Models\User;
 use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
+use App\Services\TransactionService;
 
 class TherapistService
 {
+    private $transactionService;
+
+    public function __construct(TransactionService $transactionService)
+    {
+        $this->transactionService = $transactionService;
+    }
+
     public function all_therapist_thru_spa($therapist)
     {
         return DataTables::of($therapist)
@@ -107,5 +116,27 @@ class TherapistService
         if($therapist->user->delete() && $therapist->delete()) return true;
 
         return false;
+    }
+
+    public function therapistTransactionsCount($spa_id, $dateTime)
+    {
+        $therapist = Therapist::where('spa_id', $spa_id)->get();
+
+        $data = [];
+        if (!empty($therapist)) {
+            foreach ($therapist as $list) {
+                $count_transactions = $this->transactionService->therapistCount($list->id);
+                $is_available = $this->transactionService->therapistAvailability($spa_id, $list->id, $dateTime);
+                $data [] = [
+                    'therapist_id' => $list->id,
+                    'fullname' => $list->user->fullname,
+                    'count' => $count_transactions,
+                    'availability' => $is_available ? 'Available' : 'Not Available',
+                ];
+            }
+        }
+
+        array_multisort(array_column($data, 'count'), $data);
+        return $data;
     }
 }

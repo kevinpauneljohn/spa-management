@@ -28,45 +28,57 @@ class ClientController extends Controller
         return response()->json(['client' => $client]);
     }
 
-    public function filter($id, $spa)
+    public function filter(Request $request, $id, $spa)
     {
-         $client = Client::where('firstname', 'LIKE', '%'.$id.'%')
-            ->orWhere('middlename', 'LIKE', '%'.$id.'%')
-            ->orWhere('lastname', 'LIKE', '%'.$id.'%')
+        if($request->ajax())
+        {
+             $client = Client::where('firstname', 'LIKE', '%'.$request->search.'%')
+            ->orWhere('middlename', 'LIKE', '%'.$request->search.'%')
+            ->orWhere('lastname', 'LIKE', '%'.$request->search.'%')
             ->get();
 
-        $data = [];
-        $status = false;
-        $count = 0;
-        if ($client->count() > 0) {
-            foreach ($client as $list) {
-                $check_appointment = $this->checkInAppointment($list->id);
-                $check_transaction = $this->checkInTransaction($list->id, $spa);
-                if ($check_appointment < 1 && $check_transaction < 1) {
-                    $data [ucfirst($list->firstname).' '.ucfirst($list->lastname)] = $list->id;
+            $data = [];
+            $status = false;
+            $count = 0;
+            if ($client) {
+                foreach ($client as $key => $list) {
+                    $check_appointment = $this->checkInAppointment($list->id, $spa);
+                    $check_transaction = $this->checkInTransaction($list->id, $spa);
+
+                    if($list->id != $check_appointment && $list->id != $check_transaction) {
+                        $data [ucfirst($list->firstname).' '.ucfirst($list->lastname). ' [0'.$list->mobile_number.']'] = $list->id;
+                    }
+                }
+
+                if (!empty($data)) {
+                    $status = true;
+                    $count = count($data);
                 }
             }
 
-            if (!empty($data)) {
-                $status = true;
-                $count = count($data);
-            }
+            $response = [
+                'status'   => $status,
+                'data'   => $data,
+                'count' => $count,
+            ]; 
+
+            return $response;
         }
-
-        $response = [
-            'status'   => $status,
-            'data'   => $data,
-            'count' => $count
-        ]; 
-
-        return $response;
     }
 
-    public function checkInAppointment($id)
+    public function checkInAppointment($id, $spa)
     {
-        $appointment = Appointment::where('client_id', $id)->where('appointment_status', 'reserved')->count();
+        $appointment = Appointment::where([
+            'client_id' => $id,
+            'spa_id' => $spa,
+            'appointment_status' => 'reserved'
+        ])->first();
 
-        return $appointment;
+        $id = '';
+        if (!empty($appointment)) {
+            $id = $appointment->client_id;
+        }
+        return $id;
     }
 
     public function checkInTransaction($id, $spa_id)
@@ -85,15 +97,44 @@ class ClientController extends Controller
 
         $transaction = Transaction::where('client_id', $id)
             ->where('spa_id', $spa_id)
-            ->whereDate('end_time', '=', Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d'))
-            ->where('end_time', '>', Carbon::now()->setTimezone('Asia/Manila')->format('H:i:s'))
-            ->count();
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->first();
 
-        $count = 0;
-        if ($transaction > 0) {
-            $count = 1;
+        $id = 0;
+        if (!empty($transaction)) {
+            $id = $transaction->client_id;
         }
         
-        return $count;
+        return $id;
+    }
+
+    public function checkClientExist(Request $request)
+    {
+        if($request->ajax())
+        {
+            $firstname = $request->firstname;
+            $lastname = $request->lastname;
+            $mobileNo = $request->mobile_number;
+
+             $client = Client::where(
+                'firstname', 'LIKE', '%'.$firstname.'%'
+            )->where(
+                'lastname', 'LIKE', '%'.$firstname.'%'
+            )->where(
+                'mobile_number', $mobileNo
+            )->first();
+
+            $status = false;
+            $data = [];
+            if ($client) {
+                $response = [
+                    'status'   => $status,
+                    'data'   => $data,
+                ]; 
+            }
+
+            return $response;
+        }
     }
 }

@@ -176,4 +176,9 @@ class TherapistController extends Controller
                 'spa' => $therapist->spa
             ]);
     }
+
+    public function getTherapistTransactionCount(TherapistService $therapistService, $id, $date)
+    {
+        return $therapistService->therapistTransactionsCount($id, $date);
+    }
 }
