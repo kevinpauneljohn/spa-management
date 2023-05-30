@@ -160,6 +160,11 @@ function getMasseurAvailability(spa_id)
         'type' : 'GET',
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $('.countdownTherapistPercentage').text('');
+            $('.progressBarCalc').css('width', '0%');
+            $('.countdownTherapistPercentage').text('');
+        },
         success: function(result){
             $('.availableMasseur').html('');
             $.each(result, function (key, value) {
@@ -175,8 +180,8 @@ function getMasseurAvailability(spa_id)
 
                 var availableMasseur = '<span class="masseurName">'+names+'</span>';
                 availableMasseur += '<div class="progress progress-xl">';
-                    availableMasseur += '<div id="progressBarCalc'+value.id+'" class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>';
-                    availableMasseur += '<span id="countdownTherapistPercentage'+value.id+'">Available</span>';
+                    availableMasseur += '<div id="progressBarCalc'+value.id+'" class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill progressBarCalc" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>';
+                    availableMasseur += '<span class="countdownTherapistPercentage" id="countdownTherapistPercentage'+value.id+'">Available</span>';
                 availableMasseur += '</div>';
 
                 $( availableMasseur ).appendTo(".availableMasseur");

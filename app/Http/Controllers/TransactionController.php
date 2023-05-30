@@ -166,8 +166,13 @@ class TransactionController extends Controller
 
         $data = [];
         if (!empty($transaction)) {
+            $plus_time = 0;
+            if (!empty($transaction->plus_time)) {
+                $plus_time = $transaction->plus_time;
+            }
+
             $seconds = strtotime($transaction->end_time) - strtotime($now);
-            $total_minutes = $transaction->service['duration'] + $transaction->plus_time;
+            $total_minutes = $transaction->service['duration'] + $plus_time;
             $total_minutes_in_seconds = $total_minutes * 60;
             // $data = $transaction;
             $data = [
