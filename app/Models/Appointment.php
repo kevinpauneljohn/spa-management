@@ -21,7 +21,8 @@ class Appointment extends Model
         'start_time',
         'appointment_type',
         'social_media_type',
-        'appointment_status'
+        'appointment_status',
+        'primary'
     ];
 
     public function client()

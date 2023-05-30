@@ -6,9 +6,17 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Sale;
 use Carbon\Carbon;
+use App\Services\SaleService;
 
 class SaleController extends Controller
 {
+    private $saleService;
+
+    public function __construct(SaleService $saleService)
+    {
+        $this->saleService = $saleService;
+    }
+
     public function lists($id)
     {
         $sale = Sale::where('spa_id', $id)
@@ -34,11 +42,12 @@ class SaleController extends Controller
                 $account = $sale->payment_account_number;
                 $bank = $sale->payment_bank_name;
                 $status = $sale->payment_status;
+                $batch = $sale->appointment_batch;
                 if(auth()->user()->can('view invoices') || auth()->user()->hasRole('owner')) {
                     if ($sale->payment_status != 'paid') {
-                        $action .= '<a href="#" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     } else if (auth()->user()->hasRole('owner')) {
-                        $action .= '<a href="#" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     }
                     
                     $action .= '<a href="#" class="btn btn-xs btn-outline-success rounded view-invoice" id="'.$sale->id.'"><i class="fas fa-file-invoice"></i></a>&nbsp;';
@@ -52,25 +61,6 @@ class SaleController extends Controller
 
     public function updateSales(Request $request, $id)
     {
-        $sale = Sale::findOrFail($id);
-
-        $sale->payment_status = $request->payment_status;
-        $sale->payment_method = $request->payment_method;
-        $sale->payment_account_number = $request->payment_account_number;
-        $sale->payment_bank_name = $request->payment_bank_name;
-
-        $status = false;
-        $message = 'Unable to update sales. Please try again.';
-        if ($sale->save()) {
-            $status = true;
-            $message = 'Sales has been updated.';
-        }
-
-        $response = [
-            'status'   => $status,
-            'message'   => $message
-        ]; 
-
-        return $response;
+        return $this->saleService->update($request, $id);
     }
 }

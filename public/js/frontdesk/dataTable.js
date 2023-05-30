@@ -104,19 +104,19 @@ function appointmentSummary(id)
 
         $( summaryContent ).appendTo(".tableSummaryAppointment");
         const dataSet = appointment.map(({
-            value_first_name, 
-            value_last_name,
-            value_services_name,
-            value_start_time_date_format,
-            value_start_time_format,
-            value_appointment_socials,
+            firstname, 
+            lastname,
+            service_name,
+            start_time_date_format,
+            start_time_format,
+            appointment_socials,
             price
         }) => [
-            value_first_name+' '+value_last_name,
-            value_services_name,
-            value_start_time_date_format,
-            value_start_time_format,
-            value_appointment_socials,
+            firstname+' '+lastname,
+            service_name,
+            start_time_date_format,
+            start_time_format,
+            appointment_socials,
             '&#8369;'+ ReplaceNumberWithCommas(price)
         ]);
 

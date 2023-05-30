@@ -82,6 +82,10 @@ class AppointmentController extends Controller
         return $this->appointmentService->getUpcomingGuest($id);
     }
 
+    public function checkBatch($id, $batch)
+    {
+        return $this->appointmentService->checkBatch($id, $batch);
+    }
     public function getResponses($id)
     {
         return $this->appointmentService->getAppointmentResponses($id);

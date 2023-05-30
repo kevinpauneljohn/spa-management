@@ -22,7 +22,7 @@ class StaffService
             }
         }
 
-        $staff = User::where(['spa_id' => $data])->get();
+        $staff = User::whereIn('spa_id', $data)->get();
 
         return DataTables::of($staff)
             ->editColumn('created_at',function($staff){

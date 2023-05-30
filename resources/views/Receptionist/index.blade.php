@@ -121,7 +121,7 @@
                                                 <span class="badge badge-danger text-default countSelected"></span>
                                             </button> -->
                                             <button class="btn btn-block btn-outline-info btn" id="addNewAppointment">
-                                                <i class="fas fa-shopping-cart"></i> 
+                                                <i class="fas fa-calendar-plus"></i> 
                                             </button>
                                         </h3>
                                        
@@ -168,7 +168,7 @@
                                                 <div class="alert alert-primary alert-dismissible">
                                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    Blue color means available, Gray color means occupied.
+                                                    Green color means available, Gray color means occupied.
                                                 </div>
                                                 <div class="row displayRoomList">
 
@@ -324,7 +324,7 @@
     </div>
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('add sales'))
-        <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-lg">
@@ -374,7 +374,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('edit sales'))
-        <div class="modal fade" id="update-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="update-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="sales-update-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -417,7 +417,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="edit_mobile_number">Mobile Number</label><span class="isRequired">*</span>
-                                        <input type="text" name="edit_mobile_number" id="edit_mobile_number" class="form-control">
+                                        <input type="text" name="edit_mobile_number" id="edit_mobile_number" class="form-control" maxlength="10">
                                         <p class="text-danger hidden" id="error-edit_mobile_number"><p>
                                     </div>
                                     <div class="col-md-4">
@@ -467,7 +467,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="edit_start_time">Start Time</label><span class="isRequired">*</span>
-                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control">
+                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control" min="{{ Date('Y-m-d\TH:i',time()) }}" max="{{ Date('Y-m-d\TH:i',time()) }}">
                                         <p class="text-danger hidden" id="error-edit_start_time"></p>
                                     </div>
                                     <div class="col-md-4">
@@ -507,7 +507,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="update-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -527,7 +527,7 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label for="edit_app_firstname">First Name : </label>
+                                        <label for="edit_app_firstname">First Name : </label><span class="isRequired">*</span>
                                         <input type="text" class="form-control edit_app_firstname" id="edit_app_firstname" disabled>
                                         <input type="hidden" class="form-control edit_app_client_id" id="edit_app_client_id">
                                         <input type="hidden" class="form-control edit_app_id" id="edit_app_id">
@@ -537,20 +537,24 @@
                                         <input type="text" class="form-control edit_app_middlename" id="edit_app_middlename" disabled>
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="edit_app_lastname">Last Name : </label>
+                                        <label for="edit_app_lastname">Last Name : </label><span class="isRequired">*</span>
                                         <input type="text" class="form-control edit_app_lastname" id="edit_app_lastname" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="edit_app_date_of_birth">Date of Birth : </label>
                                         <input type="date" class="form-control edit_app_date_of_birth" id="edit_app_date_of_birth">
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="edit_app_mobile_number">Mobile Number : </label>
-                                        <input type="text" class="form-control edit_app_mobile_number" id="edit_app_mobile_number">
+                                    <div class="col-md-4">
+                                        <label for="edit_app_mobile_number">Mobile Number : </label><span class="isRequired">*</span>
+                                        <input type="text" class="form-control edit_app_mobile_number" id="edit_app_mobile_number" maxlength="10">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="edit_app_mobile_number">Client type : </label>
+                                        <input type="text" class="form-control edit_app_client_type" id="edit_app_client_type" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -572,28 +576,17 @@
                                         <label for="edit_app_appointment_type">Appointment Type : </label>
                                         <select data-id="_up" name="edit_app_appointment_type" id="appointment_name_appointmentup" class="form-control appointment_name_appointmentup" style="width:100%;"></select>
                                     </div>
-                                    <div class="col-md-6 socialMedialUpdate">
-                                        <label for="edit_app_social_media_appointment">Social Media Type : </label>
-                                        <select data-id="_up" name="edit_app_social_media_appointment" id="social_media_appointmentup" class="form-control social_media_appointmentup" style="width:100%;"></select>
+                                    <div class="col-md-6">
+                                        <label for="edit_app_start_time">Start Time : </label>
+                                        <input type="datetime-local" id="start_time_appointment_up" name="start_time_appointment_up" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <label for="edit_app_services">Services : </label>
-                                        <select data-id="_up" name="edit_app_services" id="edit_app_servicesup" class="form-control select-services-appointment" style="width:100%;"></select>
-                                        <input type="hidden" name="price_appointment_up" id="price_appointment_up" class="form-control" value="0">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="edit_app_start_time">Start Time : </label>
-                                        <input type="datetime-local" id="start_time_appointment_up" name="start_time_appointment_up" class="form-control">
-                                    </div>
-                                    <div class="col-md-4 border border-danger pull-right">
-                                        <h2 class="mb-0 text-center totalAmountUpdateAppointmentFormatted"></h2>
-                                        <h4 class="mt-0 text-center">TOTAL</h4>
-                                        <input type="hidden" class="form-control" id="totalAmountAppointmentToPay" value="0">
-                                        <input type="hidden" class="form-control" id="plusTimeAppointment" value="0">
+                                    <div class="col-md-6 socialMedialUpdate">
+                                        <label for="edit_app_social_media_appointment">Social Media Type : </label>
+                                        <select data-id="_up" name="edit_app_social_media_appointment" id="social_media_appointmentup" class="form-control social_media_appointmentup" style="width:100%;"></select>
                                     </div>
                                 </div>
                             </div>
@@ -609,7 +602,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('view sales'))
-        <div class="modal fade" id="view-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="view-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="sales-view-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-md">
@@ -704,7 +697,7 @@
             </form>
         </div>
 
-        <div class="modal" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="view-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-md">
@@ -793,7 +786,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('view invoices'))
-        <div class="modal fade" id="view-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal fade" id="view-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="invoice-view-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -913,7 +906,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="invoice-update-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md">
@@ -935,17 +928,15 @@
                                     <option value="bank">Bank Transfer</option>
                                 </select>
                                 <input type="hidden" class="form-control" id="sales_invoice_id">
-                                <p class="text-danger hidden" id="error-payment_method"></p>
+                                <input type="hidden" class="form-control" id="sales_batch_id">
                             </div>
                             <div class="form-group account_number_div hidden">
-                                <label for="payment_account_number">Account Number</label><span class="isRequired">*</span>
+                                <label for="payment_account_number">Reference Number</label><span class="isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_account_number" id="payment_account_number">
-                                <p class="text-danger hidden" id="error-payment_account_number"></p>
                             </div>
                             <div class="form-group payment_bank_name hidden">
                                 <label for="payment_bank_name">Bank Name</label><span class="isBankName isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_bank_name" id="payment_bank_name">
-                                <p class="text-danger hidden" id="error-payment_bank_name"></p>
                             </div>
                             <div class="form-group">
                                 <label for="payment_status">Payment Status</label><span class="isRequired">*</span>
@@ -967,7 +958,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('move sales'))
-    <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="move-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -1010,7 +1001,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="move_app_mobile_number">Mobile Number : </label>
-                                        <input type="text" class="form-control move_app_mobile_number" id="move_app_mobile_number">
+                                        <input type="text" class="form-control move_app_mobile_number" id="move_app_mobile_number" maxlength="10">
                                     </div>
                                 </div>
                             </div>
@@ -1030,13 +1021,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="move_app_appointment_type">Appointment Type : </label><span class="isRequired">*</span>
-                                        <select data-id="_move" name="move_app_appointment_type" id="appointment_name_appointmentmove" class="form-control appointment_name_appointmentmove" style="width:100%;"></select>
-                                        <p class="text-danger hidden" id="error-move_app_appointment_type"></p>
+                                        <select data-id="_move" name="move_app_appointment_type" id="appointment_name_appointmentmove" class="form-control appointment_name_appointmentmove" style="width:100%;" disabled></select>
                                     </div>
                                     <div class="col-md-6 socialMedialMove">
                                         <label for="move_app_social_media_appointment">Social Media Type : </label>
-                                        <select data-id="_move" name="move_app_social_media_appointment" id="social_media_appointmentmove" class="form-control social_media_appointmentmove" style="width:100%;"></select>
-                                        <p class="text-danger hidden" id="error-move_app_social_media_appointment"></p>
+                                        <select data-id="_move" name="move_app_social_media_appointment" id="social_media_appointmentmove" class="form-control social_media_appointmentmove" style="width:100%;" disabled></select>
                                     </div>
                                 </div>
                             </div>
@@ -1047,7 +1036,6 @@
                                         <select data-select="move" data-id="_up" name="move_app_services" id="move_app_servicesmove" class="form-control select-services-move-appointment" style="width:100%;"></select>
                                         <input type="hidden" name="price_appointment_move" id="price_appointment_move" class="form-control" value="0">
                                         <input type="hidden" name="move_app_services_id" id="move_app_services_id" class="form-control">
-                                        <p class="text-danger hidden" id="error-move_app_servicesmove"></p>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="move_plus_time">Plus Time : </label>
@@ -1074,7 +1062,6 @@
                                             <input data-select="move" disabled class="custom-control-input isMoveMultipleMasseur" type="checkbox" id="moveCustomCheckbox" value="1">
                                             <label for="moveCustomCheckbox" class="custom-control-label">Is multiple Masseur ?</label>
                                         </div>
-                                        <p class="text-danger hidden" id="error-move_masseur1_id"></p>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="move_masseur2">Masseur 2</label>
@@ -1087,7 +1074,6 @@
                                         <label for="move_room">Room #</label><span class="isRequired">*</span>
                                         <select data-select="move" name="move_room" id="move_room" class="form-control select-move-room" style="width:100%;"></select>
                                         <input type="hidden" class="form-control" id="move_room_id">
-                                        <p class="text-danger hidden" id="error-move_room"></p>
                                     </div>
                                 </div>
                             </div>
@@ -1112,6 +1098,7 @@
 @stop
 
 @section('css')
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
 @stop
 
@@ -1132,6 +1119,9 @@
 <script src="{{asset('js/frontdesk/dataTable.js')}}"></script>
 <script src="{{asset('js/frontdesk/onClickEvents.js')}}"></script>
 <script src="{{asset('js/frontdesk/onChangeEvents.js')}}"></script>
+<script src="{{asset('js/reusableJs.js')}}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     $(function() {
         // $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, { icons: { time: 'fas fa-clock', date: 'fas fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'far fa-chevron-left', next: 'far fa-chevron-right', today: 'far fa-calendar-check-o', clear: 'far fa-trash', close: 'far fa-times' } });
@@ -1140,13 +1130,14 @@
         // $('#calendar').datepicker({
 
         // });
+        therapistTransactionCount($('#spa_id_val').val(), '2023-01-01 22:00:00');
         getResponses($('#spa_id_val').val());
 
         getAppointmentCount();
         getAppointmentType('up');
         getAppointmentType('move');
         getServicesAppointment($('#spa_id_val').val(), 'move', 'move_app_services');
-        getServicesAppointment($('#spa_id_val').val(), 'up', 'edit_app_services');
+        // getServicesAppointment($('#spa_id_val').val(), 'up', 'edit_app_services');
 
         // setDateTimePicker('start_time_appointment_up', '');
         // setDateTimePicker('start_time_appointment_move', '');
