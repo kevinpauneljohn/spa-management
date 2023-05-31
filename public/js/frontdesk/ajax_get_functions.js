@@ -83,12 +83,14 @@ function loadRoom()
     var spa_id = $('#spa_id_val').val();
 
     UnAvailableRoom = [];
-    $('.displayRoomList').html('');
     $.ajax({
         'url' : '/receptionist-lists/'+spa_id,
         'type' : 'GET',
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $('.displayRoomList').html('');
+        },
         success: function(result){
             $('.countSelected').text(0);
             if (result.length > 3) {
@@ -158,6 +160,11 @@ function getMasseurAvailability(spa_id)
         'type' : 'GET',
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $('.countdownTherapistPercentage').text('');
+            $('.progressBarCalc').css('width', '0%');
+            $('.countdownTherapistPercentage').text('');
+        },
         success: function(result){
             $('.availableMasseur').html('');
             $.each(result, function (key, value) {
@@ -173,8 +180,8 @@ function getMasseurAvailability(spa_id)
 
                 var availableMasseur = '<span class="masseurName">'+names+'</span>';
                 availableMasseur += '<div class="progress progress-xl">';
-                    availableMasseur += '<div id="progressBarCalc'+value.id+'" class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>';
-                    availableMasseur += '<span id="countdownTherapistPercentage'+value.id+'">Available</span>';
+                    availableMasseur += '<div id="progressBarCalc'+value.id+'" class="progress-bar bg-info progress-bar-striped progress-bar-animated rounded-pill progressBarCalc" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>';
+                    availableMasseur += '<span class="countdownTherapistPercentage" id="countdownTherapistPercentage'+value.id+'">Available</span>';
                 availableMasseur += '</div>';
 
                 $( availableMasseur ).appendTo(".availableMasseur");
@@ -577,21 +584,24 @@ function getSalesInfo(id, spa_id)
                 placeholder: "Choose Services",
                 allowClear: true
             }).val(result.service_id).trigger("change");
+
             $(".select-edit-masseur1").select2({
                 placeholder: "Choose Masseur 1",
                 allowClear: true
             }).val(result.therapist_1).trigger("change");
+
             $(".select-edit-masseur2").select2({
                 placeholder: "Choose Masseur 2",
                 allowClear: true
             }).val(result.therapist_2).trigger("change");
-            if (result.plus_time != '') {
+
+            if (result.plus_time > 0) {
                 $(".select-edit-plus_time").select2({
                     placeholder: "Choose Plus Time",
                     allowClear: true
                 }).val(result.plus_time).trigger("change");
-                $('#edit_plus_time_price').val(0);
             }
+            $('#edit_plus_time_price').val(0);
 
             $(".select-edit-room").select2({
                 placeholder: "Choose Room",
@@ -642,6 +652,7 @@ function viewAppointment(id)
             $('#edit_app_mobile_number').val('');
             $('#edit_app_email').val('');
             $('#edit_app_address').val('');
+            $('#edit_app_client_type').val('');
             $('#appointment_name_appointmentup').val('');
             $("#social_media_appointmentup").val('');
             $('#edit_app_servicesup').val('');
@@ -685,11 +696,11 @@ function viewAppointment(id)
         success: function(result){
             // view values
             $(".viewAppointmentTitle").html('View Appointment');
-            $(".viewAppointmentFullname").html(result.client.firstname+' '+result.client.lastname);
-            $(".viewAppointmentDateOfBirth").html(result.client.date_of_birth);
-            $(".viewAppointmentMobileNumber").html(result.client.mobile_number);
-            $(".viewAppointmentEmail").html(result.client.email);
-            $(".viewAppointmentAddress").html(result.client.address);
+            $(".viewAppointmentFullname").html(result.firstname+' '+result.lastname);
+            $(".viewAppointmentDateOfBirth").html(result.date_of_birth);
+            $(".viewAppointmentMobileNumber").html(result.mobile_number);
+            $(".viewAppointmentEmail").html(result.email);
+            $(".viewAppointmentAddress").html(result.address);
             $(".viewAppointmentService").html(result.service_name);
             $(".viewAppointmentStartTime").html(result.start_time_formatted);
             $(".totalAmountViewAppointmentFormatted").html('&#8369; '+result.amount);
@@ -704,15 +715,26 @@ function viewAppointment(id)
 
             //update values
             $('.viewAppointmentUpdateTitle').html('Update Appointment');
+            if (result.clientid != '') {
+                $('#edit_app_firstname').prop('disabled', true);
+                $('#edit_app_middlename').prop('disabled', true);
+                $('#edit_app_lastname').prop('disabled', true);
+            } else {
+                $('#edit_app_firstname').prop("disabled", false);
+                $('#edit_app_middlename').prop('disabled', false);
+                $('#edit_app_lastname').prop('disabled', false);
+            }
+            
             $('#edit_app_id').val(result.id);
-            $('#edit_app_client_id').val(result.client.id);
-            $('#edit_app_firstname').val(result.client.firstname);
-            $('#edit_app_middlename').val(result.client.middlename);
-            $('#edit_app_lastname').val(result.client.lastname);
-            $('#edit_app_date_of_birth').val(result.client.date_of_birth);
-            $('#edit_app_mobile_number').val(result.client.mobile_number);
-            $('#edit_app_email').val(result.client.email);
-            $('#edit_app_address').val(result.client.address);
+            $('#edit_app_client_id').val(result.clientid);
+            $('#edit_app_firstname').val(result.firstname);
+            $('#edit_app_middlename').val(result.middlename);
+            $('#edit_app_lastname').val(result.lastname);
+            $('#edit_app_date_of_birth').val(result.date_of_birth);
+            $('#edit_app_mobile_number').val(result.mobile_number);
+            $('#edit_app_email').val(result.email);
+            $('#edit_app_address').val(result.address);
+            $('#edit_app_client_type').val(result.client_type);
 
             $("#appointment_name_appointmentup").val(result.appointment_type).change();
             if (result.appointment_type == 'Social Media') {
@@ -734,14 +756,14 @@ function viewAppointment(id)
             //move sales values
             $('.viewAppointmentMoveTitle').html('Move Appointment to Sales');
             $('#move_app_id').val(result.id);
-            $('#move_app_client_id').val(result.client.id);
-            $('#move_app_firstname').val(result.client.firstname);
-            $('#move_app_middlename').val(result.client.middlename);
-            $('#move_app_lastname').val(result.client.lastname);
-            $('#move_app_date_of_birth').val(result.client.date_of_birth);
-            $('#move_app_mobile_number').val(result.client.mobile_number);
-            $('#move_app_email').val(result.client.email);
-            $('#move_app_address').val(result.client.address);
+            $('#move_app_client_id').val(result.clientid);
+            $('#move_app_firstname').val(result.firstname);
+            $('#move_app_middlename').val(result.middlename);
+            $('#move_app_lastname').val(result.lastname);
+            $('#move_app_date_of_birth').val(result.date_of_birth);
+            $('#move_app_mobile_number').val(result.mobile_number);
+            $('#move_app_email').val(result.email);
+            $('#move_app_address').val(result.address);
 
             if (result.appointment_type == 'Social Media') {
                 $("#appointment_name_appointmentmove").val(result.appointment_type).change();
@@ -791,6 +813,22 @@ function getUpcomingGuest(spa_id)
 
                 $( upcomingGuest ).appendTo(".upcomingGuest");
             });
+        }
+    });
+}
+
+function therapistTransactionCount(spa_id, date)
+{
+    $.ajax({
+        'url' : '/therapists-transaction-count/'+spa_id+'/'+date,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+
+        },
+        success: function(result){
+            console.log(result);
         }
     });
 }

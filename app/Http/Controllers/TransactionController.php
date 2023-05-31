@@ -23,7 +23,7 @@ class TransactionController extends Controller
         $transaction = Transaction::where('spa_id', $id)
         ->where('amount','>', 0)
         ->where('end_time', '>=', $now)
-        ->with(['client'])->get();
+        ->get();
 
         return DataTables::of($transaction)
             ->editColumn('client',function($transaction){
@@ -46,10 +46,14 @@ class TransactionController extends Controller
                 return date('F d, Y h:i:s A', strtotime($transaction->start_time));
             })
             ->addColumn('plus_time',function ($transaction){
-                $plus_time = $transaction->plus_time * 60;
-                $converted_plus_time = gmdate("H:i:s", $plus_time);
-                return CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
-                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
+                if ($transaction->plus_time > 0) {
+                    $plus_time = $transaction->plus_time * 60;
+                    $converted_plus_time = gmdate("H:i:s", $plus_time);
+                    return CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+                        ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
+                } else {
+                    return 'None';
+                }
             })
             ->addColumn('end_time',function ($transaction){
                 return date('F d, Y h:i:s A', strtotime($transaction->end_time));
@@ -162,8 +166,13 @@ class TransactionController extends Controller
 
         $data = [];
         if (!empty($transaction)) {
+            $plus_time = 0;
+            if (!empty($transaction->plus_time)) {
+                $plus_time = $transaction->plus_time;
+            }
+
             $seconds = strtotime($transaction->end_time) - strtotime($now);
-            $total_minutes = $transaction->service['duration'] + $transaction->plus_time;
+            $total_minutes = $transaction->service['duration'] + $plus_time;
             $total_minutes_in_seconds = $total_minutes * 60;
             // $data = $transaction;
             $data = [
@@ -220,10 +229,18 @@ class TransactionController extends Controller
             $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
             $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
             $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
-            $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
+            $birth_date_formatted = '';
+            if (!empty($getTranscations[0]->client['date_of_birth'])) {
+                $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
+            }
 
-            $plus_time_converted = $getTranscations[0]->plus_time * 60;
-            $plus_time_formatted =  gmdate("H:i:s", $plus_time_converted);       
+            $plus_time_formatted = 'None';
+            if ($getTranscations[0]->plus_time > 0) {
+                $plus_time = $transaction->plus_time * 60;
+                $converted_plus_time = gmdate("H:i:s", $plus_time);
+                $plus_time_formatted =  CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
+            }
 
             $data = [
                 'id' => $getId,
@@ -272,6 +289,7 @@ class TransactionController extends Controller
     public function getData($id)
     {
         $user_id = auth()->user()->id;
+        $date_today = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d');
         $todays_from = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d 00:00:00');
         $todays_to = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d 23:59:59');
 
@@ -317,7 +335,7 @@ class TransactionController extends Controller
         $allClientsTransactions = Transaction::where('spa_id', $id,)->groupBy('client_id')->pluck('client_id');
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
-        $sale = Sale::where(['user_id' => auth()->user()->id, 'payment_status' => 'paid'])->whereDate('created_at', '>=', $todays_from)->whereDate('created_at', '<=', $todays_to)->get();
+        $sale = Sale::where(['user_id' => auth()->user()->id, 'payment_status' => 'paid'])->whereDate('paid_at',  $date_today)->get();
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {

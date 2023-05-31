@@ -18,7 +18,8 @@ class Sale extends Model
         'appointment_batch',
         'payment_method',
         'payment_account_number',
-        'payment_bank_name'
+        'payment_bank_name',
+        'paid_at'
     ];
 
     public function spa()

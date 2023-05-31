@@ -61,7 +61,7 @@ class ReceptionistController extends Controller
         
         $dataList = [];
         $isAvailable = true;
-        $isColorSet = 'bg-info';
+        $isColorSet = 'bg-success';
         if (!empty($transaction)) {
             // $dataList = $transaction;
             $start_time_formatted = date('h:i:s A', strtotime($transaction->start_time));
