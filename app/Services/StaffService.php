@@ -132,8 +132,8 @@ class StaffService
                     $shift = Shift::create([
                         'user_id' => $user->id,
                         'employee_id' => $employee->id,
-                        'Schedules' => 'M,T,W,TH,F',
-                        'time' => now()->format('h:i:s'),
+                        'Schedule' => 'M,T,W,TH,F',
+                        'Shift' => now()->format('h:i:s'),
                     ]);
                 }
 

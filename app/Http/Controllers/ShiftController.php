@@ -75,8 +75,8 @@ class ShiftController extends Controller
     public function update(Request $request, $id)
     {
         $checkID = Shift::findOrFail($id);
-        $checkID->Schedules = $request->list;
-        $checkID->time = $request->edit_time;
+        $checkID->Schedule = $request->list;
+        $checkID->Shift = $request->edit_time;
         $checkID->update();
         return response()->json(['message' => 'Schedule Updated Successfully']);
     }
@@ -106,7 +106,7 @@ class ShiftController extends Controller
             return $role;
         })
         ->editColumn('schedule', function ($shifts) {
-            $exploded = explode(',', $shifts->Schedules);
+            $exploded = explode(',', $shifts->Schedule);
             $exploded = array_map(function ($value) {
                 return str_replace(['[', ']', '"'], '', $value);
             }, $exploded);
@@ -119,7 +119,7 @@ class ShiftController extends Controller
             return $scheduleLinks;
         })
         ->addColumn('time',function ($shifts){
-            return $shifts->time;
+            return $shifts->Shift;
         })
         ->addColumn('action', function($shifts){
             $action = "";

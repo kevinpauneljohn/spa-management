@@ -134,7 +134,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/check-user-password',[\App\Http\Controllers\UserController::class,'check_user_logged_in_password'])->name('check.user.password');
 
-
+    Route::get('/download/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'download'])->name('download.index');
+    Route::get('/checkLogin', [\App\Http\Controllers\DownloadAttendanceController::class, 'checkLogin']);
 });
 
 Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');
@@ -145,3 +146,4 @@ Route::put('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, '
 Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
 Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
 Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);
+Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);

@@ -412,7 +412,7 @@ return [
                 [
                     'text' => 'Employee Attendance',
                     'route'  => 'attendance.index',
-                    'icon' => 'fas fa-fw fa-store',
+                    'icon' => 'fas fa-fw fa-calendar',
       
                 ],
                 [
@@ -423,7 +423,7 @@ return [
             ],
             
         ],
-  
+
 //        [
 //            'text'    => 'multilevel',
 //            'icon'    => 'fas fa-fw fa-share',

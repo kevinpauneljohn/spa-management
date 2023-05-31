@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Exception;
 
 class EmployeeController extends Controller
 {
@@ -204,5 +205,109 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         //
+    }
+    //API
+    public function timeInApi($id)
+    {
+            $exploded = explode('-', $id);
+        
+            $spaCode = $exploded[0];
+            $employeeID = $exploded[1];
+        
+            $collect = collect();
+            $today = now()->format('Y-m-d');
+        
+            $spas = Spa::where('code', $spaCode)->first();
+            $employeetable = EmployeeTable::where('spa_id', $spas->id)->where('id', $employeeID)->get();
+
+            if($employeetable->isEmpty())
+            {
+                return 2;
+            }
+            else{
+
+                foreach ($employeetable as $emp) {
+                    $collect->push($emp->id);
+                }
+        
+                $mycollect = $collect->first();
+                $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->count();
+
+               if($attendance > 0)
+               {
+                 return 0;
+               }
+               else{
+                 Attendance::create([
+                    'employee_id' => $mycollect,
+                    'time_in' => $this->phDate(),
+                    'time_out' => '-',
+                    'break_in' => '-',
+                    'break_out' => '-',
+                 ]);
+                 return 1;
+               }
+            }
+    }
+    public function sample()
+    {
+
+        // $spas = Spa::where('code', $code)->first();
+        // $employeetable = EmployeeTable::where('spa_id', $spas->id)->get();
+        // $collect = collect();
+        // foreach ($employeetable as $emp)
+        // {
+        //     $collect->push($emp->id);
+        // }
+        // return $collect;
+        // $employeetable = EmployeeTable::all();
+        // return $employeetable->map(function ($employee) {
+        //     return $employee->spas->code;
+        // });
+
+    }
+
+    public function timeOutBreakInBreakOutApi($id, $action){
+     $today = now()->format('Y-m-d');
+    $employee = EmployeeTable::findOrFail($id); //mag where
+    $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
+
+        if(empty($attendance->time_in))
+        {
+            return 0;
+        }
+        else{
+                if($action=='break_in'){
+                    if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in == '-'){
+                        $attendance->$action = $this->phDate();
+                        $attendance->update();
+                        return 1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+                elseif($action=='break_out'){
+                    if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in != '-'){
+                        $attendance->$action = $this->phDate();
+                        $attendance->update();
+                        return 1;
+                    }
+                    else{
+                        return 0 ;
+                    }
+                }
+                else{
+                    if($attendance->time_out != '-'){
+                        return 2;
+                    }
+                    else{
+                        $attendance->$action = $this->phDate();
+                        $attendance->update();
+                    }
+                }
+                return 1;
+            }
+        
     }
 }
