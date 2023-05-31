@@ -21,7 +21,6 @@ class CreateSpasTable extends Migration
             $table->string('number_of_rooms');
             $table->timestamps();
             $table->softDeletes();
-
             $table->foreign('owner_id')->references('id')->on('owners');
         });
     }

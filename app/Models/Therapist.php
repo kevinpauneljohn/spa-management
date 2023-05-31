@@ -42,5 +42,8 @@ class Therapist extends Model
     {
         return "{$this->user->firstname} {$this->user->lastname}";
     }
-
+    public function spas()
+    {
+        return $this->belongsTo(Spa::class, 'spa_id');
+    }
 }

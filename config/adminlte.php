@@ -402,7 +402,88 @@ return [
             'text' => 'Payroll Management',
             'route'  => 'payroll.index',
             'icon' => 'fas fa-fw  fa-money-check-alt',
+            // 'can' => 'view payroll',
         ],
+        [
+            'text' => 'Attendance',
+            'icon' => 'fas fa-fw fa-store',
+        
+            'submenu' => [
+                [
+                    'text' => 'Employee Attendance',
+                    'route'  => 'attendance.index',
+                    'icon' => 'fas fa-fw fa-calendar',
+      
+                ],
+                [
+                    'text' => 'Shift Management',
+                    'route'  => 'shift.index',
+                    'icon' => 'fas fa-fw fa-store',
+                ],
+            ],
+            
+        ],
+
+//        [
+//            'text'    => 'multilevel',
+//            'icon'    => 'fas fa-fw fa-share',
+//            'submenu' => [
+//                [
+//                    'text' => 'level_one',
+//                    'url'  => '#',
+//                ],
+//                [
+//                    'text'    => 'level_one',
+//                    'url'     => '#',
+//                    'submenu' => [
+//                        [
+//                            'text' => 'level_two',
+//                            'url'  => '#',
+//                        ],
+//                        [
+//                            'text'    => 'level_two',
+//                            'url'     => '#',
+//                            'submenu' => [
+//                                [
+//                                    'text' => 'level_three',
+//                                    'url'  => '#',
+//                                ],
+//                                [
+//                                    'text' => 'level_three',
+//                                    'url'  => '#',
+//                                ],
+//                            ],
+//                        ],
+//                    ],
+//                ],
+//                [
+//                    'text' => 'level_one',
+//                    'url'  => '#',
+//                ],
+//            ],
+//        ],
+//        ['header' => 'labels'],
+//        [
+//            'text'       => 'important',
+//            'icon_color' => 'red',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'warning',
+//            'icon_color' => 'yellow',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'information',
+//            'icon_color' => 'cyan',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'    => 'Owner Management',
+//            'icon'    => 'fas fa-user',
+//            'route'    => 'owner.lists',
+//            'can'     => 'view owner',
+//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
@@ -419,7 +500,7 @@ return [
                     'can'  => 'view permission',
                 ],
             ],
-        ],
+        ],       
     ],
 
     /*
@@ -635,16 +716,16 @@ return [
                 ],
             ],
         ],
-//        'BootstrapBundle' => [
-//            'active' => true,
-//            'files' => [
-//                [
-//                    'type' => 'js',
-//                    'asset' => false,
-//                    'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
-//                ],
-//            ],
-//        ],
+       'BootstrapBundle' => [
+           'active' => true,
+           'files' => [
+               [
+                   'type' => 'js',
+                   'asset' => false,
+                   'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+               ],
+           ],
+       ],
         'BootstrapDatePicker' => [
             'active' => true,
             'files' => [
@@ -657,6 +738,16 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js',
+                ],
+            ],
+        ],
+        'DateRangePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.js',
                 ],
             ],
         ],
