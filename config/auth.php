@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'token', // Change the driver to 'token'
+            'provider' => 'users',
+            'hash' => false,
+        ],
     ],
 
     /*
