@@ -106,7 +106,10 @@
                                     <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">Daily Sales</span>
-                                        <span class="info-box-number dailySales"></span>
+                                        <span class="info-box-number ">
+                                            <span class="badge badge-danger text-default dailySales float-left"></span>
+                                            <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -165,6 +168,7 @@
                                                 <input type="hidden" class="form-control" id="room_ids_val">
                                                 <input type="hidden" class="form-control" id="isValid">
                                                 <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
+                                                <input type="hidden" class="form-control" id="start_shit_id">
                                                 <div class="alert alert-primary alert-dismissible">
                                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
@@ -285,36 +289,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="card bg-gradient-success">
-                                    <div class="card-header border-0">
-                                        <h3 class="card-title">
-                                            <i class="far fa-calendar-alt"></i>
-                                            Calendar
-                                        </h3>
-                                        <div class="card-tools">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <div class="dropdown-menu" role="menu">
-                                                    <a href="#" class="dropdown-item">Add new event</a>
-                                                    <a href="#" class="dropdown-item">Clear events</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a href="#" class="dropdown-item">View calendar</a>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body pt-0">
-                                        <div id="calendar" style="width: 100%"></div>
-                                    </div>
-                                </div> -->
                             </section>
                         </div>
                     </div>
@@ -323,8 +297,51 @@
         </div>
     </div>
 
+    @if(auth()->user()->hasRole('front desk') || auth()->user()->can('add sales'))
+        <div class="modal fade" id="start-shift-modal"  data-keyboard="false" data-backdrop="static">
+            <form role="form" id="start-shift-form" class="form-submit modal-dialog-centered">
+                @csrf
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Good Day {{ucfirst(auth()->user()->firstname)}}!</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="text-center">To proceed with the POS, kindly click the button below.</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnStartShift" class="btn btn-primary btnStartShift mx-auto">Click here to start your shift</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal fade" id="money-on-hand-modal"  data-keyboard="false" data-backdrop="static">
+            <form role="form" id="money-on-hand-form" class="form-submit modal-dialog-centered">
+                @csrf
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Good Day {{ucfirst(auth()->user()->firstname)}}!</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="money_on_hand">Money on Hand</label>
+                                <input type="number" class="form-control" id="money_on_hand" name="money_on_hand" placeholder="Enter money on hand" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnMoneyOnHand" class="btn btn-primary btnMoneyOnHand mx-auto">Click here to confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endif
+
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('add sales'))
-        <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-lg">
@@ -507,7 +524,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="update-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -697,7 +714,7 @@
             </form>
         </div>
 
-        <div class="modal" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="view-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-md">
@@ -906,7 +923,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="invoice-update-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md">
@@ -958,7 +975,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('move sales'))
-    <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="move-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -1123,7 +1140,13 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+    // $(window).on('load',function(){
+    //     // $('#start-shift-modal').modal('show');
+    //     $('#start-shift-modal').modal('show');
+    // });
+
     $(function() {
+        getPosShift($('#spa_id_val').val());
         // $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, { icons: { time: 'fas fa-clock', date: 'fas fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'far fa-chevron-left', next: 'far fa-chevron-right', today: 'far fa-calendar-check-o', clear: 'far fa-trash', close: 'far fa-times' } });
         // $('#datetimepicker1').datetimepicker();
 

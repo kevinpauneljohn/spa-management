@@ -382,3 +382,58 @@ function updateInvoiceConfirmed(spa_id, payment_method, payment_status, payment_
         return false;
     })
 }
+
+function startShiftMoney(id, amount)
+{
+    var spa_id = $('#spa_id_val').val();
+    $.ajax({
+        'url' : '/pos-update-shift/'+id+'/'+amount+'/start_money',
+        'type' : 'PUT',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $('.btnMoneyOnHand').text('Confirming ... ').attr('disabled',true)
+        },
+        success: function(result){
+            getPosShift(spa_id);
+            swal.fire("Done!", result.message, "success");
+            $('#money-on-hand-modal').modal('hide');
+            $('.btnMoneyOnHand').text('Click here to confirm').attr('disabled',false)
+        }
+    });
+}
+
+function endShiftPost(id)
+{
+    var spa_id = $('#spa_id_val').val();
+    swal.fire({
+        title: "Are you sure you want to end your shift?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                'url' : '/pos-update-shift/'+id+'/0/end_shift',
+                'type' : 'PUT',
+                'data' : {},
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+        
+                },
+                success: function(result){
+                    getPosShift(spa_id);
+                    swal.fire("Done!", result.message, "success");
+                }
+            });
+        } else {
+            e.dismiss;
+        }
+    }, function (dismiss) {
+        return false;
+    })
+}
