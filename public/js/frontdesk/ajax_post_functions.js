@@ -250,3 +250,40 @@ function processMoveAppointment()
         })
     }
 }
+
+function startShiftPos(spa_id)
+{
+    swal.fire({
+        title: "Are you sure you want to start your shift?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                'url' : '/pos-start-shift/'+spa_id,
+                'type' : 'POST',
+                'data' : {},
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+                    $('.btnStartShift').text('Starting Shift ... ').attr('disabled',true);
+                },
+                success: function(result){
+                    getPosShift(spa_id);
+                    
+                    swal.fire("Done!", result.message, "success");
+                    $('#start-shift-modal').modal('hide');
+                    $('.btnStartShift').val('Click here to start your shift!').attr('disabled',false);
+                }
+            });
+        } else {
+            e.dismiss;
+        }
+    }, function (dismiss) {
+        return false;
+    })
+}

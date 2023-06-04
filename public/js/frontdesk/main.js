@@ -674,3 +674,22 @@ $(document).on('change', '.start_time_appointment_walkin', function() {
 $('#add-new-appointment-modal').on('hidden.bs.modal', function () {
     searchFilter = [];
 })
+
+
+$(document).on('click', '.btnStartShift', function(e) {
+    e.preventDefault();
+    startShiftPos($('#spa_id_val').val());
+});
+
+$(document).on('click', '.btnMoneyOnHand', function(e) {
+    e.preventDefault();
+    var money = $('#money_on_hand').val();
+    var id = $('#start_shit_id').val();
+    startShiftMoney(id, money);
+});
+
+$(document).on('click', '.btnEndShift', function(e) {
+    e.preventDefault();
+    var id = $('#start_shit_id').val();
+    endShiftPost(id);
+});
