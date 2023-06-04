@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
 //            PermissionSpaSeeder::class,
 //            PermissionTherapistSeeder::class,
             InventorySeeder::class,
-            InventoryCategorySeeder::class
+            InventoryCategorySeeder::class,
+            AccessPosSeeder::class
             ]);
     }
 }

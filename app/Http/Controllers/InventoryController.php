@@ -7,7 +7,9 @@ use App\Models\Inventory;
 use App\Services\InventoryService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Activitylog\Models\Activity;
 
 class InventoryController extends Controller
 {
@@ -27,6 +29,9 @@ class InventoryController extends Controller
     public function index()
     {
         return view('inventories.index');
+//        $activity = DB::table('activity_log')->whereJsonContains('properties->attributes->spa_id', 'db53844c-8971-4463-b05f-9ee54c1e850b')
+//            ->first();
+//        return $activity->properties;
     }
 
     /**

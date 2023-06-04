@@ -9,6 +9,16 @@ use Carbon\Carbon;
 
 class SaleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['role_or_permission:owner|manager|view sales'])->only(['index']);
+    }
+
+    public function index()
+    {
+        return view('sales.index');
+    }
+
     public function lists($id)
     {
         $sale = Sale::where('spa_id', $id)
@@ -40,7 +50,7 @@ class SaleController extends Controller
                     } else if (auth()->user()->hasRole('owner')) {
                         $action .= '<a href="#" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     }
-                    
+
                     $action .= '<a href="#" class="btn btn-xs btn-outline-success rounded view-invoice" id="'.$sale->id.'"><i class="fas fa-file-invoice"></i></a>&nbsp;';
                 }
 
@@ -69,7 +79,7 @@ class SaleController extends Controller
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }

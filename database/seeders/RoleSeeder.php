@@ -22,6 +22,8 @@ class RoleSeeder extends Seeder
         $manager = Role::create(['name' => 'manager']);
         $manager = Role::create(['name' => 'therapist']);
 
+        Permission::create(['name' => 'access pos'])->assignRole('front desk');
+
         Permission::create(['name' => 'add owner']);
         Permission::create(['name' => 'view owner']);
         Permission::create(['name' => 'edit owner']);
