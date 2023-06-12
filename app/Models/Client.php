@@ -27,4 +27,9 @@ class Client extends Model
     {
         return $this->hasMany('App\Models\Transaction');
     }
+
+    public function owners()
+    {
+        return $this->belongsToMany(Owner::class);
+    }
 }

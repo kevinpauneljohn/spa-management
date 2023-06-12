@@ -136,4 +136,41 @@ class TransactionService
 
         return $status;
     }
+
+    public function stopTransactions($id)
+    {
+        $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $transaction = Transaction::findOrFail($id);
+        $transaction->end_time = $now;
+
+        $code = 422;
+        $status = false;
+        $message = 'Client transaction could not be stop. Please try again.';
+        if ($transaction->save()) {
+            $multi_transaction = Transaction::where([
+                'spa_id' => $transaction->spa_id,
+                'client_id' => $transaction->client_id,
+                'start_time' => $transaction->start_time,
+                'service_id' => $transaction->service_id,
+                'amount' => 0,
+                'sales_id' => $transaction->sales_id
+            ])->first();
+
+            if (!empty($multi_transaction)) {
+                $multi_transaction->end_time = $now;
+                $multi_transaction->save();
+            }
+            
+            $code = 200;
+            $status = true;
+            $message = 'Client Transaction successfully stopped.';
+        }
+
+        $response = [
+            'status'   => $status,
+            'message'   => $message
+        ];
+
+        return response($response, $code);
+    }
 }

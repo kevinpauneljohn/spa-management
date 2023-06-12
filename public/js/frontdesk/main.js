@@ -16,6 +16,11 @@ $(document).on('click', '.edit-sales-btn', function () {
     getSalesInfo(id, spa_id);
 });
 
+$(document).on('click', '.stop-sales-btn', function () {
+    var id = this.id;
+    stopSales(id);
+});
+
 $('.update-sales-btn').on('click', function() {
     var spa_id = $('#spa_id_val').val();
     var amount = $('#totalAmountEditToPay').val();
@@ -275,14 +280,15 @@ $(document).on('click', '.addNewTabs', function () {
     var cur_val = $('#guest_ids_val').val();
     $('#guest_ids_val').val(cur_val + "," + id);
 
+    $('.process-appointment-btn').text('Process').prop('disabled', false);
     createAppointmentForm(id, 'inactive', 'no', 'yes');
 });
 
-$(document).on('click', '.appointmentTabNav', function () {
-    var id = this.id;
-    $('.appointmentContent').removeClass('active');
-    $('.tabAppointmentContent'+id).addClass('active');
-});
+// $(document).on('click', '.appointmentTabNav', function () {
+//     // var id = this.id;
+//     // $('.appointmentContent').removeClass('active');
+//     // $('.tabAppointmentContent'+id).addClass('active');
+// });
 
 $(document).on('click', '.closeTabs', function () {
     var id = this.id;
@@ -415,12 +421,18 @@ $('.process-appointment-btn').on('click', function() {
     var cur_val = $('#guest_ids_val').val();
     const data = cur_val.split(',');
 
-    processAppointment(data);
+    $('.process-appointment-btn').text('Processing...').prop('disabled', true);
+    setTimeout(function() { 
+        processAppointment(data);
+    }, 1000);
 });
 
 $(document).on('click', '.appointmentTabNav', function () {
     var id = $(this).data("id");
-
+    var ids = this.id;
+    $('.appointmentContent').removeClass('active');
+    $('.tabAppointmentContent'+ids).addClass('active');
+    $('.process-appointment-btn').text('Process').prop('disabled', false);
     appointmentSummary(id);
 });
 
@@ -675,7 +687,6 @@ $('#add-new-appointment-modal').on('hidden.bs.modal', function () {
     searchFilter = [];
 })
 
-
 $(document).on('click', '.btnStartShift', function(e) {
     e.preventDefault();
     startShiftPos($('#spa_id_val').val());
@@ -693,3 +704,15 @@ $(document).on('click', '.btnEndShift', function(e) {
     var id = $('#start_shit_id').val();
     endShiftPost(id);
 });
+
+$(document).on('click', '.viewEndShiftReport', function (e) {
+    e.preventDefault();
+    loadEndOfShiftReport();
+    $('#view-shift-report').modal('show');
+    $('#start-shift-modal').modal('toggle');
+});
+
+$('#view-shift-report').on('hidden.bs.modal', function () {
+    $('#start-shift-modal').modal('show');
+    getPosShift($('#spa_id_val').val());
+})

@@ -99,6 +99,11 @@ function loadRoom()
                 $('#room-availability').removeClass('overflow');
             }
 
+            getTotalSales($('#spa_id_val').val());
+            getMasseurAvailability($('#spa_id_val').val());
+            loadSales($('#spa_id_val').val());
+            loadData($('#spa_id_val').val());
+            $('.displayRoomList').html('');
             $.each(result , function(index, val) { 
                 var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
                 var divAvailable = '';
@@ -715,7 +720,7 @@ function viewAppointment(id)
 
             //update values
             $('.viewAppointmentUpdateTitle').html('Update Appointment');
-            if (result.clientid != '') {
+            if (result.client_id != '') {
                 $('#edit_app_firstname').prop('disabled', true);
                 $('#edit_app_middlename').prop('disabled', true);
                 $('#edit_app_lastname').prop('disabled', true);
@@ -726,7 +731,7 @@ function viewAppointment(id)
             }
             
             $('#edit_app_id').val(result.id);
-            $('#edit_app_client_id').val(result.clientid);
+            $('#edit_app_client_id').val(result.client_id);
             $('#edit_app_firstname').val(result.firstname);
             $('#edit_app_middlename').val(result.middlename);
             $('#edit_app_lastname').val(result.lastname);
@@ -756,7 +761,7 @@ function viewAppointment(id)
             //move sales values
             $('.viewAppointmentMoveTitle').html('Move Appointment to Sales');
             $('#move_app_id').val(result.id);
-            $('#move_app_client_id').val(result.clientid);
+            $('#move_app_client_id').val(result.client_id);
             $('#move_app_firstname').val(result.firstname);
             $('#move_app_middlename').val(result.middlename);
             $('#move_app_lastname').val(result.lastname);
@@ -842,13 +847,13 @@ function getPosShift(spa_id)
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         beforeSend: function () {
             $('#start_shit_id').val('');
+            $('.shiftMessage').html('');
         },
         success: function(result){
             if (result.status) {
-                console.log(result)
                 if (result.shift_today) {
-                    $('#start_shit_id').val(result.data.id);
                     if (result.end_shift) {
+                        $('.shiftMessage').html('To proceed with the POS, kindly click the button below.');
                         $('#start-shift-modal').modal('show');
                         $('#start-shift-form').find('.btnStartShift').text('Click here to start your shift again');
                     } else {
@@ -857,15 +862,40 @@ function getPosShift(spa_id)
                             $('#money-on-hand-modal').modal('show');
                         }
                     }
+
+                    if (!$('.btnEndShift').hasClass('hidden')) {
+                        $('.btnEndShift').addClass('hidden');
+                    }
                 } else {
-                    // New Shift
-                    $('#start_shit_id').val('');
-                    $('#start-shift-modal').modal('show');
-                    $('#start-shift-form').find('.btnStartShift').text('Click here to start your new shift');
+                    if (!result.end_shift) {
+                        $('.shiftMessage').html('Warning!! System noticed that you forgot to End your shift. Please click the button below to end your shift.');
+                        $('.viewEndShiftReport').addClass('hidden');
+                        $('#start-shift-modal').modal('show');
+                        $('.btnStartShift').addClass('hidden');
+                        $('.btnEndShift').removeClass('hidden');
+                        $('#start-shift-form').find('.btnEndShift').text('Click here to End your shift');
+                    } else {
+                        // New Shift
+                        $('.shiftMessage').html('To proceed with the POS, kindly click the button below.');
+                        $('.btnEndShift').addClass('hidden');
+
+                        if ($('.btnStartShift').hasClass('hidden')) {
+                            $('.btnStartShift').removeClass('hidden');
+                        }
+                        
+                        $('.viewEndShiftReport').removeClass('hidden');
+                        $('#start_shit_id').val('');
+                        $('#start-shift-modal').modal('show');
+                        $('#start-shift-form').find('.btnStartShift').text('Click here to start your new shift');
+                    }
                 }
+
+                $('#start_shit_id').val(result.data.id);
             } else {
                 //First Time Log Shift
+                $('.shiftMessage').html('To proceed with the POS, kindly click the button below.');
                 $('#start_shit_id').val('');
+                $('.viewEndShiftReport').addClass('hidden');
                 $('#start-shift-form').find('.btnStartShift').text('Click here to start your new shift');
                 $('#start-shift-modal').modal('show');
             }

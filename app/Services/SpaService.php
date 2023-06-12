@@ -94,4 +94,11 @@ class SpaService
         $spa = Spa::where('owner_id', $id)->orderBy('name' , 'ASC')->pluck('id', 'name');
         return $spa;
     }
+
+    public function spa_info($id)
+    {
+        $spa = Spa::where('id', $id)->first();
+        
+        return $spa;
+    }
 }
