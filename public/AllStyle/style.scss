@@ -13,7 +13,7 @@
     #second{
         display: block !important;
     }
-    #generate{
+    #generate,#printslip{
         position: relative;
         top: 50px !important;
      }
@@ -42,11 +42,10 @@
     }
 
  }
-#generate{
+#generate,#printslip{
    position: relative;
    top: 15px;
    left: 10%;
-   
 }
 .container{
     width: 300px;
@@ -130,3 +129,77 @@
     border-radius: 4px 0 0 4px;
     border-right:none;
   }
+  #timesched{
+    width: 200px;
+    height: 40px;
+  }
+  @keyframes change-content {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .switch {
+    position: absolute;
+    /* make the checkbox unvisible using clip-path */
+    clip-path: circle(0%);
+    opacity: 0;
+  
+    & + label {
+      display: inline-block;
+      margin: 20px;
+      width: 100px;
+      height: 35px;
+      position: relative;
+      border: 2px solid #607d8b;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 30px;
+      text-align: center;
+  
+      &:before,
+      &:after {
+        display: inline-block;
+        position: absolute;
+      }
+  
+      /* for slider thumb */
+      &:before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border-radius: 25px;
+        left: 10px;
+        top: 5px;
+        background: #607d8b;
+        transition: all 0.3s ease-in-out;
+      }
+  
+      /* for text content */
+      &:after {
+        display: inline-block;
+        content: 'OFF';
+        bottom: -50px;
+        /* to center it horizontally */
+        left: 50%;
+        transform: translateX(-50%);
+        color: #607d8b;
+      }
+    }
+  
+    &:checked {
+      & + label:before {
+        left: 65px;
+      }
+  
+      & + label:after {
+        content: 'Allow';
+        color: #4caf50;
+        animation: change-content 0.3s forwards linear;
+      }
+    }
+  }
+  

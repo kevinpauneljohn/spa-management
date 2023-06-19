@@ -119,24 +119,6 @@ class StaffService
                     'password' => Hash::make($data['password']),
                 ]);
               
-                $employee = EmployeeTable::where('user_id', $user->id)->first();
-                if (!$employee) {
-                    $employee = EmployeeTable::create([
-                        'user_id' => $user->id,
-                        'spa_id' => $user->spa_id,
-                    ]);
-                }
-
-                $shift = Shift::where('user_id', $user->id)->first();
-                if (!$shift) {
-                    $shift = Shift::create([
-                        'user_id' => $user->id,
-                        'employee_id' => $employee->id,
-                        'Schedule' => 'M,T,W,TH,F',
-                        'Shift' => now()->format('h:i:s'),
-                    ]);
-                }
-
                 if ($user) {
                     $user->assignRole($data['role']);
 

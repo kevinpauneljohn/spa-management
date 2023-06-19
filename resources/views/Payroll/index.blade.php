@@ -19,13 +19,10 @@
               <x-form/>
             </div>
             <div class="table table-responsive" id="table-wrapper">
-                <!--GENERATED TABLE -->
-              
-                <x-table :columnNames="['Name','Total Sales','Total Commission','View Summary']"/>
+                <x-table :columnNames="['Name','Total Sales','Total Commission','Allowance','View Summary']"/>
             </div>
         </div>
     </div>
-
     <!-- Modal -->
 @stop
 @section('plugins.Moment',true)
@@ -45,7 +42,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script>
 var selectedOption;
 $('#generate')
@@ -56,7 +53,7 @@ $('#department').on('change', function() {
         emptyheaders = '<th>Name</th><th>Total Hours</th><th>Gross Pay</th><th>View Summary</th></tr>';
     }
     if(selectedOption === 'therapist'){
-        emptyheaders = '<th>Name</th><th>Total Sales</th><th>Total Commission</th><th>View Summary</th>';
+        emptyheaders = '<th>Name</th><th>Total Sales</th><th>Total Commission</th><th>Allowance</th><th>View Summary</th>';
     }
     $('#table-id thead').html(emptyheaders);
     $('#table-id tbody').empty();
@@ -91,6 +88,65 @@ $(function() {
         }
     });
 });
+//GENERATE PAYSLIP
+
+$(document).on('click','#printslip',function(form){
+
+
+    $(this).prop('disabled', true).text('Loading...');
+
+    setTimeout(function() {
+
+      $('#printslip').prop('disabled', false).text('PRINT SLIP');
+        getDate(function(alldate){
+        $("#table-id tbody").empty();
+            var selectedOption = $('#department').val();
+
+            var strTherapist = 'Therapist';
+            var strEmployee = 'Employee';
+
+            if (selectedOption === 'therapist') {
+                $.get('/payslip/' + strTherapist, alldate, function(data, status) {
+                    data = parseInt(data);
+                    if(data === 404)
+                    {
+                        swal({
+                            title: "No payrolls found for the given date.",
+                            icon: "warning",
+                            dangerMode: true
+                        });
+                    }
+                    else{
+                        window.location.href = '/payslip/' + strTherapist;
+                    }
+                        
+              
+                });
+            } else if (selectedOption === 'employee') {
+                $.get('/payslip/' + strEmployee, alldate, function(data, status) {
+                    data = parseInt(data);
+                    if(data === 404)
+                    {
+                        swal({
+                            title: "No payrolls found for the given date.",
+                            icon: "warning",
+                            dangerMode: true
+                        });
+                    }
+                    else{
+                        window.location.href = '/payslip/' + strEmployee;
+                    }
+                        
+               
+                });
+            }
+
+
+      })
+    }, 500);
+});
+
+//GENERATE PAYROLL 
 $(document).on('click','#generate',function(form){
     form.preventDefault();
     $(this).prop('disabled', true).text('Loading...');
@@ -114,6 +170,7 @@ $(document).on('click','#generate',function(form){
                                 html += "<td>" + value.fullname + "</td>";
                                 html += "<td>" + value.amount + "</td>";
                                 html += "<td>" + value.TotalCommission + "</td>";
+                                html += "<td>" + value.Allowance + "</td>";
                                 html += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary viewsummary" data-toggle="modal" data-target="#exampleModal">View Summary </button> </td>';
                                 html += "</tr>";
                                 }
@@ -126,31 +183,32 @@ $(document).on('click','#generate',function(form){
                             }
                             });
                 }
-                else if(selectedOption === 'employee')
-                {
-                    $('#no_data').text("");
-                    $.get('/employee-salary',alldate, function(data, status){
-                    var htmlEmployee = "";
-                        if(Array.isArray(data) && data.length > 0)
-                        {
-                                $.each(data, (key, value)=>{
-                                htmlEmployee += "<tr class='text-center'>";
-                                htmlEmployee += "<td>" + value.Name + "</td>";
-                                htmlEmployee += "<td>" + value.total_hours + "</td>";
-                                htmlEmployee += "<td>" + value.salary + "</td>";
-                                htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
-                                htmlEmployee += "</tr>";
-                            });
-                            $("#table-id").append(htmlEmployee);
-                        }
-                        else
-                        {
-                            let message = data;
-                             $('#no_data').text(message);
-                        }
-                    });
-                }
-        });
+                    else if(selectedOption === 'employee')
+                    {
+                        $('#no_data').text("");
+                        $.get('/employee-salary',alldate, function(data, status){
+                        var htmlEmployee = "";
+                            if(Array.isArray(data) && data.length > 0)
+                            {
+                                    $.each(data, (key, value)=>{
+                                    htmlEmployee += "<tr class='text-center'>";
+                                    htmlEmployee += "<td>" + value.Name + "</td>";
+                                    htmlEmployee += "<td>" + value.total_hours + "</td>";
+                                    htmlEmployee += "<td>" + value.Net_Pay + "</td>";
+                                    htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
+                                    htmlEmployee += "</tr>";
+                                
+                                });
+                                $("#table-id").append(htmlEmployee);
+                            }
+                            else
+                            {
+                                let message = data;
+                                $('#no_data').text(message);
+                            }
+                        });
+                    }
+                 });
     }, 500);
 });
 // Employee View SUmmary
@@ -172,7 +230,7 @@ $(document).on('click', '.empsummary', function(){
                 $.each(res, function(key, value){
                 const formats = "MMMM DD, YYYY";
                 var date = moment(value.time_in).format(formats);
-                html += "<tr>";
+                html += "<tr class='text-center'>";
                 html += "<td>" + date + "</td>";
                 html += "<td>" + value.Total_Hours + "</td>";
                 html += "<td>" + value.Pay + "</td>";
@@ -198,29 +256,22 @@ $(document).on('click', '.viewsummary', function(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success : (res)=>{
-
-                $('#exampleModalLabel').text(res.therapist.firstname+' '+res.therapist.lastname);
                 var html = "";
-                $.each(res.transaction, function(key, value){
-
+                $.each(res, function(key, value){
+                    $('#exampleModalLabel').text(value.fullname);
                     const formats = "MMMM DD, YYYY";
-                    var date = moment(value.created_at).format(formats);
-                    html += "<tr>";
-                    html += "<td>" + value.service_name + "</td>";
+                    var date = moment(value.date).format(formats);
+                    html += "<tr class='text-center'>";
+                    html += "<td>" + value.service + "</td>";
                     html += "<td>" + value.amount + "</td>";
                     html += "<td>" + date + "</td>";
                     html += "</tr>";
-
-            });
+                })
             $("#modal-viewsummary").append(html);
-            
             }
         })
     });
 });
-
-
-
 
 function getDate(callback){
     let dateStart = $('#daterange').data('daterangepicker').startDate.format('MMMM DD, YYYY');
