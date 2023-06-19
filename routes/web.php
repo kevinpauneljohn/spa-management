@@ -149,6 +149,10 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/check-user-password',[\App\Http\Controllers\UserController::class,'check_user_logged_in_password'])->name('check.user.password');
 
+    Route::get('pos-get-shift/{id}',[\App\Http\Controllers\SalesShiftController::class,'index'])->name('pos.get.shift');
+    Route::post('pos-start-shift/{spa_id}',[\App\Http\Controllers\SalesShiftController::class,'create'])->name('pos.create.shift');
+    Route::put('pos-update-shift/{id}/{amount}/{type}',[\App\Http\Controllers\SalesShiftController::class,'edit'])->name('pos.update.shift');
+    
     Route::get('/download/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'download'])->name('download.index');
     Route::get('/checkLogin', [\App\Http\Controllers\DownloadAttendanceController::class, 'checkLogin']);
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);

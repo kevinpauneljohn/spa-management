@@ -833,8 +833,49 @@ function therapistTransactionCount(spa_id, date)
     });
 }
 
+function getPosShift(spa_id)
+{
+    $.ajax({
+        'url' : '/pos-get-shift/'+spa_id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $('#start_shit_id').val('');
+        },
+        success: function(result){
+            if (result.status) {
+                console.log(result)
+                if (result.shift_today) {
+                    $('#start_shit_id').val(result.data.id);
+                    if (result.end_shift) {
+                        $('#start-shift-modal').modal('show');
+                        $('#start-shift-form').find('.btnStartShift').text('Click here to start your shift again');
+                    } else {
+                        // Confirm money on hand
+                        if (!result.money_confirm) {
+                            $('#money-on-hand-modal').modal('show');
+                        }
+                    }
+                } else {
+                    // New Shift
+                    $('#start_shit_id').val('');
+                    $('#start-shift-modal').modal('show');
+                    $('#start-shift-form').find('.btnStartShift').text('Click here to start your new shift');
+                }
+            } else {
+                //First Time Log Shift
+                $('#start_shit_id').val('');
+                $('#start-shift-form').find('.btnStartShift').text('Click here to start your new shift');
+                $('#start-shift-modal').modal('show');
+            }
+        }
+    });
+}
+
 function getResponses(id)
 {
+    $('.viewBadgeCount').text('');
     $.ajax({
         'url' : '/appointment-response/'+id,
         'type' : 'GET',
