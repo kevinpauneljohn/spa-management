@@ -4,17 +4,21 @@ namespace App\Services;
 
 use App\Models\Therapist;
 use App\Models\User;
+use App\Models\Service;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Services\TransactionService;
+use App\Services\RoomService;
 
 class TherapistService
 {
     private $transactionService;
+    private $roomService;
 
-    public function __construct(TransactionService $transactionService)
+    public function __construct(TransactionService $transactionService, RoomService $roomService)
     {
         $this->transactionService = $transactionService;
+        $this->roomService = $roomService;
     }
 
     public function all_therapist_thru_spa($therapist)
@@ -120,8 +124,19 @@ class TherapistService
 
     public function therapistTransactionsCount($spa_id, $dateTime)
     {
-        $therapist = Therapist::where('spa_id', $spa_id)->get();
+        $data = [
+            'therapist' => $this->getTherapistList($spa_id, $dateTime),
+            'rooms' => $this->roomService->getRoomList($spa_id, $dateTime),
+            'services' => $this->getServices($spa_id),
+        ];
 
+        return $data;
+    }
+
+    public function getTherapistList($spa_id, $dateTime)
+    {
+        $therapist = Therapist::where('spa_id', $spa_id)->get();
+        
         $data = [];
         if (!empty($therapist)) {
             foreach ($therapist as $list) {
@@ -131,12 +146,20 @@ class TherapistService
                     'therapist_id' => $list->id,
                     'fullname' => $list->user->fullname,
                     'count' => $count_transactions,
-                    'availability' => $is_available ? 'Available' : 'Not Available',
-                ];
+                    'availability' => $is_available ? 'yes' : 'no',
+                ];                
             }
+    
+            array_multisort(array_column($data, 'count'), $data);
         }
 
-        array_multisort(array_column($data, 'count'), $data);
         return $data;
+    }
+
+    public function getServices($spa_id)
+    {
+        $service = Service::where('spa_id', $spa_id)->pluck('id', 'name');
+
+        return $service;
     }
 }

@@ -197,7 +197,7 @@ class AppointmentService
                 }
 
                 if (auth()->user()->can('move sales') || auth()->user()->hasRole('owner')) {
-                    $action .= '<a href="#" data-name="'.$is_client_id.'" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-success move-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-exchange-alt"></i></a>&nbsp;';
+                    $action .= '<a href="#" data-date="'.$appointment->start_time.'" data-name="'.$is_client_id.'" data-batch="'.$batch_id.'" class="btn btn-sm btn-outline-success move-appointment-btn" id="'.$appointment->id.'"><i class="fas fa-exchange-alt"></i></a>&nbsp;';
                 }
 
                 if (auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
