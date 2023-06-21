@@ -30,7 +30,7 @@ class Therapist extends Model
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class,'therapist_1');
+        return $this->hasMany(Transaction::class, 'therapist_1', 'id');
     }
 
     public function user()

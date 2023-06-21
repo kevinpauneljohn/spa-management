@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Owner;
 use App\Models\Spa;
 use Illuminate\Http\Request;
@@ -11,29 +12,17 @@ class DownloadAttendanceController extends Controller
     public function download($name)
     {
         $spa = Spa::where('name', $name)->first();
-
+        
         $file = public_path('attendance.html');
         $headers = [
             'Content-Type: text/html',
         ];
         return response()->download($file, 'attendance '.$spa->name.' '.$spa->code.'.html', $headers);
 
+    }
 
-    //     $code = $this->checkLogin();
-    //     $collection = collect();
-    //     foreach($code as $codes)
-    //     {
-    //         $count = 0;
-    //         $count = $count + 1;
-    //         $collection->push([
-    //             "name" => $codes['name'],
-    //             "code" => $codes['code'],
-    //         ]);
- 
-    //     }
-    //    return $collection;
-
-    
+    public function employeeAttendace(){
+        return view('Attendance.attendance');
     }
 
     // public function checkLogin()

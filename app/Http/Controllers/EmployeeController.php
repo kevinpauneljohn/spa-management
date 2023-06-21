@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\EmployeeTable;
+use App\Models\Owner;
+use App\Models\Shift;
 use App\Models\Spa;
 use App\Models\Therapist;
 use App\Models\User;
@@ -11,6 +13,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeController extends Controller
 {
@@ -21,10 +27,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-      
-            return view('Attendance.index');
-        
-        
+        return view('Attendance.index');
     }   
     
     public function phDate()
@@ -36,106 +39,10 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create()
     {
-      
-        try {
-            $employee = EmployeeTable::findOrFail($id);
-            
-            $today = now()->format('Y-m-d'); // Get the current date as string
 
-            $attendance = Attendance::where('employee_id', $employee->id)
-                    ->whereDate('created_at', $today)
-                    ->first();
-        
-            if ($attendance) {
-                return 0;
-            }
-            else{
-                Attendance::create([
-                    'employee_id' => $employee->id,
-                    'time_in' => $this->phDate(),
-                    'time_out' => '-',
-                    'break_in' => '-',
-                    'break_out' => '-',
-                ]);
-            }
-            return 1;
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex) {
-            return 2;
-        }
-        
-    }
-
-    public function time_out($id)
-    {   
-        $today = now()->format('Y-m-d');
-        try {
-            $employee = EmployeeTable::findOrFail($id);
-            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
-            if(empty($attendance->time_in)){
-                return 3;
-            }
-            else{
-                if ($attendance->time_out == '-') {
-                    // Update the time_out column
-                    $attendance->update([
-                        'time_out' => $this->phDate(),
-                    ]);
-                    return 0;
-                } else  {
-                    return 1;
-                } 
-            }
-        
-        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
-            return 2;
-        }
-    }
-
-    public function break_in($id)
-    {
-        $today = now()->format('Y-m-d');
-        try {
-            $employee = EmployeeTable::findOrFail($id);
-            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
-            if ($attendance->break_in == '-') {
-                $attendance->update([
-                    'break_in' => $this->phDate(),
-                ]);
-                return 0;
-            } else  {
-                return 1;
-            } 
-        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
-            return 2;
-        }
-    }
-
-    public function break_out($id)
-    {
-        $today = now()->format('Y-m-d');
-        try {
-            $employee = EmployeeTable::findOrFail($id);
-            $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
-            if(empty($attendance->break_in)){
-                return 3;
-            }
-            else{
-                if ($attendance->break_out == '-') {
-                    $attendance->update([
-                        'break_out' => $this->phDate(),
-                    ]);
-                    return 0;
-                } else  {
-                    return 1;
-                } 
-            }
-       
-        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $ex){
-            return 2;
-        }   
     }
 
     /**
@@ -158,20 +65,28 @@ class EmployeeController extends Controller
     public function show()
     {   
         $timeStomp = now()->format('Y-m-d');
-        $attendance = Attendance::with('employee.user')->whereDate('created_at', $timeStomp)
+     
+        $attendances = Attendance::with('employee.user')->whereDate('created_at', $timeStomp)
         ->get()
-        ->groupBy('employee_id')
-        ->map(function($at) {
-            return [
-                'name' => $at->first()->employee->user->firstname,
-                'time_in' => $at->first()->time_in,
-                // 'id' => $at->first()->employee->id,
-                'break_in' => $at->first()->break_in,
-                'break_out' => $at->first()->break_out,
-                'time_out' => $at->first()->time_out,
-            ];
-        });
-        return $attendance->values();
+        ->groupBy('employee_id');
+         return DataTables::of($attendances)
+         ->editColumn('name', function($attendance){
+            return $attendance->first()->employee->user->firstname;
+         })
+         ->addColumn('timein', function($attendance){
+            return $attendance->first()->time_in;
+         })
+         ->addColumn('breakin', function($attendance){
+            return $attendance->first()->break_in;
+         })
+         ->addColumn('breakout', function($attendance){
+            return $attendance->first()->break_out;
+         })
+         ->addColumn('timeout', function($attendance){
+            return $attendance->first()->time_out;
+         })
+         ->rawColumns(['name'])
+         ->make(true);
     }
     /**
      * Show the form for editing the specified resource.
@@ -206,108 +121,140 @@ class EmployeeController extends Controller
     {
         //
     }
-    //API
-    public function timeInApi($id)
+    public function setting()
     {
-            $exploded = explode('-', $id);
-        
-            $spaCode = $exploded[0];
-            $employeeID = $exploded[1];
-        
+        $users = User::whereHas("roles", function($q){ $q->whereNotIn("name", ["super admin","owner"]); })->get();
+        $collect = collect();
+        foreach($users as $user)
+        {
+           $collect->push($user->id);
+        }
+        $employees =  EmployeeTable::where('user_id', $collect)->get();
+        // $role = $collect->getRoleNames()->first();
+        return $employees;
+    }
+    //API
+
+    public function timeInApi($id, $spaCode)
+    {
+     
             $collect = collect();
             $today = now()->format('Y-m-d');
         
             $spas = Spa::where('code', $spaCode)->first();
-            $employeetable = EmployeeTable::where('spa_id', $spas->id)->where('id', $employeeID)->get();
-
-            if($employeetable->isEmpty())
+            if(empty($spas))
             {
-                return 2;
+                return 3;
             }
-            else{
-
-                foreach ($employeetable as $emp) {
-                    $collect->push($emp->id);
+            else{    
+                $employeetable = EmployeeTable::where('spa_id', $spas->id)->where('id', $id)->get();
+                if($employeetable->isEmpty())
+                {
+                    return 2;
                 }
-        
-                $mycollect = $collect->first();
-                $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->count();
-
-               if($attendance > 0)
-               {
-                 return 0;
-               }
-               else{
-                 Attendance::create([
-                    'employee_id' => $mycollect,
-                    'time_in' => $this->phDate(),
-                    'time_out' => '-',
-                    'break_in' => '-',
-                    'break_out' => '-',
-                 ]);
-                 return 1;
-               }
-            }
-    }
-    public function sample()
-    {
-
-        // $spas = Spa::where('code', $code)->first();
-        // $employeetable = EmployeeTable::where('spa_id', $spas->id)->get();
-        // $collect = collect();
-        // foreach ($employeetable as $emp)
-        // {
-        //     $collect->push($emp->id);
-        // }
-        // return $collect;
-        // $employeetable = EmployeeTable::all();
-        // return $employeetable->map(function ($employee) {
-        //     return $employee->spas->code;
-        // });
-
-    }
-
-    public function timeOutBreakInBreakOutApi($id, $action){
-     $today = now()->format('Y-m-d');
-    $employee = EmployeeTable::findOrFail($id); //mag where
-    $attendance = Attendance::where('employee_id', $employee->id)->whereDate('created_at', $today)->first();
-
-        if(empty($attendance->time_in))
-        {
-            return 0;
-        }
-        else{
-                if($action=='break_in'){
-                    if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in == '-'){
-                        $attendance->$action = $this->phDate();
-                        $attendance->update();
-                        return 1;
+                else 
+                {
+                    foreach ($employeetable as $emp) {
+                        $collect->push($emp->id);
                     }
-                    else{
+            
+                    $mycollect = $collect->first();
+                    $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->count();
+
+                    if($attendance > 0)
+                    {
                         return 0;
                     }
+                    else{
+                        $shifts = Shift::all()->pluck('Schedule')->map(function ($item) {
+                            return json_decode($item);
+                        })->flatten()->toArray();
+                        $currentDay = Carbon::now()->format('D');
+                        
+                        if (in_array($currentDay, $shifts)) {
+                            Attendance::create([
+                                'employee_id' => $mycollect,
+                                'time_in' => $this->phDate(),
+                                'time_out' => '-',
+                                'break_in' => '-',
+                                'break_out' => '-',
+                            ]);
+                            return 1;
+                        } else {
+                            return 4;
+                        }
+                    }
                 }
-                elseif($action=='break_out'){
-                    if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in != '-'){
-                        $attendance->$action = $this->phDate();
-                        $attendance->update();
+            }
+        }
+        
+    
+
+    public function timeOutBreakInBreakOutApi($id,$action){
+     $today = now()->format('Y-m-d');
+     $exploded = explode('-', $id);
+     $collect = collect();
+     $spaCode = $exploded[0];
+     $employeeID = $exploded[1];
+    
+     $spa = Spa::where('code', $spaCode)->first();
+        if(empty($spa))
+        {
+            return 4;
+        }
+        else
+        {
+            $employee = EmployeeTable::where('spa_id', $spa->id)->where('id', $employeeID)->get();
+            if($employee->isEmpty()){
+                return 3;
+               }
+               else
+               {
+                    foreach($employee as $emp)
+                    {
+                        $collect->push($emp->id);
+                    }
+                    $IDChecker = $collect->first();
+                    $attendance = Attendance::where('employee_id', $IDChecker)->whereDate('created_at', $today)->first();
+
+                    if(empty($attendance->time_in))
+                    {
+                        return 0;
+                    }
+                    else{
+                        if($action=='break_in'){
+                            if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in == '-'){
+                                $attendance->$action = $this->phDate();
+                                $attendance->update();
+                                return 1;
+                            }
+                            else{
+                                return 0;
+                            }
+                        }
+                        elseif($action=='break_out'){
+                            if($attendance->time_in != '-' && $attendance->time_out == '-' && $attendance->break_in != '-'){
+                                $attendance->$action = $this->phDate();
+                                $attendance->update();
+                                return 1;
+                            }
+                            else{
+                                return 0 ;
+                            }
+                        }
+                        else{
+                            if($attendance->time_out != '-'){
+                                return 2;
+                            }
+                            else{
+                                $attendance->$action = $this->phDate();
+                                $attendance->update();
+                            }
+                        }
                         return 1;
                     }
-                    else{
-                        return 0 ;
-                    }
-                }
-                else{
-                    if($attendance->time_out != '-'){
-                        return 2;
-                    }
-                    else{
-                        $attendance->$action = $this->phDate();
-                        $attendance->update();
-                    }
-                }
-                return 1;
-            }
-        
+               }
+        }
     }
+    
 }
