@@ -34,7 +34,7 @@ class ReceptionistController extends Controller
         $spa = Spa::findOrFail($spa_id);
 
         $title = $spa->name;
-        return view('Receptionist.index',['title' => $title, 'spa_id' => $spa_id, 'total_rooms' => $spa->number_of_rooms]);
+        return view('Receptionist.index',['title' => $title, 'spa_id' => $spa_id, 'total_rooms' => $spa->number_of_rooms, 'owner_id' => $spa->owner_id]);
     }
 
     public function lists($id)

@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function(){
     
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
+    Route::get('/sales-end-of-shift-report/{spa_id}/{shift_id}',[\App\Http\Controllers\SaleController::class,'endOfShiftReport'])->name('sale.end.shift.report');
 
     Route::get('/transaction/{id}',[\App\Http\Controllers\TransactionController::class,'show'])->name('transaction.show');
     Route::get('/transaction-list/{id}',[\App\Http\Controllers\TransactionController::class,'lists'])->name('transaction.lists');
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/transaction-room-availability/{id}',[\App\Http\Controllers\TransactionController::class,'getRoomAvailability'])->name('transaction.room.availability');
     Route::get('/transaction-data/{id}',[\App\Http\Controllers\TransactionController::class,'getData'])->name('transaction.data');
     Route::get('/transaction-invoice/{id}',[\App\Http\Controllers\TransactionController::class,'getInvoice'])->name('transaction.invoice');
+    Route::put('/transaction-stop/{id}',[\App\Http\Controllers\TransactionController::class,'stopTransaction'])->name('transaction.stop');
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');

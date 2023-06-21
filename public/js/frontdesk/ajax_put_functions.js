@@ -337,7 +337,7 @@ function updateInvoice(id)
 function updateInvoiceConfirmed(spa_id, payment_method, payment_status, payment_account_number, payment_bank_name, id)
 {
     swal.fire({
-        title: "Are you sure you want to update Therapist?",
+        title: "Are you sure you want to update Invoice?",
         icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",
@@ -362,7 +362,7 @@ function updateInvoiceConfirmed(spa_id, payment_method, payment_status, payment_
                 },success: function (result) {
                     if(result.status) {
                         loadTransactions(spa_id);
-
+                        loadData(spa_id);
                         swal.fire("Done!", result.message, "success");
                         $('#update-invoice-modal').modal('toggle');
                     } else {
@@ -396,6 +396,7 @@ function startShiftMoney(id, amount)
         },
         success: function(result){
             getPosShift(spa_id);
+            loadData(spa_id);
             swal.fire("Done!", result.message, "success");
             $('#money-on-hand-modal').modal('hide');
             $('.btnMoneyOnHand').text('Click here to confirm').attr('disabled',false)
@@ -428,6 +429,52 @@ function endShiftPost(id)
                 success: function(result){
                     getPosShift(spa_id);
                     swal.fire("Done!", result.message, "success");
+                }
+            });
+        } else {
+            e.dismiss;
+        }
+    }, function (dismiss) {
+        return false;
+    })
+}
+
+function stopSales(id)
+{
+    var spa_id = $('#spa_id_val').val();
+    swal.fire({
+        title: "Are you sure you want to stop / cancel the on going reservation?",
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                'url' : '/transaction-stop/'+id,
+                'type' : 'PUT',
+                'data': {},
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+
+                },success: function (result) {
+                    if(result.status) {
+                        loadRoom();
+                        loadSales(spa_id);
+                        getTotalSales(spa_id);
+                        getMasseurAvailability(spa_id);
+                        loadData(spa_id);
+                        getUpcomingGuest(spa_id);
+
+                        swal.fire("Done!", result.message, "success");
+                    } else {
+                        swal.fire("Warning!", result.message, "warning");
+                    }
+                },error: function(xhr, status, error){
+                    console.log(xhr);
                 }
             });
         } else {

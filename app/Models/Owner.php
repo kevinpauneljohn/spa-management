@@ -38,4 +38,9 @@ class Owner extends Model
     {
         return $this->hasMany(InventoryCategory::class);
     }
+
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class);
+    }
 }

@@ -17,10 +17,6 @@ function countdown(id, start_time, end_time)
             if (distance < 0) {
                 clearInterval(x);
                 loadRoom();
-                getTotalSales($('#spa_id_val').val());
-                getMasseurAvailability($('#spa_id_val').val());
-                loadSales($('#spa_id_val').val());
-                loadData($('#spa_id_val').val());
             }
         } else {
             $("#countdown"+id).text('Waiting...');

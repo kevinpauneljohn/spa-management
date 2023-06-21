@@ -18,6 +18,8 @@ class DashboardController extends Controller
             return redirect('owner-dashboard');
         } else if (!empty($user)) {
             return redirect('/receptionist-dashboard');
+        } else {
+            return view('Dashboard.dashboard');
         }
     }
 }
