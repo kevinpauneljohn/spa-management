@@ -157,6 +157,11 @@ Route::middleware(['auth'])->group(function(){
     
     Route::get('/download/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'download'])->name('download.index');
     Route::get('/checkLogin', [\App\Http\Controllers\DownloadAttendanceController::class, 'checkLogin']);
+
+    //pos api
+    Route::get('pos-api/{id}',[\App\Http\Controllers\PosController::class,'getApi'])->name('pos.api');
+    Route::get('pos-api-therapist-list/{id}',[\App\Http\Controllers\PosController::class,'getTherapistList'])->name('pos.api.therapist.list');
+    Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
 
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);

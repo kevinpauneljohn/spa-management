@@ -562,7 +562,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="edit_start_time">Start Time</label><span class="isRequired">*</span>
-                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control" min="{{ Date('Y-m-d\TH:i',time()) }}" max="{{ Date('Y-m-d\TH:i',time()) }}">
+                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control" min="{{ Date('Y-m-d\TH:i',time()) }}">
                                         <p class="text-danger hidden" id="error-edit_start_time"></p>
                                     </div>
                                     <div class="col-md-4">
@@ -1221,6 +1221,7 @@
     // });
 
     $(function() {
+        getPosApi($('#spa_id_val').val());
         getPosShift($('#spa_id_val').val());
         // $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, { icons: { time: 'fas fa-clock', date: 'fas fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'far fa-chevron-left', next: 'far fa-chevron-right', today: 'far fa-calendar-check-o', clear: 'far fa-trash', close: 'far fa-times' } });
         // $('#datetimepicker1').datetimepicker();
@@ -1228,7 +1229,7 @@
         // $('#calendar').datepicker({
 
         // });
-        therapistTransactionCount($('#spa_id_val').val(), '2023-01-01 22:00:00');
+        // therapistTransactionCount($('#spa_id_val').val(), '2023-06-13 21:30:00');
         getResponses($('#spa_id_val').val());
 
         getAppointmentCount();
@@ -1247,7 +1248,7 @@
         getTotalSales($('#spa_id_val').val());
         getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
-        loadData($('#spa_id_val').val());
+
         $('.select-client-type').select2();         
     });
 </script>

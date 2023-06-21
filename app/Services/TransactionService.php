@@ -108,8 +108,8 @@ class TransactionService
 
     public function therapistCount($therapist_id)
     {
-        $yesterday_start = Carbon::now()->setTimezone('Asia/Manila')->subDays(2)->format('Y-m-d 00:00:01');
-        $yesterday_end = Carbon::now()->setTimezone('Asia/Manila')->subDays(2)->format('Y-m-d 23:59:59');
+        $yesterday_start = Carbon::now()->setTimezone('Asia/Manila')->subDays(1)->format('Y-m-d 00:00:01');
+        $yesterday_end = Carbon::now()->setTimezone('Asia/Manila')->subDays(1)->format('Y-m-d 23:59:59');
         $transaction = Transaction::where('therapist_1', $therapist_id)
             ->where('amount', '>', 0)
             ->where('start_time', '>=', $yesterday_start)
@@ -120,9 +120,8 @@ class TransactionService
     }
 
     public function therapistAvailability($spa_id, $therapist_id, $dateTime)
-    {
+    {        
         $transaction = Transaction::where('therapist_1', $therapist_id)
-            ->where('amount', '>', 0)
             ->where('spa_id', $spa_id)
             ->where('start_time', '<=', $dateTime)
             ->where('end_time', '>=', $dateTime)

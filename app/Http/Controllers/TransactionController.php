@@ -89,9 +89,9 @@ class TransactionController extends Controller
 
                 if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
                     if ($transaction->end_time >= $dateNow  || auth()->user()->hasRole('owner')) {
-                        $action .= '<a href="#" data-start_date="'.$date_start_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     }
-                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
+                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
                 }
 
                 // if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
@@ -305,7 +305,7 @@ class TransactionController extends Controller
     {
         $therapist = Therapist::findOrFail($id);
 
-        return $therapist->firstname.' '.$therapist->lastname;
+        return $therapist->user->firstname.' '.$therapist->user->lastname;
     }
 
     public function getData($id)
