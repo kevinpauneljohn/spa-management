@@ -18,7 +18,8 @@ class CreateShiftsTable extends Migration
             $table->string('user_id');
             $table->unsignedBigInteger('employee_id');
             $table->string('Schedule')->nullable();
-            $table->time('Shift');
+            $table->string('shift_start');
+            $table->string('shift_end');
             
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('employee_id')->references('id')->on('employee_tables');

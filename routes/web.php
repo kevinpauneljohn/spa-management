@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ShiftController;
 
 /*
@@ -111,12 +112,24 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/employee-summary/{id}', [\App\Http\Controllers\PayrollController::class, 'getEmployeeSummary']);
     Route::get('/dateRangechecker', [\App\Http\Controllers\PayrollController::class, 'dateLimit']);
     Route::get('/create', [\App\Http\Controllers\PayrollController::class, 'create']);
-
+    Route::get('/payslip/{type}', [\App\Http\Controllers\PayrollController::class, 'payslip']);
+    Route::get('/payslip-view', [\App\Http\Controllers\PayrollController::class, 'payslipview']);
+    Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
+    Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
+    Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
 
     Route::resource('/shift',\App\Http\Controllers\ShiftController::class);
     Route::get('/shift-list',[\App\Http\Controllers\ShiftController::class, 'list'])->name('shift.list');
-    Route::put('/update/{id}', [\App\Http\Controllers\ShiftController::class, 'update']);
+    Route::put('/update-shift/{id}', [\App\Http\Controllers\ShiftController::class, 'update']);
+    Route::get('/showSchedule', [\App\Http\Controllers\ShiftController::class, 'showSchedule']);
     // Route::get('/payroll-commission',[\App\Http\Controllers\PayrollController::class, 'show']);
+
+    Route::get('/employee-list', [\App\Http\Controllers\EmployeeRateController::class, 'index'])->name('setting.index');
+    Route::get('/employee-rate', [\App\Http\Controllers\EmployeeRateController::class, 'setting'])->name('employee-rate');
+    Route::get('/getEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'editRate']);
+    Route::put('/updateEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'updateRate']);
+    Route::get('/sample', [\App\Http\Controllers\EmployeeRateController::class, 'sample']);
+    
 
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
     Route::post('appointment-store/{id}',[\App\Http\Controllers\AppointmentController::class,'store'])->name('appointment.store');
@@ -149,14 +162,19 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api/{id}',[\App\Http\Controllers\PosController::class,'getApi'])->name('pos.api');
     Route::get('pos-api-therapist-list/{id}',[\App\Http\Controllers\PosController::class,'getTherapistList'])->name('pos.api.therapist.list');
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
+    Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
+
+    // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 });
 
-Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');
 
-Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
-Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
-Route::put('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
-Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
-Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
-Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show']);
-Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);
+    Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');
+
+    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
+    // Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
+    // Route::put('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
+    // Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);
+    // Route::get('/break-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_out']);
+    Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show'])->name('attendance.display');
+    // Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);
+    Route::get('/testing', [\App\Http\Controllers\EmployeeController::class, 'testing']);

@@ -5,84 +5,34 @@
         <h5 class="modal-title" id="schedModal">Edit Schedule</h5>
       </div>
       <div class="modal-body">
-        <div class="container-fluid text-center">
-            <h3 class="text-center">Name of the Employee</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched1" class="checkbox" value="M" type="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Monday</h4>
-                    </div>
-                
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched2" class="checkbox" value="T" type="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Tuesday</h4>
-                    </div>
-                 
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched3" class="checkbox" value="W" type="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Wednesday</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched3" type="checkbox" value="TH" class="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Thursday</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched3" type="checkbox" value="F" class="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Friday</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched3" type="checkbox" value="SA" class="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Saturday</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input id="sched3" type="checkbox" value="S" class="checkbox" style="width: 20px; height: 20px">
-                    </div>
-                    <div class="col-md-2">
-                        <h4>Sunday</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="time" id="timesched" value="08:30">
-                    </div>
-                </div>
-          
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-outline-primary active">
-                        <input type="radio"  name="options" id="option1" autocomplete="off"> Morning Shift
-                    </label>
-                    <label class="btn btn-outline-success">
-                        <input type="radio"  name="options" id="option2" autocomplete="off"> Mid Shift
-                    </label>
-                    <label class="btn btn-outline-danger">
-                        <input type="radio" name="options" id="option3" autocomplete="off"> Night Shift
-                    </label>
-                </div>
+        <div class="container-fluid">
+            <h2>Weekly Schedule</h2>
+            <button value="Mon" id="daysched" class="m-2 btn btn-outline-primary">Monday</button>
+            <button value="Tue" id="daysched" class="m-2 btn btn-outline-success">Tuesday</button>
+            <button value="Wed" id="daysched" class="m-2 btn btn-outline-warning">Wednesday</button>
+            <button value="Thu" id="daysched" class="m-2 btn btn-outline-danger">Thursday</button>
+            <button value="Fri" id="daysched" class="m-2 btn btn-outline-dark">Friday</button>
+            <button value="Sat" id="daysched" class="m-2 btn btn-outline-info">Saturday</button>
+            <button value="Sun" id="daysched" class="m-2 btn btn-outline-secondary">Sunday</button>
         </div>
+        <div class="container-fluid">
+            <h2>Time In</h2>
+            <input type="time" id="timein" value="08:00">
+            <h2>Time Out</h2>
+            <input type="time" id="timeout" value="17:00">
+            <input type="hidden" id="hidden">           
+        </div>
+          <div>
+            <h3>Over-time</h3>  
+            <input type='checkbox' class='switch' id='first-toggle-btn'>
+                <label for='first-toggle-btn'>
+          </div>
+              <div>
+                  <select name="option" id="overTime">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  </select>
+              </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

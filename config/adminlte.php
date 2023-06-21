@@ -400,8 +400,22 @@ return [
         ],
         [
             'text' => 'Payroll Management',
-            'route'  => 'payroll.index',
             'icon' => 'fas fa-fw  fa-money-check-alt',
+
+            'submenu' => [
+                [
+                    'text' => 'Employee Payroll',
+                    'route'  => 'payroll.index',
+                    'icon' => 'fas fa-fw  fa-money-check-alt',
+      
+                ],
+                [
+                    'text' => 'Employee Rate',
+                    'route'  => 'setting.index',
+                    'icon' => 'fas fa-fw fa-store',
+                ],
+            ],
+
             // 'can' => 'view payroll',
         ],
         [

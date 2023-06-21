@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <title>Attendance</title>
+    <style>
+     @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+        #con{
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;           
+        }
+        #id {
+            width: 577px;
+        }
+        .btn{
+            width: 250px;
+            height: 100px;
+            font-weight: bold;
+        }
+        .btn:hover{
+            background-color: transparent;
+            color: black;
+            font-weight: 500;
+        }
+
+        .flex{
+            display: flex;
+            position: relative;
+            left: 50px;
+        }
+        .flex input{
+            margin: 5px;
+        }
+
+    </style>
+</head>
+<body>
+        <div id="con" class="container text-center">
+
+                <div class="row justify-content-center">    
+                    <div class="col-12">
+                        <h2 class="m-4 rounded-5 fs-1 fw-bold">{{spaName}}</h2>
+                    </div>        
+                    <div id="app"><h1 class="mb-4">{{currentDate}}</h1></div>
+                    <div><h1 class="mb-4">{{time}}</h1></div>
+                    
+                    <div class="form-floating mb-4 flex" id="id">
+                        <div>
+                            <label id="movetext" for="spaid">SpaID</label>
+                            <input type="text" v-model="getSpaID" :readonly="isInputDisabled" ref="myInput" class="form-control text-center" id="spaid">
+                        </div>  
+                        <div>
+                             <label id="movetext" for="empid">Employee ID</label>
+                            <input type="text" v-model="getID" ref="myInput" class="form-control text-center" id="empid">
+                       </div>
+                    </div>
+                    <div class="col-12">
+                        <div>
+                            <button type="button" class="btn btn-success btn-lg m-4" value="time_in" @click="initiate">Time-in</button>
+                            <button type="button" class="btn btn-danger btn-lg m-4" value="time_out" @click="initiate">Time-out</button>                    
+                        </div>           
+                    </div>      
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary btn-lg m-4" value="break_in" @click="initiate">Break-in</button>
+                        <button type="button" class="btn btn-warning btn-lg m-4" value="break_out" @click="initiate">Break-out</button>
+                    </div>    
+              </div>
+
+        </div> 
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+    createApp({
+        data() {
+            return {
+                currentDate: '',
+                time: '',
+                getID: '',
+                date: null,
+                action: '',
+                URL: '',
+                icon: '',
+                title: '',
+                text: '',
+                spaName: 'Name',
+                spaCode: '',
+                isInputDisabled: false,
+                getSpaID: '',
+                isInputDisabled: true,
+            };
+        },
+    mounted() {
+        this.getSpa();
+        this.$refs.myInput.focus();
+        this.updateDateTime();
+        setInterval(this.updateDateTime, 1000);
+    },
+    methods: {
+    getSpa(){
+        // Get the full URL of the current page
+      const url = window.location.href;
+      
+      // Extract the file name from the URL
+      const fileName = url.substring(url.lastIndexOf('/') + 1);
+      
+      // Remove any query parameters or hash fragments
+      const getFileName = fileName.split(/[?#]/)[0];
+      const step1 = getFileName.replace(/%20/g, " ");
+      const step2 = step1.replace(/attendance/g, "");
+      const step3 = step2.replace(/.html/g, "");
+      const step4 = step3.replace(/\s+\(\d+\)/, '');
+      this.spaName = step4;
+      this.getUserID(this.spaName.slice(-4));
+    },
+    getUserID(id){
+        return this.getSpaID = id;      
+    },
+    updateDateTime() {
+      const currentDate = new Date();
+      const time = new Date();
+      const date = {
+        timeZone: 'Asia/Manila',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      };
+      const HHmmss = {
+        second: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }
+      this.time = time.toLocaleString('en-US', HHmmss);
+      this.currentDate = currentDate.toLocaleString('en-US', date);  
+    },
+    initiate() {   
+        const userId = this.getID;
+        this.action = event.target.value;
+        if(userId){
+            this.swal();       
+        }
+    },
+    swal(){
+        const action = event.target.value;
+        Swal.fire({
+        title: 'Are you sure?',
+        text: this.currentDate +' '+ this.time,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, '+event.target.value+ '!'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            if(action == 'time_in'){
+                    this.URL = 'http://127.0.0.1:8000/api/timeinApi/';
+                    this.create(this.URL);
+                }
+                else{
+                    this.URL = 'http://127.0.0.1:8000/api/timeUpdate/';
+                    this.update(this.URL);
+                }           
+            }
+        }) 
+    },
+    display(){
+        fetch('https://jsonplaceholder.typicode.com/posts')
+            .then((response) => response.json())
+            .then((json) => console.table(json));
+    },
+    create(URL) {
+    fetch(URL + this.getID+'/'+this.getSpaID, {
+        method: 'POST',
+    }).then(response => response.json()).then(data => {
+            data = parseInt(data); // Parse the response as an integer
+
+            if (data === 0) {
+                this.title = 'Time-in cannot override!';
+                this.icon = 'warning';
+                this.swal2();
+            } else if (data === 1) {
+                this.title = 'Time-in successful!';
+                this.icon = 'success';
+                this.swal2();
+            } else if (data === 2) {
+                this.title = 'Employee not found!';
+                this.icon = 'warning';
+                this.swal2();
+            } else if (data === 3) {
+                this.title = 'Spa Code Not found!';
+                this.icon = 'warning';
+                this.swal2();
+            }
+            else if (data === 4) {
+                this.title = 'Not on Schedule!';
+                this.icon = 'warning';
+                this.swal2();
+            }
+        });
+    },
+    update(URL){
+        fetch(URL+this.getSpaID+'-'+this.getID+'/'+this.action,{
+            method: 'PUT',
+            
+        }).then(response => response.json()).then(data => {
+            data = parseInt(data);
+
+            if(data === 0){
+                this.title = 'Cannot '+ this.action;
+                this.text = 'employee #' + this.getID;
+                this.icon = 'warning';
+                this.swal2();
+            }
+            else if(data === 1){
+                this.title = this.action + ' Successful!';
+                this.text = 'employee #' + this.getID;
+                this.icon = 'success';
+                this.swal2();
+            }
+            else if(data === 2){
+                this.title = this.action+' cannot overide!';
+                this.text = 'employee # ' + this.getID;
+                this.icon = 'warning';
+                this.swal2();
+            }
+            else if(data === 3){
+                this.title = 'Employee not found!';
+                this.icon = 'warning';
+                this.swal2();
+            }
+            else if(data === 4){
+                this.title = 'Spa Code not found!';
+                this.icon = 'warning';
+                this.swal2();
+            }
+        })
+    },
+    swal2(){
+        Swal.fire({
+                title: this.title,
+                text: this.text,
+                icon: this.icon,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed){
+                location.reload();
+            }});       
+    },
+  }
+}).mount('#con');
+  </script>
+</html>

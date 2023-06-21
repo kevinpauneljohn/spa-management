@@ -5,7 +5,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" style="color: green; text-transform: uppercase" id="exampleModalLabel">Modal title</h5>
       </div>
       <div class="modal-body">
            <table class="table-striped w-100" id="modal-viewsummary">
