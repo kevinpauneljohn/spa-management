@@ -14,16 +14,23 @@ use App\Models\Transaction;
 
 use App\Services\TransactionService;
 use App\Services\RoomService;
+use App\Services\AppointmentService;
+use Config;
 
 class PosService
 {
     private $transactionService;
     private $roomService;
+    private $appointmentService;
 
-    public function __construct(TransactionService $transactionService, RoomService $roomService)
-    {
+    public function __construct(
+        TransactionService $transactionService, 
+        RoomService $roomService,
+        AppointmentService $appointmentService
+    ) {
         $this->transactionService = $transactionService;
         $this->roomService = $roomService;
+        $this->appointmentService = $appointmentService;
     }
     
     public function getPosApi($spa_id, $request)
@@ -40,8 +47,10 @@ class PosService
             'rooms' => $this->roomService->getRoomList($spa->id, $request_date),
             'services' => $this->getServices($spa->id),
             'count_guest' => '',
-            'count_upcoming' => '',
+            'appointment_count' => $this->appointmentService->getUpcoming($spa->id),
+            'upcoming_appointment' => $this->appointmentService->getUpcomingGuest($spa->id),
             'spa_record' => '',
+            'appointment_type' => $this->getAppointmentType()
         ];
 
         return $data;
@@ -92,5 +101,18 @@ class PosService
         $service = Service::where('spa_id', $spa_id)->pluck('id', 'name');
 
         return $service;
+    }
+
+    public function getAppointmentType()
+    {
+        $appointment_type = Config::get('app.appointment_type');
+        $social_media_type = Config::get('app.social_media_type');
+
+        $response = [
+            'appointment_type'   => $appointment_type,
+            'social_media'   => $social_media_type
+        ]; 
+
+        return $response;
     }
 }

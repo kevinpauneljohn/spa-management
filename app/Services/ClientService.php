@@ -60,7 +60,7 @@ class ClientService
                 'lastname' => strtolower($data['lastname']),
                 'date_of_birth' => $data['date_of_birth'],
                 'mobile_number' => $data['mobile_number'],
-                'email_address' => strtolower($data['email']),
+                'email' => strtolower($data['email']),
                 'address' => strtolower($data['address']),
                 'client_type' => $data['client_type'],
             ]);

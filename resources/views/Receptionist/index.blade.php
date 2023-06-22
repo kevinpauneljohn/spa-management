@@ -289,6 +289,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- <div class="card">
+                                    <div class="card-header bg-danger">
+                                        <h3 class="card-title">
+                                            <i class="fas fa-users"></i>
+                                            Waiting Guests
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content p-0">
+                                            <div class="progress-group upcomingGuest">
+                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
                             </section>
                         </div>
                     </div>

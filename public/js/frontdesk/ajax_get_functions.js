@@ -105,6 +105,7 @@ function loadRoom()
             loadData($('#spa_id_val').val());
             $('.displayRoomList').html('');
             $.each(result , function(index, val) { 
+                clearInterval(interValCountDown[val.room_id])
                 var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
                 var divAvailable = '';
                 var divPointer = '';
@@ -150,7 +151,12 @@ function loadRoom()
                 $( displayRoomList ).appendTo(".displayRoomList");
 
                 if (endTime != 0) {
-                    countdown(val.room_id, val.data.start_time, val.data.end_time);
+                    var interValCountDowns = setInterval(function() {
+                        countdownInterval(val.room_id, val.data.start_time, val.data.end_time)
+                    }, 1000)
+
+                    interValCountDown[val.room_id] = interValCountDowns;
+
                 }
             });
         }
@@ -166,17 +172,21 @@ function getMasseurAvailability(spa_id)
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         beforeSend: function () {
-            $('.countdownTherapistPercentage').text('');
-            $('.progressBarCalc').css('width', '0%');
-            $('.countdownTherapistPercentage').text('');
+
         },
         success: function(result){
             $('.availableMasseur').html('');
+            clearInterval(interValTherpist)
             $.each(result, function (key, value) {
                 var names;
+                clearInterval(interValTherpist[value.id])
                 if (value.data != '') {
-                    UnAvailableTherapist.push(value.id);
-                    countdownTherapist(value.id, value.data.start_time, value.data.end_time, value.data.total_seconds);
+                    UnAvailableTherapist.push(value.id);                   
+                    var interValTherpists = setInterval(function() {
+                        countdownTherapistInterval(value.id, value.data.start_time, value.data.end_time, value.data.total_seconds)
+                    }, 1000)
+
+                    interValTherpist[value.id] = interValTherpists;
 
                     names = value.firstname+' '+value.lastname+' <small class="font-weight-bold text-danger">[ Room # '+value.data.room_id+' ]</small>';
                 } else {
@@ -806,8 +816,13 @@ function getUpcomingGuest(spa_id)
         },
         success: function(result){
             $.each(result, function (key, value) {
+                clearInterval(interValUpcoming[value.id])
                 UnAvailableGuest.push(value.id);
-                countdownUpcoming(value.id, value.created_at, value.start_time, value.total_seconds);
+                var interValUpcomings = setInterval(function() {
+                    countdownUpcomingInterval(value.id, value.created_at, value.start_time, value.total_seconds)
+                }, 1000)
+
+                interValUpcoming[value.id] = interValUpcomings;
                 var names = value.fullname+' <small class="font-weight-bold text-danger">[ Mobile # '+value.mobile_number+' ]</small>';
                 var upcomingGuest = '<span class="masseurName">'+names+'</span>';
 
@@ -926,7 +941,7 @@ function getPosApi(spa_id)
         'url' : '/pos-api/'+spa_id,
         'type' : 'GET',
         'data' : {
-            'date': '2023-06-13 21:50:00'
+            'date': ''
         },
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         beforeSend: function () {
