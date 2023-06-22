@@ -75,9 +75,9 @@ class ReceptionistController extends Controller
                 'client_id' => $transaction->client_id,
                 'client' => [
                     'id' => $transaction->client['id'],
-                    'firstname' => $transaction->client['firstname'],
-                    'middlename' => $transaction->client['middlename'],
-                    'lastname' => $transaction->client['lastname'],
+                    'firstname' => ucfirst($transaction->client['firstname']),
+                    'middlename' => ucfirst($transaction->client['middlename']),
+                    'lastname' => ucfirst($transaction->client['lastname']),
                     'date_of_birth' => $transaction->client['date_of_birth'],
                     'mobile_number' => $transaction->client['mobile_number'],
                     'email' => $transaction->client['email'],

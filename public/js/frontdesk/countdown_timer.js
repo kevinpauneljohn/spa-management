@@ -1,16 +1,8 @@
-var interValCountDown;
-function countdown(id, start_time, end_time)
+var interValCountDown = [];
+function countdownInterval(id, start_time, end_time)
 {
     var countDownStartDate = new Date(start_time).getTime();
     var countDownEndDate = new Date(end_time).getTime();
-    clearInterval(interValCountDown)
-    interValCountDown = setInterval(function() {
-        countdownInterval(id, countDownStartDate, countDownEndDate)
-    }, 1000)
-}
-
-function countdownInterval(id, countDownStartDate, countDownEndDate)
-{
     var now = new Date().getTime();
     if (now >= countDownStartDate) {
         $("#countdown"+id).text('');
@@ -62,16 +54,7 @@ function countdownModalInterval(countDownStartDate, countDownEndDate)
     }
 }
 
-var interValTherpist;
-function countdownTherapist(id, start_time, end_time, total_seconds)
-{
-    var now = new Date();
-    clearInterval(interValTherpist)
-    interValTherpist = setInterval(function() {
-        countdownTherapistInterval(id, start_time, end_time, total_seconds)
-    }, 1000)
-}
-
+var interValTherpist = [];
 function countdownTherapistInterval(id, start_time, end_time, total_seconds)
 {
     var progress_end_time = new Date(end_time);
@@ -91,15 +74,7 @@ function countdownTherapistInterval(id, start_time, end_time, total_seconds)
     }
 }
 
-var interValUpcoming;
-function countdownUpcoming(id, start_time, end_time, total_seconds)
-{
-    clearInterval(interValUpcoming)
-    interValUpcoming = setInterval(function() {
-        countdownUpcomingInterval(id, start_time, end_time, total_seconds)
-    }, 1000)
-}
-
+var interValUpcoming = [];
 function countdownUpcomingInterval(id, start_time, end_time, total_seconds)
 {
     var progress_end_time = new Date(end_time);
