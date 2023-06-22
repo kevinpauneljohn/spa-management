@@ -35,6 +35,10 @@ class SpaService
                 {
                     $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-spa-btn" id="'.$spa->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
+                if(auth()->user()->can('download attendance'))
+                {
+                    $action .= '<a href="/download/'.urldecode($spa->name).'" class="btn btn-sm btn-outline-warning" id="'.$spa->name.'"><i class="fas fa-fw fa-file-download"></i></a>&nbsp;';
+                }
                 return $action;
             })
             ->rawColumns(['action','name'])
@@ -88,6 +92,13 @@ class SpaService
     public function get_spa_lists($id)
     {
         $spa = Spa::where('owner_id', $id)->orderBy('name' , 'ASC')->pluck('id', 'name');
+        return $spa;
+    }
+
+    public function spa_info($id)
+    {
+        $spa = Spa::where('id', $id)->first();
+        
         return $spa;
     }
 }

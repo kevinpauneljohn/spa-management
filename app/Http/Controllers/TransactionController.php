@@ -11,18 +11,27 @@ use App\Models\Client;
 use App\Models\Owner;
 use App\Models\User;
 use App\Models\Sale;
+use App\Models\SalesShift;
 use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
+use App\Services\TransactionService;
 
 class TransactionController extends Controller
 {
+    private $transactionService;
+
+    public function __construct(TransactionService $transactionService)
+    {
+        $this->transactionService = $transactionService;
+    }
+
     public function lists($id)
     {
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
 
         $transaction = Transaction::where('spa_id', $id)
         ->where('amount','>', 0)
-        ->where('end_time', '>=', $now)
+        ->orderBy('created_at', 'desc')
         ->get();
 
         return DataTables::of($transaction)
@@ -64,21 +73,34 @@ class TransactionController extends Controller
             ->addColumn('amount',function ($transaction){
                 return '&#8369; '.$transaction->amount;
             })
+            ->addColumn('status',function ($transaction){
+                $dateNow = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+                $status = '<span class="badge bg-success">Done</span>';
+                if ($transaction->end_time >= $dateNow) {
+                    $status = '<span class="badge bg-primary">On-Going</span>';
+                }
+
+                return $status;
+            })
             ->addColumn('action', function($transaction){
+                $dateNow = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
                 $date_start_time = date('H:i m/d/Y', strtotime($transaction->start_time));
                 $action = "";
 
                 if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
-                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    if ($transaction->end_time >= $dateNow  || auth()->user()->hasRole('owner')) {
+                        $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    }
+                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
                 }
 
-                if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
-                    $action .= '<a href="#" class="btn btn-xs btn-outline-danger rounded delete-sales-btn" id="'.$transaction->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
-                }
+                // if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
+                //     $action .= '<a href="#" class="btn btn-xs btn-outline-danger rounded delete-sales-btn" id="'.$transaction->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                // }
 
                 return $action;
             })
-            ->rawColumns(['action','client','service','masseur','amount'])
+            ->rawColumns(['action','client','service','masseur','amount','status'])
             ->make(true);
     }
 
@@ -283,7 +305,7 @@ class TransactionController extends Controller
     {
         $therapist = Therapist::findOrFail($id);
 
-        return $therapist->firstname.' '.$therapist->lastname;
+        return $therapist->user->firstname.' '.$therapist->user->lastname;
     }
 
     public function getData($id)
@@ -335,7 +357,31 @@ class TransactionController extends Controller
         $allClientsTransactions = Transaction::where('spa_id', $id,)->groupBy('client_id')->pluck('client_id');
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
-        $sale = Sale::where(['user_id' => auth()->user()->id, 'payment_status' => 'paid'])->whereDate('paid_at',  $date_today)->get();
+        $saleShift = SalesShift::where([
+            'user_id' => auth()->user()->id, 
+            'spa_id' => $id,
+            'confirm_start_shift' => 'yes',
+            ])->orderBy('id', 'desc')->first();
+
+        $salesCondition = [];
+        if (auth()->user()->hasRole('front desk')) {
+            if (!empty($saleShift)) {
+                if (!empty($saleShift->end_shift)) {
+                    $salesCondition = [$saleShift->start_shift, $saleShift->end_shift];
+                } else {
+                    $salesCondition = [$saleShift->start_shift, $todays_to]; 
+                }
+                
+            }
+        } else {
+            $salesCondition = [$todays_from, $todays_to];
+        }
+
+        $sale = Sale::where([
+            'user_id' => auth()->user()->id, 
+            'payment_status' => 'paid'
+        ])->whereBetween('paid_at', $salesCondition)->get();
+        
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {
@@ -343,6 +389,10 @@ class TransactionController extends Controller
             }
         }
 
+        if (auth()->user()->hasRole('front desk')) {
+            $total_sale += $saleShift->start_money;    
+        }
+        
         $response = [
             'daily_appointment'   => $dailyTransactionCount,
             'monthly_appointment'   => $monthlyTransactionCount,
@@ -388,5 +438,10 @@ class TransactionController extends Controller
         ]; 
 
         return $response;
+    }
+
+    public function stopTransaction($id)
+    {
+        return $this->transactionService->stopTransactions($id);
     }
 }

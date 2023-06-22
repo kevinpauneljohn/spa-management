@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeTable;
 use App\Models\Role;
 use App\Models\Shift;
 use App\Models\Spa;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Services\StaffService;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ShiftController extends Controller
 {
@@ -19,6 +21,32 @@ class ShiftController extends Controller
      */
     public function index()
     {
+        $invalidRoles = ['admin', 'super admin', 'owner'];
+        $checkRoles = User::whereDoesntHave('roles', function ($query) use ($invalidRoles) {
+            $query->whereIn('name', $invalidRoles);
+        })->get();
+        
+        $roles = $checkRoles->map(function ($role) {
+            return $role->id;
+        });
+        
+        $employees = EmployeeTable::whereIn('user_id', $roles)->get();
+        
+        foreach($employees as $employee)
+        {
+            $shift = Shift::where('employee_id', $employee->id)->get();
+            if($shift->isEmpty())
+            {
+                $currentDateTime = now()->setTimezone('Asia/Manila');
+                Shift::create([
+                    "user_id" => $employee->user_id,
+                    "employee_id" => $employee->id,
+                    "Schedule" => 'Mon,Tue,Wed,Thu,Fri',
+                    "shift_start" => $currentDateTime->format('h:i A'),
+                    "shift_end" => $currentDateTime->format('h:i A'),
+                ]);
+            }
+        }
         return view('Attendance.shift');
     }
 
@@ -51,7 +79,7 @@ class ShiftController extends Controller
      */
     public function show($id)
     {
-        // 
+        
     }
 
     /**
@@ -74,9 +102,17 @@ class ShiftController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $checkID = Shift::findOrFail($id);
-        $checkID->Schedules = $request->list;
-        $checkID->time = $request->edit_time;
+        $checkID = Shift::where('id', $id)->first();
+
+        $timein = Carbon::createFromFormat('H:i', $request->timein, 'Asia/Manila')->format('h:i A');
+        $checkID->shift_start = $timein;
+
+        $timeout = Carbon::createFromFormat('H:i', $request->timeout, 'Asia/Manila')->format('h:i A');
+        $checkID->shift_end = $timeout;
+
+        $checkID->Schedule = $request->clickedButtons;
+        $checkID->Allow_OT = $request->status;
+        $checkID->OT = $request->selectOT;
         $checkID->update();
         return response()->json(['message' => 'Schedule Updated Successfully']);
     }
@@ -89,24 +125,23 @@ class ShiftController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
     }
 
     public function list(){ 
         
-        $shift = Shift::with('user')->get();
-        
-        return DataTables::of($shift)
-        ->editColumn('names',function($shifts){
-            return $shifts->user->firstname;
+        $shifts = Shift::with('user')->get();
+        return DataTables::of($shifts)
+        ->editColumn('names',function($shift){
+            return $shift->user->firstname;
         })
-        ->addColumn('position', function ($shifts) {
-            $user = User::where('id', $shifts->user_id)->first();
+        ->addColumn('position', function ($shift) {
+            $user = User::where('id', $shift->user_id)->first();
             $role = $user->getRoleNames()->first();
             return $role;
         })
-        ->editColumn('schedule', function ($shifts) {
-            $exploded = explode(',', $shifts->Schedules);
+        ->editColumn('schedule', function ($shift) {
+            $exploded = explode(',', $shift->Schedule);
             $exploded = array_map(function ($value) {
                 return str_replace(['[', ']', '"'], '', $value);
             }, $exploded);
@@ -118,26 +153,21 @@ class ShiftController extends Controller
             }
             return $scheduleLinks;
         })
-        ->addColumn('time',function ($shifts){
-            return $shifts->time;
+        ->addColumn('time',function ($shift){
+            $inandout = $shift->shift_start.'-'. $shift->shift_end;
+            return $inandout;
         })
-        ->addColumn('action', function($shifts){
+        ->addColumn('action', function($shift){
             $action = "";
-            // if(auth()->user()->can('view spa'))
-            // {
-            //     $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
-            // }
-            if(auth()->user()->can('edit spa'))
-            {
-                $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-shift-btn" data-target="#schedModal" data-toggle="modal" data-id="'.$shifts->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+
+            if (auth()->user()->can('edit spa')) {
+                $action .= '<button id="edit-shift-'.$shift->id.'" value="'.$shift->id.'" href="#" class="btn btn-sm btn-outline-primary edit-shift-btn my-class" data-target="#schedModal" data-toggle="modal"><i class="fa fa-edit"></i></button>&nbsp;';
             }
-            // if(auth()->user()->can('delete spa'))
-            // {
-            //     $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-spa-btn" id="'.$spa->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
-            // }
+            
+
             return $action;
         })
         ->rawColumns(['action','name', 'schedule'])
         ->make(true);
-    }
+     }
 }

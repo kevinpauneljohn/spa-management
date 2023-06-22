@@ -29,4 +29,8 @@ class EmployeeTable extends Model
     {
         return $this->hasMany(Shift::class);
     }
+    public function payroll()
+    {
+        return $this->hasMany(Payroll::class, 'employee_id');
+    }
 }

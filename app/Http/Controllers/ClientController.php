@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Owner;
+use App\Models\Spa;
 use App\Models\Appointment;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -30,6 +32,8 @@ class ClientController extends Controller
 
     public function filter(Request $request, $id, $spa)
     {
+        $spaData = Spa::findOrFail($spa);
+        $owner = Owner::find($spaData->owner_id);
         if($request->ajax())
         {
              $client = Client::where('firstname', 'LIKE', '%'.$request->search.'%')
@@ -41,18 +45,21 @@ class ClientController extends Controller
             $status = false;
             $count = 0;
             if ($client) {
-                foreach ($client as $key => $list) {
-                    $check_appointment = $this->checkInAppointment($list->id, $spa);
-                    $check_transaction = $this->checkInTransaction($list->id, $spa);
+                $check_owner = $owner->clients()->first();
+                if ($check_owner) {
+                    foreach ($client as $key => $list) {
+                        $check_appointment = $this->checkInAppointment($list->id, $spa);
+                        $check_transaction = $this->checkInTransaction($list->id, $spa);
 
-                    if($list->id != $check_appointment && $list->id != $check_transaction) {
-                        $data [ucfirst($list->firstname).' '.ucfirst($list->lastname). ' [0'.$list->mobile_number.']'] = $list->id;
+                        if($list->id != $check_appointment && $list->id != $check_transaction) {
+                            $data [ucfirst($list->firstname).' '.ucfirst($list->lastname). ' [0'.$list->mobile_number.']'] = $list->id;
+                        }
                     }
-                }
-
-                if (!empty($data)) {
-                    $status = true;
-                    $count = count($data);
+    
+                    if (!empty($data)) {
+                        $status = true;
+                        $count = count($data);
+                    }
                 }
             }
 
@@ -74,11 +81,12 @@ class ClientController extends Controller
             'appointment_status' => 'reserved'
         ])->first();
 
-        $id = '';
-        if (!empty($appointment)) {
-            $id = $appointment->client_id;
+        $val = '';
+        if ($appointment) {
+            $val = $appointment->client_id;
         }
-        return $id;
+
+        return $val;
     }
 
     public function checkInTransaction($id, $spa_id)

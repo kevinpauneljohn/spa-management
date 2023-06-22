@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popup Page Launcher</title>
+  <script>
+    function launchPopup() {
+      // Open the popup window
+      const url = window.location.href;
+      const fileName = url.substring(url.lastIndexOf('/') + 1);
+      const getFileName = fileName.split(/[?#]/)[0];
+      const step1 = getFileName.replace(/%20/g, " ");
+      const step2 = step1.replace(/attendance/g, "");
+      const step3 = step2.replace(/.html/g, "");
+      const name = step3.replace(/\s+\(\d+\)/, '');
+      var popup = window.open("http://127.0.0.1:8000/spa-attendance/"+name, "_blank", "width=1920,height=1080");
+      
+      // Close the current page after the popup is displayed
+      window.close();
+    }
+  </script>
+</head>
+<body onload="launchPopup()">
+  <h1>Launching Popup Page...</h1>
+</body>
+</html>

@@ -17,15 +17,9 @@ class CreateShiftsTable extends Migration
             $table->id();
             $table->string('user_id');
             $table->unsignedBigInteger('employee_id');
-
-
-            $table->boolean('Monday')->default(0);
-            $table->boolean('Tuesday')->default(0);
-            $table->boolean('Wednesday')->default(0);
-            $table->boolean('Thursday')->default(0);
-            $table->boolean('Friday')->default(0);
-            $table->boolean('Saturday')->default(0);
-            $table->boolean('Sunday')->default(0);
+            $table->string('Schedule')->nullable();
+            $table->string('shift_start');
+            $table->string('shift_end');
             
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('employee_id')->references('id')->on('employee_tables');

@@ -22,8 +22,8 @@
             </div>
         </div>
         <div class="third">
-            <button type="submit" id="generate" class="text-center btn btn-success mb-4 pl-5 pr-5">GENERATE</button> 
-            <!-- <button type="submit" id="payslip" class="text-center btn btn-primary mb-4 pl-5 pr-5">PAYSLIP</button>  -->
+            <button type="submit" id="generate" class="text-center btn btn-success mb-4 pl-3 pr-3">GENERATE</button> 
+            <button type="submit" id="printslip" class="text-center btn btn-success mb-4 pl-3 pr-3">PRINT SLIP</button> 
         </div>
      </div>
  </form>

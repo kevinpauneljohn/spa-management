@@ -22,7 +22,7 @@ class CreateClientsTable extends Migration
             $table->string('mobile_number')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
-            $table->string('client_type');
+            $table->string('client_type')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

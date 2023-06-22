@@ -269,6 +269,8 @@ function processAppointment(data)
             );
 
             if (validation) {
+                swal.fire("Done!", 'Processed! Click the Summary tab to review and submit the form.', "success");
+                $('.process-appointment-btn').text('Processed');
                 appointment.push({
                     key: value,
                     client_type: client_type,
@@ -296,9 +298,11 @@ function processAppointment(data)
                     start_time_format: value_start_time_format,
                     start_time_date_format: value_start_time_date_format,
                     reserve_now: reserve_now,
-                    reserve_later: reserve_later
+                    reserve_later: reserve_later,
+                    spa_id: $('#spa_id_val').val(),
+                    owner_id: $('#owner_id_val').val(),
                 })
-            }
+           }
         });
 
         var converted_amount = 0;
@@ -365,6 +369,7 @@ function vaidateAppointmentTab(
                 status = false;
                 $('.tabAppointmentTitle'+value).addClass('error-border');
                 $('.summaryTabAppointmentLink').addClass('hidden');
+                $('.process-appointment-btn').text('Process').prop('disabled', false);
             }
         } else if (value_appointment_type == 'Walk-in') {
             if (reserve_now == 'yes') {
@@ -373,6 +378,7 @@ function vaidateAppointmentTab(
                         status = false;
                         $('.tabAppointmentTitle'+value).addClass('error-border');
                         $('.summaryTabAppointmentLink').addClass('hidden');
+                        $('.process-appointment-btn').text('Process').prop('disabled', false);
                     } else {
                         status = true;
                         $('.tabAppointmentTitle'+value).removeClass('error-border');
@@ -383,6 +389,7 @@ function vaidateAppointmentTab(
                         status = false;
                         $('.tabAppointmentTitle'+value).addClass('error-border');
                         $('.summaryTabAppointmentLink').addClass('hidden');
+                        $('.process-appointment-btn').text('Process').prop('disabled', false);
                     } else {
                         status = true;
                         $('.summaryTabAppointmentLink').removeClass('hidden');
@@ -394,15 +401,18 @@ function vaidateAppointmentTab(
                     if (key == 0) {
                         status = false;
                         $('.tabAppointmentTitle'+key_value).addClass('error-border');
+                        $('.process-appointment-btn').text('Process').prop('disabled', false);
                     }
                     $('.summaryTabAppointmentLink').addClass('hidden');
                 } else {
+                    status = true;
                     $('.tabAppointmentTitle'+key_value).removeClass('error-border');  
                     $('.summaryTabAppointmentLink').removeClass('hidden');
                 }
             } else {
                 status = false;
                 $('.summaryTabAppointmentLink').addClass('hidden');
+                $('.process-appointment-btn').text('Process').prop('disabled', false);
                 if (key == 0) {
                     $('.tabAppointmentTitle'+key_value).addClass('error-border');
                 }
@@ -414,12 +424,11 @@ function vaidateAppointmentTab(
         }
     } else {
         status = false;
+        $('.process-appointment-btn').text('Process').prop('disabled', false);
         $('.summaryTabAppointmentLink').addClass('hidden');
         if (value_appointment_type != null) {
             if (value_appointment_type == 'Social Media') {
-                console.log(key)
                 if (key == 0) {
-                    console.log(key_value)
                     if (social_validation) {
                         $('.tabAppointmentTitle'+key_value).addClass('error-border');
                     }

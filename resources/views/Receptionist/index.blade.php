@@ -106,7 +106,12 @@
                                     <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
                                     <div class="info-box-content">
                                         <span class="info-box-text">Daily Sales</span>
-                                        <span class="info-box-number dailySales"></span>
+                                        <span class="info-box-number ">
+                                            <span class="badge badge-danger text-default dailySales float-left"></span>
+                                            @if(auth()->user()->hasRole('front desk') || auth()->user()->can('add sales'))
+                                                <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
+                                            @endif
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -165,8 +170,9 @@
                                                 <input type="hidden" class="form-control" id="room_ids_val">
                                                 <input type="hidden" class="form-control" id="isValid">
                                                 <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
+                                                <input type="hidden" class="form-control" id="start_shit_id">
+                                                <input type="hidden" class="form-control" id="owner_id_val" value="{{$owner_id}}">
                                                 <div class="alert alert-primary alert-dismissible">
-                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
                                                     Green color means available, Gray color means occupied.
                                                 </div>
@@ -176,9 +182,8 @@
                                             </div>
                                             <div class="tab-pane" id="sales-data" style="position: relative; height: auto;">
                                                 <div class="alert alert-primary alert-dismissible">
-                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    List of clients that currently occupy rooms.
+                                                    List of clients and transactions.
                                                 </div>
                                                 <table id="sales-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
                                                     <thead>
@@ -191,6 +196,7 @@
                                                             <th>End Time</th>
                                                             <th>Room #</th>
                                                             <th>Amount</th>
+                                                            <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -201,7 +207,6 @@
                                             </div>
                                             <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
                                                 <div class="alert alert-primary alert-dismissible">
-                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
                                                     List of all sales. Please update the payment status once the client has paid.
                                                 </div>
@@ -211,7 +216,7 @@
                                                             <th>Spa</th>
                                                             <th>Status</th>
                                                             <th>Amount</th>
-                                                            <th>Date</th>
+                                                            <th>Paid At</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -223,7 +228,6 @@
 
                                             <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
                                                 <div class="alert alert-primary alert-dismissible">
-                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                                     <h5><i class="icon fas fa-info"></i> Note:</h5>
                                                     List of upcoming clients. Please move and update the start time of the appointment once the client has arrived.
                                                 </div>
@@ -285,34 +289,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="card bg-gradient-success">
-                                    <div class="card-header border-0">
+                                <!-- <div class="card">
+                                    <div class="card-header bg-danger">
                                         <h3 class="card-title">
-                                            <i class="far fa-calendar-alt"></i>
-                                            Calendar
+                                            <i class="fas fa-users"></i>
+                                            Waiting Guests
                                         </h3>
-                                        <div class="card-tools">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <div class="dropdown-menu" role="menu">
-                                                    <a href="#" class="dropdown-item">Add new event</a>
-                                                    <a href="#" class="dropdown-item">Clear events</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a href="#" class="dropdown-item">View calendar</a>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
                                     </div>
-                                    <div class="card-body pt-0">
-                                        <div id="calendar" style="width: 100%"></div>
+                                    <div class="card-body">
+                                        <div class="tab-content p-0">
+                                            <div class="progress-group upcomingGuest">
+                
+                                            </div>
+                                        </div>
                                     </div>
                                 </div> -->
                             </section>
@@ -323,8 +312,130 @@
         </div>
     </div>
 
+    @if(auth()->user()->hasRole('front desk') || auth()->user()->can('add sales'))
+        <div class="modal fade" id="start-shift-modal"  data-keyboard="false" data-backdrop="static">
+            <form role="form" id="start-shift-form" class="form-submit modal-dialog-centered">
+                @csrf
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Good Day {{ucfirst(auth()->user()->firstname)}}!</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="text-center shiftMessage"></h5>
+                            <span class="badge badge-info text-default pointer viewEndShiftReport">View Report</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnStartShift" class="btn btn-primary btnStartShift mx-auto">Click here to start your shift</button>
+                            <button id="btnEndShift" class="btn btn-info btnEndShift mx-auto hidden">Click here to end your shift</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal fade" id="money-on-hand-modal"  data-keyboard="false" data-backdrop="static">
+            <form role="form" id="money-on-hand-form" class="form-submit modal-dialog-centered">
+                @csrf
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Good Day {{ucfirst(auth()->user()->firstname)}}!</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="money_on_hand">Money on Hand</label>
+                                <input type="number" class="form-control" id="money_on_hand" name="money_on_hand" placeholder="Enter money on hand" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnMoneyOnHand" class="btn btn-primary btnMoneyOnHand mx-auto">Click here to confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal fade" id="view-shift-report"  data-keyboard="false" data-backdrop="static">
+            <form role="form" id="view-shift-report-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">{{ucfirst(auth()->user()->firstname)}} End of Shift Report</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="invoice p-3 mb-3">
+                                <div class="row">
+                                    <div class="col-12">
+                                    <h4>
+                                        <i class="fas fa-globe"></i> <span>{{$title}}</span>
+                                        <small class="float-right">Date: {{date('F d, Y')}}</small>
+                                    </h4>
+                                    </div>
+                                </div>
+                                <div class="row invoice-info">
+                                    <div class="col-sm-12 invoice-col">
+                                        Reported By: <span class="reporter">{{ucfirst(auth()->user()->fullname)}}</span><br>
+                                        Reported Date: (From) <span class="shift_date_start"></span> (To) <span class="shift_date_end"></span><br>
+                                        Shift Time: <span class="shift_start"></span> - <span class="shift_end"></span><br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 table-responsive">
+                                        <table class="table table-striped table-hover responsive" id="endShiftReport" styke="width:100% !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice #</th>
+                                                    <th>Payment Method</th>
+                                                    <th>Reference #</th>
+                                                    <th>Payment Date</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6"></div>
+                                    <div class="col-6">
+                                        <div class="table-responsive">
+                                            <table id="summaryTotalEndReport" class="table">
+                    
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="row no-print">
+                                    <div class="col-12">
+                                    <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                                    <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
+                                        Payment
+                                    </button>
+                                    <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                        <i class="fas fa-download"></i> Generate PDF
+                                    </button>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endif
+
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('add sales'))
-        <div class="modal" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-lg">
@@ -347,7 +458,6 @@
                             <div class="tab-content tabFormAppointment">
                                 <div class="tab-pane" id="summaryTab">
                                     <div class="alert alert-danger alert-dismissible">
-                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                         <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
                                         The total amount can change depending on the selected services.
                                     </div>
@@ -467,7 +577,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="edit_start_time">Start Time</label><span class="isRequired">*</span>
-                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control" min="{{ Date('Y-m-d\TH:i',time()) }}" max="{{ Date('Y-m-d\TH:i',time()) }}">
+                                        <input type="datetime-local" id="edit_start_time" name="edit_start_time" class="form-control" min="{{ Date('Y-m-d\TH:i',time()) }}">
                                         <p class="text-danger hidden" id="error-edit_start_time"></p>
                                     </div>
                                     <div class="col-md-4">
@@ -507,7 +617,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="update-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -520,7 +630,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-danger alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
                                 The total amount can change depending on the selected services.
                             </div>
@@ -697,7 +806,7 @@
             </form>
         </div>
 
-        <div class="modal" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="view-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="view-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-md">
@@ -710,7 +819,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-danger alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
                                 The total amount can change depending on the selected services.
                             </div>
@@ -906,7 +1014,7 @@
             </form>
         </div>
 
-        <div class="modal" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal fade" id="update-invoice-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="invoice-update-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md">
@@ -958,7 +1066,7 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('move sales'))
-    <div class="modal" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="move-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="move-appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -971,7 +1079,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="alert alert-danger alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <h5><i class="icon fas fa-info"></i> Reminder!!!</h5>
                                 The total amount can change depending on the selected services and plus time.
                             </div>
@@ -1123,14 +1230,21 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+    // $(window).on('load',function(){
+    //     // $('#start-shift-modal').modal('show');
+    //     $('#start-shift-modal').modal('show');
+    // });
+
     $(function() {
+        getPosApi($('#spa_id_val').val());
+        getPosShift($('#spa_id_val').val());
         // $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, { icons: { time: 'fas fa-clock', date: 'fas fa-calendar', up: 'fas fa-arrow-up', down: 'fas fa-arrow-down', previous: 'far fa-chevron-left', next: 'far fa-chevron-right', today: 'far fa-calendar-check-o', clear: 'far fa-trash', close: 'far fa-times' } });
         // $('#datetimepicker1').datetimepicker();
 
         // $('#calendar').datepicker({
 
         // });
-        therapistTransactionCount($('#spa_id_val').val(), '2023-01-01 22:00:00');
+        // therapistTransactionCount($('#spa_id_val').val(), '2023-06-13 21:30:00');
         getResponses($('#spa_id_val').val());
 
         getAppointmentCount();
@@ -1149,7 +1263,7 @@
         getTotalSales($('#spa_id_val').val());
         getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
-        loadData($('#spa_id_val').val());
+
         $('.select-client-type').select2();         
     });
 </script>

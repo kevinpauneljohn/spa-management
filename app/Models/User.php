@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class User extends Authenticatable
 {
@@ -87,11 +89,33 @@ class User extends Authenticatable
     }
     public function employee()
     {
-        return $this->hasMany(EmployeeTable::class);
+        return $this->hasOne(EmployeeTable::class);
     }
     public function shift()
     {
         return $this->hasMany(Shift::class);
+    }     
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $excludedRoles = ['super admin', 'owner', 'admin'];
+
+            $hasExcludedRole = $user->roles()->whereIn('name', $excludedRoles)->exists();
+
+            if (!$hasExcludedRole) {
+                $employee = EmployeeTable::where('user_id', $user->id)->first();
+                if (!$employee) {
+                    EmployeeTable::create([
+                        "user_id" => $user->id,
+                        "spa_id" => $user->spa_id,
+                        "Monthly_Rate" => 0,
+                        "status" => 1,
+                        "created_at" => now(),
+                    ]);
+                }
+            }
+        });
     }
-    
 }
