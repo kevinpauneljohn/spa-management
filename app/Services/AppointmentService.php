@@ -31,7 +31,7 @@ class AppointmentService
     public function __construct(
         ClientService $clientService,
         TransactionService $transactionService,
-        SaleService $saleService,
+        SaleService $saleService
     ) {
         $this->clientService = $clientService;
         $this->transactionService = $transactionService;
@@ -47,14 +47,14 @@ class AppointmentService
         $batch = Appointment::select(['batch'])->where([
             'spa_id' => $spa_id
         ])->orderBy('batch', 'DESC')->first();
-        
+
         $batchNumber = 1;
         if ($batch) {
             $batchNumber = $batch['batch'] + 1;
         }
 
         DB::beginTransaction();
-        try {            
+        try {
             foreach ($data->value as $key => $list) {
                 $start_time = '';
                 if (!empty($list['start_time'])) {
@@ -127,7 +127,7 @@ class AppointmentService
             'status' => $status,
             'message' => $message,
             'code' => $code
-        ]; 
+        ];
 
         return $response;
     }
@@ -213,7 +213,7 @@ class AppointmentService
     public function getPrimaryAppointmentName($spa_id, $batch)
     {
         $appointment = Appointment::where([
-            'spa_id' => $spa_id, 
+            'spa_id' => $spa_id,
             'batch' => $batch,
             'primary' => 'yes'
         ])->with(['client'])->first();
@@ -330,7 +330,7 @@ class AppointmentService
             'status' => $status,
             'message' => $message,
             'code' => $code
-        ]; 
+        ];
 
         return $response;
     }
@@ -452,7 +452,7 @@ class AppointmentService
                 $appointment->client_id = $client_info;
                 $appointment->save();
             }
-            
+
             if ($client_info) {
                 $status = true;
                 $message = 'Appointment has been successfully updated.';
@@ -462,7 +462,7 @@ class AppointmentService
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }
@@ -500,9 +500,9 @@ class AppointmentService
             'email' => $data->email,
             'address' => $data->address,
         ];
-        
+
         $client_info = $this->updateClientInfo($data->client_id, $client_data);
-        
+
         $sales_data = [
             'payment_status' => 'pending',
             'user_id' => auth()->user()->id,
@@ -562,7 +562,7 @@ class AppointmentService
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }
@@ -655,7 +655,7 @@ class AppointmentService
             $get_duration = strtotime($converted_duration_time)-strtotime("00:00:00");
             $result = date("Y-m-d H:i:s", strtotime($start_time_val)+$get_duration);
         }
- 
+
         return $result;
     }
 
@@ -733,7 +733,7 @@ class AppointmentService
         )->where('spa_id', $spa_id)->where(
             'end_time', '>=', $now
         )->with(['client'])->first();
-        
+
         $dataList = [];
         $isAvailable = true;
         $isColorSet = 'bg-info';
@@ -766,7 +766,7 @@ class AppointmentService
                 'therapist_2' => $transaction->therapist_2,
                 'start_time' => $transaction->start_time,
                 'end_time' => $transaction->end_time,
-                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,  
+                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,
                 'plus_time' => $transaction->plus_time,
                 'discount_rate' => $transaction->discount_rate,
                 'discount_amount' => $transaction->discount_amount,
@@ -793,7 +793,7 @@ class AppointmentService
     public function checkBatch($id, $batch)
     {
         $appointment = Appointment::where([
-            'spa_id' => $id, 
+            'spa_id' => $id,
             'batch' => $batch,
             'appointment_status' => 'reserved'
         ])->with(['client'])->get()->count();
@@ -831,7 +831,7 @@ class AppointmentService
         return $status;
     }
 
-    //Check for existing reserved appointment 
+    //Check for existing reserved appointment
     public function checkInAppointment($client_id, $spa_id)
     {
         $appointment = Appointment::where([
