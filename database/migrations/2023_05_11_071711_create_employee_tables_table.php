@@ -17,7 +17,7 @@ class CreateEmployeeTablesTable extends Migration
             $table->id();
             // $table->string('employee_id');
             $table->string('user_id');
-            $table->string('spa_id');
+            $table->string('spa_id')->nullable();
             $table->bigInteger('Monthly_Rate')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
