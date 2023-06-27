@@ -15,7 +15,7 @@ class EmployeeTable extends Model
 
     public function attendances()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendance::class, 'employee_id');
     }
     public function spas()
     {
@@ -27,7 +27,7 @@ class EmployeeTable extends Model
     }
     public function shift()
     {
-        return $this->hasMany(Shift::class);
+        return $this->hasMany(Shift::class, 'employee_id');
     }
     public function payroll()
     {

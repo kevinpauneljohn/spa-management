@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
     Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
     Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
+    Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
 
     Route::resource('/shift',\App\Http\Controllers\ShiftController::class);
     Route::get('/shift-list',[\App\Http\Controllers\ShiftController::class, 'list'])->name('shift.list');
