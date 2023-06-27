@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
     Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
-    
+
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
     Route::get('/sales-end-of-shift-report/{spa_id}/{shift_id}',[\App\Http\Controllers\SaleController::class,'endOfShiftReport'])->name('sale.end.shift.report');
@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
-    Route::post('/owners',[\App\Http\Controllers\Owners\OwnerController::class,'store'])->name('owner.store');
+//    Route::post('/owners',[\App\Http\Controllers\Owners\OwnerController::class,'store'])->name('owner.store');
     Route::get('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'show'])->name('owner.show');
     Route::put('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'update'])->name('owner.update');
     Route::delete('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'destroy'])->name('owner.delete');
@@ -130,7 +130,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/getEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'editRate']);
     Route::put('/updateEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'updateRate']);
     Route::get('/sample', [\App\Http\Controllers\EmployeeRateController::class, 'sample']);
-    
+
 
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
     Route::post('appointment-store/{id}',[\App\Http\Controllers\AppointmentController::class,'store'])->name('appointment.store');
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-get-shift/{id}',[\App\Http\Controllers\SalesShiftController::class,'index'])->name('pos.get.shift');
     Route::post('pos-start-shift/{spa_id}',[\App\Http\Controllers\SalesShiftController::class,'create'])->name('pos.create.shift');
     Route::put('pos-update-shift/{id}/{amount}/{type}',[\App\Http\Controllers\SalesShiftController::class,'edit'])->name('pos.update.shift');
-    
+
     Route::get('/download/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'download'])->name('download.index');
     Route::get('/checkLogin', [\App\Http\Controllers\DownloadAttendanceController::class, 'checkLogin']);
 
