@@ -133,7 +133,7 @@ class ShiftController extends Controller
         $shifts = Shift::with('user')->get();
         return DataTables::of($shifts)
         ->editColumn('names',function($shift){
-            return $shift->user->firstname;
+            return $shift->user->firstname.' '.$shift->user->lastname;
         })
         ->addColumn('position', function ($shift) {
             $user = User::where('id', $shift->user_id)->first();
@@ -156,6 +156,9 @@ class ShiftController extends Controller
         ->addColumn('time',function ($shift){
             $inandout = $shift->shift_start.'-'. $shift->shift_end;
             return $inandout;
+        })
+        ->addColumn('ot', function ($shift) {
+            return $shift->OT;
         })
         ->addColumn('action', function($shift){
             $action = "";

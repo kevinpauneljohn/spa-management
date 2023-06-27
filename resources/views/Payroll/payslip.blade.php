@@ -46,39 +46,41 @@
   </style>
 </head>
 <body>
-  <div class="container" style="text-align: center">
-        <h1>{{$spaName}}</h1>
-  </div>
-  <div class="payslip">
-    <div class="header">
-      <h2>Payslip</h2>
+ 
+    <div class="container" style="text-align: center">
+      <h1>{{$spaName}}</h1>
     </div>
-    <div class="employee-details">
-        <p><strong>Employee Name: {{$name}}</strong> </p>
-        <p><strong>Employee ID: {{$id}}</strong> </p>
-        <p><strong>Department: {{$role}}</strong>  </p>
-    </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Description</th>
-          <th>Amount ($)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Basic Salary</td>
-          <td>{{$basicpay}}</td>
-        </tr>
-        <tr>
-          <td>Allowance</td>
-          <td>{{$allowance}}</td>
-        </tr>
-        <tr>
-          <td>SSS</td>
-          <td>{{$SSS}}</td>
-        </tr>
-        <tr>
+
+    <div class="payslip">
+      <div class="header">
+        <h2>Payslip</h2>
+      </div>
+      <div class="employee-details">
+        <p><strong>Employee Name: {{ $name }}</strong></p>
+        <p><strong>Employee ID: {{$id}}</strong></p>
+        <p><strong>Department: {{$role}}</strong></p>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Basic Salary</td>
+            <td>{{$basicpay}}</td>
+          </tr>
+          <tr>
+            <td>Allowance</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>SSS</td>
+            <td>{{$SSS}}</td>
+          </tr>
+          <tr>
             <td>PAGIBIG</td>
             <td>{{$PAGIBIG}}</td>
           </tr>
@@ -90,17 +92,18 @@
             <td>Loan</td>
             <td>{{$loan}}</td>
           </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td><strong>NETPAY</strong></td>
-          <td class="totals"><strong>{{$netpay}}</strong></td>
-        </tr>
-      </tfoot>
-    </table>
-    <div class="footer">
-      <p>Thank you for your hard work!</p>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>NETPAY</strong></td>
+            <td class="totals"><strong> {{ $netpay }}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+      <div class="footer">
+        <p>Thank you for your hard work!</p>
+      </div>
     </div>
-  </div>
+
 </body>
 </html>

@@ -46,393 +46,148 @@ class PayrollController extends Controller
         $start = Carbon::parse($request->datestart)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         $end = Carbon::parse($request->dateEnd)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
 
-        $roles = User::whereHas("roles", function($q){
+        $users = User::whereHas("roles", function($q){
             $q->where("name", ["therapist"]);
         })->get();
         $collect = collect();
-        foreach ($roles as $user) {
-            $employees = EmployeeTable::with('user')->where('user_id', $user->id)->get();
-            
-            foreach ($employees as $employee) {
-                $attendance = Attendance::where('employee_id', $employee->id)->get()->groupBy('employee_id');
-                
-                foreach ($attendance as $attendee) {
-                    $therapist = Therapist::with(['transactions' => function ($query) use ($start, $end) {
-                        $query->whereBetween('created_at', [$start, $end]);
-                    }])->where('user_id', $employee->user_id)->get()
-                        ->map(function ($thera) use ($attendee,$employee) {
-                            $amount = $thera->transactions->sum('amount');
-                            $flat = $thera->commission_flat;
-                            return (object)[
-                              'id' => $thera->id,
-                              'fullname' => implode(' ', [$thera->user->firstname, $thera->user->lastname]),
-                              'amount' => $amount,
-                              'user' => $employee->user,
-                              'type' => "Therapist",
-                              'TotalCommission' => ((($thera->commission_percentage / 100) * $amount) + ($amount - $flat)),
-                              'TotalDays' => $attendee->count(),
-                              "EmployeeID" =>  $employee->id,
-                              "Allowance" =>  $attendee->count() * $thera->allowance,
-                            ];
-                        });
-                        
-                    foreach($therapist as $data){
-                         $collect->push($data);
-                    }
-                }
-            }
+        foreach($users as $user)
+        {
+             EmployeeTable::with(['attendances','user.therapist.transactions' => function($query) use ($start,$end){
+                $query->whereBetween('created_at', [$start, $end]);
+            }])->where('user_id', $user->id)->get()
+            ->map(function($emp) use ($collect){   
+               $amount = $emp->user->therapist->transactions->sum('amount'); 
+               $flat = $emp->user->therapist->commission_flat;
+                $collect->push((object)[
+                    'id' => $emp->user->therapist->id,
+                    'fullname' => implode(' ', [$emp->user->firstname, $emp->user->lastname]),
+                    'amount' => $amount,
+                    // 'user' => $emp->user,
+                    'type' => "Therapist",
+                    'TotalCommission' => ((($emp->user->therapist->commission_percentage / 100) * $amount) + ($emp->user->therapist->transactions->count() * $flat)),
+                    'TotalDays' => $emp->attendances->count(),
+                    "EmployeeID" =>  $emp->id,
+                    "Allowance" =>  $emp->attendances->count() * (int)$emp->user->therapist->allowance,
+                ]);
+            });
         }
-        
+
         if($collect->isEmpty()){
             return "No Existing Data";
         }
         else{
             $created = Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d');
-            $payroll = Payroll::where('employee_id', $collect[0]->EmployeeID)->whereDate('created_at', $created)->get();
-            $user = $collect[0]->user;
-            $role = $user->getRoleNames()->first();
-
-            if ($payroll->isEmpty()) {
-                if($role == 'therapist')
-                {
+            foreach($collect as $items)
+            {
+                 $payroll = Payroll::where('employee_id', $items->EmployeeID)->whereDate('created_at', $created)->get();
+                 if ($payroll->isEmpty()) {
                     $payroll = new Payroll();
-                    $payroll->employee_id = $collect[0]->EmployeeID;
-                    $payroll->name = $collect[0]->fullname;
+                    $payroll->employee_id = $items->EmployeeID;
+                    $payroll->name = $items->fullname;
                     $payroll->type = 'Therapist';
-                    $payroll->Allowance = $collect[0]->Allowance;
-                    $payroll->amount = $collect[0]->amount;
-                    $payroll->TotalCommission = $collect[0]->TotalCommission;
-                    $payroll->TotalDays = $collect[0]->TotalDays;
+                    $payroll->allowance = $items->Allowance;
+                    $payroll->amount = $items->amount;
+                    $payroll->TotalCommission = $items->TotalCommission;
+                    $payroll->TotalDays = $items->TotalDays;
                     $payroll->PayrollRange = now() . ' - ' . now();
-                    $payroll->created_at = now()->format('Y-m-d');
                     $payroll->save();
                 }
             }
-        return $collect;
-       }
+            return $collect;
+        }
     }
-
-    public function attendanceCounter(){
-        $timein = '2023-06-12 08:00:00';
-        $timeout = '2023-06-14 17:00:00';
-        $start = Carbon::parse($timein)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        $end = Carbon::parse($timeout)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-
-        $roles = User::whereHas("roles", function($q){
-            $q->where("name", ["therapist"]);
-        })->get();
-        $collect = collect();
-        $thera = [];
-        foreach ($roles as $user) {
-            $employees = EmployeeTable::with('user')->where('user_id', $user->id)->get();
-            
-            foreach ($employees as $employee) {
-                $attendance = Attendance::where('employee_id', $employee->id)->get()->groupBy('employee_id');
-                
-                foreach ($attendance as $attendee) {
-                    $therapist = Therapist::with(['transactions' => function ($query) use ($start, $end) {
-                        $query->whereBetween('created_at', [$start, $end]);
-                    }])->where('user_id', $employee->user_id)->get()
-                        ->map(function ($thera) use ($attendee,$employee) {
-                            $amount = $thera->transactions->sum('amount');
-                            $flat = $thera->commission_flat;
-                            return (object)[
-                              'id' => $thera->id,
-                              'fullname' => implode(' ', [$thera->user->firstname, $thera->user->lastname]),
-                              'amount' => $amount,
-                              'type' => "Therapist",
-                              'TotalCommission' => ((($thera->commission_percentage / 100) * $amount) + ($amount - $flat)),
-                              'TotalDays' => $attendee->count(),
-                              "EmployeeID" =>  $employee->id,
-                              "Allowance" =>  $attendee->count() * $thera->allowance,
-                            ];
-                        });
-                        
-                    foreach($therapist as $data){
-                         $collect->push($data);
-                    }
-                }
-            }
-        }
-        
-
-        if($collect->isEmpty()){
-            return "No Existing Data";
-        }
-        else{
-            // $created = Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d');
-            // $payroll = Payroll::where('employee_id', $collect[0]->EmployeeID)->whereDate('created_at', $created)->get();
-        
-            // if ($payroll->isEmpty()) {
-            //     Payroll::create([
-            //         'employee_id' => $collect[0]->EmployeeID,
-            //         'name' => $collect[0]->fullname,
-            //         'type' => 'Therapist',
-            //         'Allowance' => $collect[0]->Allowance,
-            //         'amount' => $collect[0]->amount,
-            //         'TotalCommission' => $collect[0]->TotalCommission,
-            //         'TotalDays' => $collect[0]->TotalDays,
-            //         'PayrollRange' => now() . ' - ' . now(),
-            //     ]);
-            // }
-
-          return $collect;
-         
-        }
-            
-    }
-
+    
+    
     public function getEmployeeSalary(Request $request){
 
-        $start = Carbon::parse($request->datestart)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        $end = Carbon::parse($request->dateEnd)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $start = Carbon::parse($request->datestart)->setTimezone('Asia/Manila')->format('Y-m-d');
+        $end = Carbon::parse($request->dateEnd)->setTimezone('Asia/Manila')->format('Y-m-d');
 
-        $salary = Attendance::whereBetween('created_at', [$start, $end])->get()
-        ->groupBy('employee_id')
-        ->map(function($employeeAttendance) {
-            return $employeeAttendance->map(function($ftable) {
-
-                $timein = Carbon::parse($ftable->time_in);
-                $timeout = Carbon::parse($ftable->time_out);
-                return $timein->diffInHours($timeout);
-
-            })->sum();
-        });
-
-        $employeeSalary = collect();
-
- 
-        foreach ($salary as $employeeId => $totalHours) {
-            $lateHours = 0;
-            $undertimeHours = 0;
-            $overtimeHours = 0;
-            $employee = EmployeeTable::with('user')->find($employeeId);
-            $shifts = Shift::where('employee_id', $employeeId)->get();
-            $monthlyRate = $employee->Monthly_Rate;
-            foreach ($shifts as $shift) {
-                $shiftin = Carbon::parse($shift->shift_start)->format('H:i A');
-                $shiftout = Carbon::parse($shift->shift_end)->format('g:i A');
-
-              
-                $attendance = Attendance::where('employee_id', $employeeId)->first();
-
-         if ($attendance) {
-                $gracePeriod = 15;
-                $TotalLate=0;
-                $TotalUndertime = 0;
-                $TotalOvertime = 0;
-                $basicpay = 
-                $timein = Carbon::parse($attendance->time_in)->format('H:i A');
-                $timeout = Carbon::parse($attendance->time_out)->format('g:i A');;
-
-                $shifthours = Carbon::createFromFormat('H:i A', $shiftin)
-                ->diffInHours(Carbon::createFromFormat('H:i A', $shiftout));
-
-                $late = Carbon::createFromFormat('H:i A', $shiftin)
-                ->diffInMinutes(Carbon::createFromFormat('H:i A', $timein));
-
-                $UndertimeAndOvertime = Carbon::createFromFormat('H:i A', $shiftout)
-                ->diffInMinutes(Carbon::createFromFormat('H:i A', $timeout));
-             
-                    if($late > $gracePeriod)
-                    {
-                        $TotalLate = ceil($late/60); 
-                        $shifthours = $shifthours - $TotalLate;
-                    }
-                    if($UndertimeAndOvertime > 0 && $timeout < $shiftout)
-                    {
-                        $TotalUndertime = $UndertimeAndOvertime/60;
-                        $shifthours = $shifthours - $TotalUndertime;
-                    }
-                    else if ($timeout > $shiftout && $shift->allow_OT == 1 && $UndertimeAndOvertime >= 60) {
-                        $TotalOvertime = $UndertimeAndOvertime / 60;
-                        $shifthours = $shifthours + floor($TotalOvertime);
-                    } 
-                }
-            }
-
-        $firstName = optional($employee->user)->firstname.' '.optional($employee->user)->lastname ?? '';
-
-        $employeeSalary->push([
-            'Name' => $firstName,
-            'id' => $employee->id,
-            'user' => $employee->user,
-            'total_hours' => floor($shifthours),
-            'late_Minutes' => $lateHours, 
-            'undertime_Minutes' => $undertimeHours,
-            'overtime_hours' => $overtimeHours,
-            'overtime_Pay' => ($overtimeHours*$monthlyRate)*1.30,
-            'Gross_Pay' => ($monthlyRate * ($totalHours-$overtimeHours))+(($overtimeHours*$monthlyRate)*1.30),
-            'Net_Pay' => ($monthlyRate * ($totalHours-$overtimeHours))+(($overtimeHours*$monthlyRate)*1.30),
-        ]);
-    }//end of first foreach
-
-        if($employeeSalary->isEmpty()){
-            return "No Existing Data";
-        }
-        else {
-            $employeeSalary->map(function ($empsalary) {
-                $created = Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d');
-                $payroll = Payroll::with('employee.user')->where('employee_id', $empsalary['id'])->whereDate('created_at', $created)->first();
-        
-                if ($payroll === null) {
-                    $user = $empsalary['user'];
-                    $roles = $user->getRoleNames();
-                    $type = $roles->first();
-        
-                    if ($type !== 'therapist') {
-                        $payroll = new Payroll();
-                        $payroll->employee_id = $empsalary['id'];
-                        $payroll->name = $empsalary['Name'];
-                        $payroll->Allowance = 0;
-                        $payroll->HollidayPay = 0;
-                        $payroll->SSS = 0;
-                        $payroll->PAGIBIG = 0;
-                        $payroll->PHILHEALTH = 0;
-                        $payroll->Loan = 0;
-                        $payroll->GrossPay = $empsalary['Gross_Pay'];
-                        $payroll->NetPay = $empsalary['Net_Pay'];
-                        $payroll->PayrollRange = now() . ' - ' . now();
-                        $payroll->created_at = now()->format('Y-m-d');
-                        $payroll->save();
-        
-                        $payroll->type = 'Employee';
-                        $payroll->save();
-                    }
-                }
-            });
-            $filteredEmployees = collect($employeeSalary)->filter(function ($employee) {
-                return $employee['user']->roles->where('name', 'therapist')->isEmpty();
-            });
-            return response()->json($filteredEmployees);
-        }
-        
-        
-        
-    }
-
-
-    public function practice()
-    {
-        
-
-        $timein = '2023-06-01 08:00:00';
-        $timeout = '2023-06-30 17:00:00';
+        $late = 0;
+        $underTime = 0;
+        $OT = 0;
       
-        $start = Carbon::parse($timein)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        $end = Carbon::parse($timeout)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $collect = collect();
         
-        $salary = Attendance::whereBetween('created_at', [$start,$end])->get()
-        ->groupBy('employee_id')
-        ->map(function($employeeAttendance) {
-            return $employeeAttendance->map(function($ftable) {
+        $invalidRoles = ['therapist','admin','super admin','owner'];
+        $checkRoles = User::whereDoesntHave('roles', function ($query) use ($invalidRoles) {
+            $query->whereIn('name', $invalidRoles);
+        })->get();
 
-                $timein = Carbon::parse($ftable->time_in);
-                $timeout = Carbon::parse($ftable->time_out);
-                
-                return $timein->diffInHours($timeout);
+        foreach($checkRoles as $user){
+            $employees = EmployeeTable::where('user_id', $user->id)->with(['shift','user','attendances' => function($attendance) use($start,$end){
+                $attendance->whereBetween('time_in',[$start, $end]);
+            }])->get()->map(function($employee) use ($collect,$late, $underTime, $OT){ 
 
-            })->sum();
-        });
-        $employeeSalary = collect();
+                $shiftin = Carbon::parse($employee->shift->first()->shift_start)->format('H:i A');
+                $shiftout = Carbon::parse($employee->shift->first()->shift_end)->format('g:i A');   
+                $diffShift = Carbon::createFromFormat('H:i A', $shiftin)->diffInHours(Carbon::createFromFormat('H:i A', $shiftout));
+        
+                foreach($employee->attendances as $timeLoss) {
+                $timeIn = Carbon::parse($timeLoss->time_in)->format('H:i A');
+                $timeOut = Carbon::parse($timeLoss->time_out)->format('g:i A');
+                $diffTime = Carbon::createFromFormat('H:i A', $timeIn)->diffInMinutes(Carbon::createFromFormat('H:i A', $shiftin));
+                $OT = $OT + $timeLoss->OT;
 
-        foreach ($salary as $employeeId => $totalHours) {
-            $lateHours = 0;
-            $undertimeHours = 0;
-            $overtimeHours = 0;
-            $employee = EmployeeTable::with('user')->find($employeeId);
-            $shifts = Shift::where('employee_id', $employeeId)->get();
-            $monthlyRate = $employee->Monthly_Rate;
-            foreach ($shifts as $shift) {
-                $shiftin = Carbon::parse($shift->shift_start)->format('H:i A');
-                $shiftout = Carbon::parse($shift->shift_end)->format('g:i A');
-
-              
-                $attendance = Attendance::where('employee_id', $employeeId)->first();
-
-         if ($attendance) {
-                $gracePeriod = 15;
-                $TotalLate=0;
-                $TotalUndertime = 0;
-                $TotalOvertime = 0;
-                $basicpay = 
-                $timein = Carbon::parse($attendance->time_in)->format('H:i A');
-                $timeout = Carbon::parse($attendance->time_out)->format('g:i A');;
-
-                $shifthours = Carbon::createFromFormat('H:i A', $shiftin)
-                ->diffInHours(Carbon::createFromFormat('H:i A', $shiftout));
-
-                $late = Carbon::createFromFormat('H:i A', $shiftin)
-                ->diffInMinutes(Carbon::createFromFormat('H:i A', $timein));
-
-                $UndertimeAndOvertime = Carbon::createFromFormat('H:i A', $shiftout)
-                ->diffInMinutes(Carbon::createFromFormat('H:i A', $timeout));
-             
-                    if($late > $gracePeriod)
+                    if($timeIn > $shiftin && $diffTime>15)
                     {
-                        $TotalLate = ceil($late/60); 
-                        $shifthours = $shifthours - $TotalLate;
+                        $late = $late + ceil($diffTime/60);
                     }
-                    if($UndertimeAndOvertime > 0 && $timeout < $shiftout)
+                    if($timeOut < $shiftout)
                     {
-                        $TotalUndertime = $UndertimeAndOvertime/60;
-                        $shifthours = $shifthours - $TotalUndertime;
-                    }
-                    else if ($timeout > $shiftout && $shift->allow_OT == 1 && $UndertimeAndOvertime >= 60) {
-                        $TotalOvertime = $UndertimeAndOvertime / 60;
-                        $shifthours = $shifthours + floor($TotalOvertime);
-                    } 
+                        $holder = Carbon::createFromFormat('H:i A', $timeIn)->diffInMinutes(Carbon::createFromFormat('H:i A', $timeOut));
+                        $underTime =  (floor($holder/60) + $underTime) - $diffShift;
+                    }      
+                 }
+                 $collect->push((object)[
+                    "Name" => $employee->user->firstname.' '.$employee->user->lastname,
+                    "id" => $employee->id,
+                    "shift_hours" => $diffShift,
+                    "Total_attendance" => $employee->attendances->count(),
+                    "Quota" => $diffShift * $employee->attendances->count(),
+                    "overtime_hours" => $OT,
+                    "overtime_Pay" => ($OT * $employee->Monthly_Rate) * 1.3,
+                    "Total_working_hours" => (floor($diffShift) * $employee->attendances->count()) - ($late + abs($underTime)),
+                    "Gross_Pay" =>((($diffShift * $employee->attendances->count())-$OT) * $employee->Monthly_Rate)+(($OT * $employee->Monthly_Rate) * 1.3),
+                    "Late" => $late,
+                    "Under_time" => abs($underTime),
+                    "Net_Pay" => (((($diffShift * $employee->attendances->count())-$OT) * $employee->Monthly_Rate)+(($OT * $employee->Monthly_Rate) * 1.3)) - (($late+abs($underTime))*$employee->Monthly_Rate),
+                 ]);
+            });     
+        }
+   
+            foreach($collect as $data)
+            {
+                if($data->Net_Pay ==0)
+                {
+                    return "No Existing Data";
                 }
+                else
+                {
+                    $created = Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d');
+                    $payroll = Payroll::with('employee.user')->where('employee_id', $data->id)->whereDate('created_at', $created)->first();
+                    if ($payroll === null) {
+    
+                            $payroll = new Payroll();
+                            $payroll->employee_id = $data->id;
+                            $payroll->name = $data->Name;
+                            $payroll->{'Basic Pay'} = 0;
+                            $payroll->GrossPay = $data->Gross_Pay;
+                            $payroll->TotalDays = $data->Total_attendance;
+                            $payroll->NetPay = $data->Net_Pay;
+                            $payroll->PayrollRange = now() . ' - ' . now();
+                            $payroll->created_at = now()->format('Y-m-d');
+    
+                            $payroll->type = 'Employee';
+                            $payroll->save();
+                    }
+
+                }
+
             }
-
-        $firstName = optional($employee->user)->firstname ?? '';
-
-        $employeeSalary->push([
-            'Name' => $firstName,
-            'id' => $employee->id,
-            'total_hours' => floor($shifthours),
-            'late_Minutes' => $lateHours, 
-            'undertime_Minutes' => $undertimeHours,
-            'overtime_hours' => $overtimeHours,
-            'overtime_Pay' => ($overtimeHours*$monthlyRate)*1.30,
-            'Gross_Pay' => ($monthlyRate * ($totalHours-$overtimeHours))+(($overtimeHours*$monthlyRate)*1.30),
-            'Net_Pay' => ($monthlyRate * ($totalHours-$overtimeHours))+(($overtimeHours*$monthlyRate)*1.30),
-        ]);
-    }//end of first foreach
-
-        if($employeeSalary->isEmpty()){
-            return "No Existing Data";
-        }
-        else{
-            $employeeSalary->map(function($empsalary) {
-                $created = Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d');
-                // $payroll = Payroll::where('employee_id', $empsalary['id'])->whereDate('created_at', $created)->get();
-                $payroll = Payroll::with('employee.user')->where('employee_id', $empsalary['id'])->whereDate('created_at', $created)->get();
-                if ($payroll->isEmpty()) {
-                    $payroll = new Payroll();
-                    $payroll->employee_id = $empsalary['id'];
-                    $payroll->name = $empsalary['Name'];
-                    $payroll->type = 'Employee';
-                    $payroll->Allowance = 0;
-                    $payroll->HollidayPay = 0;
-                    $payroll->SSS = 0;
-                    $payroll->PAGIBIG = 0;
-                    $payroll->PHILHEALTH = 0;
-                    $payroll->Loan = 0;
-                    $payroll->GrossPay = $empsalary['Gross_Pay'];
-                    $payroll->NetPay = $empsalary['Net_Pay'];
-                    $payroll->PayrollRange = now() . ' - ' . now();
-                    
-                    $payroll->save();
-                    
-                }
-            });
-            
-            return response()->json($employeeSalary);
-        }
+            return $collect;
 
     }
-  
 
     public function getSummary(Request $request, $id) {
         
@@ -491,18 +246,13 @@ class PayrollController extends Controller
      */
     public function payslip(Request $request,$type)
     {
-        // $timein = '2023-06-01 08:00:00';
-        // $timeout = '2023-06-30 17:00:00';
         $start = Carbon::parse($request->datestart)->setTimezone('Asia/Manila')->format('Y-m-d');
         $end = Carbon::parse($request->dateEnd)->setTimezone('Asia/Manila')->format('Y-m-d');
 
         
         $payrolls = Payroll::with('employee')->whereDate('created_at', '>=', $start)->whereDate('created_at', '<=', $end)->where('type', $type)->get();
-   
-        if ($payrolls->isEmpty()) {
-            return 404;
-        }
-        // return $payrolls;
+        $data = [];
+
         $zip = new ZipArchive();
         $zipFileName = 'payslips.zip';
 
@@ -529,10 +279,8 @@ class PayrollController extends Controller
                 $loan = $payroll->Loan;
                 $grosspay = $payroll->GrossPay;
                 $netpay = $payroll->NetPay;
-                $amount = $payroll->amount;
-                $totalcom = $payroll->TotalCommission;
                 $totaldays = $payroll->TotalDays;
-                 $pdf->loadHtml(View::make('Payroll.payslip', compact('name', 'id', 'spaName', 'role', 'basicpay', 'allowance', 'SSS', 'PAGIBIG', 'PHILHEALTH', 'loan', 'grosspay', 'netpay', 'amount', 'totalcom', 'totaldays'))->render());
+                 $pdf->loadHtml(View::make('Payroll.payslip', compact('name', 'id', 'spaName', 'role', 'basicpay', 'allowance', 'SSS', 'PAGIBIG', 'PHILHEALTH', 'loan', 'grosspay', 'netpay', 'totaldays'))->render());
 
         } 
         else if ($type === 'Therapist') {
