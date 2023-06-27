@@ -165,6 +165,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
 
+    Route::get('sales-report',[\App\Http\Controllers\ReportController::class,'index'])->name('spa.sales.report');
+    Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 });
 
