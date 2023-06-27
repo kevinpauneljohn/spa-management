@@ -407,7 +407,7 @@ return [
                     'text' => 'Employee Payroll',
                     'route'  => 'payroll.index',
                     'icon' => 'fas fa-fw  fa-money-check-alt',
-      
+
                 ],
                 [
                     'text' => 'Employee Rate',
@@ -421,13 +421,13 @@ return [
         [
             'text' => 'Attendance',
             'icon' => 'fas fa-fw fa-store',
-        
+
             'submenu' => [
                 [
                     'text' => 'Employee Attendance',
                     'route'  => 'attendance.index',
                     'icon' => 'fas fa-fw fa-calendar',
-      
+
                 ],
                 [
                     'text' => 'Shift Management',
@@ -435,7 +435,7 @@ return [
                     'icon' => 'fas fa-fw fa-store',
                 ],
             ],
-            
+
         ],
 
 //        [
@@ -514,7 +514,7 @@ return [
                     'can'  => 'view permission',
                 ],
             ],
-        ],       
+        ],
     ],
 
     /*
