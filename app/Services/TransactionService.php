@@ -108,8 +108,8 @@ class TransactionService
 
     public function therapistCount($therapist_id)
     {
-        $yesterday_start = Carbon::now()->setTimezone('Asia/Manila')->subDays(2)->format('Y-m-d 00:00:01');
-        $yesterday_end = Carbon::now()->setTimezone('Asia/Manila')->subDays(2)->format('Y-m-d 23:59:59');
+        $yesterday_start = Carbon::now()->setTimezone('Asia/Manila')->subDays(1)->format('Y-m-d 00:00:01');
+        $yesterday_end = Carbon::now()->setTimezone('Asia/Manila')->subDays(1)->format('Y-m-d 23:59:59');
         $transaction = Transaction::where('therapist_1', $therapist_id)
             ->where('amount', '>', 0)
             ->where('start_time', '>=', $yesterday_start)
@@ -120,9 +120,8 @@ class TransactionService
     }
 
     public function therapistAvailability($spa_id, $therapist_id, $dateTime)
-    {
+    {        
         $transaction = Transaction::where('therapist_1', $therapist_id)
-            ->where('amount', '>', 0)
             ->where('spa_id', $spa_id)
             ->where('start_time', '<=', $dateTime)
             ->where('end_time', '>=', $dateTime)
@@ -135,5 +134,42 @@ class TransactionService
         }
 
         return $status;
+    }
+
+    public function stopTransactions($id)
+    {
+        $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $transaction = Transaction::findOrFail($id);
+        $transaction->end_time = $now;
+
+        $code = 422;
+        $status = false;
+        $message = 'Client transaction could not be stop. Please try again.';
+        if ($transaction->save()) {
+            $multi_transaction = Transaction::where([
+                'spa_id' => $transaction->spa_id,
+                'client_id' => $transaction->client_id,
+                'start_time' => $transaction->start_time,
+                'service_id' => $transaction->service_id,
+                'amount' => 0,
+                'sales_id' => $transaction->sales_id
+            ])->first();
+
+            if (!empty($multi_transaction)) {
+                $multi_transaction->end_time = $now;
+                $multi_transaction->save();
+            }
+            
+            $code = 200;
+            $status = true;
+            $message = 'Client Transaction successfully stopped.';
+        }
+
+        $response = [
+            'status'   => $status,
+            'message'   => $message
+        ];
+
+        return response($response, $code);
     }
 }

@@ -19,7 +19,7 @@ class SaleController extends Controller
 
     public function lists($id)
     {
-        $sale = Sale::where('spa_id', $id)
+        $sale = Sale::where(['spa_id' => $id, 'user_id' => auth()->user()->id])
         ->with(['spa'])->get();
 
         return DataTables::of($sale)
@@ -27,13 +27,18 @@ class SaleController extends Controller
                 return 'Invoice # '.substr($sale->id, -6);
             })
             ->addColumn('payment_status',function ($sale){
-                return ucfirst($sale->payment_status);
+                if ($sale->payment_status == 'pending') {
+                    return '<span class="badge bg-danger">'.ucfirst($sale->payment_status).'</span>';
+                } else {
+                    return '<span class="badge bg-success">'.ucfirst($sale->payment_status).'</span>';
+                }
             })
             ->addColumn('amount',function ($sale){
                 return '&#8369; '.$sale->amount_paid;
             })
             ->addColumn('date',function ($sale){
-                return Carbon::parse($sale->created_at)->setTimezone('Asia/Manila')->format('F d, Y h:i:s A');
+                $paid_at = $sale->paid_at ? date('F d, Y h:i:s A', strtotime($sale->paid_at)) : 'N/A';
+                return $paid_at;
             })
             ->addColumn('action', function($sale){
                 $action = '';
@@ -55,12 +60,17 @@ class SaleController extends Controller
 
                 return $action;
             })
-            ->rawColumns(['action', 'amount'])
+            ->rawColumns(['action', 'payment_status', 'amount'])
             ->make(true);
     }
 
     public function updateSales(Request $request, $id)
     {
         return $this->saleService->update($request, $id);
+    }
+
+    public function endOfShiftReport($spa_id, $shift_id)
+    {
+        return $this->saleService->end_of_shift_report($spa_id, $shift_id);
     }
 }
