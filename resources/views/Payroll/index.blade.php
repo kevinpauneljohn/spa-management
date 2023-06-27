@@ -90,61 +90,48 @@ $(function() {
 });
 //GENERATE PAYSLIP
 
-$(document).on('click','#printslip',function(form){
+$(document).on('click', '#printslip', function (form) {
+  $(this).prop('disabled', true).text('Loading...');
 
+  setTimeout(function () {
+    $('#printslip').prop('disabled', false).text('PRINT SLIP');
+    getDate(function (alldate) {
+      var selectedOption = $('#department').val();
+      var strTherapist = 'Therapist';
+      var strEmployee = 'Employee';
 
-    $(this).prop('disabled', true).text('Loading...');
-
-    setTimeout(function() {
-
-      $('#printslip').prop('disabled', false).text('PRINT SLIP');
-        getDate(function(alldate){
-        $("#table-id tbody").empty();
-            var selectedOption = $('#department').val();
-
-            var strTherapist = 'Therapist';
-            var strEmployee = 'Employee';
-
-            if (selectedOption === 'therapist') {
-                $.get('/payslip/' + strTherapist, alldate, function(data, status) {
-                    data = parseInt(data);
-                    if(data === 404)
-                    {
-                        swal({
-                            title: "No payrolls found for the given date.",
-                            icon: "warning",
-                            dangerMode: true
-                        });
-                    }
-                    else{
-                        window.location.href = '/payslip/' + strTherapist;
-                    }
-                        
-              
-                });
-            } else if (selectedOption === 'employee') {
-                $.get('/payslip/' + strEmployee, alldate, function(data, status) {
-                    data = parseInt(data);
-                    if(data === 404)
-                    {
-                        swal({
-                            title: "No payrolls found for the given date.",
-                            icon: "warning",
-                            dangerMode: true
-                        });
-                    }
-                    else{
-                        window.location.href = '/payslip/' + strEmployee;
-                    }
-                        
-               
-                });
-            }
-
-
-      })
-    }, 500);
+      if (selectedOption === 'therapist') {
+        $.get('/payslip/' + strTherapist, alldate, function (data, status) {
+          data = parseInt(data);
+          if (data === 404) {
+            swal({
+              title: "No payrolls found for the given date.",
+              icon: "warning",
+              dangerMode: true
+            });
+          } else {
+            window.location.href = '/payslip/' + strTherapist;
+          }
+        });
+      } else if (selectedOption === 'employee') {
+        $.get('/payslip/' + strEmployee, alldate, function (data, status) {
+          data = parseInt(data);
+          if (data === 404) {
+            swal({
+              title: "No payrolls found for the given date.",
+              icon: "warning",
+              dangerMode: true
+            });
+          } else {
+            window.location.href = '/payslip/' + strEmployee;
+          }
+        });
+      }
+    });
+  }, 500);
 });
+
+
 
 //GENERATE PAYROLL 
 $(document).on('click','#generate',function(form){
@@ -187,25 +174,26 @@ $(document).on('click','#generate',function(form){
                     {
                         $('#no_data').text("");
                         $.get('/employee-salary',alldate, function(data, status){
-                        var htmlEmployee = "";
-                            if(Array.isArray(data) && data.length > 0)
-                            {
-                                    $.each(data, (key, value)=>{
-                                    htmlEmployee += "<tr class='text-center'>";
-                                    htmlEmployee += "<td>" + value.Name + "</td>";
-                                    htmlEmployee += "<td>" + value.total_hours + "</td>";
-                                    htmlEmployee += "<td>" + value.Net_Pay + "</td>";
-                                    htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
-                                    htmlEmployee += "</tr>";
-                                
+            
+                                var htmlEmployee = "";
+                                $.each(data, (key, value) => {
+                                    if(value.Net_Pay == 0)
+                                    {
+                                        $('#no_data').text("No Existing Data");
+                                    }
+                                    else{
+                                        htmlEmployee += "<tr class='text-center'>";
+                                        htmlEmployee += "<td>" + value.Name + "</td>";
+                                        htmlEmployee += "<td>" + value.Total_working_hours + "</td>";
+                                        htmlEmployee += "<td>" + value.Net_Pay + "</td>";
+                                        htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
+                                        htmlEmployee += "</tr>";
+                                    }
+                                    // Generate HTML for each employee
+                           
                                 });
-                                $("#table-id").append(htmlEmployee);
-                            }
-                            else
-                            {
-                                let message = data;
-                                $('#no_data').text(message);
-                            }
+                                $('#table-id').append(htmlEmployee); // Append the HTML to the table
+
                         });
                     }
                  });

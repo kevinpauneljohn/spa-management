@@ -24,5 +24,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/timeinApi/{id}/{spaCode}', [EmployeeController::class, 'timeInApi']);
-Route::put('/timeUpdate/{id}/{action}', [EmployeeController::class, 'timeOutBreakInBreakOutApi']);
+Route::match(['get', 'put'], '/timeUpdate/{id}/{action}', [EmployeeController::class, 'timeOutBreakInBreakOutApi']);
 

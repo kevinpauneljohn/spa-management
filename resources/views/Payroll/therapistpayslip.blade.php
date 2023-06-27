@@ -49,6 +49,7 @@
   <div class="container" style="text-align: center">
         <h1>{{$spaName}}</h1>
   </div>
+
   <div class="payslip">
     <div class="header">
       <h2>Payslip</h2>
@@ -72,7 +73,7 @@
         </tr>
         <tr>
             <td>Total Commission</td>
-            <td>{{$totalcom}}</td>
+            <td>{{ $totalcom }}</td>
         </tr>
       </tbody>
       <tfoot>
@@ -82,9 +83,11 @@
         </tr>
       </tfoot>
     </table>
+    
     <div class="footer">
       <p>Thank you for your hard work!</p>
     </div>
   </div>
+
 </body>
 </html>

@@ -18,6 +18,7 @@
                         <th>Position</th>
                         <th>Schedule</th>
                         <th>Shift</th>
+                        <th>Overtime</th>
                         <th>Action</th>
                      </tr>
                 </thead>
@@ -52,6 +53,7 @@ $(document).ready(function(){
                     { data: 'position', name: 'position'},
                     { data: 'schedule', name: 'schedule'},
                     { data: 'time', name: 'time'},
+                    { data: 'ot', name: 'ot'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                 ],
                 responsive:true,

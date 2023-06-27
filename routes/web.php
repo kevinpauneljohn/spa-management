@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
     Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
     Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
+    Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
 
     Route::resource('/shift',\App\Http\Controllers\ShiftController::class);
     Route::get('/shift-list',[\App\Http\Controllers\ShiftController::class, 'list'])->name('shift.list');
@@ -164,6 +165,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
 
+    Route::get('sales-report',[\App\Http\Controllers\ReportController::class,'index'])->name('spa.sales.report');
+    Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 });
 

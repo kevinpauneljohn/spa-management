@@ -159,18 +159,17 @@ class EmployeeController extends Controller
                     }
             
                     $mycollect = $collect->first();
-                    $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->count();
+                    $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->where('time_in', '!=', '-')->count();
 
                     if($attendance > 0)
                     {
                         return 0;
                     }
                     else{
-                        $shifts = Shift::all()->pluck('Schedule')->map(function ($item) {
+                        $shifts = Shift::where('employee_id', $mycollect)->pluck('Schedule')->map(function ($item) {
                             return json_decode($item);
                         })->flatten()->toArray();
                         $currentDay = Carbon::now()->format('D');
-                        
                         if (in_array($currentDay, $shifts)) {
                             Attendance::create([
                                 'employee_id' => $mycollect,
@@ -178,6 +177,8 @@ class EmployeeController extends Controller
                                 'time_out' => '-',
                                 'break_in' => '-',
                                 'break_out' => '-',
+                                'allow_OT' => 0,
+                                'OT' => 0,
                             ]);
                             return 1;
                         } else {
@@ -216,7 +217,7 @@ class EmployeeController extends Controller
                     }
                     $IDChecker = $collect->first();
                     $attendance = Attendance::where('employee_id', $IDChecker)->whereDate('created_at', $today)->first();
-
+                    
                     if(empty($attendance->time_in))
                     {
                         return 0;
@@ -243,14 +244,30 @@ class EmployeeController extends Controller
                             }
                         }
                         else{
+                            
                             if($attendance->time_out != '-'){
                                 return 2;
                             }
                             else{
+                                $user = Shift::where('employee_id', $employeeID)->first();
+                         
                                 $attendance->$action = $this->phDate();
-                                $attendance->update();
+                                $timeout = Carbon::parse($attendance->time_out)->format('H:i A');
+                                $shiftout = Carbon::parse($user->shift_end)->format('g:i A');
+                                $ot = Carbon::createFromFormat('H:i A', $timeout)->diffInMinutes(Carbon::createFromFormat('H:i A', $shiftout));
+                                if($timeout >= $shiftout && $user->allow_OT == 1){
+                                    $attendance->allow_OT = $user->allow_OT;
+                                    $attendance->OT = $user->OT;
+                                    
+                                    $attendance->update();
+                                }
+                                    $user->allow_OT = 0;
+                                    $user->OT = 0;
+                                    $attendance->update(); 
+                                    $user->update();                             
                             }
                         }
+                        
                         return 1;
                     }
                }
