@@ -365,7 +365,7 @@ return [
         ],
         [
             'text' => 'Sales Management',
-            'url'  => '#',
+            'route'  => 'spa.sales.report',
             'icon' => 'fas fa-fw fa-search-dollar',
         ],
         [
