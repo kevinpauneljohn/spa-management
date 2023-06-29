@@ -407,6 +407,7 @@ function loadData(id)
             $('.monthlyAppointment').text(result.monthly_appointment);
             $('.newClients').text(result.new_clients);
             $('.dailySales').html(result.total_sales);
+            $('#daily_sales_amount').val(result.sales);
         }
     });
 }

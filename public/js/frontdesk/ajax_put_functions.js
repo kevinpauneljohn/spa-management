@@ -278,7 +278,10 @@ function updateInvoice(id)
     var payment_account_number = $('#payment_account_number').val();
     var payment_bank_name = $('#payment_bank_name').val();
     var batch = $('#sales_batch_id').val();
-
+    var daily_sales = $('#daily_sales_amount').val();
+    var change = $('#cash_change_amount').val();
+    var total_transaction_amount = $('#total_transaction_amount').val();
+    var cash_amount = $('#cash_amount').val();
     var valid = false;
     if (payment_method !== 'cash') {
         if (payment_method == 'bank') {
@@ -308,6 +311,15 @@ function updateInvoice(id)
         }
     } else if (payment_method == 'cash') {
         valid = true;
+        if (parseFloat(cash_amount) < parseFloat(total_transaction_amount)) {
+            toastr.error('The cash amount must not be less than the total transaction amount.');
+            valid = false;
+        } 
+        
+        if (parseFloat(change) > parseFloat(daily_sales)) {
+            toastr.error('The change must not be greater than the daily sales.');
+            valid = false;
+        }
     }
 
     if (valid) {
