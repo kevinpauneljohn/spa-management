@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Models\Sale;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use App\Services\SaleService;
 
@@ -19,12 +20,15 @@ class SaleController extends Controller
 
     public function lists($id)
     {
-        $sale = Sale::where(['spa_id' => $id, 'user_id' => auth()->user()->id])
-        ->with(['spa'])->get();
+        $sale = Sale::where(['spa_id' => $id])
+            ->with(['spa'])->get();
 
         return DataTables::of($sale)
             ->editColumn('spa',function($sale){
                 return 'Invoice # '.substr($sale->id, -6);
+            })
+            ->editColumn('client',function($sale){
+                return $this->getPrimaryClient($sale->id);
             })
             ->addColumn('payment_status',function ($sale){
                 if ($sale->payment_status == 'pending') {
@@ -48,11 +52,13 @@ class SaleController extends Controller
                 $bank = $sale->payment_bank_name;
                 $status = $sale->payment_status;
                 $batch = $sale->appointment_batch;
+                $amount = $sale->amount_paid;
+                $amount_to_paid = number_format($sale->amount_paid, 2, '.', '');
                 if(auth()->user()->can('view invoices') || auth()->user()->hasRole('owner')) {
                     if ($sale->payment_status != 'paid') {
-                        $action .= '<a href="#" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-amount="'.$amount.'" data-pay="'.$amount_to_paid.'" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     } else if (auth()->user()->hasRole('owner')) {
-                        $action .= '<a href="#" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-amount="'.$amount.'" data-pay="'.$amount_to_paid.'" data-batch="'.$batch.'" data-status="'.$status.'" data-payment="'.$payment.'" data-account="'.$account.'" data-bank="'.$bank.'" data-invoice="'.$invoice_id.'" class="btn btn-xs btn-outline-primary rounded update-invoice" id="'.$sale->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                     }
                     
                     $action .= '<a href="#" class="btn btn-xs btn-outline-success rounded view-invoice" id="'.$sale->id.'"><i class="fas fa-file-invoice"></i></a>&nbsp;';
@@ -72,5 +78,16 @@ class SaleController extends Controller
     public function endOfShiftReport($spa_id, $shift_id)
     {
         return $this->saleService->end_of_shift_report($spa_id, $shift_id);
+    }
+
+    public function getPrimaryClient($id)
+    {
+        $data = '';
+        $transaction = Transaction::where(['sales_id' => $id, 'primary' => 'yes'])->first();
+        if ($transaction) {
+            $data = ucfirst($transaction->client->firstname).' '.ucfirst($transaction->client->lastname);
+        }
+
+        return $data;
     }
 }
