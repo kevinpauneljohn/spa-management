@@ -535,6 +535,8 @@ $(document).on('click', '.update-invoice', function () {
     var bank_name = $(this).data("bank");
     var status = $(this).data("status");
     var batch = $(this).data("batch");
+    var amount = $(this).data("amount");
+    var amount_to_pay = $(this).data("pay");
 
     $('.payment_bank_name').addClass('hidden');
     $('.account_number_div').addClass('hidden');
@@ -542,6 +544,8 @@ $(document).on('click', '.update-invoice', function () {
     $('.updateInvoiceTitle').html('Update '+invoice_no);
     $('#sales_invoice_id').val(id);
     $('#sales_batch_id').val(batch);
+    $('#total_transaction_amount').val(amount);
+    $('#transaction_amount').val(amount_to_pay);
     $('#payment_method').val(payment_method).change();
     if (payment_method == 'bank') {
         $('.payment_bank_name').removeClass('hidden');
@@ -576,15 +580,29 @@ $(document).on('change', '#payment_method', function () {
         $('#payment_account_number').val('');
         $('#payment_bank_name').val('');
 
+        $('.cash_amount').addClass('hidden');
+        $('.cash_change').addClass('hidden');
+        $('.transaction_amount').addClass('hidden');
+        $('#cash_change').val(0);
+        $('#cash_change_amount').val(0);
     } else if (val == 'gcash' || val == 'paymaya') {
         $('.account_number_div').removeClass('hidden');
         $('#payment_account_number').val('');
 
         $('.payment_bank_name').addClass('hidden');
         $('#payment_bank_name').val('');
+
+        $('.cash_amount').addClass('hidden');
+        $('.cash_change').addClass('hidden');
+        $('.transaction_amount').addClass('hidden');
+        $('#cash_change').val(0);
+        $('#cash_change_amount').val(0);
     } else if (val == 'cash') {
         $('.account_number_div').addClass('hidden');
         $('#payment_account_number').val('');
+        $('.cash_amount').removeClass('hidden');
+        $('.cash_change').removeClass('hidden');
+        $('.transaction_amount').removeClass('hidden');
 
         $('.payment_bank_name').addClass('hidden');
         $('#payment_bank_name').val('');
@@ -592,6 +610,15 @@ $(document).on('change', '#payment_method', function () {
 
     $('#error-payment_method').addClass('hidden');
     $('#error-payment_method').text('');
+});
+
+$(document).on('change, keyup', '#cash_amount', function () {
+    var total = $('#total_transaction_amount').val();
+    var cash = $(this).val();
+    var change = cash - total;
+
+    $('#cash_change').val(change.toFixed(2));
+    $('#cash_change_amount').val(change);
 });
 
 $(document).on('change, keyup', '#payment_account_number', function () {

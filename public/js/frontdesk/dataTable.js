@@ -37,6 +37,7 @@ function loadTransactions(spa_id)
         },
         columns: [
             { data: 'spa', name: 'spa', className: 'text-center'},
+            { data: 'client', name: 'client', className: 'text-center'},
             { data: 'payment_status', name: 'payment_status'},
             { data: 'amount', name: 'amount', className: 'text-center'},
             { data: 'date', name: 'date', className: 'text-center'},
@@ -46,7 +47,7 @@ function loadTransactions(spa_id)
         scrollX: true,
         scrollY: true,
         responsive:true,
-        order:[1,'asc'],
+        order:[2,'asc'],
         pageLength: 10
     });
 }
