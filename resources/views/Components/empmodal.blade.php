@@ -10,13 +10,18 @@
                     <tr>
                         <th scope="col">Date</th>
                         <th scope="col">Hours</th>
-                        <th scope="col">Pay</th>
+                        <th scope="col">Daily Pay</th>
                     </tr>
                 </thead>
                 <tbody>
         
                 </tbody>
             </table>
+            <div class="container-fluid mt-3">
+              <p style="font-size: 25px">Total Net Pay:
+              <span style="color: green; font-size: 25px" id="totalnet"></span>
+              </p>
+            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

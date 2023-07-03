@@ -67,7 +67,7 @@
             <th>Amount ($)</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr>
             <td>Basic Salary</td>
             <td>{{$basicpay}}</td>
@@ -87,6 +87,18 @@
           <tr>
             <td>PHILHEALTH</td>
             <td>{{$PHILHEALTH}}</td>
+          </tr>
+          <tr>
+            <td>Hour Rendered</td>
+            <td>{{$hour_render}}</td>
+          </tr>
+          <tr>
+            <td>Late Hours</td>
+            <td>{{$late_hours}}</td>
+          </tr>
+          <tr>
+            <td>Undertime</td>
+            <td>{{$undertime}}</td>
           </tr>
           <tr>
             <td>Loan</td>

@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
     Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
 
+
     Route::resource('/shift',\App\Http\Controllers\ShiftController::class);
     Route::get('/shift-list',[\App\Http\Controllers\ShiftController::class, 'list'])->name('shift.list');
     Route::put('/update-shift/{id}', [\App\Http\Controllers\ShiftController::class, 'update']);
@@ -163,7 +164,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api/{id}',[\App\Http\Controllers\PosController::class,'getApi'])->name('pos.api');
     Route::get('pos-api-therapist-list/{id}',[\App\Http\Controllers\PosController::class,'getTherapistList'])->name('pos.api.therapist.list');
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
-    Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
+    
 
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 });
@@ -179,3 +180,4 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show'])->name('attendance.display');
     // Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);
     Route::get('/testing', [\App\Http\Controllers\EmployeeController::class, 'testing']);
+    Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
