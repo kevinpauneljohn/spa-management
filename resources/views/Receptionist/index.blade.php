@@ -123,14 +123,14 @@
                                     <div class="card-header">
                                         <h3 class="card-title">
                                             <!-- <button class="btn btn-block btn-outline-info btn" id="addNewSales">
-                                                <i class="fas fa-shopping-cart"></i> 
+                                                <i class="fas fa-shopping-cart"></i>
                                                 <span class="badge badge-danger text-default countSelected"></span>
                                             </button> -->
                                             <button class="btn btn-block btn-outline-info btn" id="addNewAppointment">
-                                                <i class="fas fa-calendar-plus"></i> 
+                                                <i class="fas fa-calendar-plus"></i>
                                             </button>
                                         </h3>
-                                       
+
                                         <div class="card-tools">
                                             <ul class="nav nav-pills ml-auto">
                                                 <li class="nav-item">
@@ -147,7 +147,7 @@
                                                         Transactions
                                                     </a>
                                                 </li>
-                                                
+
                                                 <li class="nav-item">
                                                     <a class="nav-link appointmentView" href="#appointment-data" data-toggle="tab">
                                                         Upcoming
@@ -161,6 +161,7 @@
                                                         <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
                                                     </a>
                                                 </li>
+
                                             </ul>
                                         </div>
                                     </div>
@@ -271,7 +272,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group availableMasseur">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -286,7 +287,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group upcomingGuest">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -301,7 +302,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group upcomingGuest">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -409,7 +410,7 @@
                                     <div class="col-6">
                                         <div class="table-responsive">
                                             <table id="summaryTotalEndReport" class="table">
-                    
+
                                             </table>
                                         </div>
                                     </div>
@@ -987,7 +988,7 @@
 
                                                     <div class="table-responsive">
                                                         <table id="summaryTotal" class="table">
-                             
+
                                                         </table>
                                                     </div>
                                                 </div>
@@ -1280,7 +1281,7 @@
         getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
 
-        $('.select-client-type').select2();         
+        $('.select-client-type').select2();
     });
 </script>
 @stop

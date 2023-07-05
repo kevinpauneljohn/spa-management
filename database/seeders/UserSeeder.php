@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Owner;
+use App\Models\Service;
 use App\Models\Spa;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -43,11 +45,30 @@ class UserSeeder extends Seeder
         $ownerUser->save();
 
         $spa = new Spa();
-        $spa::create([
-           'owner_id' => $ownerUser->id,
-           'name' => 'Thai Khun Lounge & Spa',
-           'address' => 'Mabalacat city, Pampanga',
-           'number_of_rooms' => 7
+        $spa->owner_id = $ownerUser->id;
+        $spa->name = 'Thai Khun Lounge & Spa';
+        $spa->address = 'Mabalacat city, Pampanga';
+        $spa->number_of_rooms = rand(3,7);
+        $spa->save();
+
+        Service::factory()->count(5)->state(new Sequence(
+            ['name' => 'swedish'],
+            ['name' => 'siatsu'],
+            ['name' => 'couple deluxe'],
+            ['name' => 'Thai Massage'],
+            ['name' => 'Herbal balls with rice hot pad'],
+        ))->create([
+            'spa_id' => $spa->id
         ]);
+
+        Spa::factory()->has(Service::factory()->state(new Sequence(
+            ['name' => 'swedish'],
+            ['name' => 'siatsu'],
+            ['name' => 'couple deluxe'],
+            ['name' => 'Thai Massage'],
+            ['name' => 'Herbal balls with rice hot pad'],
+        ))->count(5))->count(2)->create();
+
+        User::factory()->count(50)->create();
     }
 }

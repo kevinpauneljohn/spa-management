@@ -25,4 +25,9 @@ class Service extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
 }

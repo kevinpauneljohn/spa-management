@@ -329,7 +329,7 @@ $(document).on('click','.delete-service-btn',function(){
                     $('#delete-service-form').find('.delete-service-modal-btn').val('Deleting ... ').attr('disabled',true);
                 },success: function (result) {
                     if(result.status) {
-                        reloadServiceTable();
+                        serviceTable.DataTable().ajax.reload(null, false);
 
                         swal.fire("Done!", result.message, "success");
                         $('#delete-service-modal').modal('hide');
