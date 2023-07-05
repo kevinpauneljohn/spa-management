@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmployeeController;
@@ -163,11 +164,15 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api/{id}',[\App\Http\Controllers\PosController::class,'getApi'])->name('pos.api');
     Route::get('pos-api-therapist-list/{id}',[\App\Http\Controllers\PosController::class,'getTherapistList'])->name('pos.api.therapist.list');
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
-    Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
+
 
     Route::get('sales-report',[\App\Http\Controllers\ReportController::class,'index'])->name('spa.sales.report');
     Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
+
+    Route::get('/spa-expense-list/{spa}',[\App\Http\Controllers\SpaController::class,'spaExpenses'])->name('spa.expenses');
+    Route::post('/expenses-set-date',[\App\Http\Controllers\ExpenseController::class,'displayExpensesByDateSelected'])->name('expenses.set.date');
+    Route::resource('expenses',\App\Http\Controllers\ExpenseController::class);
 });
 
 
@@ -181,3 +186,12 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show'])->name('attendance.display');
     // Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);
     Route::get('/testing', [\App\Http\Controllers\EmployeeController::class, 'testing']);
+
+    //attendance
+    Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
+    Route::post('/test-kevin', function(Request $request){
+        $date = explode('-',$request->input('date'));
+        $dateFrom = $date[0];
+        $dateTo = $date[1];
+        return $dateFrom;
+    });

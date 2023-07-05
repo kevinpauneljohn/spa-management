@@ -118,7 +118,7 @@ class StaffService
                     'username' => $data['username'],
                     'password' => Hash::make($data['password']),
                 ]);
-              
+
                 if ($user) {
                     $user->assignRole($data['role']);
 
@@ -185,7 +185,7 @@ class StaffService
             } else {
                 return false;
             }
-            
+
         }
     }
 

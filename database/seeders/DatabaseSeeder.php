@@ -18,12 +18,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+//            SpaSeeder::class,
             UnitOfMeasurementSeeder::class,
             PermissionSeeder::class,
 //            PermissionSpaSeeder::class,
 //            PermissionTherapistSeeder::class,
             InventorySeeder::class,
-            InventoryCategorySeeder::class
+            InventoryCategorySeeder::class,
+            AccessPosSeeder::class,
+            ExpenseSeeder::class
             ]);
     }
 }
