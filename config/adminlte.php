@@ -388,11 +388,13 @@ return [
                 ],
         ],
         ],
-        [
-            'text' => 'Expense Management',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-chart-pie',
-        ],
+//        [
+//            'text' => 'Expense Management',
+//            'route'  => 'expenses.index',
+//            'icon' => 'fas fa-fw fa-chart-pie',
+//            'can' => 'view expenses'
+//
+//        ],
         [
             'text' => 'Product Management',
             'url'  => '#',
@@ -437,67 +439,6 @@ return [
             ],
 
         ],
-
-//        [
-//            'text'    => 'multilevel',
-//            'icon'    => 'fas fa-fw fa-share',
-//            'submenu' => [
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//                [
-//                    'text'    => 'level_one',
-//                    'url'     => '#',
-//                    'submenu' => [
-//                        [
-//                            'text' => 'level_two',
-//                            'url'  => '#',
-//                        ],
-//                        [
-//                            'text'    => 'level_two',
-//                            'url'     => '#',
-//                            'submenu' => [
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                            ],
-//                        ],
-//                    ],
-//                ],
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//            ],
-//        ],
-//        ['header' => 'labels'],
-//        [
-//            'text'       => 'important',
-//            'icon_color' => 'red',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'warning',
-//            'icon_color' => 'yellow',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'information',
-//            'icon_color' => 'cyan',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'    => 'Owner Management',
-//            'icon'    => 'fas fa-user',
-//            'route'    => 'owner.lists',
-//            'can'     => 'view owner',
-//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
@@ -730,18 +671,29 @@ return [
                 ],
             ],
         ],
-       'BootstrapBundle' => [
-           'active' => true,
-           'files' => [
-               [
-                   'type' => 'js',
-                   'asset' => false,
-                   'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
-               ],
-           ],
-       ],
+
+//       'BootstrapBundle' => [
+//           'active' => true,
+//           'files' => [
+//               [
+//                   'type' => 'js',
+//                   'asset' => false,
+//                   'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+//               ],
+//           ],
+//       ],
+        'Moment' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+            ],
+        ],
         'BootstrapDatePicker' => [
-            'active' => true,
+            'active' => false,
             'files' => [
                 [
                     'type' => 'css',
@@ -756,8 +708,13 @@ return [
             ],
         ],
         'DateRangePicker' => [
-            'active' => true,
+            'active' => false,
             'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.css',
+                ],
                 [
                     'type' => 'js',
                     'asset' => true,
@@ -765,16 +722,7 @@ return [
                 ],
             ],
         ],
-        'Moment' => [
-            'active' => false,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/moment/moment.min.js',
-                ],
-            ],
-        ],
+
         // 'BootstrapBundle' => [
         //     'active' => true,
         //     'files' => [
@@ -802,6 +750,21 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'inventory/js/category.js',
+                ],
+            ],
+        ],
+        'tempusdominusBootstrap4' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js',
                 ],
             ],
         ],

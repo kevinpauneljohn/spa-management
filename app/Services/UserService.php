@@ -12,6 +12,7 @@ class UserService
         return User::create($user);
     }
 
+    //this will return the owner model of the current logged in user
     public function get_staff_owner()
     {
         $user = auth()->user();

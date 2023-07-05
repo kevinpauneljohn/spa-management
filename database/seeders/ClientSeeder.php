@@ -1,10 +1,11 @@
 <?php
 
 namespace Database\Seeders;
-use Spatie\Permission\Models\Permission;
+
+use App\Models\Client;
 use Illuminate\Database\Seeder;
 
-class PermissionSeeder extends Seeder
+class ClientSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +14,6 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'download attendance'])->syncRoles(['owner']);
+        Client::factory()->count(20)->create();
     }
 }
