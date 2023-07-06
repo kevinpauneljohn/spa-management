@@ -22,7 +22,7 @@ function loadSales(spa_id)
         scrollX: true,
         scrollY: true,
         responsive:true,
-        order:[3,'desc'],
+        order:[8,'asc'],
         pageLength: 10
     });
 }
