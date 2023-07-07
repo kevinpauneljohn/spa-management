@@ -83,6 +83,7 @@ $(document).on('click', '.filterNewAccount', function () {
 });
 
 $(document).on('click', '.filterValue', function () {
+    console.log(UnAvailableTherapist)
     var id = this.id;
     var index = $(this).data("index");
     var data_id = $(this).data("id");

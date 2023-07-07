@@ -4,6 +4,7 @@ var UnAvailableTherapist = [];
 var appointment = [];
 var UnAvailableGuest = [];
 var searchFilter = [];
+var unAvailableTherapistAndRooms = [];
 
 $(document).on('click', '.salesView', function () {
     clickSalesView($('#spa_id_val').val());
@@ -125,6 +126,18 @@ $(document).on('change', '.select-appointment-masseur1, .select-edit-masseur1, .
     var id = selected[0].id;
 
     UnAvailableTherapist.push(id);
+    var array = [];
+    if (id !== '' || id !== null) {
+        array = {
+            guest_id: data_id,
+            value: id,
+            therapist: 1,
+            type: 'therapist'
+        };
+
+        unAvailableTherapistAndRooms.push(array);
+    }
+
     if (select_type == 'edit') {
         var cur_val = $('#edit_masseur1_id').val();
         if (cur_val !== id) {
@@ -155,6 +168,18 @@ $(document).on('change', '.select-appointment-masseur2, .select-edit-masseur2, .
     var id = selected[0].id;
 
     UnAvailableTherapist.push(id);
+
+    if (id !== '' || id !== null) {
+        array = {
+            guest_id: data_id,
+            value: id,
+            therapist: 2,
+            type: 'therapist'
+        };
+
+        unAvailableTherapistAndRooms.push(array);
+    }
+
     if (select_type == 'edit') {
         var cur_val = $('#edit_masseur2_id').val();
         if (cur_val !== id) {
@@ -222,8 +247,8 @@ $(document).on('change', '.select-edit-room, .select-appointment-room, .select-m
     var select_type = $(this).data("select");
     var selected = $(this).select2('data');
     var id = selected[0].id;
-
     UnAvailableRoom.push(id);
+
     if (select_type == 'edit') {
         var cur_val = $('#edit_room_val').val();
         if (cur_val !== id) {
@@ -234,6 +259,17 @@ $(document).on('change', '.select-edit-room, .select-appointment-room, .select-m
         var cur_val = $('#appointment_room_id'+data_id).val();
         if (cur_val !== id) {
             onChangeRoom(data_id, id, cur_val, 'select-appointment-room', 'appointment_room_id')
+
+            array = {
+                guest_id: data_id,
+                value: id,
+                therapist: null,
+                type: 'room'
+            };
+    
+            unAvailableTherapistAndRooms.push(array);
+
+            console.log(unAvailableTherapistAndRooms);
         }
     } else if (select_type == 'move') {
         var cur_val = $('#move_room_id').val();

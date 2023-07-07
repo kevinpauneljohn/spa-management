@@ -38,7 +38,7 @@
 @stop
 
 @section('js')
- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+ {{-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> --}}
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('vendor/daterangepicker/daterangepicker.js') }}"></script>
@@ -50,7 +50,7 @@ $('#department').on('change', function() {
   selectedOption = $(this).val();
   var emptyheaders='';
     if(selectedOption === 'employee'){
-        emptyheaders = '<th>Name</th><th>Total Hours</th><th>Gross Pay</th><th>View Summary</th></tr>';
+        emptyheaders = '<th>Name</th><th>Total Hours</th><th>Net Pay</th><th>View Summary</th></tr>';
     }
     if(selectedOption === 'therapist'){
         emptyheaders = '<th>Name</th><th>Total Sales</th><th>Total Commission</th><th>Allowance</th><th>View Summary</th>';
@@ -144,10 +144,11 @@ $(document).on('click','#generate',function(form){
 
         getDate(function(alldate){
             $("#table-id tbody").empty();
+            $('#no_data').text("");
             selectedOption = $('#department').val();
 
             if(selectedOption === 'therapist')
-                {
+            {
                     $('#no_data').text("");
                     $.get('/show-date', alldate, function(data, status) {
                             var html = "";
@@ -169,40 +170,63 @@ $(document).on('click','#generate',function(form){
                                 $('#no_data').text("No Existing Data");
                             }
                             });
-                }
-                    else if(selectedOption === 'employee')
+            }
+            else if(selectedOption === 'employee')
                     {
                         $('#no_data').text("");
                         $.get('/employee-salary',alldate, function(data, status){
-            
-                                var htmlEmployee = "";
-                                $.each(data, (key, value) => {
-                                    if(value.Net_Pay == 0)
-                                    {
-                                        $('#no_data').text("No Existing Data");
-                                    }
-                                    else{
+                          if(data == 404)
+                          {
+                            $('#no_data').text("No Existing Data");
+                          }
+                          else{
+                            var htmlEmployee = "";
+                            $.each(data, (key, value) => {
+
                                         htmlEmployee += "<tr class='text-center'>";
                                         htmlEmployee += "<td>" + value.Name + "</td>";
                                         htmlEmployee += "<td>" + value.Total_working_hours + "</td>";
                                         htmlEmployee += "<td>" + value.Net_Pay + "</td>";
-                                        htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
-                                        htmlEmployee += "</tr>";
-                                    }
-                                    // Generate HTML for each employee
-                           
-                                });
-                                $('#table-id').append(htmlEmployee); // Append the HTML to the table
+                                        htmlEmployee += '<td> <button type="button" data-pay="'+value.Net_Pay+'" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
+                                        htmlEmployee += "</tr>";  
+                              
+                            });
+                            $('#table-id').append(htmlEmployee); // Append the HTML to the table
+                                $('#no_data').text("")
+                          }
+                          
+                  
+                          // data = parseInt(data)
+                          // if(data === 404)
+                          // {
+                          //   $('#no_data').text("No Existing Data");
+                          // }
+                          // else{
+                          //       // var htmlEmployee = "";
+               
+                          //       $.each(data, (key, value) => {
+                          //         console.table(value);
+                          //               // htmlEmployee += "<tr class='text-center'>";
+                          //               // htmlEmployee += "<td>" + value.Name + "</td>";
+                          //               // htmlEmployee += "<td>" + value.Total_working_hours + "</td>";
+                          //               // htmlEmployee += "<td>" + value.Net_Pay + "</td>";
+                          //               // htmlEmployee += '<td> <button type="button" value="'+value.id+'" class="btn btn-primary empsummary" data-toggle="modal" data-target="#empModal">View Summary </button> </td>';
+                          //               // htmlEmployee += "</tr>";        
+                          //       });
+                          //       // $('#table-id').append(htmlEmployee); // Append the HTML to the table
+                          //       // $('#no_data').text("");
+                          // }
 
                         });
                     }
-                 });
+            });
     }, 500);
 });
 // Employee View SUmmary
 
 $(document).on('click', '.empsummary', function(){
     let id = $(this).val();    
+    let net = $(this).data('pay');
     $("#modal-viewsummaryemp tbody").empty();
     getDate(function(alldate){
         $.ajax({
@@ -216,16 +240,17 @@ $(document).on('click', '.empsummary', function(){
                 console.table(res);
                 var html = "";
                 $.each(res, function(key, value){
-                const formats = "MMMM DD, YYYY";
-                var date = moment(value.time_in).format(formats);
+                // const formats = "MMMM DD, YYYY";
+                // var date = moment(value.time_in).format(formats);
                 html += "<tr class='text-center'>";
-                html += "<td>" + date + "</td>";
+                html += "<td>" + value.Date + "</td>";
                 html += "<td>" + value.Total_Hours + "</td>";
                 html += "<td>" + value.Pay + "</td>";
                 html += "</tr>";
                 });
 
                 $("#modal-viewsummaryemp").append(html);
+                $('#totalnet').text(net);
             }
         })
     })

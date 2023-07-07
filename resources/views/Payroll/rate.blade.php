@@ -51,8 +51,9 @@
                         <thead>
                             <tr role="row">
                                 <th>Name</th>
+                                <th>ID</th>
                                 <th>Position</th>
-                                <th>Rate</th>
+                                <th>Daily Rate</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -80,6 +81,7 @@
             ajax: '{!! route("employee-rate") !!}',
             columns: [
                     { data: 'name', name: 'name', className: 'text-center' },
+                    { data: 'id', name: 'id'},
                     { data: 'position', name: 'position'},
                     { data: 'rate', name: 'rate'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'},

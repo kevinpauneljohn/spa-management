@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Facades\DataTables;
 
+use function PHPUnit\Framework\isEmpty;
+
 class EmployeeController extends Controller
 {
     /**
@@ -27,7 +29,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return view('Attendance.index');
+        return view('Attendance.attendanceindex');
     }   
     
     public function phDate()
@@ -62,31 +64,50 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Request $request)
     {   
-        $timeStomp = now()->format('Y-m-d');
-     
-        $attendances = Attendance::with('employee.user')->whereDate('created_at', $timeStomp)
-        ->get()
-        ->groupBy('employee_id');
-         return DataTables::of($attendances)
-         ->editColumn('name', function($attendance){
-            return $attendance->first()->employee->user->firstname;
-         })
-         ->addColumn('timein', function($attendance){
-            return $attendance->first()->time_in;
-         })
-         ->addColumn('breakin', function($attendance){
-            return $attendance->first()->break_in;
-         })
-         ->addColumn('breakout', function($attendance){
-            return $attendance->first()->break_out;
-         })
-         ->addColumn('timeout', function($attendance){
-            return $attendance->first()->time_out;
-         })
-         ->rawColumns(['name'])
-         ->make(true);
+            // $start = $request->input('start');
+            // $end = $request->input('end');
+
+            // if ($start == null && $end == null) {
+            //     return "not yet clicked";
+            // } else {
+            //     return $start;
+            // }
+       
+   
+            $start = Carbon::parse($request->start)->setTimezone('Asia/Manila')->format('Y-m-d');
+            $end = Carbon::parse($request->end)->setTimezone('Asia/Manila')->format('Y-m-d');
+        // return $start.' '.$end;
+
+        $attendances = Attendance::with('employee.user')->whereDate('created_at', '>=', $start)->whereDate('created_at', '<=', $end)->get();
+        if($attendances->isEmpty())
+        {
+            return 0;
+        }
+        else{
+            return response()->json($attendances);
+        }
+
+
+        // return DataTables::of($attendances)
+        //     ->editColumn('name', function($attendance){
+        //         return $attendance->first()->employee->user->firstname;
+        //     })
+        //     ->addColumn('timein', function($attendance){
+        //         return $attendance->first()->time_in;
+        //     })
+        //     ->addColumn('breakin', function($attendance){
+        //         return $attendance->first()->break_in;
+        //     })
+        //     ->addColumn('breakout', function($attendance){
+        //         return $attendance->first()->break_out;
+        //     })
+        //     ->addColumn('timeout', function($attendance){
+        //         return $attendance->first()->time_out;
+        //     })
+        //     ->rawColumns(['name'])
+        //     ->make(true);
     }
     /**
      * Show the form for editing the specified resource.
