@@ -39,13 +39,16 @@ class EmployeeRateController extends Controller
             $lastname = $user->lastname;
             return $firstname.' '.$lastname;
         })
+        ->addColumn('id', function($employee){
+            return $employee->id;
+        })
         ->addColumn('position', function($employee){
             $user = User::find($employee->user_id);
             $roleName = $user->getRoleNames()->toArray(); 
             return implode(', ', $roleName);
         })
         ->addColumn('rate', function($employee){
-            return $employee->Monthly_Rate;
+            return $employee->Daily_Rate;
         })
         ->addColumn('action', function($employee){
             $html ="";
@@ -62,7 +65,7 @@ class EmployeeRateController extends Controller
      {
         $employee = EmployeeTable::where('id',$id)->first();
         $collect = collect([
-            "rate" => $employee->Monthly_Rate,
+            "rate" => $employee->Daily_Rate,
             "name" => $employee->user->firstname.' '. $employee->user->lastname,
         ]);
       
@@ -72,7 +75,7 @@ class EmployeeRateController extends Controller
     public function updateRate(Request $request, $id)
     {
         $employee = EmployeeTable::where('id',$id)->first();
-        $employee->Monthly_Rate = $request->newRate;
+        $employee->Daily_Rate = $request->newRate;
         $employee->update();
     }
 }
