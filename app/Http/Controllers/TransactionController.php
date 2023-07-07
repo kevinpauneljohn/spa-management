@@ -398,6 +398,7 @@ class TransactionController extends Controller
             'monthly_appointment'   => $monthlyTransactionCount,
             'new_clients' => $newClient,
             'total_sales' => '&#8369;'.number_format($total_sale, 2, '.', ','),
+            'sales' => $total_sale,
         ]; 
 
         return $response;

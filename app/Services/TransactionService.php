@@ -38,12 +38,19 @@ class TransactionService
             $data_array = [$data['therapist_1'], $data['therapist_2']];
         }
 
+        $primary = 'no';
+        if ($data['key'] == 1) {
+            $primary = 'yes';
+        }
+
         foreach ($data_array as $key => $data_arrays) {
             $therapist = $data['therapist_1'];
             $amount = $data['price'];
+
             if ($key == 1) {
                 $therapist = $data['therapist_2'];
                 $amount = 0;
+                $primary = 'no';
             }
 
             $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
@@ -63,7 +70,8 @@ class TransactionService
                 'rating' => 0,
                 'sales_type' => $data['appointment_type'],
                 'sales_id' => $sales_id,
-                'room_id' => $data['room_id']
+                'room_id' => $data['room_id'],
+                'primary' => $primary,
             ]);
 
             if ($transaction) {

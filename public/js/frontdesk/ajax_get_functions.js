@@ -37,14 +37,14 @@ function getPlusTime(id, field)
         'data' : {},
         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         success: function(result){
-            $('#'+field+id).html('');
-            $('#'+field+id).append('<option></option>');
-            $('#'+field+id).select2({
+            $('.select-appointment-plus_time').html('');
+            $('.select-appointment-plus_time').append('<option></option>');
+            $('.select-appointment-plus_time').select2({
                 placeholder: "Choose Plus Time",
                 allowClear: true
             }); 
             $.each(result , function(index, val) { 
-                $('#'+field+id).append('<option value="'+index+'">'+val+'</option>');
+                $('.select-appointment-plus_time').append('<option value="'+index+'">'+val+'</option>');
             });
         }
     });
@@ -407,6 +407,7 @@ function loadData(id)
             $('.monthlyAppointment').text(result.monthly_appointment);
             $('.newClients').text(result.new_clients);
             $('.dailySales').html(result.total_sales);
+            $('#daily_sales_amount').val(result.sales);
         }
     });
 }
