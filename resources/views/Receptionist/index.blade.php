@@ -1282,6 +1282,7 @@
         getUpcomingGuest($('#spa_id_val').val());
 
         $('.select-client-type').select2();
+
     });
 </script>
 @stop

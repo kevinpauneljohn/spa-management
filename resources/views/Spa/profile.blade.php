@@ -23,10 +23,17 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header p-2">
-                    <ul class="nav nav-pills">
+                    <span class="float-left">
+                        <ul class="nav nav-pills">
                         <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">Services</a></li>
                         <li class="nav-item"><a class="nav-link" href="#therapists" data-toggle="tab">Masseur/Masseuse</a></li>
                     </ul>
+                    </span>
+                    <span class="float-right">
+                        @can('access pos')
+                            <a href="{{route('receptionist.dashboard',['id' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>
+                        @endcan
+                    </span>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">

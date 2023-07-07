@@ -106,4 +106,17 @@ class SpaController extends Controller
         return $expenseService->expenses(collect($query)->sortByDesc('created_at'));
     }
 
+
+    /**
+     * display all expenses of a specific spa
+     * @param $spaId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function displaySpaExpenses(Spa $spa)
+    {
+        $pageTitle = 'Expenses';
+        $spaId = $spa->id;
+        return view('expenses.index',compact('pageTitle','spaId','spa'));
+    }
+
 }
