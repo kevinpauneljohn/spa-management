@@ -55,13 +55,16 @@ class SpaService
             ->addColumn('name',function ($service){
                 if(auth()->user()->can('view service'))
                 {
-                    return '<a href="'.route('spa.overview',['id' => $service->id]).'" title="View">'.ucfirst($service->name).'</a>&nbsp;';
+                    return '<a href="#" title="View">'.ucfirst($service->name).'</a>&nbsp;';
                 } else {
                     return ucfirst($service->name);
                 }
             })
             ->editColumn('description',function($service){
                 return $service->description;
+            })
+            ->editColumn('price',function($service){
+                return number_format($service->price,2);
             })
             ->addColumn('duration',function ($service){
                 return $service->duration.' mins.';
@@ -98,7 +101,7 @@ class SpaService
     public function spa_info($id)
     {
         $spa = Spa::where('id', $id)->first();
-        
+
         return $spa;
     }
 }

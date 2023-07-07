@@ -51,6 +51,7 @@
                                             <th>Date Added</th>
                                             <th>Name</th>
                                             <th>Description</th>
+                                            <th>Price</th>
                                             <th>Duration</th>
                                             <th>Category</th>
                                             <th>Action</th>
@@ -86,6 +87,22 @@
 
                     <p class="text-muted">
                         <span class="tag tag-primary">{{$spa->number_of_rooms}} available rooms</span>
+                    </p>
+
+                    <hr>
+
+                    <strong><i class="fas fa-user-friends mr-1"></i> Employees</strong>
+
+                    <p class="text-muted">
+                        <span class="tag tag-primary">{{$spa->staff->count()}}</span>
+                    </p>
+
+                    <hr>
+
+                    <strong><i class="fas fa-user-cog mr-1"></i> Therapists</strong>
+
+                    <p class="text-muted">
+                        <span class="tag tag-primary">{{$spa->therapists->count()}}</span>
                     </p>
                 </div>
                 <!-- /.card-body -->
@@ -208,6 +225,7 @@
                     { data: 'created_at', name: 'created_at'},
                     { data: 'name', name: 'name'},
                     { data: 'description', name: 'description'},
+                    { data: 'price', name: 'price'},
                     { data: 'duration', name: 'duration'},
                     { data: 'category', name: 'category'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}

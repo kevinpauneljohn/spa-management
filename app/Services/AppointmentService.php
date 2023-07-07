@@ -392,6 +392,7 @@ class AppointmentService
                 'start_time' => $appointment->start_time_formatted,
                 'appointment_type' => $appointment->appointment_type,
                 'social_media_type' => $appointment->social_media_type,
+                'batch' => $appointment->batch,
                 'client_id' => $appointment->client->id,
                 'firstname' => ucfirst($appointment->client->firstname),
                 'middlename' => ucfirst($appointment->client->middlename),

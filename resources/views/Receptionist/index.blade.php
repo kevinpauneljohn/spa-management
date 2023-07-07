@@ -112,6 +112,7 @@
                                                 <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
                                             @endif
                                         </span>
+                                        <input type="hidden" class="form-control" id="daily_sales_amount">
                                     </div>
                                 </div>
                             </div>
@@ -122,14 +123,14 @@
                                     <div class="card-header">
                                         <h3 class="card-title">
                                             <!-- <button class="btn btn-block btn-outline-info btn" id="addNewSales">
-                                                <i class="fas fa-shopping-cart"></i> 
+                                                <i class="fas fa-shopping-cart"></i>
                                                 <span class="badge badge-danger text-default countSelected"></span>
                                             </button> -->
                                             <button class="btn btn-block btn-outline-info btn" id="addNewAppointment">
-                                                <i class="fas fa-calendar-plus"></i> 
+                                                <i class="fas fa-calendar-plus"></i>
                                             </button>
                                         </h3>
-                                       
+
                                         <div class="card-tools">
                                             <ul class="nav nav-pills ml-auto">
                                                 <li class="nav-item">
@@ -146,7 +147,7 @@
                                                         Transactions
                                                     </a>
                                                 </li>
-                                                
+
                                                 <li class="nav-item">
                                                     <a class="nav-link appointmentView" href="#appointment-data" data-toggle="tab">
                                                         Upcoming
@@ -160,6 +161,7 @@
                                                         <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
                                                     </a>
                                                 </li>
+
                                             </ul>
                                         </div>
                                     </div>
@@ -214,6 +216,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Spa</th>
+                                                            <th>Client</th>
                                                             <th>Status</th>
                                                             <th>Amount</th>
                                                             <th>Paid At</th>
@@ -269,7 +272,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group availableMasseur">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -284,7 +287,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group upcomingGuest">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -299,7 +302,7 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <div class="progress-group upcomingGuest">
-                
+
                                             </div>
                                         </div>
                                     </div>
@@ -407,7 +410,7 @@
                                     <div class="col-6">
                                         <div class="table-responsive">
                                             <table id="summaryTotalEndReport" class="table">
-                    
+
                                             </table>
                                         </div>
                                     </div>
@@ -985,7 +988,7 @@
 
                                                     <div class="table-responsive">
                                                         <table id="summaryTotal" class="table">
-                             
+
                                                         </table>
                                                     </div>
                                                 </div>
@@ -1037,6 +1040,7 @@
                                 </select>
                                 <input type="hidden" class="form-control" id="sales_invoice_id">
                                 <input type="hidden" class="form-control" id="sales_batch_id">
+                                <input type="hidden" class="form-control" id="total_transaction_amount">
                             </div>
                             <div class="form-group account_number_div hidden">
                                 <label for="payment_account_number">Reference Number</label><span class="isRequired">*</span>
@@ -1045,6 +1049,19 @@
                             <div class="form-group payment_bank_name hidden">
                                 <label for="payment_bank_name">Bank Name</label><span class="isBankName isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_bank_name" id="payment_bank_name">
+                            </div>
+                            <div class="form-group transaction_amount hidden">
+                                <label for="transaction_amount">Total Transaction</label>
+                                <input type="text" class="form-control" name="transaction_amount" id="transaction_amount" readonly>
+                            </div>
+                            <div class="form-group cash_amount hidden">
+                                <label for="cash_amount">Amount</label><span class="cashAmount isRequired">*</span>
+                                <input type="text" class="form-control" name="cash_amount" id="cash_amount">
+                            </div>
+                            <div class="form-group cash_change hidden">
+                                <label for="cash_change">Change</label>
+                                <input type="text" class="form-control" name="cash_change" id="cash_change" readonly>
+                                <input type="hidden" class="form-control" name="cash_change_amount" id="cash_change_amount" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="payment_status">Payment Status</label><span class="isRequired">*</span>
@@ -1264,7 +1281,7 @@
         getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
 
-        $('.select-client-type').select2();         
+        $('.select-client-type').select2();
     });
 </script>
 @stop

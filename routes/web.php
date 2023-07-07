@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmployeeController;
@@ -36,7 +37,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
     Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
-    
+
     Route::get('/sales-list/{id}',[\App\Http\Controllers\SaleController::class,'lists'])->name('sale.lists');
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
     Route::get('/sales-end-of-shift-report/{spa_id}/{shift_id}',[\App\Http\Controllers\SaleController::class,'endOfShiftReport'])->name('sale.end.shift.report');
@@ -52,7 +53,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
-    Route::post('/owners',[\App\Http\Controllers\Owners\OwnerController::class,'store'])->name('owner.store');
+//    Route::post('/owners',[\App\Http\Controllers\Owners\OwnerController::class,'store'])->name('owner.store');
     Route::get('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'show'])->name('owner.show');
     Route::put('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'update'])->name('owner.update');
     Route::delete('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'destroy'])->name('owner.delete');
@@ -132,7 +133,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/getEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'editRate']);
     Route::put('/updateEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'updateRate']);
     Route::get('/sample', [\App\Http\Controllers\EmployeeRateController::class, 'sample']);
-    
+
 
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
     Route::post('appointment-store/{id}',[\App\Http\Controllers\AppointmentController::class,'store'])->name('appointment.store');
@@ -157,7 +158,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-get-shift/{id}',[\App\Http\Controllers\SalesShiftController::class,'index'])->name('pos.get.shift');
     Route::post('pos-start-shift/{spa_id}',[\App\Http\Controllers\SalesShiftController::class,'create'])->name('pos.create.shift');
     Route::put('pos-update-shift/{id}/{amount}/{type}',[\App\Http\Controllers\SalesShiftController::class,'edit'])->name('pos.update.shift');
-    
+
     Route::get('/download/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'download'])->name('download.index');
     Route::get('/checkLogin', [\App\Http\Controllers\DownloadAttendanceController::class, 'checkLogin']);
 
@@ -166,7 +167,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('pos-api-therapist-list/{id}',[\App\Http\Controllers\PosController::class,'getTherapistList'])->name('pos.api.therapist.list');
     Route::get('pos-api-room-list/{id}',[\App\Http\Controllers\PosController::class,'getRoomList'])->name('pos.api.room.list');
 
+
+    Route::get('sales-report',[\App\Http\Controllers\ReportController::class,'index'])->name('spa.sales.report');
+    Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
+
+    Route::get('/spa-expense-list/{spa}',[\App\Http\Controllers\SpaController::class,'spaExpenses'])->name('spa.expenses');
+    Route::post('/expenses-set-date',[\App\Http\Controllers\ExpenseController::class,'displayExpensesByDateSelected'])->name('expenses.set.date');
+    Route::resource('expenses',\App\Http\Controllers\ExpenseController::class);
 });
 
 
@@ -180,4 +188,12 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/show', [\App\Http\Controllers\EmployeeController::class, 'show'])->name('attendance.display');
     // Route::get('/sample', [\App\Http\Controllers\EmployeeController::class, 'sample']);
     Route::get('/testing', [\App\Http\Controllers\EmployeeController::class, 'testing']);
+
+    //attendance
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
+    Route::post('/test-kevin', function(Request $request){
+        $date = explode('-',$request->input('date'));
+        $dateFrom = $date[0];
+        $dateTo = $date[1];
+        return $dateFrom;
+    });

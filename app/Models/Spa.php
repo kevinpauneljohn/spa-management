@@ -17,6 +17,10 @@ class Spa extends Model
         'address',
         'number_of_rooms',
     ];
+    /**
+     * @var mixed
+     */
+    public $displayExpensesFromDateRange;
 
     public function owner()
     {
@@ -36,5 +40,22 @@ class Spa extends Model
     public function staff()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+
+    public function expenses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function displayExpensesFromDateRange($dateFrom, $dateTo): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->expenses()
+            ->whereDate('created_at','>=',$dateFrom)
+            ->whereDate('created_at','<=',$dateTo);
     }
 }

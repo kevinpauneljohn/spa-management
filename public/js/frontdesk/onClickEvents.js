@@ -92,7 +92,7 @@ function processAppointment(data)
         var total_amount = 0;
         var date = new Date();
         var newDate = subtractHours(date, 1);
-
+        var validation = false;
         $.each(data, function (key, value) {
             var client_type = $('#client_type_appointment'+value).val();
             var firstname = $('#first_name_appointment'+value).val();
@@ -246,7 +246,7 @@ function processAppointment(data)
                 }
             }
 
-            var validation = vaidateAppointmentTab(
+            validation = vaidateAppointmentTab(
                 key,
                 key_value,
                 value,
@@ -269,8 +269,6 @@ function processAppointment(data)
             );
 
             if (validation) {
-                swal.fire("Done!", 'Processed! Click the Summary tab to review and submit the form.', "success");
-                $('.process-appointment-btn').text('Processed');
                 appointment.push({
                     key: value,
                     client_type: client_type,
@@ -301,9 +299,15 @@ function processAppointment(data)
                     reserve_later: reserve_later,
                     spa_id: $('#spa_id_val').val(),
                     owner_id: $('#owner_id_val').val(),
-                })
-           }
+                });
+            }
         });
+
+        if (validation) {
+            swal.fire("Done!", 'Processed! Click the Summary tab to review and submit the form.', "success");
+            $('.process-appointment-btn').text('Processed');
+            console.log(appointment)
+        }
 
         var converted_amount = 0;
         var getTotal_amount = 0;

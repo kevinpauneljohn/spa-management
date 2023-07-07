@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SpaRequest;
+use App\Services\ExpenseService;
 use App\Services\OwnerServices;
 use App\Services\SpaService;
 use App\Models\Spa;
 use App\Models\Owner;
 use App\Models\User;
+use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Request;
+
 class SpaController extends Controller
 {
     public function __construct()
@@ -33,6 +38,8 @@ class SpaController extends Controller
         $owner = $ownerServices->getOwnerBySpaID($spa->id);
         $range = range(5, 300, 5);
         return view('Spa.profile',  compact('spa','owner','range'));
+//        $spa = collect($owner->spas)->where('id','=',"bcbbc4a0-d928-425c-8aae-e367d81edf61")->first();
+//        return $spa->therapists->count();
     }
 
     public function edit(Spa $spa)
@@ -86,4 +93,17 @@ class SpaController extends Controller
     {
         return $spaService->get_spa_lists(auth()->user()->owner->id);
     }
+
+    public function spaExpenses(Spa $spa, ExpenseService $expenseService, Request $request)
+    {
+        $query = $spa->expenses;
+        if($request->session()->get('dateFrom') && $request->session()->get('dateTo'))
+        {
+            $query = $spa->displayExpensesFromDateRange($request->session()->get('dateFrom'), $request->session()->get('dateTo'))->get();
+
+        }
+
+        return $expenseService->expenses(collect($query)->sortByDesc('created_at'));
+    }
+
 }

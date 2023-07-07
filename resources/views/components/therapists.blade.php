@@ -4,6 +4,7 @@
             <h5><i class="fas fa-info"></i> Note:</h5>
             Add masseur/masseuse to your spa who will serve your valued customers
         </div>
+
         @can('add therapist')
             <x-adminlte-button label="Add Masseur/Masseuse" data-toggle="modal" data-target="#therapist-modal" id="therapist-modal-btn" class="bg-olive float-right"/>
         @endcan

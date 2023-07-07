@@ -29,7 +29,8 @@ class Transaction extends Model
         'rating',
         'sales_type',
         'sales_id',
-        'room_id'
+        'room_id',
+        'primary',
     ];
 
     public function client(): BelongsTo

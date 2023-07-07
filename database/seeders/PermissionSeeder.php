@@ -13,6 +13,6 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'download attendance']);
+        Permission::create(['name' => 'download attendance'])->syncRoles(['owner']);
     }
 }
