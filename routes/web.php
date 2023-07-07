@@ -170,13 +170,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 
+    Route::get('/spa/expenses/{spa}',[\App\Http\Controllers\SpaController::class,'displaySpaExpenses'])->name('spa.expenses.display');
     Route::get('/spa-expense-list/{spa}',[\App\Http\Controllers\SpaController::class,'spaExpenses'])->name('spa.expenses');
     Route::post('/expenses-set-date',[\App\Http\Controllers\ExpenseController::class,'displayExpensesByDateSelected'])->name('expenses.set.date');
     Route::resource('expenses',\App\Http\Controllers\ExpenseController::class);
 });
 
 
-    Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'check_user_logged_in_password'])->name('home');
+    Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
 
     Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
     // Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);

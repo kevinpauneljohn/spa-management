@@ -20,7 +20,7 @@ class ClientFactory extends Factory
             'firstname' => $this->faker->name,
             'middlename' => $this->faker->name,
             'lastname' => $this->faker->name,
-            'mobile_number' => $this->faker->unique()->phoneNumber(),
+            'mobile_number' => rand(1111111111,9999999999),
             'email' => $this->faker->unique()->email,
             'address' => $this->faker->address,
             'client_type' => 'new'
