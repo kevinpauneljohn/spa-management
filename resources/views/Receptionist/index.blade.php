@@ -4,121 +4,31 @@
 @section('title', 'Receptionist')
 
 @section('content_header')
-    <h1>{{$title}}</h1>
+    <h1></h1>
 @stop
 
 @section('content')
-    <style>
-        /* span {
-            color: #fff;
-        } */
-        .hidden {
-            display: none;
-        }
-        .pointer {cursor: pointer;}
-        .error-border {
-            border: 2px solid red;
-        }
-        .isRequired {
-            color: red;
-        }
-        .select2-results {
-            color: #000 !important;
-        }
-        .select2-container--default .select2-selection--single {
-            height: 40px;
-        }
 
-        .modal-body{
-            max-height: calc(400vh - 200px) !important;
-            overflow-y: auto;
-        }
-
-        /* .gj-modal .gj-picker-bootstrap {
-            padding: 15px !important;
-        } */
-        .progress span {
-            position: absolute;
-            text-align:center;
-            display: block;
-            width: 100%;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-        .closeTabs {
-            float: right;
-            font-size: .9rem;
-            font-weight: 700;
-            line-height: 1;
-            color: red;
-            text-shadow: 0 1px 0 #fff;
-            opacity: .3;
-            margin-top: -40px;
-            margin-right: 1px;
-            border-radius: 75px;
-        }
-        .modal-body{
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-        /* .bootstrap-datetimepicker-widget table td {
-        color: red;
-        } */
-        /*  */
-    </style>
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h3 class="text-cyan">{{ucwords($title)}}</h3>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{route('spa.show',['spa' => $spa_id])}}">Spa</a> </li>
+                <li class="breadcrumb-item active">{{ucwords($title)}} </li>
+            </ol>
+        </div>
+    </div>
     <x-pos.appointments.board spaId="{{$spa_id}}" />
     <div class="container-fluid">
 
         <div class="row">
             <section class="col-lg-6">
-                <div class="card">
-                    <div class="card-header bg-info">
-                        <h3 class="card-title">
-                            <i class="fas fa-users"></i>
-                            Masseur Availability
-                        </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool collapsed" data-toggle="collapse" href="#collapse-collapsed" aria-expanded="true" aria-controls="collapse-collapsed" >
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="collapse-collapsed" class="collapse">
-                        <div class="card-body">
-                            <div class="tab-content p-0">
-                                <div class="progress-group availableMasseur">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <x-pos.availability.therapist />
             </section>
             <section class="col-lg-6">
-                <div class="card">
-                    <div class="card-header bg-warning">
-                        <h3 class="card-title">
-                            <i class="fas fa-users"></i>
-                            Upcoming Appointments
-                        </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-toggle="collapse" href="#upcoming-collapsed" aria-expanded="true" aria-controls="upcoming-collapsed" >
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="upcoming-collapsed" class="collapse">
-                        <div class="card-body">
-                            <div class="tab-content p-0">
-                                <div class="progress-group upcomingGuest">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <x-pos.appointments.upcoming_appointment />
             </section>
         </div>
         <div class="row">
@@ -1086,6 +996,64 @@
 @section('css')
 <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
+<style>
+    /* span {
+        color: #fff;
+    } */
+    .hidden {
+        display: none;
+    }
+    .pointer {cursor: pointer;}
+    .error-border {
+        border: 2px solid red;
+    }
+    .isRequired {
+        color: red;
+    }
+    .select2-results {
+        color: #000 !important;
+    }
+    .select2-container--default .select2-selection--single {
+        height: 40px;
+    }
+
+    .modal-body{
+        max-height: calc(400vh - 200px) !important;
+        overflow-y: auto;
+    }
+
+    /* .gj-modal .gj-picker-bootstrap {
+        padding: 15px !important;
+    } */
+    .progress span {
+        position: absolute;
+        text-align:center;
+        display: block;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+    .closeTabs {
+        float: right;
+        font-size: .9rem;
+        font-weight: 700;
+        line-height: 1;
+        color: red;
+        text-shadow: 0 1px 0 #fff;
+        opacity: .3;
+        margin-top: -40px;
+        margin-right: 1px;
+        border-radius: 75px;
+    }
+    .modal-body{
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+    /* .bootstrap-datetimepicker-widget table td {
+    color: red;
+    } */
+    /*  */
+</style>
 @stop
 
 @section('js')
@@ -1145,7 +1113,7 @@
 
         loadRoom();
         getTotalSales($('#spa_id_val').val());
-        getMasseurAvailability($('#spa_id_val').val());
+        // getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
 
         $('.select-client-type').select2();
