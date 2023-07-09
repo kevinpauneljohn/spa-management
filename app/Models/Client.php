@@ -32,4 +32,9 @@ class Client extends Model
     {
         return $this->belongsToMany(Owner::class);
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->firstname} {$this->lastname}";
+    }
 }

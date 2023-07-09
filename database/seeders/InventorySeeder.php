@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Inventory;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -14,9 +15,15 @@ class InventorySeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'add inventory'])->assignRole(['owner','manager']);
-        Permission::create(['name' => 'view inventory'])->assignRole(['owner','manager']);
-        Permission::create(['name' => 'edit inventory'])->assignRole(['owner','manager']);
-        Permission::create(['name' => 'delete inventory'])->assignRole(['owner','manager']);
+        $permissions = ['name' => 'view inventory','add inventory','edit inventory','delete inventory'];
+        foreach ($permissions as $permission)
+        {
+            if(\App\Models\Permission::where('name',$permission)->count() == 0)
+            {
+                \Spatie\Permission\Models\Permission::create(['name' => $permission])->syncRoles(['owner','manager']);
+            }
+        }
+
+        Inventory::factory()->count(15)->create();
     }
 }

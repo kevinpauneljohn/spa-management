@@ -768,6 +768,21 @@ return [
                 ],
             ],
         ],
+        'Fullcalendar' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.min.js',
+                ],
+            ],
+        ],
     ],
 
     /*

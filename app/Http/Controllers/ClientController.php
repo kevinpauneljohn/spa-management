@@ -12,15 +12,20 @@ use Carbon\Carbon;
 
 class ClientController extends Controller
 {
+    public function index()
+    {
+
+    }
+
     public function getList()
     {
         $client = Client::get();
-        
+
         $data = [];
         foreach ($client as $list) {
             $data [ucfirst($list->firstname).' '.ucfirst($list->lastname).' ['.$list->mobile_number.']'] = $list->id;
         }
-        
+
         return $data;
     }
 
@@ -55,7 +60,7 @@ class ClientController extends Controller
                             $data [ucfirst($list->firstname).' '.ucfirst($list->lastname). ' [0'.$list->mobile_number.']'] = $list->id;
                         }
                     }
-    
+
                     if (!empty($data)) {
                         $status = true;
                         $count = count($data);
@@ -67,7 +72,7 @@ class ClientController extends Controller
                 'status'   => $status,
                 'data'   => $data,
                 'count' => $count,
-            ]; 
+            ];
 
             return $response;
         }
@@ -113,7 +118,7 @@ class ClientController extends Controller
         if (!empty($transaction)) {
             $id = $transaction->client_id;
         }
-        
+
         return $id;
     }
 
@@ -139,7 +144,7 @@ class ClientController extends Controller
                 $response = [
                     'status'   => $status,
                     'data'   => $data,
-                ]; 
+                ];
             }
 
             return $response;

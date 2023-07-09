@@ -112,7 +112,6 @@
                                                 <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
                                             @endif
                                         </span>
-                                        <input type="hidden" class="form-control" id="daily_sales_amount">
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +215,6 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Spa</th>
-                                                            <th>Client</th>
                                                             <th>Status</th>
                                                             <th>Amount</th>
                                                             <th>Paid At</th>
@@ -1040,7 +1038,6 @@
                                 </select>
                                 <input type="hidden" class="form-control" id="sales_invoice_id">
                                 <input type="hidden" class="form-control" id="sales_batch_id">
-                                <input type="hidden" class="form-control" id="total_transaction_amount">
                             </div>
                             <div class="form-group account_number_div hidden">
                                 <label for="payment_account_number">Reference Number</label><span class="isRequired">*</span>
@@ -1049,19 +1046,6 @@
                             <div class="form-group payment_bank_name hidden">
                                 <label for="payment_bank_name">Bank Name</label><span class="isBankName isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_bank_name" id="payment_bank_name">
-                            </div>
-                            <div class="form-group transaction_amount hidden">
-                                <label for="transaction_amount">Total Transaction</label>
-                                <input type="text" class="form-control" name="transaction_amount" id="transaction_amount" readonly>
-                            </div>
-                            <div class="form-group cash_amount hidden">
-                                <label for="cash_amount">Amount</label><span class="cashAmount isRequired">*</span>
-                                <input type="text" class="form-control" name="cash_amount" id="cash_amount">
-                            </div>
-                            <div class="form-group cash_change hidden">
-                                <label for="cash_change">Change</label>
-                                <input type="text" class="form-control" name="cash_change" id="cash_change" readonly>
-                                <input type="hidden" class="form-control" name="cash_change_amount" id="cash_change_amount" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="payment_status">Payment Status</label><span class="isRequired">*</span>
@@ -1282,7 +1266,6 @@
         getUpcomingGuest($('#spa_id_val').val());
 
         $('.select-client-type').select2();
-
     });
 </script>
 @stop

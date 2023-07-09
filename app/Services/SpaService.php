@@ -43,6 +43,10 @@ class SpaService
                 {
                     $action .= '<a href="'.route('spa.expenses.display',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-info" id="'.$spa->name.'" title="View Expenses"><i class="fa fa-fw fa-chart-area"></i></a>&nbsp;';
                 }
+                if(auth()->user()->can('view inventory'))
+                {
+                    $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success" id="'.$spa->name.'" title="View Inventory"><i class="fa fa-fw fa-cubes"></i></a>&nbsp;';
+                }
                 if(auth()->user()->can('download attendance'))
                 {
                     $action .= '<a href="/download/'.urldecode($spa->name).'" class="btn btn-sm btn-outline-warning" id="'.$spa->name.'" title="Download Attendance Form"><i class="fas fa-fw fa-file-download"></i></a>&nbsp;';

@@ -194,7 +194,6 @@ $(document).on('click','.update-service-btn',function(){
 
     swal.fire({
         title: "Are you sure you want to update Services?",
-        icon: 'question',
         text: "Please ensure and then confirm!",
         type: "warning",
         showCancelButton: !0,
@@ -211,6 +210,7 @@ $(document).on('click','.update-service-btn',function(){
                 beforeSend: function () {
                     $('#update-service-form').find('.update-service-btn').val('Saving ... ').attr('disabled',true);
                 },success: function (result) {
+                    console.log(result);
                     if(result.status) {
                         // $('#service-form').trigger('reset');
                         serviceTable.DataTable().ajax.reload(null, false);

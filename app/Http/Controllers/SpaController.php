@@ -119,4 +119,26 @@ class SpaController extends Controller
         return view('expenses.index',compact('pageTitle','spaId','spa'));
     }
 
+    /**
+     * display all the appointments in the calendar
+     * @param Spa $spa
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function appointmentCalendar(Spa $spa)
+    {
+        $pageTitle = 'Calendar';
+        return view('Spa.calendar',
+        compact('pageTitle','spa'));
+    }
+
+    /**
+     * display the spa inventory management in the view
+     * @param Spa $spa
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function spaInventory(Spa $spa)
+    {
+        return view('Spa.inventory',compact('spa'));
+    }
+
 }

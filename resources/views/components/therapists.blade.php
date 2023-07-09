@@ -39,7 +39,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <x-therapist-form spaId="{{$spaId}}" :therapist="$therapist ??''"/>
+                    <x-forms.therapist-form spaId="{{$spaId}}" :therapist="$therapist ??''"/>
                 </div>
             </div>
         </div>
