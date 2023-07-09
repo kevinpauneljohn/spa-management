@@ -130,10 +130,10 @@
                                                 <x-pos.appointments.guest-tabs.table-list spaId="{{$spa_id}}" />
                                             </div>
                                             <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
-                                                <x-pos.appointments.transactions-tab.list spaId="{{$spa_id}}" />
+                                                <x-pos.appointments.transactions-tab.table-list spaId="{{$spa_id}}" />
                                             </div>
                                             <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
-                                                <x-pos.appointments.upcoming-tab.list spaId="{{$spa_id}}" />
+                                                <x-pos.appointments.upcoming-tab.table-list spaId="{{$spa_id}}" />
                                             </div>
                                         </div>
                                     </div>
