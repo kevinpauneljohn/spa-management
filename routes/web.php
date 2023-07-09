@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/receptionist-room-range/{num}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'roomRange'])->name('receptionist.room.range');
     Route::get('/receptionist-therapist/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'getTherapist'])->name('receptionist.therapist');
     Route::post('/create/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'store'])->name('receptionist.create');
-    Route::put('/update/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'update'])->name('receptionist.update');
+    // Route::put('/update/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'update'])->name('receptionist.update');
 
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/transaction-data/{id}',[\App\Http\Controllers\TransactionController::class,'getData'])->name('transaction.data');
     Route::get('/transaction-invoice/{id}',[\App\Http\Controllers\TransactionController::class,'getInvoice'])->name('transaction.invoice');
     Route::put('/transaction-stop/{id}',[\App\Http\Controllers\TransactionController::class,'stopTransaction'])->name('transaction.stop');
+    Route::put('/transaction-update/{id}',[\App\Http\Controllers\TransactionController::class,'update'])->name('transaction.update');
+    Route::get('/preparation_time',[\App\Http\Controllers\TransactionController::class,'preparation_time'])->name('transaction.preparation_time');
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
