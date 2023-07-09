@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
                 PermissionSeeder::class,
     //            PermissionSpaSeeder::class,
     //            PermissionTherapistSeeder::class,
-                InventorySeeder::class,
                 InventoryCategorySeeder::class,
+                InventorySeeder::class,
                 AccessPosSeeder::class,
                 ExpenseSeeder::class,
                 ClientSeeder::class

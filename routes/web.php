@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/create/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'store'])->name('receptionist.create');
     // Route::put('/update/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'update'])->name('receptionist.update');
 
+    Route::get('/client',[\App\Http\Controllers\ClientController::class,'index'])->name('client.index');
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
     Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');
@@ -61,6 +62,8 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/owners/{owner}',[\App\Http\Controllers\Owners\OwnerController::class,'destroy'])->name('owner.delete');
     Route::get('/owner-dashboard',[\App\Http\Controllers\Owners\OwnerController::class,'dashboard'])->name('owner.dashboard');
 
+    Route::get('/spa/{spa}/inventory',[\App\Http\Controllers\SpaController::class,'spaInventory'])->name('spa.inventory');
+    Route::get('/spa/{spa}/calendar',[\App\Http\Controllers\SpaController::class,'appointmentCalendar'])->name('spa.calendar');
     Route::get('/spa-list/{id}',[\App\Http\Controllers\SpaController::class,'lists'])->name('spa.lists');
     Route::get('/spa/overview/{id}',[\App\Http\Controllers\SpaController::class,'overview'])->name('spa.overview');
 
@@ -137,6 +140,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/sample', [\App\Http\Controllers\EmployeeRateController::class, 'sample']);
 
 
+    Route::get('/appointments/events/{spa}',[\App\Http\Controllers\AppointmentController::class,'getCalendarEvents'])->name('appointment.events');
     Route::get('appointment-type',[\App\Http\Controllers\AppointmentController::class,'getAppointmentType'])->name('appointment.type');
     Route::post('appointment-store/{id}',[\App\Http\Controllers\AppointmentController::class,'store'])->name('appointment.store');
     Route::get('appointment-lists/{id}',[\App\Http\Controllers\AppointmentController::class,'lists'])->name('appointment.list');
@@ -150,8 +154,10 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/check-appointment-batch/{id}/{batch}',[\App\Http\Controllers\AppointmentController::class,'checkBatch'])->name('appointment.check.batch');
     Route::get('/appointment-response/{id}',[\App\Http\Controllers\AppointmentController::class,'getResponses'])->name('appointment.responses');
 
+    Route::patch('/inventory/{inventory}/quantity',[\App\Http\Controllers\InventoryController::class,'decreaseInventory'])->name('decrease.inventory');
     Route::resource('inventories',\App\Http\Controllers\InventoryController::class);
     Route::get('/inventory-lists',[\App\Http\Controllers\InventoryController::class,'lists'])->name('inventory.lists');
+    Route::get('/spa/{spa}/inventory-lists',[\App\Http\Controllers\InventoryController::class,'specificSpaInventory'])->name('spa.inventory.lists');
     Route::resource('inventory-categories',\App\Http\Controllers\Inventories\InventoryCategoryController::class);
     Route::get('/inventory-category-lists',[\App\Http\Controllers\Inventories\InventoryCategoryController::class,'lists'])->name('inventory.category.lists');
 

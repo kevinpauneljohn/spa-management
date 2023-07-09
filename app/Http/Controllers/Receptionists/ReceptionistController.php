@@ -24,7 +24,7 @@ class ReceptionistController extends Controller
         } else {
             $id = auth()->user()->id;
             $user = User::findOrFail($id);
-    
+
             $spa_id = '';
             if (!empty($user->spa_id)) {
                 $spa_id = $user->spa_id;
@@ -49,7 +49,7 @@ class ReceptionistController extends Controller
 
         return $data;
     }
-    
+
     public function getData($room, $spa_id)
     {
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
@@ -58,7 +58,7 @@ class ReceptionistController extends Controller
         )->where('spa_id', $spa_id)->where(
             'end_time', '>=', $now
         )->with(['client'])->first();
-        
+
         $dataList = [];
         $isAvailable = true;
         $isColorSet = 'bg-success';
@@ -91,7 +91,7 @@ class ReceptionistController extends Controller
                 'therapist_2' => $transaction->therapist_2,
                 'start_time' => $transaction->start_time,
                 'end_time' => $transaction->end_time,
-                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,  
+                'start_and_end_time' => $start_time_formatted.' to '.$end_time_formatted,
                 'plus_time' => $transaction->plus_time,
                 'discount_rate' => $transaction->discount_rate,
                 'discount_amount' => $transaction->discount_amount,
@@ -161,7 +161,7 @@ class ReceptionistController extends Controller
             'payment_status' => $payment_status,
             'user_id' => $user_id
         ]);
-        
+
         if ($sale) {
             $sale_id = $sale->id;
             $client = $this->saveClient($spa_id, $data, $sale_id);
@@ -175,7 +175,7 @@ class ReceptionistController extends Controller
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }
@@ -220,14 +220,14 @@ class ReceptionistController extends Controller
                     if (!empty($list['value_therapist_2'])) {
                         $therapist = [$list['value_therapist_1'], $list['value_therapist_2']];
                     }
-    
+
                     foreach ($therapist as $key => $data_list) {
                         if ($key == 1) {
                             $amount = 0;
                         } else {
                             $amount = $list['price'];
                         }
-    
+
                         $transaction = Transaction::create([
                             'spa_id' => $spa_id,
                             'service_id' => $list['value_services'],
@@ -247,7 +247,7 @@ class ReceptionistController extends Controller
                             'room_id' => $list['value_room_id'],
                         ]);
                     }
-    
+
                     if ($transaction) {
                         $response = true;
                     }
@@ -328,7 +328,7 @@ class ReceptionistController extends Controller
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }
@@ -348,11 +348,11 @@ class ReceptionistController extends Controller
         $status = false;
         if($client->save()){
             $status = true;
-        } 
+        }
         // if($client->isDirty()){
         //     $client->save();
         //     $status = true;
-        // } 
+        // }
 
         return $status;
     }
@@ -374,7 +374,7 @@ class ReceptionistController extends Controller
                 $therapist2->end_time = $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']);
                 $therapist2->plus_time = $data['plus_time'];
                 $therapist2->room_id = $data['room_id'];
-        
+
                 if($therapist2->save()){
                     $status_2 = true;
                 }
@@ -403,7 +403,7 @@ class ReceptionistController extends Controller
                     'sales_id' => $data['sales_id'],
                     'room_id' => $data['room_id'],
                 ]);
-    
+
                 if ($transaction) {
                     $status_2 = true;
                 }
@@ -421,10 +421,10 @@ class ReceptionistController extends Controller
             $therapist1->end_time = $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']);
             $therapist1->plus_time = $data['plus_time'];
             $therapist1->room_id = $data['room_id'];
-    
+
             if($therapist1->save()){
                 $status = true;
-            } 
+            }
         }
 
         return $status;

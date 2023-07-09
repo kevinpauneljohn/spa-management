@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InventoryRequest;
 use App\Models\Inventory;
+use App\Models\Spa;
 use App\Services\InventoryService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -71,7 +72,7 @@ class InventoryController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Inventory
      */
     public function edit(Inventory $inventory)
     {
@@ -118,5 +119,35 @@ class InventoryController extends Controller
     {
         $inventories = Inventory::where('owner_id',$userService->get_staff_owner()->id)->get();
         return $inventoryService->inventory_lists($inventories);
+    }
+
+    /**
+     * fetch the spa inventories in datatables
+     * @param Spa $spa
+     * @param InventoryService $inventoryService
+     * @return mixed
+     */
+    public function specificSpaInventory(Spa $spa, InventoryService $inventoryService)
+    {
+        $inventories = Inventory::where('spa_id',$spa->id)->get();
+        return $inventoryService->inventory_lists($inventories);
+    }
+
+    /**
+     * decrease the quantity of the inventory
+     * @param Inventory $inventory
+     * @param int $decreaseQuantity
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function decreaseInventory(Inventory $inventory, int $decreaseQuantity): \Illuminate\Http\JsonResponse
+    {
+        //note: if you want to use this method, you must call the route('decrease.quantity',['inventory' => 'id here'])
+        $updatedQuantity = $inventory->quantity - $decreaseQuantity;
+        $inventory->quantity = $updatedQuantity;
+        if($inventory->save())
+        {
+            return response()->json(['success' => true,'message' => 'inventory successfully updated!']);
+        }
+        return response()->json(['success' => false,'message' => 'An error occurred!'],500);
     }
 }

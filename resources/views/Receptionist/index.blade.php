@@ -66,115 +66,126 @@
         } */
         /*  */
     </style>
-    <div class="card">
-        <div class="card-header">
-            <div class="card-body pb-0">
-                <section class="content">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <x-pos.appointments.board spaId="{{$spa_id}}" />
-                        </div>
-                        <div class="row">
-                            <section class="col-lg-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title">
-                                            <x-pos.appointments.book-appointment.create spaId="{{$spa_id}}" />
-                                        </h3>
+    <x-pos.appointments.board spaId="{{$spa_id}}" />
+    <div class="container-fluid">
 
-                                        <div class="card-tools">
-                                            <ul class="nav nav-pills ml-auto">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#room-availability" data-toggle="tab">Rooms</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link guestView" href="#guests-data" data-toggle="tab">
-                                                        Guest
-                                                        <span class="badge badge-danger text-default viewBadgeCount"></span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link transactionView" href="#transactions-data" data-toggle="tab">
-                                                        Transactions
-                                                    </a>
-                                                </li>
-
-                                                <li class="nav-item">
-                                                    <a class="nav-link appointmentView" href="#appointment-data" data-toggle="tab">
-                                                        Upcoming
-                                                        <span class="badge badge-danger text-default countSelectedAppoitment"></span>
-                                                    </a>
-                                                </li>
-
-                                                <li class="nav-item">
-                                                    <a class="nav-link appointmentView" href="#calendar-data" data-toggle="tab">
-                                                        Calendar
-                                                        <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-                                            <div class="tab-pane active" id="room-availability" style="position: relative;">
-                                                <input type="hidden" class="form-control" id="spa_id_val" value="{{$spa_id}}">
-                                                <input type="hidden" class="form-control" id="room_ids_val">
-                                                <input type="hidden" class="form-control" id="isValid">
-                                                <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
-                                                <input type="hidden" class="form-control" id="start_shit_id">
-                                                <input type="hidden" class="form-control" id="owner_id_val" value="{{$owner_id}}">
-                                                <x-pos.availability.room spaId="{{$spa_id}}" />
-                                            </div>
-                                            <div class="tab-pane" id="guests-data" style="position: relative; height: auto;">
-                                                <x-pos.appointments.guest-tabs.table-list spaId="{{$spa_id}}" />
-                                            </div>
-                                            <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
-                                                <x-pos.appointments.transactions-tab.table-list spaId="{{$spa_id}}" />
-                                            </div>
-                                            <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
-                                                <x-pos.appointments.upcoming-tab.table-list spaId="{{$spa_id}}" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                            <section class="col-lg-4">
-                                <div class="card">
-                                    <div class="card-header bg-info">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-users"></i>
-                                            Masseur Availability
-                                        </h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-                                            <div class="progress-group availableMasseur">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header bg-warning">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-users"></i>
-                                            Upcoming Appointments
-                                        </h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-                                            <div class="progress-group upcomingGuest">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
+        <div class="row">
+            <section class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-info">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Masseur Availability
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool collapsed" data-toggle="collapse" href="#collapse-collapsed" aria-expanded="true" aria-controls="collapse-collapsed" >
+                                <i class="fas fa-minus"></i>
+                            </button>
                         </div>
                     </div>
-                </section>
-            </div>
+                    <div id="collapse-collapsed" class="collapse">
+                        <div class="card-body">
+                            <div class="tab-content p-0">
+                                <div class="progress-group availableMasseur">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <section class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Upcoming Appointments
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-toggle="collapse" href="#upcoming-collapsed" aria-expanded="true" aria-controls="upcoming-collapsed" >
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="upcoming-collapsed" class="collapse">
+                        <div class="card-body">
+                            <div class="tab-content p-0">
+                                <div class="progress-group upcomingGuest">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+        <div class="row">
+            <section class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <x-pos.appointments.book-appointment.create spaId="{{$spa_id}}" />
+                        </h3>
+
+                        <div class="card-tools">
+                            <ul class="nav nav-pills ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#room-availability" data-toggle="tab">Rooms</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link guestView" href="#guests-data" data-toggle="tab">
+                                        Guest
+                                        <span class="badge badge-danger text-default viewBadgeCount"></span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link transactionView" href="#transactions-data" data-toggle="tab">
+                                        Transactions
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link appointmentView" href="#appointment-data" data-toggle="tab">
+                                        Upcoming
+                                        <span class="badge badge-danger text-default countSelectedAppoitment"></span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link appointmentView" href="#calendar-data" data-toggle="tab">
+                                        Calendar
+                                        <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content p-0">
+                            <div class="tab-pane active" id="room-availability" style="position: relative;">
+                                <input type="hidden" class="form-control" id="spa_id_val" value="{{$spa_id}}">
+                                <input type="hidden" class="form-control" id="room_ids_val">
+                                <input type="hidden" class="form-control" id="isValid">
+                                <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
+                                <input type="hidden" class="form-control" id="start_shit_id">
+                                <input type="hidden" class="form-control" id="owner_id_val" value="{{$owner_id}}">
+                                <x-pos.availability.room spaId="{{$spa_id}}" />
+                            </div>
+                            <div class="tab-pane" id="guests-data" style="position: relative; height: auto;">
+                                <x-pos.appointments.guest-tabs.table-list spaId="{{$spa_id}}" />
+                            </div>
+                            <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
+                                <x-pos.appointments.transactions-tab.table-list spaId="{{$spa_id}}" />
+                            </div>
+                            <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
+                                <x-pos.appointments.upcoming-tab.table-list spaId="{{$spa_id}}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -905,7 +916,6 @@
                                 </select>
                                 <input type="hidden" class="form-control" id="sales_invoice_id">
                                 <input type="hidden" class="form-control" id="sales_batch_id">
-                                <input type="hidden" class="form-control" id="total_transaction_amount">
                             </div>
                             <div class="form-group account_number_div hidden">
                                 <label for="payment_account_number">Reference Number</label><span class="isRequired">*</span>
@@ -914,19 +924,6 @@
                             <div class="form-group payment_bank_name hidden">
                                 <label for="payment_bank_name">Bank Name</label><span class="isBankName isRequired">*</span>
                                 <input type="text" class="form-control" name="payment_bank_name" id="payment_bank_name">
-                            </div>
-                            <div class="form-group transaction_amount hidden">
-                                <label for="transaction_amount">Total Transaction</label>
-                                <input type="text" class="form-control" name="transaction_amount" id="transaction_amount" readonly>
-                            </div>
-                            <div class="form-group cash_amount hidden">
-                                <label for="cash_amount">Amount</label><span class="cashAmount isRequired">*</span>
-                                <input type="text" class="form-control" name="cash_amount" id="cash_amount">
-                            </div>
-                            <div class="form-group cash_change hidden">
-                                <label for="cash_change">Change</label>
-                                <input type="text" class="form-control" name="cash_change" id="cash_change" readonly>
-                                <input type="hidden" class="form-control" name="cash_change_amount" id="cash_change_amount" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="payment_status">Payment Status</label><span class="isRequired">*</span>
@@ -1152,7 +1149,6 @@
         getUpcomingGuest($('#spa_id_val').val());
 
         $('.select-client-type').select2();
-
     });
 </script>
 @stop
