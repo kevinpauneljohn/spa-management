@@ -32,13 +32,13 @@ class TransactionService
         $data = [];
         if ($transaction) {
             $status = true;
-            $data = $transaction;    
+            $data = $transaction;
         }
 
         $response = [
             'status' => $status,
             'data' => $data,
-        ]; 
+        ];
 
         return $response;
     }
@@ -87,7 +87,7 @@ class TransactionService
         try {
             $sales = Sale::findOrFail($request->sales_id);
             $sales->amount_paid = ($sales->amount_paid + $request->amount) - $request->prevAmount;
-    
+
             if ($sales->save()) {
                 $transaction = Transaction::findOrFail($id);
                 $transaction->service_id = $request->service_id;
@@ -100,7 +100,7 @@ class TransactionService
                 if (!empty($request->plus_time)) {
                     $transaction->end_time = $this->getEndTime($request->service_id, $transaction->start_time, $request->plus_time);
                 }
-                
+
                 if ($transaction->save()) {
                     $client = Client::findOrFail($transaction->client_id);
                     $client->mobile_number = $request->mobile_number;
@@ -126,7 +126,7 @@ class TransactionService
         $response = [
             'status'   => $status,
             'message'   => $message
-        ]; 
+        ];
 
         return $response;
     }
@@ -154,7 +154,7 @@ class TransactionService
             $get_duration = strtotime($converted_duration_time)-strtotime("00:00:00");
             $result = date("Y-m-d H:i:s", strtotime($start_time_val)+$get_duration);
         }
- 
+
         return $result;
     }
 
@@ -172,7 +172,7 @@ class TransactionService
     }
 
     public function therapistAvailability($spa_id, $therapist_id, $dateTime)
-    {        
+    {
         $transaction = Transaction::where('therapist_1', $therapist_id)
             ->where('spa_id', $spa_id)
             ->where('start_time', '<=', $dateTime)
@@ -182,7 +182,7 @@ class TransactionService
         $status = true;
         $data = [];
         if ($transaction) {
-            $status = false;   
+            $status = false;
         }
 
         return $status;
@@ -211,7 +211,7 @@ class TransactionService
                 $multi_transaction->end_time = $now;
                 $multi_transaction->save();
             }
-            
+
             $code = 200;
             $status = true;
             $message = 'Client Transaction successfully stopped.';
@@ -277,7 +277,7 @@ class TransactionService
     public function getTherapistAvailability($spa_id, $therapist_id, $dateTime)
     {
         $therapist = Therapist::where('spa_id', $spa_id)->get();
-        
+
         $data = [];
         if (!empty($therapist)) {
             foreach ($therapist as $list) {
@@ -288,9 +288,9 @@ class TransactionService
                     'fullname' => $list->user->fullname,
                     'count' => $count_transactions,
                     'availability' => $is_available ? 'yes' : 'no',
-                ];                
+                ];
             }
-    
+
             array_multisort(array_column($data, 'count'), $data);
         }
 
