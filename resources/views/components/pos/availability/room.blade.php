@@ -6,16 +6,18 @@
 <div class="row displayRoomData">
 
 </div>
-@section('css')
+@push('css')
+    <style>
 
-@endsection
+    </style>
+@endpush
 
 @push('js')
     @if(auth()->check())
         <script src="{{asset('js/alerts.js')}}"></script>
         <script>
             $(document).ready(function(){
-                loadRoomAvailability();                
+                loadRoomAvailability();
                 function loadRoomAvailability ()
                 {
                     var spa_id = $('.spaId').val();
@@ -38,7 +40,7 @@
                             }
 
                             $('.displayRoomData').html('');
-                            $.each(result , function(index, val) { 
+                            $.each(result , function(index, val) {
                                 clearInterval(interValCountDown[val.room_id])
                                 var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
                                 var divAvailable = '';
@@ -70,16 +72,16 @@
                                     displayRoomData += '<input type="hidden" id="isAvailable'+val.room_id+'" value="'+isAvailable+'">';
                                     displayRoomData += '<div class="parentAvailDiv'+val.room_id+' small-box '+val.is_color_set+'">';
                                         displayRoomData += '<div class="inner">';
-                                            displayRoomData += '<h4>Room #: '+val.room_id+'</h4>';
+                                            displayRoomData += '<h4 class="text-bold text-yellow">Room #: '+val.room_id+'</h4>';
                                             displayRoomData += '<h6>Name: <b>'+fullName+'</b></h6>';
                                             displayRoomData += '<h6>Time: <b>'+roomTime+'</b></h6>';
                                             displayRoomData += '<h6>Remaining Time: <b><span id="countdown'+val.room_id+'"></span></b></h6>';
                                         displayRoomData += '</div>';
-                                        displayRoomData += '<div class="icon">';
-                                            displayRoomData += backgroundIcon;
-                                        displayRoomData += '</div>';
+                                        // displayRoomData += '<div class="icon">';
+                                        //     displayRoomData += backgroundIcon;
+                                        // displayRoomData += '</div>';
                                         displayRoomData += roomLink;
-                                        
+
                                     displayRoomData += '</div>';
                                 displayRoomData += '</div>';
                                 $( displayRoomData ).appendTo(".displayRoomData");
