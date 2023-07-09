@@ -127,7 +127,7 @@
                                                 <x-pos.availability.room spaId="{{$spa_id}}" />
                                             </div>
                                             <div class="tab-pane" id="guests-data" style="position: relative; height: auto;">
-                                                <x-pos.appointments.guest-tabs.list spaId="{{$spa_id}}" />
+                                                <x-pos.appointments.guest-tabs.table-list spaId="{{$spa_id}}" />
                                             </div>
                                             <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
                                                 <x-pos.appointments.transactions-tab.list spaId="{{$spa_id}}" />

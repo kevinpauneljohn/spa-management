@@ -4,7 +4,7 @@ namespace App\View\Components\Pos\Appointments\GuestTabs;
 
 use Illuminate\View\Component;
 
-class list extends Component
+class TableList extends Component
 {
     public $spaId;
     /**
@@ -24,6 +24,6 @@ class list extends Component
      */
     public function render()
     {
-        return view('components.pos.appointments.guest-tabs.list');
+        return view('components.pos.appointments.guest-tabs.table-list');
     }
 }
