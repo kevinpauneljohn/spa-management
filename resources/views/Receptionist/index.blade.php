@@ -66,68 +66,20 @@
         } */
         /*  */
     </style>
-
     <div class="card">
         <div class="card-header">
             <div class="card-body pb-0">
                 <section class="content">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <div class="info-box">
-                                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-calendar-check"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Daily Appointment</span>
-                                        <span class="info-box-number dailyAppointment"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-calendar-check"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Monthly Appointment</span>
-                                        <span class="info-box-number monthlyAppointment"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clearfix hidden-md-up"></div>
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Monthly New Client</span>
-                                        <span class="info-box-number newClients"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <div class="info-box mb-3">
-                                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Daily Sales</span>
-                                        <span class="info-box-number ">
-                                            <span class="badge badge-danger text-default dailySales float-left"></span>
-                                            @if(auth()->user()->hasRole('front desk') || auth()->user()->can('add sales'))
-                                                <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
-                                            @endif
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <x-pos.appointments.board spaId="{{$spa_id}}" />
                         </div>
                         <div class="row">
                             <section class="col-lg-8">
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">
-                                            <!-- <button class="btn btn-block btn-outline-info btn" id="addNewSales">
-                                                <i class="fas fa-shopping-cart"></i>
-                                                <span class="badge badge-danger text-default countSelected"></span>
-                                            </button> -->
-                                            <button class="btn btn-block btn-outline-info btn" id="addNewAppointment">
-                                                <i class="fas fa-calendar-plus"></i>
-                                            </button>
+                                            <x-pos.appointments.book-appointment.create spaId="{{$spa_id}}" />
                                         </h3>
 
                                         <div class="card-tools">
@@ -136,7 +88,7 @@
                                                     <a class="nav-link active" href="#room-availability" data-toggle="tab">Rooms</a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link salesView" href="#sales-data" data-toggle="tab">
+                                                    <a class="nav-link guestView" href="#guests-data" data-toggle="tab">
                                                         Guest
                                                         <span class="badge badge-danger text-default viewBadgeCount"></span>
                                                     </a>
@@ -160,7 +112,6 @@
                                                         <!-- <span class="badge badge-danger text-default countSelectedAppoitment"></span> -->
                                                     </a>
                                                 </li>
-
                                             </ul>
                                         </div>
                                     </div>
@@ -173,90 +124,19 @@
                                                 <input type="hidden" class="form-control" id="numberOfRooms" value="{{$total_rooms}}">
                                                 <input type="hidden" class="form-control" id="start_shit_id">
                                                 <input type="hidden" class="form-control" id="owner_id_val" value="{{$owner_id}}">
-                                                <div class="alert alert-primary alert-dismissible">
-                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    Green color means available, Gray color means occupied.
-                                                </div>
-                                                <div class="row displayRoomList">
-
-                                                </div>
+                                                <x-pos.availability.room spaId="{{$spa_id}}" />
                                             </div>
-                                            <div class="tab-pane" id="sales-data" style="position: relative; height: auto;">
-                                                <div class="alert alert-primary alert-dismissible">
-                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    List of clients and transactions.
-                                                </div>
-                                                <table id="sales-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Client</th>
-                                                            <th>Service</th>
-                                                            <th>Masseur</th>
-                                                            <th>Start Time</th>
-                                                            <th>Plus Time</th>
-                                                            <th>End Time</th>
-                                                            <th>Room #</th>
-                                                            <th>Amount</th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
+                                            <div class="tab-pane" id="guests-data" style="position: relative; height: auto;">
+                                                <x-pos.appointments.guest-tabs.list spaId="{{$spa_id}}" />
                                             </div>
                                             <div class="tab-pane" id="transactions-data" style="position: relative; height: auto;">
-                                                <div class="alert alert-primary alert-dismissible">
-                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    List of all sales. Please update the payment status once the client has paid.
-                                                </div>
-                                                <table id="transaction-data-lists" class="table table-striped table-valign-middle" style="width:100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Spa</th>
-                                                            <th>Status</th>
-                                                            <th>Amount</th>
-                                                            <th>Paid At</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
+                                                <x-pos.appointments.transactions-tab.list spaId="{{$spa_id}}" />
                                             </div>
-
                                             <div class="tab-pane" id="appointment-data" style="position: relative;height: auto;">
-                                                <div class="alert alert-primary alert-dismissible">
-                                                    <h5><i class="icon fas fa-info"></i> Note:</h5>
-                                                    List of upcoming clients. Please move and update the start time of the appointment once the client has arrived.
-                                                </div>
-                                                <table id="appointment-data-lists" class="table table-striped table-valign-middle" style="width:100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Client Name</th>
-                                                            <th>Service</th>
-                                                            <th>Batch #</th>
-                                                            <th>Amount</th>
-                                                            <th>Type</th>
-                                                            <th>Status</th>
-                                                            <th>Date Added</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
-
+                                                <x-pos.appointments.upcoming-tab.list spaId="{{$spa_id}}" />
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="card">
-
                                 </div>
                             </section>
                             <section class="col-lg-4">
@@ -290,21 +170,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="card">
-                                    <div class="card-header bg-danger">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-users"></i>
-                                            Waiting Guests
-                                        </h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content p-0">
-                                            <div class="progress-group upcomingGuest">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
                             </section>
                         </div>
                     </div>
@@ -436,7 +301,8 @@
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('add sales'))
-        <div class="modal fade" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <!-- <x-pos.appointments.book-appointment.create spaId="{{$spa_id}}" /> -->
+        <!-- <div class="modal fade" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="appointment-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-lg">
@@ -481,11 +347,12 @@
                     </div>
                 </div>
             </form>
-        </div>
+        </div> -->
     @endif
 
     @if(auth()->user()->hasRole('owner') || auth()->user()->can('edit sales'))
-        <div class="modal fade" id="update-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <x-pos.appointments.guest-tabs.edit id="{{$spa_id}}" />
+        <!-- <div class="modal fade" id="update-sales-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="sales-update-form" class="form-submit">
                 @csrf
                 <div class="modal-dialog modal-md modal-lg">
@@ -616,7 +483,7 @@
                     </div>
                 </div>
             </form>
-        </div>
+        </div> -->
 
         <div class="modal fade" id="update-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <form role="form" id="update-appointment-form" class="form-submit">
@@ -1230,6 +1097,11 @@
 <script src="{{asset('js/reusableJs.js')}}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script src="{{asset('js/frontdesk/BookAppointmentComponent/app.js')}}"></script>
+<script src="{{asset('js/frontdesk/BookAppointmentComponent/forms.js')}}"></script>
+<script src="{{asset('js/frontdesk/BookAppointmentComponent/filter-client.js')}}"></script>
+<script src="{{asset('js/frontdesk/BookAppointmentComponent/actions.js')}}"></script>
 <script>
     // $(window).on('load',function(){
     //     // $('#start-shift-modal').modal('show');
@@ -1249,8 +1121,8 @@
         getResponses($('#spa_id_val').val());
 
         getAppointmentCount();
-        getAppointmentType('up');
-        getAppointmentType('move');
+        // getAppointmentType('up');
+        // getAppointmentType('move');
         getServicesAppointment($('#spa_id_val').val(), 'move', 'move_app_services');
         // getServicesAppointment($('#spa_id_val').val(), 'up', 'edit_app_services');
 
