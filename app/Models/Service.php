@@ -16,6 +16,7 @@ class Service extends Model
         'name',
         'description',
         'duration',
+        'multiple_masseur',
         'price',
         'category',
         'price_per_plus_time'

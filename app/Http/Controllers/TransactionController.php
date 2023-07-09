@@ -184,7 +184,7 @@ class TransactionController extends Controller
         $transaction = Transaction::where([
             'spa_id' => $spa_id,
             'therapist_1' => $therapist_id,
-        ])->where('end_time', '>=', $now)->with(['service'])->first();
+        ])->where('end_time', '>=', $now)->orWhere('therapist_2', $therapist_id)->with(['service'])->first();
 
         $data = [];
         if (!empty($transaction)) {
@@ -213,92 +213,93 @@ class TransactionController extends Controller
 
     public function show($id)
     {
-        $data = [];
-        $transaction = Transaction::where('id', $id)->first();
+        return $this->transactionService->view($id);
+        // $data = [];
+        // $transaction = Transaction::where('id', $id)->with(['client', 'therapist', 'therapist2', 'service'])->first();
 
-        if (!empty($transaction)) {
-            $spa_id = $transaction->spa_id;
-            $service_id = $transaction->service_id;
-            $client_id = $transaction->client_id;
-            $sales_id = $transaction->sales_id;
+        // if (!empty($transaction)) {
+        //     $spa_id = $transaction->spa_id;
+        //     $service_id = $transaction->service_id;
+        //     $client_id = $transaction->client_id;
+        //     $sales_id = $transaction->sales_id;
 
-            $getTranscations = Transaction::where([
-                'spa_id' => $spa_id,
-                'service_id' => $service_id,
-                'client_id' => $client_id,
-                'sales_id' => $sales_id,
-            ])->orderBy('amount', 'DESC')->with(['client'])->get();
+        //     $getTranscations = Transaction::where([
+        //         'spa_id' => $spa_id,
+        //         'service_id' => $service_id,
+        //         'client_id' => $client_id,
+        //         'sales_id' => $sales_id,
+        //     ])->orderBy('amount', 'DESC')->with(['client'])->get();
 
-            if ($getTranscations->count() > 1) {
-                $therapist_2_id = $getTranscations[1]->id;
-                $therapist_2 = $getTranscations[1]->therapist_1;
-                $therapist_2_name = $this->getTherapistName($getTranscations[1]->therapist_1);
-            } else {
-                $therapist_2_id = '';
-                $therapist_2 = '';
-                $therapist_2_name = '';
-            }
+        //     if ($getTranscations->count() > 1) {
+        //         $therapist_2_id = $getTranscations[1]->id;
+        //         $therapist_2 = $getTranscations[1]->therapist_1;
+        //         $therapist_2_name = $this->getTherapistName($getTranscations[1]->therapist_1);
+        //     } else {
+        //         $therapist_2_id = '';
+        //         $therapist_2 = '';
+        //         $therapist_2_name = '';
+        //     }
 
-            $getAmount = $getTranscations[0]->amount;
-            $getId = $getTranscations[0]->id;
-            if ($getTranscations[0]->amount == 0) {
-                $getAmount = $getTranscations[1]->amount;
-                $getId = $getTranscations[1]->id;
-            }
+        //     $getAmount = $getTranscations[0]->amount;
+        //     $getId = $getTranscations[0]->id;
+        //     if ($getTranscations[0]->amount == 0) {
+        //         $getAmount = $getTranscations[1]->amount;
+        //         $getId = $getTranscations[1]->id;
+        //     }
 
-            $amount_formatted = number_format($getAmount);
-            $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
-            $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
-            $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
-            $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
-            $birth_date_formatted = '';
-            if (!empty($getTranscations[0]->client['date_of_birth'])) {
-                $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
-            }
+        //     $amount_formatted = number_format($getAmount);
+        //     $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
+        //     $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
+        //     $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
+        //     $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
+        //     $birth_date_formatted = '';
+        //     if (!empty($getTranscations[0]->client['date_of_birth'])) {
+        //         $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
+        //     }
 
-            $plus_time_formatted = 'None';
-            if ($getTranscations[0]->plus_time > 0) {
-                $plus_time = $transaction->plus_time * 60;
-                $converted_plus_time = gmdate("H:i:s", $plus_time);
-                $plus_time_formatted =  CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
-                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
-            }
+        //     $plus_time_formatted = 'None';
+        //     if ($getTranscations[0]->plus_time > 0) {
+        //         $plus_time = $transaction->plus_time * 60;
+        //         $converted_plus_time = gmdate("H:i:s", $plus_time);
+        //         $plus_time_formatted =  CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+        //             ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
+        //     }
 
-            $data = [
-                'id' => $getId,
-                'firstname' => $getTranscations[0]->client['firstname'],
-                'middlename' => $getTranscations[0]->client['middlename'],
-                'lastname' => $getTranscations[0]->client['lastname'],
-                'date_of_birth' => $getTranscations[0]->client['date_of_birth'],
-                'date_of_birth_formatted' => $birth_date_formatted,
-                'mobile_number' => $getTranscations[0]->client['mobile_number'],
-                'email' => $getTranscations[0]->client['email'],
-                'address' => $getTranscations[0]->client['address'],
-                'client_type' => $getTranscations[0]->client['client_type'],
-                'service_id' => $getTranscations[0]->service_id,
-                'service_name' => $getTranscations[0]->service_name,
-                'therapist_1' => $getTranscations[0]->therapist_1,
-                'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
-                'start_time' => $getTranscations[0]->start_time,     
-                'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
-                'start_date_formatted' => $start_date_formatted,
-                'start_time_formatted' => $start_time_formatted,
-                'end_time' => $getTranscations[0]->end_time,
-                'end_date_formatted' => $end_time_formatted,
-                'plus_time' => $getTranscations[0]->plus_time,  
-                'plus_time_formatted' => $plus_time_formatted,
-                'room_id' => $getTranscations[0]->room_id, 
-                'amount' => $getAmount, 
-                'client_id' => $getTranscations[0]->client_id, 
-                'sales_id' => $getTranscations[0]->sales_id, 
-                'amount_formatted' => $amount_formatted, 
-                'therapist_2_id' => $therapist_2_id,
-                'therapist_2' => $therapist_2,
-                'therapist_2_name' => $therapist_2_name,
-            ];
-        }
+        //     $data = [
+        //         'id' => $getId,
+        //         'firstname' => $getTranscations[0]->client['firstname'],
+        //         'middlename' => $getTranscations[0]->client['middlename'],
+        //         'lastname' => $getTranscations[0]->client['lastname'],
+        //         'date_of_birth' => $getTranscations[0]->client['date_of_birth'],
+        //         'date_of_birth_formatted' => $birth_date_formatted,
+        //         'mobile_number' => $getTranscations[0]->client['mobile_number'],
+        //         'email' => $getTranscations[0]->client['email'],
+        //         'address' => $getTranscations[0]->client['address'],
+        //         'client_type' => $getTranscations[0]->client['client_type'],
+        //         'service_id' => $getTranscations[0]->service_id,
+        //         'service_name' => $getTranscations[0]->service_name,
+        //         'therapist_1' => $getTranscations[0]->therapist_1,
+        //         'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
+        //         'start_time' => $getTranscations[0]->start_time,     
+        //         'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
+        //         'start_date_formatted' => $start_date_formatted,
+        //         'start_time_formatted' => $start_time_formatted,
+        //         'end_time' => $getTranscations[0]->end_time,
+        //         'end_date_formatted' => $end_time_formatted,
+        //         'plus_time' => $getTranscations[0]->plus_time,  
+        //         'plus_time_formatted' => $plus_time_formatted,
+        //         'room_id' => $getTranscations[0]->room_id, 
+        //         'amount' => $getAmount, 
+        //         'client_id' => $getTranscations[0]->client_id, 
+        //         'sales_id' => $getTranscations[0]->sales_id, 
+        //         'amount_formatted' => $amount_formatted, 
+        //         'therapist_2_id' => $therapist_2_id,
+        //         'therapist_2' => $therapist_2,
+        //         'therapist_2_name' => $therapist_2_name,
+        //     ];
+        // }
 
-        return $data;
+        // return $transaction;
     }
 
     public function getTherapistName($id)
@@ -444,5 +445,15 @@ class TransactionController extends Controller
     public function stopTransaction($id)
     {
         return $this->transactionService->stopTransactions($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->transactionService->update($request, $id);
+    }
+
+    public function preparation_time()
+    {
+        return $this->transactionService->preparation_time();
     }
 }

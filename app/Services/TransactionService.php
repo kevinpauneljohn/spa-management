@@ -3,10 +3,23 @@
 namespace App\Services;
 use App\Models\Transaction;
 use App\Models\Service;
+use App\Models\Therapist;
+use App\Models\Sale;
+use App\Models\Client;
 use Carbon\Carbon;
+use App\Services\RoomService;
+use Illuminate\Support\Facades\DB;
 
 class TransactionService
 {
+    private $roomService;
+
+    public function __construct(
+        RoomService $roomService,
+    ) {
+        $this->roomService = $roomService;
+    }
+
     public function get_transaction($client_id, $spa_id, $dateTime)
     {
         $transaction = Transaction::where('client_id', $client_id)
@@ -33,58 +46,89 @@ class TransactionService
     public function create($spa_id, $client_id, $sales_id, $data)
     {
         $status = false;
-        $data_array = [$data['therapist_1']];
-        if (!empty($data['therapist_2'])) {
-            $data_array = [$data['therapist_1'], $data['therapist_2']];
-        }
-
         $primary = 'no';
         if ($data['key'] == 1) {
             $primary = 'yes';
         }
 
-        foreach ($data_array as $key => $data_arrays) {
-            $therapist = $data['therapist_1'];
-            $amount = $data['price'];
+        $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
+        $transaction = Transaction::create([
+            'spa_id' => $spa_id,
+            'service_id' => $data['service_id'],
+            'service_name' => $data['service_name'],
+            'amount' => $data['price'],
+            'therapist_1' => $data['therapist_1'],
+            'therapist_2' => $data['therapist_2'],
+            'client_id' => $client_id,
+            'start_time' => $start_time_val,
+            'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
+            'plus_time' => $data['plus_time'],
+            'discount_rate' => NULL,
+            'discount_amount' => NULL,
+            'tip' => NULL,
+            'rating' => 0,
+            'sales_type' => $data['appointment_type'],
+            'sales_id' => $sales_id,
+            'room_id' => $data['room_id'],
+            'primary' => $primary,
+        ]);
 
-            if ($key == 1) {
-                $therapist = $data['therapist_2'];
-                $amount = 0;
-                $primary = 'no';
-            }
-
-            $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
-            $transaction = Transaction::create([
-                'spa_id' => $spa_id,
-                'service_id' => $data['service_id'],
-                'service_name' => $data['service_name'],
-                'amount' => $amount,
-                'therapist_1' => $therapist,
-                'client_id' => $client_id,
-                'start_time' => $start_time_val,
-                'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
-                'plus_time' => $data['plus_time'],
-                'discount_rate' => NULL,
-                'discount_amount' => NULL,
-                'tip' => NULL,
-                'rating' => 0,
-                'sales_type' => $data['appointment_type'],
-                'sales_id' => $sales_id,
-                'room_id' => $data['room_id'],
-                'primary' => $primary,
-            ]);
-
-            if ($transaction) {
-                $status = true;
-            }
+        if ($transaction) {
+            $status = true;
         }
-
         return $status;
     }
 
-    public function update()
+    public function update($request, $id)
     {
+        $status = false;
+        $message = 'Something went wrong. Unable to save the transaction.';
+        DB::beginTransaction();
+        try {
+            $sales = Sale::findOrFail($request->sales_id);
+            $sales->amount_paid = ($sales->amount_paid + $request->amount) - $request->prevAmount;
+    
+            if ($sales->save()) {
+                $transaction = Transaction::findOrFail($id);
+                $transaction->service_id = $request->service_id;
+                $transaction->service_name = $request->service_name;
+                $transaction->amount = $request->amount;
+                $transaction->therapist_1 = $request->therapist_1;
+                $transaction->therapist_2 = $request->therapist_2;
+                $transaction->plus_time = $request->plus_time;
+                $transaction->room_id = $request->room_id;
+                if (!empty($request->plus_time)) {
+                    $transaction->end_time = $this->getEndTime($request->service_id, $transaction->start_time, $request->plus_time);
+                }
+                
+                if ($transaction->save()) {
+                    $client = Client::findOrFail($transaction->client_id);
+                    $client->mobile_number = $request->mobile_number;
+                    $client->email = $request->email;
+                    $client->address = $request->address;
+                    $client->client_type = $request->client_type;
+                    if ($client->save()) {
+                        $status = true;
+                        $message = 'Transaction successfully updated.';
+                        DB::commit();
+                    } else {
+                        DB::rollback();
+                    }
+                } else {
+                    DB::rollback();
+                }
+            }
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            DB::rollback();
+        }
 
+        $response = [
+            'status'   => $status,
+            'message'   => $message
+        ]; 
+
+        return $response;
     }
 
     public function getEndTime($id, $start_time, $plus_time = null)
@@ -179,5 +223,96 @@ class TransactionService
         ];
 
         return response($response, $code);
+    }
+
+    public function view($id)
+    {
+        $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $transaction = Transaction::with(['client', 'therapist', 'therapist2', 'service'])->findOrFail($id);
+
+        $transaction->client->firstname = ucwords($transaction->client->firstname);
+        $transaction->client->middlename = ucwords($transaction->client->lastname) ? ucwords($transaction->client->middlename) : '';
+        $transaction->client->lastname = ucwords($transaction->client->lastname);
+        $transaction->amount_formatted = number_format($transaction->amount, 2);
+
+        $range = range(15, 300, 15);
+        $plus_time = [];
+        foreach ($range as $ranges) {
+            $hrs = floor($ranges/60);
+            $mins = $ranges%60;
+
+            if ($hrs > 0) {
+                $hours = $hrs.' hrs';
+            } else {
+                $hours = $hrs.' hr';
+            }
+
+            $value = '';
+            if ($hrs == 0) {
+                $value = $mins.' mins';
+            } else if ($mins == 0) {
+                $value = $hours;
+            } else {
+                $value = $hours.' & '.$mins.' mins';
+            }
+
+            $plus_time [$ranges] = $value;
+        }
+
+        $response = [
+            'status' => true,
+            'data' => [
+                'transaction' => $transaction,
+                'services' => Service::where('spa_id', $transaction->spa_id)->get(),
+                'room' => $this->roomService->getRoomList($transaction->spa_id, $now),
+                'plus_time' => $plus_time,
+                'therapist_1' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_1, $transaction->end_time),
+                'therapist_2' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_2, $transaction->end_time),
+            ],
+        ];
+
+        return $response;
+    }
+
+    public function getTherapistAvailability($spa_id, $therapist_id, $dateTime)
+    {
+        $therapist = Therapist::where('spa_id', $spa_id)->get();
+        
+        $data = [];
+        if (!empty($therapist)) {
+            foreach ($therapist as $list) {
+                $count_transactions = $this->therapistCount($therapist_id);
+                $is_available = $this->therapistAvailability($spa_id, $therapist_id, $dateTime);
+                $data [] = [
+                    'therapist_id' => $list->id,
+                    'fullname' => $list->user->fullname,
+                    'count' => $count_transactions,
+                    'availability' => $is_available ? 'yes' : 'no',
+                ];                
+            }
+    
+            array_multisort(array_column($data, 'count'), $data);
+        }
+
+        return $data;
+    }
+
+    public function preparation_time()
+    {
+        $range = range(1, 30, 1);
+        $prep_time = [];
+        foreach ($range as $ranges) {
+            $mins = $ranges%60;
+            $value = '';
+            if ($mins > 1) {
+                $value = $mins.' mins';
+            } else {
+                $value = $mins.' min';
+            }
+
+            $prep_time [$ranges] = $value;
+        }
+
+        return $prep_time;
     }
 }
