@@ -782,7 +782,7 @@ function viewAppointment(id)
 
             $("#edit_app_servicesup").select2({
                 placeholder: 'Choose Services',
-                allowClear: true
+                allowClear: false
             }).val(result.service_id).trigger("change");
 
             $('#price_appointment_up').val(result.amount);
@@ -812,7 +812,7 @@ function viewAppointment(id)
 
             $("#move_app_servicesmove").select2({
                 placeholder: 'Choose Services',
-                allowClear: true
+                allowClear: false
             }).val(result.service_id).trigger("change");
 
             $('#move_app_services_id').val(result.service_id);

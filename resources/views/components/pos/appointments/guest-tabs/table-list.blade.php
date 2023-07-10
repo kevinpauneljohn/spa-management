@@ -148,7 +148,7 @@
                                 $('.select-edit-services').append('<option></option>');
                                 $('.select-edit-services').select2({
                                     placeholder: "Choose Services",
-                                    allowClear: true
+                                    allowClear: false
                                 });
 
                                 $.each(result.data.services , function(index, services) { 
@@ -167,7 +167,7 @@
                                 $('.select-edit-room').append('<option></option>');
                                 $('.select-edit-room').select2({
                                     placeholder: "Choose Room",
-                                    allowClear: true
+                                    allowClear: false
                                 });
 
                                 $.each(result.data.room , function(index, rooms) { 

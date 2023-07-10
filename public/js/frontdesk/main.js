@@ -36,52 +36,52 @@ $(document).on('click', '.stop-sales-btn', function () {
 // });
 
 // Start Change Functions //
-$(document).on('change', '.select-edit-services, .select-services-appointment, .select-services-walkin-appointment, .select-services-move-appointment', function () {
-    var select_type = $(this).data("select")
-    var spa_id = $('#spa_id_val').val();
-    var selected = $(this).select2('data');
-    var selected_id = selected[0].id;
+// $(document).on('change', '.select-edit-services, .select-services-appointment, .select-services-walkin-appointment, .select-services-move-appointment', function () {
+//     var select_type = $(this).data("select")
+//     var spa_id = $('#spa_id_val').val();
+//     var selected = $(this).select2('data');
+//     var selected_id = selected[0].id;
 
-    if (select_type == 'edit') {
-        $('#edit_price').val(0);
-        onChangeServices(spa_id, selected_id, '', 'edit_price','edit_plus_time_price', 'totalAmountFormatted', 'totalAmountEditToPay', 'edit_plus_time');
-    } else if (select_type == 'new') {
-        var data_id = $(this).data("id")
-        $('#price_appointment'+data_id).val('');
-        $('#service_name_appointment_id'+data_id).val(selected_id);
+//     if (select_type == 'edit') {
+//         $('#edit_price').val(0);
+//         onChangeServices(spa_id, selected_id, '', 'edit_price','edit_plus_time_price', 'totalAmountFormatted', 'totalAmountEditToPay', 'edit_plus_time');
+//     } else if (select_type == 'new') {
+//         var data_id = $(this).data("id")
+//         $('#price_appointment'+data_id).val('');
+//         $('#service_name_appointment_id'+data_id).val(selected_id);
     
-        onChangeServices(
-            spa_id, 
-            selected_id, 
-            data_id, 
-            'price_appointment', 
-            'appointment_plus_time_price_optional', 
-            'totalAmountUpdateAppointmentFormatted', 
-            'totalAmountAppointmentToPay', 
-            'plusTimeAppointment'
-        );
-    } else if (select_type == 'appointment') {
-        var data_id = $(this).data("id");
-        $('#appointment_app_services_id'+data_id).val(selected_id);
-        $('#price_appointment_walkin'+data_id).val(0);
+//         onChangeServices(
+//             spa_id, 
+//             selected_id, 
+//             data_id, 
+//             'price_appointment', 
+//             'appointment_plus_time_price_optional', 
+//             'totalAmountUpdateAppointmentFormatted', 
+//             'totalAmountAppointmentToPay', 
+//             'plusTimeAppointment'
+//         );
+//     } else if (select_type == 'appointment') {
+//         var data_id = $(this).data("id");
+//         $('#appointment_app_services_id'+data_id).val(selected_id);
+//         $('#price_appointment_walkin'+data_id).val(0);
     
-        onChangeServices(
-            spa_id, 
-            selected_id, 
-            data_id, 
-            'price_appointment_walkin', 
-            'appointment_plus_time_price', 
-            'total_amount_appointment', 
-            'appointment_total_service_price', 
-            'plus_time_appointment'
-        );
-    } else if (select_type == 'move') {
-        $('#move_app_services_id').val(selected_id);
-        $('#price_appointment_move').val(0);
+//         onChangeServices(
+//             spa_id, 
+//             selected_id, 
+//             data_id, 
+//             'price_appointment_walkin', 
+//             'appointment_plus_time_price', 
+//             'total_amount_appointment', 
+//             'appointment_total_service_price', 
+//             'plus_time_appointment'
+//         );
+//     } else if (select_type == 'move') {
+//         $('#move_app_services_id').val(selected_id);
+//         $('#price_appointment_move').val(0);
 
-        onChangeServices(spa_id, selected_id, '', 'price_appointment_move','move_plus_time_price', 'totalAmountMoveAppointmentFormatted', 'totalAmountMoveToPay', 'move_plus_time');
-    }
-});
+//         onChangeServices(spa_id, selected_id, '', 'price_appointment_move','move_plus_time_price', 'totalAmountMoveAppointmentFormatted', 'totalAmountMoveToPay', 'move_plus_time');
+//     }
+// });
 
 $(document).on('change', '.select-edit-plus_time, .select-appointment-plus_time, .select-move-plus_time', function () {
     var select_type = $(this).data("select");
@@ -120,85 +120,6 @@ $(document).on('change', '.select-edit-plus_time, .select-appointment-plus_time,
     }
 });
 
-$(document).on('change', '.select-appointment-masseur1, .select-edit-masseur1, .select-move-masseur1', function () {
-    var select_type = $(this).data("select");
-    var data_id = $(this).data("id");
-    var spa_id = $('#spa_id_val').val();
-    var selected = $(this).select2('data');
-    var id = selected[0].id;
-
-    UnAvailableTherapist.push(id);
-    var array = [];
-    if (id !== '' || id !== null) {
-        array = {
-            guest_id: data_id,
-            value: id,
-            therapist: 1,
-            type: 'therapist'
-        };
-
-        unAvailableTherapistAndRooms.push(array);
-    }
-
-    if (select_type == 'edit') {
-        var cur_val = $('#edit_masseur1_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur('', id, cur_val, 'edit_masseur1_id', 'select-edit-masseur1', 'select-edit-masseur2');
-        }
-    } else if (select_type == 'appointment') {
-        var cur_val = $('#appointment_masseur1'+data_id+'_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur(data_id, id, cur_val, 'appointment_masseur1'+data_id+'_id', 'select-appointment-masseur1', 'select-appointment-masseur2'); 
-        }
-
-        $('#appointmentCustomCheckbox'+data_id).prop('disabled', false);
-    } else if (select_type == 'move') {
-        var cur_val = $('#move_masseur1_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur('', id, cur_val, 'move_masseur1_id', 'select-move-masseur1', 'select-move-masseur2');
-        }
-
-        $('#moveCustomCheckbox').prop('disabled', false);
-    }
-});
-
-$(document).on('change', '.select-appointment-masseur2, .select-edit-masseur2, .select-move-masseur2', function () {
-    var select_type = $(this).data("select");
-    var data_id = $(this).data("id");
-    var spa_id = $('#spa_id_val').val();
-    var selected = $(this).select2('data');
-    var id = selected[0].id;
-
-    UnAvailableTherapist.push(id);
-
-    if (id !== '' || id !== null) {
-        array = {
-            guest_id: data_id,
-            value: id,
-            therapist: 2,
-            type: 'therapist'
-        };
-
-        unAvailableTherapistAndRooms.push(array);
-    }
-
-    if (select_type == 'edit') {
-        var cur_val = $('#edit_masseur2_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur('', id, cur_val, 'edit_masseur2_id', 'select-edit-masseur1', 'select-edit-masseur2');
-        }
-    } else if (select_type == 'appointment') {
-        var cur_val = $('#appointment_masseur2'+data_id+'_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur(data_id, id, cur_val, 'appointment_masseur2'+data_id+'_id', 'select-appointment-masseur1', 'select-appointment-masseur2');
-        }
-    } else if (select_type == 'move') {
-        var cur_val = $('#move_masseur2_id').val();
-        if (cur_val !== id) {
-            onChangeMasseur('', id, cur_val, 'move_masseur2_id', 'select-move-masseur1', 'select-move-masseur2');
-        }
-    }
-});
 // End Change Functions //
 
 // Start Click Functions //
@@ -245,41 +166,41 @@ $(document).on('click', '.isEditMultipleMasseur, .isAppointmentMultipleMasseur, 
     }
 });
 
-$(document).on('change', '.select-edit-room, .select-appointment-room, .select-move-room', function () {
-    var select_type = $(this).data("select");
-    var selected = $(this).select2('data');
-    var id = selected[0].id;
-    UnAvailableRoom.push(id);
+// $(document).on('change', '.select-edit-room, .select-appointment-room, .select-move-room', function () {
+//     var select_type = $(this).data("select");
+//     var selected = $(this).select2('data');
+//     var id = selected[0].id;
+//     UnAvailableRoom.push(id);
 
-    if (select_type == 'edit') {
-        var cur_val = $('#edit_room_val').val();
-        if (cur_val !== id) {
-            onChangeRoom('', id, cur_val, 'select-edit-room', 'edit_room_val')
-        }
-    } else if (select_type == 'appointment') {
-        var data_id = $(this).data("id");
-        var cur_val = $('#appointment_room_id'+data_id).val();
-        if (cur_val !== id) {
-            onChangeRoom(data_id, id, cur_val, 'select-appointment-room', 'appointment_room_id')
+//     if (select_type == 'edit') {
+//         var cur_val = $('#edit_room_val').val();
+//         if (cur_val !== id) {
+//             onChangeRoom('', id, cur_val, 'select-edit-room', 'edit_room_val')
+//         }
+//     } else if (select_type == 'appointment') {
+//         var data_id = $(this).data("id");
+//         var cur_val = $('#appointment_room_id'+data_id).val();
+//         if (cur_val !== id) {
+//             onChangeRoom(data_id, id, cur_val, 'select-appointment-room', 'appointment_room_id')
 
-            array = {
-                guest_id: data_id,
-                value: id,
-                therapist: null,
-                type: 'room'
-            };
+//             array = {
+//                 guest_id: data_id,
+//                 value: id,
+//                 therapist: null,
+//                 type: 'room'
+//             };
     
-            unAvailableTherapistAndRooms.push(array);
+//             unAvailableTherapistAndRooms.push(array);
 
-            console.log(unAvailableTherapistAndRooms);
-        }
-    } else if (select_type == 'move') {
-        var cur_val = $('#move_room_id').val();
-        if (cur_val !== id) {
-            onChangeRoom('', id, cur_val, 'select-move-room', 'move_room_id')
-        }
-    }
-});
+//             console.log(unAvailableTherapistAndRooms);
+//         }
+//     } else if (select_type == 'move') {
+//         var cur_val = $('#move_room_id').val();
+//         if (cur_val !== id) {
+//             onChangeRoom('', id, cur_val, 'select-move-room', 'move_room_id')
+//         }
+//     }
+// });
 
 $(document).on('click', '.reservedInfo', function () {
     viewReservedRoom($(this).data("transaction_id"));
@@ -617,11 +538,11 @@ $(document).on('click','.update-invoice-btn',function(){
 });
 
 //New Appointment Modal with Walk-In type
-$(document).on('select2:close', '.select-services-walkin-appointment, .select-appointment-plus_time, .select-appointment-masseur1, .select-appointment-masseur2, .select-appointment-room', function (e) {
-    var evt = "scroll.select2";
-    $(e.target).parents().off(evt);
-    $(window).off(evt);
-});
+// $(document).on('select2:close', '.select-services-walkin-appointment, .select-appointment-plus_time, .select-appointment-masseur1, .select-appointment-masseur2, .select-appointment-room', function (e) {
+//     var evt = "scroll.select2";
+//     $(e.target).parents().off(evt);
+//     $(window).off(evt);
+// });
 
 //Update guest Modal
 $(document).on('select2:close', '.select-edit-services, .select-edit-masseur1, .select-edit-masseur2, .select-edit-plus_time, .select-edit-room', function (e) {

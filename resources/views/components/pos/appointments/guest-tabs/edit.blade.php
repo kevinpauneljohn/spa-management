@@ -67,23 +67,23 @@
                                 <div class="col-md-4 edit_services_div">
                                     <label for="edit_services">Services</label><span class="isRequired">*</span>
                                     <select data-select="edit" name="edit_services" id="edit_services" class="form-control select-edit-services" style="width:100%;"></select>
-                                    <input type="text" name="edit_price" id="edit_price" class="form-control">
-                                    <input type="text" id="multiple_masseur" class="form-control">
+                                    <input type="hidden" name="edit_price" id="edit_price" class="form-control">
+                                    <input type="hidden" id="multiple_masseur" class="form-control">
                                     <p class="text-danger hidden" id="error-edit_services"></p>
                                 </div>
                                 <div class="col-md-4 edit_masseur1_div">
                                     <label for="edit_masseur1">Masseur 1</label><span class="isRequired">*</span>
                                     <select data-select="edit" name="edit_masseur1" id="edit_masseur1" class="form-control select-edit-masseur1" style="width:100%;"></select>
-                                    <input type="text" name="edit_masseur1_id" id="edit_masseur1_id" class="form-control">
-                                    <input type="text" name="edit_masseur1_id_prev" id="edit_masseur1_id_prev" class="form-control">
+                                    <input type="hidden" name="edit_masseur1_id" id="edit_masseur1_id" class="form-control">
+                                    <input type="hidden" name="edit_masseur1_id_prev" id="edit_masseur1_id_prev" class="form-control">
                                     <p class="text-danger hidden" id="error-edit_masseur1"></p>
                                 </div>
                                 <div class="col-md-4 edit_masseur2_div">
                                     <label for="edit_masseur2">Masseur 2</label>
                                     <select data-select="edit" name="edit_masseur2" id="edit_masseur2" class="form-control select-edit-masseur2" style="width:100%;"></select>
-                                    <input type="text" name="edit_masseur2_id" id="edit_masseur2_id" class="form-control">
-                                    <input type="text" name="edit_masseur2_id_prev" id="edit_masseur2_id_prev" class="form-control">
-                                    <input type="text" name="edit_masseur2_id_val" id="edit_masseur2_id_val" class="form-control">
+                                    <input type="hidden" name="edit_masseur2_id" id="edit_masseur2_id" class="form-control">
+                                    <input type="hidden" name="edit_masseur2_id_prev" id="edit_masseur2_id_prev" class="form-control">
+                                    <input type="hidden" name="edit_masseur2_id_val" id="edit_masseur2_id_val" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -97,13 +97,13 @@
                                 <div class="col-md-4">
                                     <label for="edit_plus_time">Plus Time</label>
                                     <select data-select="edit" name="edit_plus_time" id="edit_plus_time" class="form-control select-edit-plus_time" style="width:100%;"></select>
-                                    <input type="text" name="edit_plus_time_price" id="edit_plus_time_price" class="form-control">
+                                    <input type="hidden" name="edit_plus_time_price" id="edit_plus_time_price" class="form-control">
                                     <p class="text-danger hidden" id="error-edit_services"></p>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="edit_room">Room #</label>
                                     <select data-select="edit" name="edit_room" id="edit_room" class="form-control select-edit-room" style="width:100%;"></select>
-                                    <input type="text" name="edit_room_val" id="edit_room_val" class="form-control">
+                                    <input type="hidden" name="edit_room_val" id="edit_room_val" class="form-control">
                                 </div>
                             </div>
                         </div>
