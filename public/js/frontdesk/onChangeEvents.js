@@ -93,40 +93,40 @@
 //     }
 // }
 
-function onChangeMasseur(data_id, id, cur_val, field, therapist_1, therapist_2)
-{
-    $('.'+therapist_1).children('option[value="' + id + '"]').attr('disabled', true);
-    $('.'+therapist_2).children('option[value="' + id + '"]').attr('disabled', true);
+// function onChangeMasseur(data_id, id, cur_val, field, therapist_1, therapist_2)
+// {
+//     $('.'+therapist_1).children('option[value="' + id + '"]').attr('disabled', true);
+//     $('.'+therapist_2).children('option[value="' + id + '"]').attr('disabled', true);
 
-    $('.'+therapist_1).children('option[value="' + cur_val + '"]').attr('disabled', false);
-    $('.'+therapist_2).children('option[value="' + cur_val + '"]').attr('disabled', false);
+//     $('.'+therapist_1).children('option[value="' + cur_val + '"]').attr('disabled', false);
+//     $('.'+therapist_2).children('option[value="' + cur_val + '"]').attr('disabled', false);
 
-    $('#'+field).val(id);
+//     $('#'+field).val(id);
 
-    $('.'+therapist_1).select2({
-        placeholder: "Choose Masseur 1",
-        allowClear: true
-    });
+//     $('.'+therapist_1).select2({
+//         placeholder: "Choose Masseur 1",
+//         allowClear: true
+//     });
 
-    $('.'+therapist_2).select2({
-        placeholder: "Choose Masseur 2",
-        allowClear: true
-    });
-}
+//     $('.'+therapist_2).select2({
+//         placeholder: "Choose Masseur 2",
+//         allowClear: true
+//     });
+// }
 
-function onChangeRoom(data_id, id, cur_val, selectRoom, appointmentRoom)
-{
-    $('.'+selectRoom).children('option[value="' + id + '"]').attr('disabled', true);
+// function onChangeRoom(data_id, id, cur_val, selectRoom, appointmentRoom)
+// {
+//     $('.'+selectRoom).children('option[value="' + id + '"]').attr('disabled', true);
     
-    $('.'+selectRoom).children('option[value="' + cur_val + '"]').attr('disabled', false);
+//     $('.'+selectRoom).children('option[value="' + cur_val + '"]').attr('disabled', false);
 
-    $('#'+appointmentRoom+data_id).val(id);
+//     $('#'+appointmentRoom+data_id).val(id);
 
-    $('.'+selectRoom).select2({
-        placeholder: "Choose Room",
-        allowClear: true
-    });
-}
+//     $('.'+selectRoom).select2({
+//         placeholder: "Choose Room",
+//         allowClear: true
+//     });
+// }
 
 function onChangeAppointmentType(
     val, 

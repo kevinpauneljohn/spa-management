@@ -4,31 +4,31 @@ function clickSalesView(id)
     getTotalSales(id);
 }
 
-function multipleMasseurCheckbox(id, therapist_2, checkbox_id, therapist1_id, therapis2_id, therapist_2_val, therapist_select)
-{
-    if ($('#'+checkbox_id+id).is(':checked') == false) {
-        const index = UnAvailableTherapist.indexOf(therapist_2);
-        if (index > -1) {
-            UnAvailableTherapist.splice(index, 1);
-        }
+// function multipleMasseurCheckbox(id, therapist_2, checkbox_id, therapist1_id, therapis2_id, therapist_2_val, therapist_select)
+// {
+//     if ($('#'+checkbox_id+id).is(':checked') == false) {
+//         const index = UnAvailableTherapist.indexOf(therapist_2);
+//         if (index > -1) {
+//             UnAvailableTherapist.splice(index, 1);
+//         }
 
-        $('.'+therapist1_id).children('option[value="'+therapist_2+'"]').prop('disabled', false);
-        $('.'+therapist1_id).select2({
-            placeholder: "Choose Masseur 1",
-            allowClear: true
-        });
+//         $('.'+therapist1_id).children('option[value="'+therapist_2+'"]').prop('disabled', false);
+//         $('.'+therapist1_id).select2({
+//             placeholder: "Choose Masseur 1",
+//             allowClear: true
+//         });
 
-        $('#'+therapist_select+id).attr('disabled',true);
-        $('.'+therapis2_id).children('option[value="'+therapist_2+'"]').prop('disabled', false);
-        $("."+therapis2_id).select2({
-            placeholder: "Choose Masseur 2",
-            allowClear: true
-        }).val('').trigger("change");
-        $('#'+therapist_2_val+id).val('');
-    } else {
-        $('#'+therapist_select+id).attr('disabled',false);
-    }
-}
+//         $('#'+therapist_select+id).attr('disabled',true);
+//         $('.'+therapis2_id).children('option[value="'+therapist_2+'"]').prop('disabled', false);
+//         $("."+therapis2_id).select2({
+//             placeholder: "Choose Masseur 2",
+//             allowClear: true
+//         }).val('').trigger("change");
+//         $('#'+therapist_2_val+id).val('');
+//     } else {
+//         $('#'+therapist_select+id).attr('disabled',false);
+//     }
+// }
 
 function closeTabs(id, count)
 {

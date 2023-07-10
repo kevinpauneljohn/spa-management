@@ -10,7 +10,7 @@ function getPrepTimeList(id)
             $('#preparation_time'+id).append('<option></option>');
             $('#preparation_time'+id).select2({
                 placeholder: "Choose Time",
-                allowClear: true
+                allowClear: false
             });
             $.each(result , function(index, val) { 
                 $('#preparation_time'+id).append('<option value="'+index+'">'+val+'</option>');
@@ -31,7 +31,7 @@ function getServicesAppointment(spa_id, id)
             $('#service_name_appointment_walkin'+id).append('<option></option>');
             $('#service_name_appointment_walkin'+id).select2({
                 placeholder: "Choose Services",
-                allowClear: true
+                allowClear: false
             });
             $.each(result , function(index, val) { 
                 $('#service_name_appointment_walkin'+id).append('<option value="'+val+'">'+index+'</option>');
@@ -79,14 +79,14 @@ function getPosTherapistApi(spa_id, dateTime, id)
             $('#appointment_masseur1'+id).append('<option></option>');
             $('#appointment_masseur1'+id).select2({
                 placeholder: "Choose Masseur 1",
-                allowClear: true
+                allowClear: false
             }); 
 
             $('#appointment_masseur2'+id).html('');
             $('#appointment_masseur2'+id).append('<option></option>');
             $('#appointment_masseur2'+id).select2({
                 placeholder: "Choose Masseur 2",
-                allowClear: true
+                allowClear: false
             }); 
 
             $.each(result , function(index, val) {                
@@ -100,15 +100,21 @@ function getPosTherapistApi(spa_id, dateTime, id)
                     $('#appointment_masseur2'+id).children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
                 }
                 
-                $('#appointment_masseur1'+id).select2({
-                    placeholder: "Choose Masseur 1",
-                    allowClear: true
-                });
+                if (filterPreSelectedTherapist.length > 0) {
+                    $.each(filterPreSelectedTherapist , function(un_index, un_val) {
+                        $('#appointment_masseur1'+id).children('option[value="' + un_val + '"]').attr('disabled', true);
+                        $('#appointment_masseur2'+id).children('option[value="' + un_val + '"]').attr('disabled', true);
 
-                $('#appointment_masseur2'+id).select2({
-                    placeholder: "Choose Masseur 2",
-                    allowClear: true
-                });
+                        $('#appointment_masseur1'+id).select2({
+                            placeholder: "Choose Masseur 1",
+                            allowClear: true
+                        });
+                        $('#appointment_masseur2'+id).select2({
+                            placeholder: "Choose Masseur 2",
+                            allowClear: true
+                        });
+                    });
+                }
             });
         }
     });
@@ -131,7 +137,7 @@ function getPosRoomApi(spa_id, dateTime, id)
             $('#appointment_room'+id).append('<option></option>');
             $('#appointment_room'+id).select2({
                 placeholder: "Choose Room",
-                allowClear: true
+                allowClear: false
             }); 
 
             $.each(result , function(index, val) { 
@@ -143,10 +149,16 @@ function getPosRoomApi(spa_id, dateTime, id)
                     $('#appointment_room'+id).children('option[value="' + val.room_id + '"]').attr('disabled', true);
                 }
                 
-                $('#appointment_room'+id).select2({
-                    placeholder: "Choose Room",
-                    allowClear: true
-                });
+                if (filterPreSelectedRoom.length > 0) {
+                    $.each(filterPreSelectedRoom , function(un_index, un_val) {
+                        $('#appointment_room'+id).children('option[value="' + un_val + '"]').attr('disabled', true);
+
+                        $('#appointment_room'+id).select2({
+                            placeholder: "Choose Masseur 1",
+                            allowClear: true
+                        });
+                    });
+                }
             });
         }
     });

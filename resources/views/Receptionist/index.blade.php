@@ -8,7 +8,57 @@
 @stop
 
 @section('content')
+@section('css')
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
+<style>
+    .hidden {
+        display: none;
+    }
+    .pointer {cursor: pointer;}
+    .error-border {
+        border: 2px solid red;
+    }
+    .isRequired {
+        color: red;
+    }
+    .select2-results {
+        color: #000 !important;
+    }
+    .select2-container--default .select2-selection--single {
+        height: 40px;
+    }
 
+    .modal-body{
+        max-height: calc(400vh - 200px) !important;
+        overflow-y: auto;
+    }
+    .progress span {
+        position: absolute;
+        text-align:center;
+        display: block;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+    .closeTabs {
+        float: right;
+        font-size: .9rem;
+        font-weight: 700;
+        line-height: 1;
+        color: red;
+        text-shadow: 0 1px 0 #fff;
+        opacity: .3;
+        margin-top: -40px;
+        margin-right: 1px;
+        border-radius: 75px;
+    }
+    .modal-body{
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+</style>
+@stop
     <div class="row mb-2">
         <div class="col-sm-6">
             <h3 class="text-cyan">{{ucwords($title)}}</h3>
@@ -991,69 +1041,6 @@
             </form>
         </div>
     @endif
-@stop
-
-@section('css')
-<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" integrity="sha512-3JRrEUwaCkFUBLK1N8HehwQgu8e23jTH4np5NHOmQOobuC4ROQxFwFgBLTnhcnQRMs84muMh0PnnwXlPq5MGjg==" crossorigin="anonymous" />
-<style>
-    /* span {
-        color: #fff;
-    } */
-    .hidden {
-        display: none;
-    }
-    .pointer {cursor: pointer;}
-    .error-border {
-        border: 2px solid red;
-    }
-    .isRequired {
-        color: red;
-    }
-    .select2-results {
-        color: #000 !important;
-    }
-    .select2-container--default .select2-selection--single {
-        height: 40px;
-    }
-
-    .modal-body{
-        max-height: calc(400vh - 200px) !important;
-        overflow-y: auto;
-    }
-
-    /* .gj-modal .gj-picker-bootstrap {
-        padding: 15px !important;
-    } */
-    .progress span {
-        position: absolute;
-        text-align:center;
-        display: block;
-        width: 100%;
-        font-weight: 600;
-        margin-top: 8px;
-    }
-    .closeTabs {
-        float: right;
-        font-size: .9rem;
-        font-weight: 700;
-        line-height: 1;
-        color: red;
-        text-shadow: 0 1px 0 #fff;
-        opacity: .3;
-        margin-top: -40px;
-        margin-right: 1px;
-        border-radius: 75px;
-    }
-    .modal-body{
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
-    }
-    /* .bootstrap-datetimepicker-widget table td {
-    color: red;
-    } */
-    /*  */
-</style>
 @stop
 
 @section('js')

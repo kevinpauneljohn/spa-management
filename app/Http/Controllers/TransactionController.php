@@ -181,10 +181,10 @@ class TransactionController extends Controller
     public function getTherapistTransaction($spa_id, $therapist_id)
     {
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        $transaction = Transaction::where([
-            'spa_id' => $spa_id,
-            'therapist_1' => $therapist_id,
-        ])->where('end_time', '>=', $now)->orWhere('therapist_2', $therapist_id)->with(['service'])->first();
+        $transaction = transaction::where(function ($query) use ($therapist_id) {
+            $query->where('therapist_1', $therapist_id)
+                  ->orWhere('therapist_2', $therapist_id);
+        })->where('spa_id', $spa_id)->where('end_time', '>=', $now)->with(['service'])->first();
 
         $data = [];
         if (!empty($transaction)) {
