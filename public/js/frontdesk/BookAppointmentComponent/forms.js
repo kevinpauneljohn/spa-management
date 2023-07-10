@@ -177,14 +177,11 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
                     content +='<label for="appointment_masseur1'+id+'">Masseur 1</label><span class="isRequired">*</span>';
                     content +='<select data-select="appointment" data-id="'+id+'" name="appointment_masseur1'+id+'" id="appointment_masseur1'+id+'" class="form-control select-appointment-masseur1" style="width:100%;"></select>';
                     content +='<input type="hidden" name="appointment_masseur1'+id+'_id" id="appointment_masseur1'+id+'_id" class="form-control">';
-                    content +='<input type="hidden" name="appointment_masseur1'+id+'_id_prev" id="appointment_masseur1'+id+'_id_prev" class="form-control">';
                 content +='</div>';
                 content +='<div class="col-md-4 appointment_masseur2_div'+id+' hidden">';
                     content +='<label for="appointment_masseur2'+id+'">Masseur 2</label><span class="isRequired">*</span>';
                     content +='<select data-select="appointment" data-id="'+id+'" name="appointment_masseur2'+id+'" id="appointment_masseur2'+id+'" class="form-control select-appointment-masseur2" style="width:100%;"></select>';
                     content +='<input type="hidden" name="appointment_masseur2'+id+'_id" id="appointment_masseur2'+id+'_id" class="form-control">';
-                    content +='<input type="hidden" name="appointment_masseur2'+id+'_id_prev" id="appointment_masseur2'+id+'_id_prev" class="form-control">';
-                    content +='<input type="hidden" name=appointment_masseur2'+id+'_id_val" id="appointment_masseur2'+id+'_id_val" class="form-control">';
                 content +='</div>';
             content +='</div>';
         content +='</div>';
