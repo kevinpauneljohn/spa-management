@@ -42,11 +42,11 @@ class StaffService
             })
             ->editColumn('email',function ($staff){
 
-                return $staff->email;
+                return '<a href="mailto:'.$staff->email.'">'.$staff->email.'</a>';
             })
             ->editColumn('mobile',function ($staff){
 
-                return $staff->mobile_number;
+                return '<a href="tel:'.$staff->mobile_number.'">'.$staff->mobile_number.'</a>';
             })
             ->editColumn('position',function ($staff){
 
@@ -69,7 +69,7 @@ class StaffService
 
                 return $action;
             })
-            ->rawColumns(['action','name'])
+            ->rawColumns(['action','name','email','mobile'])
             ->make(true);
     }
 
