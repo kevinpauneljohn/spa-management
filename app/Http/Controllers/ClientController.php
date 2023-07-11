@@ -32,6 +32,9 @@ class ClientController extends Controller
     public function show($id)
     {
         $client = Client::findOrFail($id);
+        $client->firstname = ucfirst($client->firstname);
+        $client->middlename = ucfirst($client->middlename);
+        $client->lastname = ucfirst($client->lastname);
         return response()->json(['client' => $client]);
     }
 

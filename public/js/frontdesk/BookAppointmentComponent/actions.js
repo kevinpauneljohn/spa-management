@@ -205,6 +205,7 @@ function getServiceById(id, data_id)
 
                 $('.appointment_masseur1_div'+data_id).removeClass('hidden');
             }
+            $('#appointment_service_multiple'+data_id).val(result.service.multiple_masseur);
         }
     });
 }

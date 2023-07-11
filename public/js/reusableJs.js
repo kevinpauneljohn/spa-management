@@ -105,7 +105,7 @@ function validateAppointmentForm(value, field, guest_id, validation_type) {
             if (substractDate > new Date(value)) {
                 error = 'The Guest '+guest_id+' '+field+' date and time must be less than 1 hour from the current time.';
             } else {
-                error = 'The Guest '+guest_id+' '+field+' field is required.';
+                error = 'The Guest '+guest_id+' '+field+' / preparation time field is required.';
             }
         }
     }

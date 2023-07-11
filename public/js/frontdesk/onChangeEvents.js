@@ -128,54 +128,54 @@
 //     });
 // }
 
-function onChangeAppointmentType(
-    val, 
-    id, 
-    spa_id, 
-    socialMediaType, 
-    requiredService, 
-    requiredTherapist, 
-    defaultOptionalService, 
-    social_media_appointment, 
-    plus_time_appointment, 
-    appointment_room, 
-    appointment,
-    walkInOptions
-) {
-    $('#reservenow'+id).prop('checked', false);
-    $('#reservelater'+id).prop('checked', false);
+// function onChangeAppointmentType(
+//     val, 
+//     id, 
+//     spa_id, 
+//     socialMediaType, 
+//     requiredService, 
+//     requiredTherapist, 
+//     defaultOptionalService, 
+//     social_media_appointment, 
+//     plus_time_appointment, 
+//     appointment_room, 
+//     appointment,
+//     walkInOptions
+// ) {
+//     $('#reservenow'+id).prop('checked', false);
+//     $('#reservelater'+id).prop('checked', false);
 
-    if (val == 'Social Media') {
-        $('.'+socialMediaType).removeClass('hidden');
+//     if (val == 'Social Media') {
+//         $('.'+socialMediaType).removeClass('hidden');
 
-        $('.'+walkInOptions).addClass('hidden');
-        $('.'+defaultOptionalService).removeClass('hidden');
-        if (!$('.'+requiredService).hasClass('hidden')) {
-            $('.'+requiredService).addClass('hidden');
-            $('.'+requiredTherapist).addClass('hidden');
-        }
-    } else if (val == 'Walk-in') {
-        $('.'+walkInOptions).removeClass('hidden');
-        $('.'+defaultOptionalService).addClass('hidden');
+//         $('.'+walkInOptions).addClass('hidden');
+//         $('.'+defaultOptionalService).removeClass('hidden');
+//         if (!$('.'+requiredService).hasClass('hidden')) {
+//             $('.'+requiredService).addClass('hidden');
+//             $('.'+requiredTherapist).addClass('hidden');
+//         }
+//     } else if (val == 'Walk-in') {
+//         $('.'+walkInOptions).removeClass('hidden');
+//         $('.'+defaultOptionalService).addClass('hidden');
 
-        if (!$('.'+socialMediaType).hasClass('hidden')) {
-            $('.'+socialMediaType).addClass('hidden');
-            $('.'+social_media_appointment).val('');
-        }
-    } else {
-        if (!$('.'+socialMediaType).hasClass('hidden')) {
-            $('.'+socialMediaType).addClass('hidden');
-            $('.'+social_media_appointment).val('');
-        }
+//         if (!$('.'+socialMediaType).hasClass('hidden')) {
+//             $('.'+socialMediaType).addClass('hidden');
+//             $('.'+social_media_appointment).val('');
+//         }
+//     } else {
+//         if (!$('.'+socialMediaType).hasClass('hidden')) {
+//             $('.'+socialMediaType).addClass('hidden');
+//             $('.'+social_media_appointment).val('');
+//         }
 
-        $('.'+walkInOptions).addClass('hidden');
-        $('.'+defaultOptionalService).removeClass('hidden');
-        if (!$('.'+requiredService).hasClass('hidden')) {
-            $('.'+requiredService).addClass('hidden');
-            $('.'+requiredTherapist).addClass('hidden');
-        }
+//         $('.'+walkInOptions).addClass('hidden');
+//         $('.'+defaultOptionalService).removeClass('hidden');
+//         if (!$('.'+requiredService).hasClass('hidden')) {
+//             $('.'+requiredService).addClass('hidden');
+//             $('.'+requiredTherapist).addClass('hidden');
+//         }
 
-        $('#appointmentCustomCheckbox'+id).prop('checked', false);
-        $('#appointmentCustomCheckbox'+id).prop('disabled', true);
-    }
-}
+//         $('#appointmentCustomCheckbox'+id).prop('checked', false);
+//         $('#appointmentCustomCheckbox'+id).prop('disabled', true);
+//     }
+// }

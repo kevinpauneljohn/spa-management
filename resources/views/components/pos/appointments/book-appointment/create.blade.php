@@ -51,3 +51,26 @@
         </form>
     </div>
 @endif
+
+@push('js')
+    @if(auth()->check())
+        <script>
+            $('#addNewAppointment').on('click', function() {
+                $('#add-new-appointment-modal').modal('show');
+
+                $('.dataTabsAppointment').html('');
+                $('.appointmentContent').remove();
+                $('#summaryTab').removeClass('active');
+                $('.tableSummaryAppointment').html('');
+                $('.total_amount_appointment').html('&#8369;0');
+                $('#totalAmountToPayAppointment').val(0);
+
+                if (!$('.add-appointment-btn').hasClass('hidden')) {
+                    $('.add-appointment-btn').addClass('hidden');
+                    $('.process-appointment-btn').removeClass('hidden');
+                }
+                createAppointmentForm(1, 'active', 'yes', 'no');
+            });
+        </script>
+    @endif
+@endpush
