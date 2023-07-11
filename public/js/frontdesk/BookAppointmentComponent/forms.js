@@ -51,7 +51,7 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
     } else {
         $( tabs ).insertAfter('.appointmentTab:last');
     }
-    
+
     var content = '<div class="tab-pane '+active+' appointmentContent tabAppointmentContent'+id+'" id="appointment'+id+'">';
         content +='<div class="form-group">';
             content +='<div class="row">';
@@ -144,10 +144,10 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
                 content +='</div>';
             content +='</div>';
                 content +='<div class="row hidden requiredService requiredService'+id+'">';
-                content +='<div class="alert alert-primary alert-dismissible">';
-                content +='<h5><i class="icon fas fa-info"></i> Note:</h5>';
-                content +='By choosing preparation time, it will automatically set the start time.';
-                content +='</div>';
+                // content +='<div class="alert alert-primary alert-dismissible">';
+                // content +='<h5><i class="icon fas fa-info"></i> Note:</h5>';
+                // content +='By choosing preparation time, it will automatically set the start time.';
+                // content +='</div>';
                 content +='<div class="col-md-4 walkInStartTimeDiv">';
                     content +='<label for="start_time_appointment_walkin'+id+'">Preparation Time</label><span class="isRequired">*</span>';
                     content +='<select data-select="appointment" data-id="'+id+'" name="preparation_time'+id+'" id="preparation_time'+id+'" class="form-control select-preparation-time" style="width:100%;"></select>';
