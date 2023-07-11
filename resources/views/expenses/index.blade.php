@@ -9,13 +9,32 @@
 
 </style>
 @section('content')
-    <div class="container-fluid">
-        <x-expenses.expenses-date-range :spaId="$spaId"/>
-        <x-expenses.add-expenses-button :spaId="$spaId"/>
-        <x-expenses.expenses spaId='4ac9aef5-36eb-4606-828b-4f00efa7f3fc'/>
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h3 class="text-cyan">{{ucwords($pageTitle)}}</h3>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
+                <li class="breadcrumb-item active">{{ucwords($spa->name)}} </li>
+            </ol>
+        </div>
     </div>
-
-    <x-add-spa-form-modal/>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <span class="float-left">
+                   <x-expenses.expenses-date-range :spaId="$spaId"/>
+                </span>
+                <span class="float-right">
+                    <x-expenses.add-expenses-button :spaId="$spaId"/>
+                </span>
+            </div>
+            <div class="card-body">
+                <x-expenses.expenses :spaId='$spaId'/>
+            </div>
+        </div>
+    </div>
 @stop
 @section('plugins.CustomCSS',true)
 @section('css')

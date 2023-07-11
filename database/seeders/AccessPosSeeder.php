@@ -14,6 +14,6 @@ class AccessPosSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(['name' => 'access pos'])->assignRole('front desk');
+        Permission::create(['name' => 'access pos'])->syncRoles(['front desk','owner']);
     }
 }

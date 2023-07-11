@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Client;
+use App\Models\Spa;
 use Illuminate\Http\Request;
 use App\Services\AppointmentService;
 use Config;
@@ -62,7 +64,7 @@ class AppointmentController extends Controller
         $response = [
             'appointment_type'   => $appointment_type,
             'social_media'   => $social_media_type
-        ]; 
+        ];
 
         return $response;
     }
@@ -89,5 +91,20 @@ class AppointmentController extends Controller
     public function getResponses($id)
     {
         return $this->appointmentService->getAppointmentResponses($id);
+    }
+
+    public function getCalendarEvents(Spa $spa): \Illuminate\Support\Collection
+    {
+//        $spa = Spa::find("b3e50a3b-6e8d-4f92-b0e8-8a9f4175c5dc");
+        return collect($spa->appointments)->mapWithKeys(function($item, $key){
+            return [
+                $key => [
+                    'id' => $item['id'],
+                    'title' => Client::find($item['client_id'])->fullName,
+                    'start' => $item['start_time'],
+                    'allDay' => false
+                ]
+            ];
+        });
     }
 }

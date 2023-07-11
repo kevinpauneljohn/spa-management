@@ -140,13 +140,32 @@ class ServiceController extends Controller
 
     public function durationRange()
     {
-        $range = range(5, 300, 5);
+        $range = range(15, 300, 15);
 
-        $data = [];
+        $plus_time = [];
         foreach ($range as $ranges) {
-            $data [$ranges] = $ranges;
+            $hrs = floor($ranges/60);
+            $mins = $ranges%60;
+
+            if ($hrs > 0) {
+                $hours = $hrs.' hrs';
+            } else {
+                $hours = $hrs.' hr';
+            }
+
+            $value = '';
+            if ($hrs == 0) {
+                $value = $mins.' mins';
+            } else if ($mins == 0) {
+                $value = $hours;
+            } else {
+                $value = $hours.' & '.$mins.' mins';
+            }
+
+            $plus_time [$ranges] = $value;
         }
-        return response()->json(['range' => $data]);
+
+        return response()->json(['range' => $plus_time]);
     }
     
     public function servicePricing($id, $spa_id)

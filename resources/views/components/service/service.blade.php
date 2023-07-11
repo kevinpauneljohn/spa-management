@@ -64,4 +64,7 @@
                 </div>
 
 </form>
-{{----}}
+
+@push('js')
+
+@endpush

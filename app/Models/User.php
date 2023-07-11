@@ -94,7 +94,7 @@ class User extends Authenticatable
     public function shift()
     {
         return $this->hasMany(Shift::class);
-    }     
+    }
     protected static function boot()
     {
         parent::boot();
@@ -110,7 +110,7 @@ class User extends Authenticatable
                     EmployeeTable::create([
                         "user_id" => $user->id,
                         "spa_id" => $user->spa_id,
-                        "Monthly_Rate" => 0,
+                        "Daily_Rate" => 0,
                         "status" => 1,
                         "created_at" => now(),
                     ]);

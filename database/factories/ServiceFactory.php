@@ -17,7 +17,7 @@ class ServiceFactory extends Factory
         return [
             'spa_id' => collect(Spa::all())->pluck('id')->random(),
             'description' => 'lorem ipsum',
-            'duration' => 1,
+            'duration' => 6,
             'price' => 670,
             'category' => 'regular',
             'price_per_plus_time' => 100,

@@ -4,51 +4,71 @@ function setDateTimePicker(fields, id)
     $('#'+fields+id).datetimepicker({
         footer: true, modal: true,
         format: 'dd mmmm yyyy hh:MM TT',
-        use24hours: false 
+        use24hours: false
     });
 }
 // Get Functions //
-function getServicesAppointment(spa_id, id, fields)
-{
-    $.ajax({
-        'url' : '/receptionist-service/'+spa_id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            $('#'+fields+id).html('');
-            $('#'+fields+id).append('<option></option>');
-            $('#'+fields+id).select2({
-                placeholder: "Choose Services",
-                allowClear: true
-            });
-            $.each(result , function(index, val) { 
-                $('#'+fields+id).append('<option value="'+val+'">'+index+'</option>');
-            });
-        }
-    });
-}
+// function getServicesAppointment(spa_id, id, fields)
+// {
+//     $.ajax({
+//         'url' : '/receptionist-service/'+spa_id,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             $('#'+fields+id).html('');
+//             $('#'+fields+id).append('<option></option>');
+//             $('#'+fields+id).select2({
+//                 placeholder: "Choose Services",
+//                 allowClear: true
+//             });
+//             $.each(result , function(index, val) {
+//                 $('#'+fields+id).append('<option value="'+val+'">'+index+'</option>');
+//             });
+//         }
+//     });
+// }
 
-function getPlusTime(id, field)
-{
-    $.ajax({
-        'url' : '/receptionist-plus-range/',
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            $('.select-appointment-plus_time').html('');
-            $('.select-appointment-plus_time').append('<option></option>');
-            $('.select-appointment-plus_time').select2({
-                placeholder: "Choose Plus Time",
-                allowClear: true
-            }); 
-            $.each(result , function(index, val) { 
-                $('.select-appointment-plus_time').append('<option value="'+index+'">'+val+'</option>');
-            });
-        }
-    });
-}
+// function getPlusTime(id, field)
+// {
+//     $.ajax({
+//         'url' : '/receptionist-plus-range/',
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             $('.select-appointment-plus_time').html('');
+//             $('.select-appointment-plus_time').append('<option></option>');
+//             $('.select-appointment-plus_time').select2({
+//                 placeholder: "Choose Plus Time",
+//                 allowClear: true
+//             });
+//             $.each(result , function(index, val) {
+//                 $('.select-appointment-plus_time').append('<option value="'+index+'">'+val+'</option>');
+//             });
+
+//             $('.select-move-plus_time').html('');
+//             $('.select-move-plus_time').append('<option></option>');
+//             $('.select-move-plus_time').select2({
+//                 placeholder: "Choose Plus Time",
+//                 allowClear: true
+//             });
+//             $.each(result , function(index, val) {
+//                 $('.select-move-plus_time').append('<option value="'+index+'">'+val+'</option>');
+//             });
+
+//             $('.select-edit-plus_time').html('');
+//             $('.select-edit-plus_time').append('<option></option>');
+//             $('.select-edit-plus_time').select2({
+//                 placeholder: "Choose Plus Time",
+//                 allowClear: true
+//             });
+//             $.each(result , function(index, val) {
+//                 $('.select-edit-plus_time').append('<option value="'+index+'">'+val+'</option>');
+//             });
+//         }
+//     });
+// }
 
 
 function getRoomList(id, fields)
@@ -65,9 +85,9 @@ function getRoomList(id, fields)
     //         $('#'+fields+id).select2({
     //             placeholder: "Choose Room",
     //             allowClear: true
-    //         }); 
+    //         });
 
-    //         $.each(result , function(appointment_index, appointment_val) { 
+    //         $.each(result , function(appointment_index, appointment_val) {
     //             $('#'+fields+id).append('<option value="'+appointment_val+'">'+appointment_val+'</option>');
     //         });
 
@@ -104,7 +124,7 @@ function loadRoom()
             loadSales($('#spa_id_val').val());
             loadData($('#spa_id_val').val());
             $('.displayRoomList').html('');
-            $.each(result , function(index, val) { 
+            $.each(result , function(index, val) {
                 clearInterval(interValCountDown[val.room_id])
                 var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
                 var divAvailable = '';
@@ -145,7 +165,7 @@ function loadRoom()
                             displayRoomList += backgroundIcon;
                         displayRoomList += '</div>';
                         displayRoomList += roomLink;
-                        
+
                     displayRoomList += '</div>';
                 displayRoomList += '</div>';
                 $( displayRoomList ).appendTo(".displayRoomList");
@@ -181,7 +201,7 @@ function getMasseurAvailability(spa_id)
                 var names;
                 clearInterval(interValTherpist[value.id])
                 if (value.data != '') {
-                    UnAvailableTherapist.push(value.id);                   
+                    UnAvailableTherapist.push(value.id);
                     var interValTherpists = setInterval(function() {
                         countdownTherapistInterval(value.id, value.data.start_time, value.data.end_time, value.data.total_seconds)
                     }, 1000)
@@ -233,16 +253,16 @@ function getTherapists(spa_id, status, id)
     //             $('.select-therapist').select2({
     //                 placeholder: "Choose Masseur 1",
     //                 allowClear: true
-    //             }); 
-    
+    //             });
+
     //             $('.select-multiple-therapist').html('');
     //             $('.select-multiple-therapist').append('<option></option>');
     //             $('.select-multiple-therapist').select2({
     //                 placeholder: "Choose Masseur 2",
     //                 allowClear: true
-    //             }); 
-    
-    //             $.each(result , function(index, val) { 
+    //             });
+
+    //             $.each(result , function(index, val) {
     //                 $('.select-therapist').append('<option value="'+val+'">'+index+'</option>');
     //                 $('.select-multiple-therapist').append('<option value="'+val+'">'+index+'</option>');
     //             });
@@ -252,16 +272,16 @@ function getTherapists(spa_id, status, id)
     //             $('.select-edit-masseur1').select2({
     //                 placeholder: "Choose Masseur 1",
     //                 allowClear: true
-    //             }); 
-    
+    //             });
+
     //             $('.select-edit-masseur2').html('');
     //             $('.select-edit-masseur2').append('<option></option>');
     //             $('.select-edit-masseur2').select2({
     //                 placeholder: "Choose Masseur 2",
     //                 allowClear: true
-    //             }); 
-    
-    //             $.each(result , function(edit_index, edit_val) { 
+    //             });
+
+    //             $.each(result , function(edit_index, edit_val) {
     //                 $('.select-edit-masseur1').append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //                 $('.select-edit-masseur2').append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //             });
@@ -271,16 +291,16 @@ function getTherapists(spa_id, status, id)
     //             $('.select-move-masseur1').select2({
     //                 placeholder: "Choose Masseur 1",
     //                 allowClear: true
-    //             }); 
-    
+    //             });
+
     //             $('.select-move-masseur2').html('');
     //             $('.select-move-masseur2').append('<option></option>');
     //             $('.select-move-masseur2').select2({
     //                 placeholder: "Choose Masseur 2",
     //                 allowClear: true
-    //             }); 
-    
-    //             $.each(result , function(edit_index, edit_val) { 
+    //             });
+
+    //             $.each(result , function(edit_index, edit_val) {
     //                 $('.select-move-masseur1').append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //                 $('.select-move-masseur2').append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //             });
@@ -290,23 +310,23 @@ function getTherapists(spa_id, status, id)
     //             // $('#appointment_masseur1'+id).select2({
     //             //     placeholder: "Choose Masseur 1",
     //             //     allowClear: true
-    //             // }); 
-    
+    //             // });
+
     //             // $('#appointment_masseur2'+id).html('');
     //             // $('#appointment_masseur2'+id).append('<option></option>');
     //             // $('#appointment_masseur2'+id).select2({
     //             //     placeholder: "Choose Masseur 2",
     //             //     allowClear: true
-    //             // }); 
-    
-    //             // $.each(result , function(edit_index, edit_val) { 
+    //             // });
+
+    //             // $.each(result , function(edit_index, edit_val) {
     //             //     $('#appointment_masseur1'+id).append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //             //     $('#appointment_masseur2'+id).append('<option value="'+edit_val+'">'+edit_index+'</option>');
     //             // });
     //         }
 
     //         if (UnAvailableTherapist.length > 0) {
-    //             $.each(UnAvailableTherapist , function(un_index, un_val) { 
+    //             $.each(UnAvailableTherapist , function(un_index, un_val) {
     //                 $('.select-therapist').children('option[value="' + un_val + '"]').attr('disabled', true);
     //                 $('.select-therapist').select2({
     //                     placeholder: "Choose Masseur 1",
@@ -395,22 +415,22 @@ function viewReservedRoom(id)
     $('#view-sales-modal').modal('show');
 }
 
-function loadData(id)
-{
-    $.ajax({
-        'url' : '/transaction-data/'+id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        success: function(result){
-            $('.dailyAppointment').text(result.daily_appointment);
-            $('.monthlyAppointment').text(result.monthly_appointment);
-            $('.newClients').text(result.new_clients);
-            $('.dailySales').html(result.total_sales);
-            $('#daily_sales_amount').val(result.sales);
-        }
-    });
-}
+// function loadData(id)
+// {
+//     $.ajax({
+//         'url' : '/transaction-data/'+id,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         success: function(result){
+//             $('.dailyAppointment').text(result.daily_appointment);
+//             $('.monthlyAppointment').text(result.monthly_appointment);
+//             $('.newClients').text(result.new_clients);
+//             $('.dailySales').html(result.total_sales);
+//             $('#daily_sales_amount').val(result.sales);
+//         }
+//     });
+// }
 
 function viewInvoice(id)
 {
@@ -424,8 +444,8 @@ function viewInvoice(id)
             $('#summaryTotal').html('');
         },
         success: function(result){
-            // var date = moment(result.info.end_time).format('DD-MMMM-YYYY');  
-            // var start_time = moment(result.info.start_time).format('HH:mm:ss');  
+            // var date = moment(result.info.end_time).format('DD-MMMM-YYYY');
+            // var start_time = moment(result.info.start_time).format('HH:mm:ss');
             // var end_time = moment(result.info.end_time).format('HH:mm:ss');
 
             $('.viewNameInvoice').text('[ Invoice # '+result.invoice +' ]');
@@ -453,8 +473,8 @@ function viewInvoice(id)
             // $('#invoiceTable tbody tr').append("<td>"+result.service.name+"</td>");
             // var totalAmount = result.info.amount + result.info.tip;
 
-            $.each(result.transactions , function(index, val) { 
-                var start_time = moment(val.start_time).format('HH:mm:ss');  
+            $.each(result.transactions , function(index, val) {
+                var start_time = moment(val.start_time).format('HH:mm:ss');
                 var end_time = moment(val.end_time).format('HH:mm:ss');
 
                 var displayInvoiceTable = '<tr>';
@@ -482,7 +502,7 @@ function viewInvoice(id)
                 summaryInvoiceTable += '<th style="width:50%">Total:</th>';
                 summaryInvoiceTable += '<td>&#8369;  '+result.sales.amount_paid+'</td>';
             summaryInvoiceTable += '</tr>';
-      
+
             $( summaryInvoiceTable ).appendTo("#summaryTotal");
         }
     });
@@ -503,12 +523,12 @@ function getAppointmentType(id)
         },
         success: function(result){
             $("#appointment_name_appointment"+id).append('<option value="" disabled selected> -- Choose Here --</option>');
-            $.each(result.appointment_type , function(index_appointment, val_appointment) { 
+            $.each(result.appointment_type , function(index_appointment, val_appointment) {
                 $("#appointment_name_appointment"+id).append('<option value="'+val_appointment+'">'+val_appointment+'</option>');
             });
 
             $("#social_media_appointment"+id).append('<option value="" disabled selected> -- Choose Here --</option>');
-            $.each(result.social_media , function(index_social, val_social) { 
+            $.each(result.social_media , function(index_social, val_social) {
                 $("#social_media_appointment"+id).append('<option value="'+val_social+'">'+val_social+'</option>');
             });
         }
@@ -532,108 +552,108 @@ function getAppointmentCount()
     });
 }
 
-function getSalesInfo(id, spa_id)
-{
-    getServicesAppointment(spa_id, '', 'edit_services')
-    // getServices(spa_id, 'update');
-    getTherapists(spa_id, 'update', 0);
-    getPlusTime('', 'edit_plus_time');
-    getRoomList('', 'edit_room');
+// function getSalesInfo(id, spa_id)
+// {
+//     getServicesAppointment(spa_id, '', 'edit_services')
+//     // getServices(spa_id, 'update');
+//     getTherapists(spa_id, 'update', 0);
+//     getPlusTime('', 'edit_plus_time');
+//     getRoomList('', 'edit_room');
 
-    $.ajax({
-        'url' : '/transaction/'+id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
-            $('#edit_first_name').val('');
-            $('#edit_middle_name').val('');
-            $('#edit_last_name').val('');
-            $('#edit_date_of_birth').val('');
-            $('#edit_mobile_number').val('');
-            $('#edit_email').val('');
-            $('#edit_address').val('');
-            $('#edit_client_type').val('');
-            $('#edit_start_time').val('');
-            $('.totalAmountFormatted').html('');
-            $('#totalAmountEditToPay').val('');
-            $('#totalAmountEditToPayOld').val('');
-            $('#editCustomCheckbox').prop('checked', false); 
-            $('#edit_masseur1_id_prev').val('');
-            $('#edit_masseur2_id_prev').val('');
-            $('#edit_masseur2_id_val').val('');
-            $('#edit_transaction_id').val('');
-            $('#edit_client_id').val('');
-            $('#edit_sales_id').val('');
-            $('#edit_masseur2').attr('disabled', false);
-        },
-        success: function(result){
-            $('#edit_first_name').val(result.firstname);
-            $('#edit_middle_name').val(result.middlename);
-            $('#edit_last_name').val(result.lastname);
-            $('#edit_date_of_birth').val(result.date_of_birth);
-            $('#edit_mobile_number').val(result.mobile_number);
-            $('#edit_email').val(result.email);
-            $('#edit_address').val(result.address);
-            $('#edit_client_type').val(result.client_type);
-            $('#edit_start_time').val(result.start_time);
-            $('#edit_masseur1_id').val(result.therapist_1);
-            $('#edit_masseur1_id_prev').val(result.therapist_1);
-            $('#edit_masseur2_id').val(result.therapist_2);
-            $('#edit_masseur1_id_prev').val(result.therapist_2);
-            $('#edit_masseur2_id_val').val(result.therapist_2_id);
-            $('.totalAmountFormatted').html('&#8369; '+result.amount_formatted);
-            $('#totalAmountEditToPay').val(result.amount);
-            $('#totalAmountEditToPayOld').val(result.amount);
-            $('#edit_transaction_id').val(result.id);
-            $('#edit_client_id').val(result.client_id);
-            $('#edit_sales_id').val(result.sales_id);
-            
-            $('#editCustomCheckbox').attr('disabled', false);
-            $('#edit_masseur2').attr('disabled', true);
-            if (result.therapist_2 != '') {
-                $('#editCustomCheckbox').prop('checked', true); 
-                $('#edit_masseur2').attr('disabled', false);
-            }
+//     $.ajax({
+//         'url' : '/transaction/'+id,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         beforeSend: function () {
+//             $('#edit_first_name').val('');
+//             $('#edit_middle_name').val('');
+//             $('#edit_last_name').val('');
+//             $('#edit_date_of_birth').val('');
+//             $('#edit_mobile_number').val('');
+//             $('#edit_email').val('');
+//             $('#edit_address').val('');
+//             $('#edit_client_type').val('');
+//             $('#edit_start_time').val('');
+//             $('.totalAmountFormatted').html('');
+//             $('#totalAmountEditToPay').val('');
+//             $('#totalAmountEditToPayOld').val('');
+//             $('#editCustomCheckbox').prop('checked', false);
+//             $('#edit_masseur1_id_prev').val('');
+//             $('#edit_masseur2_id_prev').val('');
+//             $('#edit_masseur2_id_val').val('');
+//             $('#edit_transaction_id').val('');
+//             $('#edit_client_id').val('');
+//             $('#edit_sales_id').val('');
+//             $('#edit_masseur2').attr('disabled', false);
+//         },
+//         success: function(result){
+//             $('#edit_first_name').val(result.firstname);
+//             $('#edit_middle_name').val(result.middlename);
+//             $('#edit_last_name').val(result.lastname);
+//             $('#edit_date_of_birth').val(result.date_of_birth);
+//             $('#edit_mobile_number').val(result.mobile_number);
+//             $('#edit_email').val(result.email);
+//             $('#edit_address').val(result.address);
+//             $('#edit_client_type').val(result.client_type);
+//             $('#edit_start_time').val(result.start_time);
+//             $('#edit_masseur1_id').val(result.therapist_1);
+//             $('#edit_masseur1_id_prev').val(result.therapist_1);
+//             $('#edit_masseur2_id').val(result.therapist_2);
+//             $('#edit_masseur1_id_prev').val(result.therapist_2);
+//             $('#edit_masseur2_id_val').val(result.therapist_2_id);
+//             $('.totalAmountFormatted').html('&#8369; '+result.amount_formatted);
+//             $('#totalAmountEditToPay').val(result.amount);
+//             $('#totalAmountEditToPayOld').val(result.amount);
+//             $('#edit_transaction_id').val(result.id);
+//             $('#edit_client_id').val(result.client_id);
+//             $('#edit_sales_id').val(result.sales_id);
 
-            $(".select-edit-services").select2({
-                placeholder: "Choose Services",
-                allowClear: true
-            }).val(result.service_id).trigger("change");
+//             $('#editCustomCheckbox').attr('disabled', false);
+//             $('#edit_masseur2').attr('disabled', true);
+//             if (result.therapist_2 != '') {
+//                 $('#editCustomCheckbox').prop('checked', true);
+//                 $('#edit_masseur2').attr('disabled', false);
+//             }
 
-            $(".select-edit-masseur1").select2({
-                placeholder: "Choose Masseur 1",
-                allowClear: true
-            }).val(result.therapist_1).trigger("change");
+//             $(".select-edit-services").select2({
+//                 placeholder: "Choose Services",
+//                 allowClear: true
+//             }).val(result.service_id).trigger("change");
 
-            $(".select-edit-masseur2").select2({
-                placeholder: "Choose Masseur 2",
-                allowClear: true
-            }).val(result.therapist_2).trigger("change");
+//             $(".select-edit-masseur1").select2({
+//                 placeholder: "Choose Masseur 1",
+//                 allowClear: true
+//             }).val(result.therapist_1).trigger("change");
 
-            if (result.plus_time > 0) {
-                $(".select-edit-plus_time").select2({
-                    placeholder: "Choose Plus Time",
-                    allowClear: true
-                }).val(result.plus_time).trigger("change");
-            }
-            $('#edit_plus_time_price').val(0);
+//             $(".select-edit-masseur2").select2({
+//                 placeholder: "Choose Masseur 2",
+//                 allowClear: true
+//             }).val(result.therapist_2).trigger("change");
 
-            $(".select-edit-room").select2({
-                placeholder: "Choose Room",
-                allowClear: true
-            }).val(result.room_id).trigger("change");
+//             if (result.plus_time > 0) {
+//                 $(".select-edit-plus_time").select2({
+//                     placeholder: "Choose Plus Time",
+//                     allowClear: true
+//                 }).val(result.plus_time).trigger("change");
+//             }
+//             $('#edit_plus_time_price').val(0);
 
-            $('#edit_room_val').val(result.room_id);
-            
-            $.each(UnAvailableRoom, function (key, value) {
-                $('.select-edit-room').children('option[value="' + value + '"]').attr('disabled', true);
-            });
-        }
-    });
+//             $(".select-edit-room").select2({
+//                 placeholder: "Choose Room",
+//                 allowClear: true
+//             }).val(result.room_id).trigger("change");
 
-    $('#update-sales-modal').modal('show');
-}
+//             $('#edit_room_val').val(result.room_id);
+
+//             $.each(UnAvailableRoom, function (key, value) {
+//                 $('.select-edit-room').children('option[value="' + value + '"]').attr('disabled', true);
+//             });
+//         }
+//     });
+
+//     $('#update-sales-modal').modal('show');
+// }
 
 function viewAppointment(id)
 {
@@ -740,7 +760,7 @@ function viewAppointment(id)
                 $('#edit_app_middlename').prop('disabled', false);
                 $('#edit_app_lastname').prop('disabled', false);
             }
-            
+
             $('#edit_app_id').val(result.id);
             $('#edit_app_client_id').val(result.client_id);
             $('#edit_app_firstname').val(result.firstname);
@@ -762,7 +782,7 @@ function viewAppointment(id)
 
             $("#edit_app_servicesup").select2({
                 placeholder: 'Choose Services',
-                allowClear: true
+                allowClear: false
             }).val(result.service_id).trigger("change");
 
             $('#price_appointment_up').val(result.amount);
@@ -792,7 +812,7 @@ function viewAppointment(id)
 
             $("#move_app_servicesmove").select2({
                 placeholder: 'Choose Services',
-                allowClear: true
+                allowClear: false
             }).val(result.service_id).trigger("change");
 
             $('#move_app_services_id').val(result.service_id);
@@ -898,7 +918,7 @@ function getPosShift(spa_id)
                         if ($('.btnStartShift').hasClass('hidden')) {
                             $('.btnStartShift').removeClass('hidden');
                         }
-                        
+
                         $('.viewEndShiftReport').removeClass('hidden');
                         $('#start_shit_id').val('');
                         $('#start-shift-modal').modal('show');
@@ -954,165 +974,165 @@ function getPosApi(spa_id)
     });
 }
 
-function getPosTherapistApi(spa_id, dateTime)
-{
-    $.ajax({
-        'url' : '/pos-api-therapist-list/'+spa_id,
-        'type' : 'GET',
-        'data' : {
-            'date': dateTime
-        },
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
+// function getPosTherapistApi(spa_id, dateTime)
+// {
+//     $.ajax({
+//         'url' : '/pos-api-therapist-list/'+spa_id,
+//         'type' : 'GET',
+//         'data' : {
+//             'date': dateTime
+//         },
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         beforeSend: function () {
 
-        },
-        success: function(result){
-            $('.select-appointment-masseur1').html('');
-            $('.select-appointment-masseur1').append('<option></option>');
-            $('.select-appointment-masseur1').select2({
-                placeholder: "Choose Masseur 1",
-                allowClear: true
-            }); 
+//         },
+//         success: function(result){
+//             $('.select-appointment-masseur1').html('');
+//             $('.select-appointment-masseur1').append('<option></option>');
+//             $('.select-appointment-masseur1').select2({
+//                 placeholder: "Choose Masseur 1",
+//                 allowClear: true
+//             });
 
-            $('.select-appointment-masseur2').html('');
-            $('.select-appointment-masseur2').append('<option></option>');
-            $('.select-appointment-masseur2').select2({
-                placeholder: "Choose Masseur 2",
-                allowClear: true
-            }); 
+//             $('.select-appointment-masseur2').html('');
+//             $('.select-appointment-masseur2').append('<option></option>');
+//             $('.select-appointment-masseur2').select2({
+//                 placeholder: "Choose Masseur 2",
+//                 allowClear: true
+//             });
 
-            $('.select-edit-masseur1').html('');
-            $('.select-edit-masseur1').append('<option></option>');
-            $('.select-edit-masseur1').select2({
-                placeholder: "Choose Masseur 1",
-                allowClear: true
-            }); 
+//             $('.select-edit-masseur1').html('');
+//             $('.select-edit-masseur1').append('<option></option>');
+//             $('.select-edit-masseur1').select2({
+//                 placeholder: "Choose Masseur 1",
+//                 allowClear: true
+//             });
 
-            $('.select-edit-masseur2').html('');
-            $('.select-edit-masseur2').append('<option></option>');
-            $('.select-edit-masseur2').select2({
-                placeholder: "Choose Masseur 2",
-                allowClear: true
-            }); 
+//             $('.select-edit-masseur2').html('');
+//             $('.select-edit-masseur2').append('<option></option>');
+//             $('.select-edit-masseur2').select2({
+//                 placeholder: "Choose Masseur 2",
+//                 allowClear: true
+//             });
 
-            $('.select-move-masseur1').html('');
-            $('.select-move-masseur1').append('<option></option>');
-            $('.select-move-masseur1').select2({
-                placeholder: "Choose Masseur 1",
-                allowClear: true
-            }); 
+//             $('.select-move-masseur1').html('');
+//             $('.select-move-masseur1').append('<option></option>');
+//             $('.select-move-masseur1').select2({
+//                 placeholder: "Choose Masseur 1",
+//                 allowClear: true
+//             });
 
-            $('.select-move-masseur2').html('');
-            $('.select-move-masseur2').append('<option></option>');
-            $('.select-move-masseur2').select2({
-                placeholder: "Choose Masseur 2",
-                allowClear: true
-            }); 
+//             $('.select-move-masseur2').html('');
+//             $('.select-move-masseur2').append('<option></option>');
+//             $('.select-move-masseur2').select2({
+//                 placeholder: "Choose Masseur 2",
+//                 allowClear: true
+//             });
 
-            $.each(result , function(index, val) {                
-                $('.select-appointment-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
-                $('.select-appointment-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//             $.each(result , function(index, val) {
+//                 $('.select-appointment-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//                 $('.select-appointment-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
 
-                $('.select-edit-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
-                $('.select-edit-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//                 $('.select-edit-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//                 $('.select-edit-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
 
-                $('.select-move-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
-                $('.select-move-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//                 $('.select-move-masseur1').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
+//                 $('.select-move-masseur2').append('<option value="'+val.therapist_id+'">'+val.fullname+'</option>');
 
-                if (val.availability == 'yes') {
-                    $('.select-appointment-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
-                    $('.select-appointment-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                 if (val.availability == 'yes') {
+//                     $('.select-appointment-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                     $('.select-appointment-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
 
-                    $('.select-edit-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
-                    $('.select-edit-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                     $('.select-edit-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                     $('.select-edit-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
 
-                    $('.select-move-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
-                    $('.select-move-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
-                } else {
-                    $('.select-appointment-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
-                    $('.select-appointment-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                     $('.select-move-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                     $('.select-move-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
+//                 } else {
+//                     $('.select-appointment-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                     $('.select-appointment-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
 
-                    $('.select-edit-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
-                    $('.select-edit-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                     $('.select-edit-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                     $('.select-edit-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
 
-                    $('.select-move-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
-                    $('.select-move-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
-                }
-                
-                $('.select-appointment-masseur1').select2({
-                    placeholder: "Choose Masseur 1",
-                    allowClear: true
-                });
+//                     $('.select-move-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                     $('.select-move-masseur2').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+//                 }
 
-                $('.select-appointment-masseur2').select2({
-                    placeholder: "Choose Masseur 2",
-                    allowClear: true
-                });
-            });
-        }
-    });
-}
+//                 $('.select-appointment-masseur1').select2({
+//                     placeholder: "Choose Masseur 1",
+//                     allowClear: true
+//                 });
 
-function getPosRoomApi(spa_id, dateTime)
-{
-    $.ajax({
-        'url' : '/pos-api-room-list/'+spa_id,
-        'type' : 'GET',
-        'data' : {
-            'date': dateTime
-        },
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
+//                 $('.select-appointment-masseur2').select2({
+//                     placeholder: "Choose Masseur 2",
+//                     allowClear: true
+//                 });
+//             });
+//         }
+//     });
+// }
 
-        },
-        success: function(result){
-            $('.select-appointment-room').html('');
-            $('.select-appointment-room').append('<option></option>');
-            $('.select-appointment-room').select2({
-                placeholder: "Choose Room",
-                allowClear: true
-            }); 
+// function getPosRoomApi(spa_id, dateTime)
+// {
+//     $.ajax({
+//         'url' : '/pos-api-room-list/'+spa_id,
+//         'type' : 'GET',
+//         'data' : {
+//             'date': dateTime
+//         },
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         beforeSend: function () {
 
-            $('.select-edit-room').html('');
-            $('.select-edit-room').append('<option></option>');
-            $('.select-edit-room').select2({
-                placeholder: "Choose Room",
-                allowClear: true
-            }); 
+//         },
+//         success: function(result){
+//             $('.select-appointment-room').html('');
+//             $('.select-appointment-room').append('<option></option>');
+//             $('.select-appointment-room').select2({
+//                 placeholder: "Choose Room",
+//                 allowClear: true
+//             });
 
-            $('.select-move-room').html('');
-            $('.select-move-room').append('<option></option>');
-            $('.select-move-room').select2({
-                placeholder: "Choose Room",
-                allowClear: true
-            }); 
+//             $('.select-edit-room').html('');
+//             $('.select-edit-room').append('<option></option>');
+//             $('.select-edit-room').select2({
+//                 placeholder: "Choose Room",
+//                 allowClear: true
+//             });
 
-            $.each(result , function(index, val) { 
-                $('.select-appointment-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
+//             $('.select-move-room').html('');
+//             $('.select-move-room').append('<option></option>');
+//             $('.select-move-room').select2({
+//                 placeholder: "Choose Room",
+//                 allowClear: true
+//             });
 
-                $('.select-edit-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
+//             $.each(result , function(index, val) {
+//                 $('.select-appointment-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
 
-                $('.select-move-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
+//                 $('.select-edit-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
 
-                if (val.is_available == 'yes') {
-                    $('.select-appointment-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
+//                 $('.select-move-room').append('<option value="'+val.room_id+'">'+val.room_id+'</option>');
 
-                    $('.select-edit-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
+//                 if (val.is_available == 'yes') {
+//                     $('.select-appointment-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
 
-                    $('.select-move-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
-                } else {
-                    $('.select-appointment-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
+//                     $('.select-edit-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
 
-                    $('.select-edit-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
+//                     $('.select-move-room').children('option[value="' + val.room_id + '"]').attr('disabled', false);
+//                 } else {
+//                     $('.select-appointment-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
 
-                    $('.select-move-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
-                }
-                
-                $('.select-appointment-room').select2({
-                    placeholder: "Choose Room",
-                    allowClear: true
-                });
-            });
-        }
-    });
-}
+//                     $('.select-edit-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
+
+//                     $('.select-move-room').children('option[value="' + val.room_id + '"]').attr('disabled', true);
+//                 }
+
+//                 $('.select-appointment-room').select2({
+//                     placeholder: "Choose Room",
+//                     allowClear: true
+//                 });
+//             });
+//         }
+//     });
+// }

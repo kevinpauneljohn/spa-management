@@ -36,11 +36,5 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('add-spa-form-modal',Spa::class);
         Blade::component('therapist-form',TherapistForm::class);
         Blade::component('therapist-profile',TherapistProfile::class);
-        Blade::component('all-therapist-thru-specific-spa',Therapists::class);
-        Blade::component('inventory-management',InventoryManagement::class);
-        Blade::component('inventory-form',InventoryForm::class);
-        Blade::component('inventory-category',InventoryCategory::class);
-        Blade::component('inventory-category-form',InventoryCategoryForm::class);
-        Blade::component('service',Service::class);
     }
 }

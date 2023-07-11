@@ -21,7 +21,7 @@
 
     <div class="card">
         <div class="card-body">
-            <x-inventory-management/>
+            <x-inventory.inventory-management/>
         </div>
     </div>
 

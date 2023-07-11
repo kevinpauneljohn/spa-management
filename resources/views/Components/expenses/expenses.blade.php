@@ -94,6 +94,8 @@
                     expenseId  = this.id;
                     expenseModal.find('.modal-title').text('Edit Expense');
                     expenseModal.find('form').removeClass('add-expense').addClass('edit-expense');
+                    expenseModal.find('.error').remove();
+                    expenseModal.find('.is-invalid').removeClass('is-invalid');
 
                     $.ajax({
                         url: '/expenses/'+expenseId+'/edit',

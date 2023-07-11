@@ -58,4 +58,19 @@ class Spa extends Model
             ->whereDate('created_at','>=',$dateFrom)
             ->whereDate('created_at','<=',$dateTo);
     }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

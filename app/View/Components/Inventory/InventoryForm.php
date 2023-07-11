@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Inventory;
 
+use App\Models\Spa;
 use App\Models\UnitOfMeasurement;
 use App\Services\InventoryService;
 use App\Services\UserService;
@@ -9,19 +10,25 @@ use Illuminate\View\Component;
 
 class InventoryForm extends Component
 {
+    public $spaId;
     public $formDefault;
     public $spas;
     public $categories;
     public $measurements;
+
     /**
      * Create a new component instance.
      *
-     * @return void
+     * @param bool $formDefault
+     * @param UserService $userService
+     * @param InventoryService $inventoryService
+     * @param null $spaId
      */
-    public function __construct($formDefault = true, UserService $userService, InventoryService $inventoryService)
+    public function __construct(bool $formDefault = true, UserService $userService, InventoryService $inventoryService, $spaId = null)
     {
+        $this->spaId = $spaId;
         $this->formDefault = $formDefault;
-        $this->spas = $userService->get_staff_owner()->spas;
+        $this->spas = $spaId !== null ? Spa::find($spaId) : $userService->get_staff_owner()->spas;
         $this->categories = $inventoryService->categories($userService);
         $this->measurements = UnitOfMeasurement::all();
     }

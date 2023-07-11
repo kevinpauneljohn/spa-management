@@ -29,7 +29,7 @@
         <x-adminlte-modal class="category-modal" id="category-modal" title="Add New Category" size="md" theme="olive"
                           v-centered static-backdrop scrollable>
 
-            <x-inventory-category-form :formDefault="false"/>
+            <x-inventory.inventory-category-form :formDefault="false"/>
 
             <x-slot name="footerSlot">
                 <x-adminlte-button class="mr-auto" theme="danger" label="Dismiss" data-dismiss="modal"/>

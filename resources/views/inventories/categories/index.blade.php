@@ -21,7 +21,7 @@
 
     <div class="card">
         <div class="card-body">
-            <x-inventory-category/>
+            <x-inventory.inventory-category/>
         </div>
     </div>
 @stop

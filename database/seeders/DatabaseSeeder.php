@@ -16,17 +16,18 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 //        $this->call([RoleSeeder::class, UserSeeder::class]);
         $this->call([
-            RoleSeeder::class,
-            UserSeeder::class,
-//            SpaSeeder::class,
-            UnitOfMeasurementSeeder::class,
-            PermissionSeeder::class,
-//            PermissionSpaSeeder::class,
-//            PermissionTherapistSeeder::class,
-            InventorySeeder::class,
-            InventoryCategorySeeder::class,
-            AccessPosSeeder::class,
-            ExpenseSeeder::class
+                RoleSeeder::class,
+                UserSeeder::class,
+    //            SpaSeeder::class,
+                UnitOfMeasurementSeeder::class,
+                PermissionSeeder::class,
+    //            PermissionSpaSeeder::class,
+    //            PermissionTherapistSeeder::class,
+                InventoryCategorySeeder::class,
+                InventorySeeder::class,
+                AccessPosSeeder::class,
+                ExpenseSeeder::class,
+                ClientSeeder::class
             ]);
     }
 }

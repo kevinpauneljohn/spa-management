@@ -1,5 +1,8 @@
 <div class="row mb-1">
     <div class="col-md-12">
+        @if($spaId)
+            working
+            @endif
 {{--        <div class="alert alert-default-info">--}}
 {{--            <h5><i class="fas fa-info"></i> Note:</h5>--}}
 {{--            Add masseur/masseuse to your spa who will serve your valued customers--}}
@@ -34,7 +37,7 @@
         <x-adminlte-modal class="inventory-modal" id="inventory-modal" title="Add New Item" size="md" theme="olive"
                           v-centered static-backdrop scrollable>
 
-                    <x-inventory-form :formDefault="false"/>
+                    <x-inventory.inventory-form :formDefault="false" :spaId="$spaId"/>
 
             <x-slot name="footerSlot">
                 <x-adminlte-button class="mr-auto" theme="danger" label="Dismiss" data-dismiss="modal"/>
@@ -50,7 +53,7 @@
                 $('#inventory-list').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: '{!! route('inventory.lists') !!}',
+                    ajax: '@if($spaId){!! route('spa.inventory.lists',['spa' => $spaId]) !!}@else{!! route('inventory.lists') !!}@endif',
                     columns: [
                         { data: 'spa_id', name: 'spa_id'},
                         { data: 'name', name: 'name'},
