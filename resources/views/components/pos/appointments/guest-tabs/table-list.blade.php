@@ -30,7 +30,7 @@
 @push('js')
     @if(auth()->check())
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script src="{{asset('js/reusable.js')}}"></script>
+        <!-- <script src="{{asset('js/reusable.js')}}"></script> -->
         <script>
             $(document).ready(function(){
                 $('#sales-data-lists').DataTable({
@@ -345,6 +345,7 @@
 
                                                 // loadRoom();
                                                 // loadSales(spa_id);
+                                                $('#sales-data-lists').DataTable().ajax.reload(null, false);
                                                 // getTotalSales(spa_id);
                                                 // getMasseurAvailability(spa_id);
                                                 // loadData(spa_id);

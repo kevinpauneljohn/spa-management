@@ -341,14 +341,14 @@ $(document).on('select2:close', '.select-services-move-appointment, .select-move
     $(window).off(evt);
 });
   
-$(document).on('change', '.start_time_appointment', function() {
-    var val = $(this).val();
-    $('.start_time_appointment').val(val);
-});
+// $(document).on('change', '.start_time_appointment', function() {
+//     var val = $(this).val();
+//     $('.start_time_appointment').val(val);
+// });
 
-$('#add-new-appointment-modal').on('hidden.bs.modal', function () {
-    searchFilter = [];
-})
+// $('#add-new-appointment-modal').on('hidden.bs.modal', function () {
+//     searchFilter = [];
+// })
 
 $(document).on('click', '.btnStartShift', function(e) {
     e.preventDefault();

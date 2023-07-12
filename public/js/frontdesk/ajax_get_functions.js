@@ -121,7 +121,8 @@ function loadRoom()
 
             getTotalSales($('#spa_id_val').val());
             getMasseurAvailability($('#spa_id_val').val());
-            loadSales($('#spa_id_val').val());
+            // loadSales($('#spa_id_val').val());
+            $('#sales-data-lists').DataTable().ajax.reload(null, false);
             loadData($('#spa_id_val').val());
             $('.displayRoomList').html('');
             $.each(result , function(index, val) {
@@ -415,22 +416,23 @@ function viewReservedRoom(id)
     $('#view-sales-modal').modal('show');
 }
 
-// function loadData(id)
-// {
-//     $.ajax({
-//         'url' : '/transaction-data/'+id,
-//         'type' : 'GET',
-//         'data' : {},
-//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-//         success: function(result){
-//             $('.dailyAppointment').text(result.daily_appointment);
-//             $('.monthlyAppointment').text(result.monthly_appointment);
-//             $('.newClients').text(result.new_clients);
-//             $('.dailySales').html(result.total_sales);
-//             $('#daily_sales_amount').val(result.sales);
-//         }
-//     });
-// }
+//to  be removed already in component , just using to prevent error in saving appointment
+function loadData(id)
+{
+    $.ajax({
+        'url' : '/transaction-data/'+id,
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        success: function(result){
+            $('.dailyAppointment').text(result.daily_appointment);
+            $('.monthlyAppointment').text(result.monthly_appointment);
+            $('.newClients').text(result.new_clients);
+            $('.dailySales').html(result.total_sales);
+            $('#daily_sales_amount').val(result.sales);
+        }
+    });
+}
 
 function viewInvoice(id)
 {

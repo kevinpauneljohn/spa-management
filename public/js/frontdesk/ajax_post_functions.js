@@ -155,7 +155,8 @@ function processMoveAppointment()
                             $('#move-appointment-form').trigger('reset');
                             getAppointmentCount();
                             loadAppointments(spa_id);
-                            loadSales(spa_id);
+                            // loadSales(spa_id);
+                            $('#sales-data-lists').DataTable().ajax.reload(null, false);
                             loadRoom();
                             getTotalSales(spa_id);
                             getMasseurAvailability(spa_id);

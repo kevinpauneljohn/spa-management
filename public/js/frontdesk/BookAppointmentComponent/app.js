@@ -1,21 +1,22 @@
 var filterPreSelectedTherapist = [];
 var filterPreSelectedRoom = [];
-// $('#addNewAppointment').on('click', function() {
-//     $('#add-new-appointment-modal').modal('show');
+var searchFilter = [];
+$('#addNewAppointment').on('click', function() {
+    $('#add-new-appointment-modal').modal('show');
 
-//     $('.dataTabsAppointment').html('');
-//     $('.appointmentContent').remove();
-//     $('#summaryTab').removeClass('active');
-//     $('.tableSummaryAppointment').html('');
-//     $('.total_amount_appointment').html('&#8369;0');
-//     $('#totalAmountToPayAppointment').val(0);
+    $('.dataTabsAppointment').html('');
+    $('.appointmentContent').remove();
+    $('#summaryTab').removeClass('active');
+    $('.tableSummaryAppointment').html('');
+    $('.total_amount_appointment').html('&#8369;0');
+    $('#totalAmountToPayAppointment').val(0);
 
-//     if (!$('.add-appointment-btn').hasClass('hidden')) {
-//         $('.add-appointment-btn').addClass('hidden');
-//         $('.process-appointment-btn').removeClass('hidden');
-//     }
-//     createAppointmentForm(1, 'active', 'yes', 'no');
-// });
+    if (!$('.add-appointment-btn').hasClass('hidden')) {
+        $('.add-appointment-btn').addClass('hidden');
+        $('.process-appointment-btn').removeClass('hidden');
+    }
+    createAppointmentForm(1, 'active', 'yes', 'no');
+});
 
 $(document).on('click', '.addNewTabs', function () {
     var liCount = $('.appointmentTab').last().attr('id');
@@ -593,7 +594,7 @@ function processAppointment(data)
             var reserve_later = 'no';
             var is_multiple_masseur = 'no';
             var value_start_time = $('#start_time_appointment'+value).val();
-
+            var value_preparation_time = $('#preparation_time'+value).val();
             var price = parseInt($('#appointment_total_service_price'+value).val());
             total_amount += parseInt($('#appointment_total_service_price'+value).val());
             var plus_time = $('#appointment_plus_time_id'+value).val();
@@ -778,6 +779,7 @@ function processAppointment(data)
                     reserve_later: reserve_later,
                     spa_id: $('#spa_id_val').val(),
                     owner_id: $('#owner_id_val').val(),
+                    preparation_time: value_preparation_time,
                 });
             }
         });
@@ -964,4 +966,73 @@ function vaidateAppointmentTab(
     }
 
     return status;
+}
+
+function submitAppointment()
+{
+    var data = appointment;
+    var appointment_type = $('.appointment_name_appointment').val();
+    var reserve_now = $('.reserveNow').is(':checked');
+    var amount = $('#totalAmountToPayAppointment').val();
+    var spa_id = $('#spa_id_val').val();
+
+    var message = 'Are you sure you want to save the appointment?';
+    var url = '/appointment-store/'+spa_id;
+    if (appointment_type == 'Walk-in' && reserve_now == true) {
+        message = 'Are you sure you want to save the appointment as sales?';
+        url = '/appointment-create-sales/'+spa_id+'/'+amount
+    }
+
+    swal.fire({
+        title: message,
+        icon: 'question',
+        text: "Please ensure and then confirm!",
+        type: "warning",
+        showCancelButton: !0,
+        confirmButtonText: "Yes!",
+        cancelButtonText: "No!",
+        reverseButtons: !0
+    }).then(function (e) {
+        if (e.value === true) {
+            $.ajax({
+                'url' : url,
+                'type' : 'POST',
+                'data': {value: data},
+                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function () {
+                    $('#appointment-form').find('.add-appointment-btn').val('Saving ... ').attr('disabled',true);
+                },success: function (result) {
+                    if(result.status) {
+                        $('#appointment-form').trigger('reset');
+                        $('.process-appointment-btn').removeClass('hidden');
+                        $('.add-appointment-btn').addClass('hidden');
+
+                        if (appointment_type == 'Walk-in') {
+                            loadRoom();
+                            getTotalSales(spa_id);
+                        } else {
+                            getAppointmentCount();
+                            loadAppointments(spa_id);
+                        }
+                        getMasseurAvailability(spa_id);
+                        getUpcomingGuest($('#spa_id_val').val());
+
+                        loadData(spa_id);
+                        swal.fire("Done!", result.message, "success");
+                        $('#add-new-appointment-modal').modal('hide');
+                    } else {
+                        swal.fire("Warning!", result.message, "warning");
+                    }
+            
+                    $('#appointment-form').find('.add-appointment-btn').val('Save').attr('disabled',false);
+                },error: function(xhr, status, error){
+                    console.log(xhr);
+                }
+            });
+        } else {
+            e.dismiss;
+        }
+    }, function (dismiss) {
+        return false;
+    })
 }

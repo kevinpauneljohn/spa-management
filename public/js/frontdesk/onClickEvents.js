@@ -1,6 +1,7 @@
 function clickSalesView(id)
 {
-    loadSales(id);
+    // loadSales(id);
+    $('#sales-data-lists').DataTable().ajax.reload(null, false);
     getTotalSales(id);
 }
 
