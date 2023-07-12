@@ -1,6 +1,5 @@
 function filterClient(id, value, spa_id)
 {
-    console.log(id)
     if (value.length > 2 ) {
         $.ajax({
             'url' : '/client-filter/'+value+'/'+spa_id,
@@ -84,11 +83,10 @@ $(document).on('click', '.filterNewAccount', function () {
 });
 
 $(document).on('click', '.filterValue', function () {
-    console.log(UnAvailableTherapist)
     var id = this.id;
     var index = $(this).data("index");
     var data_id = $(this).data("id");
-
+console.log(index)
     $('.clientFilterAppointent'+data_id).val('');
     $("#suggesstion-box-appointment"+data_id).html('');
     $("#suggesstion-box-appointment"+data_id).addClass('hidden');
@@ -101,6 +99,7 @@ $(document).on('click', '.filterValue', function () {
         success: function(result){
             if (result.client != '') {
                 searchFilter.push(index);
+                $('#fullname_array'+data_id).val(index)
                 $('#existing_user_id_appointment_'+data_id).val(result.client.id);
                 $('#first_name_appointment'+data_id).val(result.client.firstname);
                 $('#first_name_appointment'+data_id).prop( "disabled", true );
@@ -126,3 +125,62 @@ $(document).on('click', '.filterValue', function () {
         }
     });
 });
+
+function getAppointmentTypeforNewGuest(id)
+{
+    var spa_id = $('#spa_id_val').val();
+    var firstLi = $('ul.dataTabsAppointment li:first');
+    var firstLiId = firstLi[0].id;
+
+    var appointmentVal = '';
+    if ($('#appointment_name_appointment'+firstLiId).val() != '') {
+        appointmentVal = $('#appointment_name_appointment'+firstLiId).val();
+    }
+
+    var socialMediaVal = '';
+    if ($('#social_media_appointment'+firstLiId).val() != '') {
+        socialMediaVal = $('#social_media_appointment'+firstLiId).val();
+    }
+
+    $('#social_media_appointment'+id).val(socialMediaVal).change();
+    $('#appointment_name_appointment'+id).val(appointmentVal).change();
+
+    var startTimeval = '';
+    if (appointmentVal == 'Walk-in') {
+        if ($('#reservenow'+firstLiId).is(':checked')) {
+            startTimeval = $('#start_time_appointment_walkin'+firstLiId).val();
+            $('.start_time_appointment_walkin').val(startTimeval);    
+            $('.reserveNow').prop('checked', true);
+            $('.reserveLater').prop('checked', false);
+    
+            $('.defaultOptionalService').addClass('hidden');
+    
+            $('.requiredService').removeClass('hidden');
+            if (startTimeval.length > 0) {
+                $('.walkInHiddenDiv').removeClass('hidden');
+                getPosTherapistApi($('#spa_id_val').val(), startTimeval);
+                getPosRoomApi($('#spa_id_val').val(), startTimeval);
+            }
+    
+            getPlusTime(id, 'plus_time_appointment');
+            getRoomList(id, 'appointment_room');
+            getTherapists(spa_id, 'appointment', id);
+        } else if ($('#reservelater'+firstLiId).is(':checked')) {
+            startTimeval = $('#start_time_appointment'+firstLiId).val();
+            $('.start_time_appointment').val(startTimeval);
+            $('.reserveNow').prop('checked', false);
+            $('.reserveLater').prop('checked', true);
+    
+            $('.defaultOptionalService').removeClass('hidden');
+            $('.requiredService').addClass('hidden');
+            $('.walkInHiddenDiv').addClass('hidden'); 
+        } else {
+            $('.defaultOptionalService').addClass('hidden');
+            $('.requiredService').addClass('hidden');
+            $('.walkInHiddenDiv').addClass('hidden');
+        }
+    } else {
+        startTimeval = $('#start_time_appointment'+firstLiId).val();
+        $('.start_time_appointment').val(startTimeval); 
+    }
+}
