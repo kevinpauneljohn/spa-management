@@ -69,7 +69,7 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
                 content +='<div class="col-md-4">';
                     content +='<label for="first_name_appointment'+id+'">First Name</label><span class="isRequired">*</span>';
                     content +='<input type="text" name="first_name_appointment'+id+'" id="first_name_appointment'+id+'" class="form-control">';
-                    content +='<input type="text" class="form-control" id="fullname_array'+id+'">';
+                    content +='<input type="hidden" class="form-control" id="fullname_array'+id+'">';
                 content +='</div>';
                 content +='<div class="col-md-4">';
                     content +='<label for="middle_name_appointment'+id+'">Middle Name</label>';

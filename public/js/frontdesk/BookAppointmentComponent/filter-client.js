@@ -86,7 +86,7 @@ $(document).on('click', '.filterValue', function () {
     var id = this.id;
     var index = $(this).data("index");
     var data_id = $(this).data("id");
-console.log(index)
+
     $('.clientFilterAppointent'+data_id).val('');
     $("#suggesstion-box-appointment"+data_id).html('');
     $("#suggesstion-box-appointment"+data_id).addClass('hidden');
