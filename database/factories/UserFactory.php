@@ -56,8 +56,8 @@ class UserFactory extends Factory
             $offerType = collect([
                 'percentage_only',
                 'percentage_plus_allowance',
-//                'amount_only',
-//                'amount_plus_allowance'
+                'amount_only',
+                'amount_plus_allowance'
             ])->random();
 
             if($roles === 'therapist')

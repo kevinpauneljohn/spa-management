@@ -242,7 +242,7 @@
                                         </div>
                                         <div class="form-group commission hidden">
                                             <label for="commission" class="commission_name">Commission</label><span class="required">*</span>
-                                            <input type="number" name="commission" id="commission" class="form-control">
+                                            <input type="number" name="commission" id="commission" class="form-control" max="100">
                                         </div>
                                         <div class="form-group allowance hidden">
                                             <label for="allowance" class="allowance_name">Allowance Amount</label>

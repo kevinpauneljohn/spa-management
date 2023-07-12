@@ -44,7 +44,7 @@ class EmployeeRateController extends Controller
         })
         ->addColumn('position', function($employee){
             $user = User::find($employee->user_id);
-            $roleName = $user->getRoleNames()->toArray(); 
+            $roleName = $user->getRoleNames()->toArray();
             return implode(', ', $roleName);
         })
         ->addColumn('rate', function($employee){
@@ -52,7 +52,7 @@ class EmployeeRateController extends Controller
         })
         ->addColumn('action', function($employee){
             $html ="";
-            if(auth()->user()->can('edit employee'))
+            if(auth()->user()->can('edit staff'))
             {
                 $html .= '<button value="'.$employee->id.'" id="edit-rate-btn" data-id="'.$employee->id.'" data-target="#rateModal" data-toggle="modal" href="#" class="btn btn-sm btn-outline-primary edit-rate-btn"><i class="fa fa-edit"></i></button>&nbsp;';
             }
@@ -68,14 +68,23 @@ class EmployeeRateController extends Controller
             "rate" => $employee->Daily_Rate,
             "name" => $employee->user->firstname.' '. $employee->user->lastname,
         ]);
-      
+
         return $collect;
 
     }
     public function updateRate(Request $request, $id)
     {
-        $employee = EmployeeTable::where('id',$id)->first();
-        $employee->Daily_Rate = $request->newRate;
-        $employee->update();
+        $request->validate([
+            'Daily_Rate' => 'required|numeric'
+        ]);
+
+        $employee = EmployeeTable::find($id);
+        $employee->Daily_Rate = $request->Daily_Rate;
+
+        if($employee->save())
+        {
+            return response()->json(['success' => true, 'message' => 'Daily rate successfully updated']);
+        }
+        return response()->json(['success' => false, 'message' => 'An error occurred']);
     }
 }

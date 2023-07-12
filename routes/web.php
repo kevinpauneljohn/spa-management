@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function(){
     Route::put('my-staff-update/{id}',[\App\Http\Controllers\MyStaffController::class,'update'])->name('owner.staff.update');
     Route::delete('my-staff-delete/{id}',[\App\Http\Controllers\MyStaffController::class,'destroy'])->name('owner.staff.delete');
 
+    Route::get('/therapists/sales/{spa}',[\App\Http\Controllers\TherapistController::class,'getTherapistSales'])->name('get.therapists.sales');
     Route::get('/therapist-list/{id}',[\App\Http\Controllers\TherapistController::class,'lists'])->name('therapist.lists');
 //    Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');
     Route::get('/therapists-profile/{id}',[\App\Http\Controllers\TherapistController::class,'therapist_profile'])->name('therapists.profile');
@@ -136,7 +137,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/employee-list', [\App\Http\Controllers\EmployeeRateController::class, 'index'])->name('setting.index');
     Route::get('/employee-rate', [\App\Http\Controllers\EmployeeRateController::class, 'setting'])->name('employee-rate');
     Route::get('/getEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'editRate']);
-    Route::put('/updateEmployeeRate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'updateRate']);
+    Route::put('/update-employee-rate/{id}', [\App\Http\Controllers\EmployeeRateController::class, 'updateRate'])->name('update.employee.daily.rate');
     Route::get('/sample', [\App\Http\Controllers\EmployeeRateController::class, 'sample']);
 
 
@@ -184,6 +185,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/spa-expense-list/{spa}',[\App\Http\Controllers\SpaController::class,'spaExpenses'])->name('spa.expenses');
     Route::post('/expenses-set-date',[\App\Http\Controllers\ExpenseController::class,'displayExpensesByDateSelected'])->name('expenses.set.date');
     Route::resource('expenses',\App\Http\Controllers\ExpenseController::class);
+
+    Route::get('/test-kevin', \App\Http\Controllers\TestController::class);
 });
 
 
@@ -200,9 +203,4 @@ Route::middleware(['auth'])->group(function(){
 
     //attendance
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
-    Route::post('/test-kevin', function(Request $request){
-        $date = explode('-',$request->input('date'));
-        $dateFrom = $date[0];
-        $dateTo = $date[1];
-        return $dateFrom;
-    });
+

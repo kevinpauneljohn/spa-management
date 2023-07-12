@@ -1,19 +1,21 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Payroll;
 
+use App\Models\Spa;
 use Illuminate\View\Component;
 
-class test extends Component
+class PayrollTable extends Component
 {
+    public $spaId;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($spaId)
     {
-        //
+        $this->spaId = $spaId;
     }
 
     /**
@@ -23,6 +25,6 @@ class test extends Component
      */
     public function render()
     {
-        return view('components.test');
+        return view('components.payroll.payroll-table');
     }
 }

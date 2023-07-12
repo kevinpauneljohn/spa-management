@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Spa;
 use App\Models\Therapist;
 use App\Models\User;
 use App\Models\Service;
@@ -136,7 +137,7 @@ class TherapistService
     public function getTherapistList($spa_id, $dateTime)
     {
         $therapist = Therapist::where('spa_id', $spa_id)->get();
-        
+
         $data = [];
         if (!empty($therapist)) {
             foreach ($therapist as $list) {
@@ -147,9 +148,9 @@ class TherapistService
                     'fullname' => $list->user->fullname,
                     'count' => $count_transactions,
                     'availability' => $is_available ? 'yes' : 'no',
-                ];                
+                ];
             }
-    
+
             array_multisort(array_column($data, 'count'), $data);
         }
 
@@ -158,8 +159,35 @@ class TherapistService
 
     public function getServices($spa_id)
     {
-        $service = Service::where('spa_id', $spa_id)->pluck('id', 'name');
+        return Service::where('spa_id', $spa_id)->pluck('id', 'name');
+    }
 
-        return $service;
+    public function getSales(Spa $spa)
+    {
+        return DataTables::of($spa->therapists)
+            ->editColumn('commission_percentage',function($therapist){
+                return $therapist->commission_percentage !== null ? $therapist->commission_percentage.'%' : '';
+            })
+            ->editColumn('commission_flat',function($therapist){
+                return $therapist->commission_flat !== null ? number_format($therapist->commission_flat,2) : '';
+            })
+            ->addColumn('therapist',function($therapist){
+                return '<a href="'.route('therapists.profile',['id' => $therapist->id]).'">'.$therapist->fullName.'</a>';
+            })
+            ->addColumn('total_clients',function ($therapist){
+                return $therapist->transactions->count();
+            })
+            ->addColumn('gross_sales',function($therapist){
+                return '<span class="text-info">'.number_format($therapist->transactions->sum('amount'),2).'</span>';
+            })
+            ->addColumn('gross_commission',function ($therapist){
+                return '<span class="text-primary text-bold">'.$therapist->grossSalesCommission().'</span>';
+            })
+            ->addColumn('summary', function($therapist){
+                return '<a href="#" class="btn btn-xs btn-outline-info rounded view-summary" id="'.$therapist->id.'"><i class="fas fa-file-invoice"></i></a>';
+            })
+            ->rawColumns(['gross_sales','therapist','summary','gross_commission'])
+            ->setTotalRecords(2)
+            ->make(true);
     }
 }

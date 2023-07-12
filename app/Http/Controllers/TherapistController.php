@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TherapistRequest;
 use App\Models\Role;
+use App\Models\Sale;
+use App\Models\Spa;
 use App\Services\TherapistService;
 use App\Services\UserService;
 use App\Models\User;
@@ -180,5 +182,10 @@ class TherapistController extends Controller
     public function getTherapistTransactionCount(TherapistService $therapistService, $id, $date)
     {
         return $therapistService->therapistTransactionsCount($id, $date);
+    }
+
+    public function getTherapistSales(Spa $spa, TherapistService $therapistService)
+    {
+        return $therapistService->getSales($spa);
     }
 }
