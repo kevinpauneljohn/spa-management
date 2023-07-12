@@ -17,9 +17,6 @@
         <script src="{{asset('js/alerts.js')}}"></script>
         <script>
             $(document).ready(function(){
-                loadRoomAvailability();
-                function loadRoomAvailability ()
-                {
                     var spa_id = $('.spaId').val();
 
                     UnAvailableRoom = [];
@@ -97,7 +94,6 @@
                             });
                         }
                     });
-                }
             });
         </script>
     @endif

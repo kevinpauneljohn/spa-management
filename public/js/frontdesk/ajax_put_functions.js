@@ -244,7 +244,8 @@ function updateAppointment()
                             getAppointmentCount();
                             loadAppointments(spa_id);
                             loadRoom();
-                            loadSales(spa_id);
+                            // loadSales(spa_id);
+                            $('#sales-data-lists').DataTable().ajax.reload(null, false);
                             getTotalSales(spa_id);
                             getMasseurAvailability(spa_id);
                             loadData(spa_id);
@@ -475,7 +476,8 @@ function stopSales(id)
                 },success: function (result) {
                     if(result.status) {
                         loadRoom();
-                        loadSales(spa_id);
+                        // loadSales(spa_id);
+                        $('#sales-data-lists').DataTable().ajax.reload(null, false);
                         getTotalSales(spa_id);
                         getMasseurAvailability(spa_id);
                         loadData(spa_id);

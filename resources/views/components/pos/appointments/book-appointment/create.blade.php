@@ -52,11 +52,10 @@
     </div>
 @endif
 
-@push('css')
-    <style>
-        .modal-body {
-            position: relative;
-            overflow-y: scroll !important;
-        }
-    </style>
+@push('js')
+    @if(auth()->check())
+        <script>
+
+        </script>
+    @endif
 @endpush

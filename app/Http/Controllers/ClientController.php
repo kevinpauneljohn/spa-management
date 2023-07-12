@@ -32,6 +32,9 @@ class ClientController extends Controller
     public function show($id)
     {
         $client = Client::findOrFail($id);
+        $client->firstname = ucfirst($client->firstname);
+        $client->middlename = ucfirst($client->middlename);
+        $client->lastname = ucfirst($client->lastname);
         return response()->json(['client' => $client]);
     }
 
@@ -105,7 +108,9 @@ class ClientController extends Controller
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         $from = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         if (!empty($get_latest_transaction)) {
-            $from = $get_latest_transaction->end_time;
+            if ($get_latest_transaction->start_time > $now) {
+                $now = $get_latest_transaction->start_time;
+            }
         }
 
         $transaction = Transaction::where('client_id', $id)

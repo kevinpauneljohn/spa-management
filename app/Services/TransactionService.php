@@ -60,6 +60,7 @@ class TransactionService
             'therapist_1' => $data['therapist_1'],
             'therapist_2' => $data['therapist_2'],
             'client_id' => $client_id,
+            'preparation_time' => $data['preparation_time'],
             'start_time' => $start_time_val,
             'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
             'plus_time' => $data['plus_time'],
