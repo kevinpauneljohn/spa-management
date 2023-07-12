@@ -4,7 +4,7 @@
         <i class="fas fa-calendar-plus"></i>
     </button>
 
-    <div class="modal fade" id="add-new-appointment-modal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal fade" id="add-new-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
         <form role="form" id="appointment-form" class="form-submit">
             @csrf
             <div class="modal-dialog modal-lg">

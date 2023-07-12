@@ -51,7 +51,7 @@ function createAppointmentForm(id, isActive, isTabFirst, isNewTab)
     } else {
         $( tabs ).insertAfter('.appointmentTab:last');
     }
-    
+
     var content = '<div class="tab-pane '+active+' appointmentContent tabAppointmentContent'+id+'" id="appointment'+id+'">';
         content +='<div class="form-group">';
             content +='<div class="row">';
