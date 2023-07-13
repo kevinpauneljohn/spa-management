@@ -11,6 +11,7 @@
 @section('content')
 
     <div class="container-fluid">
+        <x-payroll.payroll-date-range />
         <x-payroll.payroll-table spaId="{{\App\Models\Spa::where('name','Thai Khun Lounge & Spa')->first()->id}}" />
     </div>
 @stop

@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function(){
     Route::put('my-staff-update/{id}',[\App\Http\Controllers\MyStaffController::class,'update'])->name('owner.staff.update');
     Route::delete('my-staff-delete/{id}',[\App\Http\Controllers\MyStaffController::class,'destroy'])->name('owner.staff.delete');
 
+    Route::get('/therapist/transactions/{therapist}',[\App\Http\Controllers\TherapistController::class,'transactions'])->name('get.therapist.transactions');
     Route::get('/therapists/sales/{spa}',[\App\Http\Controllers\TherapistController::class,'getTherapistSales'])->name('get.therapists.sales');
     Route::get('/therapist-list/{id}',[\App\Http\Controllers\TherapistController::class,'lists'])->name('therapist.lists');
 //    Route::get('/therapist/overview/{id}',[\App\Http\Controllers\TherapistController::class,'overview'])->name('therapist.overview');

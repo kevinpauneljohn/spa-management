@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Therapist extends Model
 {
@@ -61,7 +62,20 @@ class Therapist extends Model
     {
         return $this->offer_type === 'percentage_only'
         || $this->offer_type === 'percentage_plus_allowance'
-            ? number_format($this->transactions()->sum('amount') * $this->percentage,2):
-            number_format($this->transactions()->count() * $this->commission_flat,2);
+            ? $this->transactions()->sum('amount') * $this->percentage:
+            $this->transactions()->count() * $this->commission_flat;
+    }
+
+    public function getClientNameAttribute()
+    {
+
+        return "{$this->firstname}";
+    }
+
+    public function displayTransactionsFromDateRange($dateFrom, $dateTo): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->transactions()
+            ->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo);
     }
 }

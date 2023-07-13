@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Transaction extends Model
 {
@@ -32,6 +34,8 @@ class Transaction extends Model
         'room_id',
         'primary',
     ];
+
+    protected $appends = ['client_name','start_date','end_date'];
 
     public function client(): BelongsTo
     {
@@ -61,5 +65,22 @@ class Transaction extends Model
     public function sale()
     {
         return $this->belongsTo(Sale::class);
+    }
+
+    public function getClientNameAttribute()
+    {
+        $client = DB::table('clients')
+            ->where('id',$this->client_id)->first();
+        return "{$client->firstname} {$client->lastname}";
+    }
+
+    public function getStartDateAttribute()
+    {
+        return Carbon::parse($this->start_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
+    }
+
+    public function getEndDateAttribute()
+    {
+        return Carbon::parse($this->end_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
     }
 }

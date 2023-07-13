@@ -13,10 +13,33 @@
     </thead>
 </table>
 
+<div class="modal fade" id="view-therapist-sales-summary">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-olive">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered" id="view-summary-details-table"></table>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
+<button type="button" class="btn btn-primary test-lang">click</button>
 @once
     @push('js')
         <script>
+            let overlay = '<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>';
             $(document).ready(function(){
                 $('#therapist-sales-list').DataTable({
                     processing: true,
@@ -32,11 +55,81 @@
                         { data: 'gross_commission', name: 'gross_commission'},
                         { data: 'summary', name: 'summary', orderable: false, searchable: false, className: 'text-center' }
                     ],
+                    buttons: [
+                        {
+                            text: 'My button',
+                            action: function ( e, dt, node, config ) {
+                                alert( 'Button activated' );
+                            }
+                        }
+                    ],
                     responsive:true,
                     order:[0,'desc'],
-                    pageLength: 10
+                    pageLength: 10,
+                    drawCallback: function(row){
+                        let therapist = row.json;
+
+                        $('#therapist-sales-list').find('tbody')
+                            .append('<tr class="text-bold"><td>Total</td>' +
+                                '<td class="text-success">'+therapist.total_clients+'</td><td class="text-success">'+therapist.total_gross_sales+'</td>' +
+                                '<td colspan="2"></td><td></td><td class="text-success">'+therapist.total_gross_sales_commissions+'</td>' +
+                                '<td>Net Sales: <span class="text-success">'+therapist.net_sales+'</span></td></tr>')
+                    }
                 });
+            });
+
+            let therapistModal = $('#view-therapist-sales-summary');
+            $(document).on('click','.view-summary',function(){
+                let id = this.id;
+
+                therapistModal.modal('toggle')
+                therapistModal.find('.modal-title').text('View Sales Summary');
+                therapistModal.find('#view-summary-details-table').html('');
+                $.ajax({
+                    url: '/therapist/transactions/'+id,
+                    type: 'GET',
+                    dataType: 'json',
+                    beforeSend: function(){
+                        therapistModal.find('.modal-content').append(overlay);
+                    }
+                }).done((result) => {
+                    console.log(result)
+                    therapistModal.find('#view-summary-details-table').append('<tr>' +
+                        '<th colspan="7"><h2>'+result.therapist+'</h2></th></tr>');
+                    therapistModal.find('#view-summary-details-table').append('<tr>' +
+                        '<th></th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Amount</th></tr>');
+                    var number = 1;
+                    $.each(result.data, function(key, value){
+                        console.log(value);
+                        therapistModal.find('#view-summary-details-table')
+                            .append('<tr><td>#'+number+++'</td>' +
+                                '<td>'+value.start_date+'</td>' +
+                                '<td>'+value.end_date+'</td>' +
+                                '<td>'+value.client_name+'</td>' +
+                                '<td class="text-primary">#'+value.room_id+'</td>' +
+                                '<td>'+value.service_name+'</td>' +
+                                '<td>'+value.amount+'</td></tr>');
+                    });
+                    therapistModal.find('#view-summary-details-table').append('<tr>' +
+                        '<th colspan="5">Gross Commissions<span class="text-primary ml-2">'+result.gross_sales_commission+'</span></th><th colspan="3"><span class="float-right">Gross Sales: <span class="text-primary ml-2">'+result.gross_sales+'</span></span></th></tr>');
+                })
+                    .always(() => therapistModal.find('.overlay').remove());
+            })
+
+            $(document).on('click','.test-lang',function(){
+                $('#therapist-sales-list').DataTable().ajax.reload(null, false);
             });
         </script>
     @endpush
 @endonce
+
+@section('css')
+    <style>
+        #view-summary-details-table tr:hover{
+            background-color: #ececec;
+            cursor: pointer;
+        }
+    </style>
+@stop
+
+

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Spa;
 use App\Models\Therapist;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Service;
 use Yajra\DataTables\DataTables;
@@ -15,6 +16,8 @@ class TherapistService
 {
     private $transactionService;
     private $roomService;
+
+    public $grossCommission;
 
     public function __construct(TransactionService $transactionService, RoomService $roomService)
     {
@@ -181,13 +184,20 @@ class TherapistService
                 return '<span class="text-info">'.number_format($therapist->transactions->sum('amount'),2).'</span>';
             })
             ->addColumn('gross_commission',function ($therapist){
-                return '<span class="text-primary text-bold">'.$therapist->grossSalesCommission().'</span>';
+                return '<span class="text-primary text-bold">'.number_format($therapist->grossSalesCommission(),2).'</span>';
             })
             ->addColumn('summary', function($therapist){
-                return '<a href="#" class="btn btn-xs btn-outline-info rounded view-summary" id="'.$therapist->id.'"><i class="fas fa-file-invoice"></i></a>';
+                return '<button type="button" class="btn btn-sm btn-outline-info rounded view-summary" id="'.$therapist->id.'" title="View Summary"><i class="fas fa-file-invoice"></i></button>';
             })
             ->rawColumns(['gross_sales','therapist','summary','gross_commission'])
-            ->setTotalRecords(2)
+            ->with([
+                'total_clients' => number_format($spa->transactions->count(),0),
+                'total_gross_sales' => number_format($spa->transactions->sum('amount'),2),
+                'total_gross_sales_commissions' => number_format($this->grossCommission = collect($spa->therapists)->map(function ($item, $key){
+                    return collect($item->grossSalesCommission())->sum();
+                })->sum(), 2),
+                'net_sales' => number_format($spa->transactions->sum('amount') - $this->grossCommission,2)
+            ])
             ->make(true);
     }
 }

@@ -10,6 +10,7 @@ use App\Services\TherapistService;
 use App\Services\UserService;
 use App\Models\User;
 use App\Models\Therapist;
+use Illuminate\Http\Request;
 
 class TherapistController extends Controller
 {
@@ -184,8 +185,24 @@ class TherapistController extends Controller
         return $therapistService->therapistTransactionsCount($id, $date);
     }
 
-    public function getTherapistSales(Spa $spa, TherapistService $therapistService)
+    public function getTherapistSales(Spa $spa, TherapistService $therapistService, Request $request)
     {
-        return $therapistService->getSales($spa);
+//        if($request->session()->get('transactionsDateFrom') && $request->session()->get('transactionsDateTo'))
+//        {
+//            $query = $spa->therapists()->displayTransactionsFromDateRange($request->session()->get('transactionsDateFrom'), $request->session()->get('transactionsDateTo'))->get();
+//
+//        }
+//        return $therapistService->getSales($spa);
+        return $spa->therapists->displayTransactionsFromDateRange;
+    }
+
+    public function transactions(Therapist $therapist)
+    {
+        return response()->json([
+            'data' => $therapist->transactions->makeHidden(['client_id','id','spa_id','therapist_1','therapist_2','sales_id','updated_at','created_at','service_id'])->toArray(),
+            'gross_sales' => number_format($therapist->transactions->sum('amount'),2),
+            'gross_sales_commission' => number_format($therapist->grossSalesCommission(),2),
+            'therapist' => $therapist->fullName
+        ]);
     }
 }
