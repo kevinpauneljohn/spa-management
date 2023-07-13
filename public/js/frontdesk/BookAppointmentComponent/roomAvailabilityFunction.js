@@ -97,6 +97,7 @@ function countdownInterval(id, start_time, end_time, spa_id)
         if (distance < 0) {
             clearInterval(interValCountDown)
             loadRoomAvailability(spa_id);
+            getMasseurAvailability(spa_id);
         }
     } else {
         $("#countdown"+id).text('Waiting...');
