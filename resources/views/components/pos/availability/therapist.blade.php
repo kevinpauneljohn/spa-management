@@ -1,3 +1,4 @@
+<input type="hidden" class="form-control spaId" value="{{$spaId}}">
 <div class="card">
     <div class="card-header bg-light">
         <h3 class="card-title">
@@ -19,5 +20,18 @@
             </div>
         </div>
     </div>
-
 </div>
+@push('css')
+    <style>
+
+    </style>
+@endpush
+
+@push('js')
+    @if(auth()->check())
+        <script src="{{asset('js/frontdesk/TherapistAvailabilityComponent/therapistAvailabiltyFunction.js')}}"></script>
+        <script>
+            getMasseurAvailability($('.spaId').val());
+        </script>
+    @endif
+@endpush

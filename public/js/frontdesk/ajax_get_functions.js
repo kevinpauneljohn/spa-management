@@ -98,91 +98,91 @@ function getRoomList(id, fields)
     // });
 }
 
-function loadRoom()
-{
-    var spa_id = $('#spa_id_val').val();
+// function loadRoom()
+// {
+//     var spa_id = $('#spa_id_val').val();
 
-    UnAvailableRoom = [];
-    $.ajax({
-        'url' : '/receptionist-lists/'+spa_id,
-        'type' : 'GET',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
-            $('.displayRoomList').html('');
-        },
-        success: function(result){
-            $('.countSelected').text(0);
-            if (result.length > 3) {
-                $('#room-availability').addClass('overflow');
-            } else {
-                $('#room-availability').removeClass('overflow');
-            }
+//     UnAvailableRoom = [];
+//     $.ajax({
+//         'url' : '/receptionist-lists/'+spa_id,
+//         'type' : 'GET',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         beforeSend: function () {
+//             $('.displayRoomList').html('');
+//         },
+//         success: function(result){
+//             $('.countSelected').text(0);
+//             if (result.length > 3) {
+//                 $('#room-availability').addClass('overflow');
+//             } else {
+//                 $('#room-availability').removeClass('overflow');
+//             }
 
-            getTotalSales($('#spa_id_val').val());
-            getMasseurAvailability($('#spa_id_val').val());
-            // loadSales($('#spa_id_val').val());
-            $('#sales-data-lists').DataTable().ajax.reload(null, false);
-            loadData($('#spa_id_val').val());
-            $('.displayRoomList').html('');
-            $.each(result , function(index, val) {
-                clearInterval(interValCountDown[val.room_id])
-                var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
-                var divAvailable = '';
-                var divPointer = '';
-                var isAvailable = 'no';
-                var backgroundIcon = '<i class="fas fa-ban"></i>';
-                if (val.data == '') {
-                    // divAvailable = 'divClickable';
-                    divAvailable = '';
-                    divPointer = 'pointer_ ';
-                    isAvailable = 'yes';
-                    backgroundIcon = '<i class="fas fa-hot-tub"></i>';
-                    roomLink = '<div class="small-box-footer isFooterAvailable'+val.room_id+'">Available <i class="fas fa-plus-circle"></i></div>';
-                }
+//             getTotalSales($('#spa_id_val').val());
+//             getMasseurAvailability($('#spa_id_val').val());
+//             // loadSales($('#spa_id_val').val());
+//             $('#sales-data-lists').DataTable().ajax.reload(null, false);
+//             loadData($('#spa_id_val').val());
+//             $('.displayRoomList').html('');
+//             $.each(result , function(index, val) {
+//                 clearInterval(interValCountDown[val.room_id])
+//                 var roomLink = '<a href="#" data-transaction_id="'+val.data.id+'" data-id="'+val.room_id+'" class="small-box-footer reservedInfo">More info <i class="fas fa-arrow-circle-right"></i></a>';
+//                 var divAvailable = '';
+//                 var divPointer = '';
+//                 var isAvailable = 'no';
+//                 var backgroundIcon = '<i class="fas fa-ban"></i>';
+//                 if (val.data == '') {
+//                     // divAvailable = 'divClickable';
+//                     divAvailable = '';
+//                     divPointer = 'pointer_ ';
+//                     isAvailable = 'yes';
+//                     backgroundIcon = '<i class="fas fa-hot-tub"></i>';
+//                     roomLink = '<div class="small-box-footer isFooterAvailable'+val.room_id+'">Available <i class="fas fa-plus-circle"></i></div>';
+//                 }
 
-                var fullName = '';
-                var startTime = '0';
-                var endTime = '0';
-                var roomTime = 0;
-                if (val.data != '') {
-                    fullName = val.data.client.firstname+' '+val.data.client.lastname;
-                    startTime = val.data.start_time;
-                    endTime = val.data.end_time;
-                    roomTime = val.data.start_and_end_time;
-                    UnAvailableRoom.push(val.room_id);
-                }
+//                 var fullName = '';
+//                 var startTime = '0';
+//                 var endTime = '0';
+//                 var roomTime = 0;
+//                 if (val.data != '') {
+//                     fullName = val.data.client.firstname+' '+val.data.client.lastname;
+//                     startTime = val.data.start_time;
+//                     endTime = val.data.end_time;
+//                     roomTime = val.data.start_and_end_time;
+//                     UnAvailableRoom.push(val.room_id);
+//                 }
 
-                var displayRoomList = '<div data-id="'+val.room_id+'" class="col-md-4 '+divAvailable+' '+divPointer+'" id="'+val.room_id+'">';
-                    displayRoomList += '<input type="hidden" id="isAvailable'+val.room_id+'" value="'+isAvailable+'">';
-                    displayRoomList += '<div class="parentAvailDiv'+val.room_id+' small-box '+val.is_color_set+'">';
-                        displayRoomList += '<div class="inner">';
-                            displayRoomList += '<h4>Room #: '+val.room_id+'</h4>';
-                            displayRoomList += '<h6>Name: <b>'+fullName+'</b></h6>';
-                            displayRoomList += '<h6>Time: <b>'+roomTime+'</b></h6>';
-                            displayRoomList += '<h6>Remaining Time: <b><span id="countdown'+val.room_id+'"></span></b></h6>';
-                        displayRoomList += '</div>';
-                        displayRoomList += '<div class="icon">';
-                            displayRoomList += backgroundIcon;
-                        displayRoomList += '</div>';
-                        displayRoomList += roomLink;
+//                 var displayRoomList = '<div data-id="'+val.room_id+'" class="col-md-4 '+divAvailable+' '+divPointer+'" id="'+val.room_id+'">';
+//                     displayRoomList += '<input type="hidden" id="isAvailable'+val.room_id+'" value="'+isAvailable+'">';
+//                     displayRoomList += '<div class="parentAvailDiv'+val.room_id+' small-box '+val.is_color_set+'">';
+//                         displayRoomList += '<div class="inner">';
+//                             displayRoomList += '<h4>Room #: '+val.room_id+'</h4>';
+//                             displayRoomList += '<h6>Name: <b>'+fullName+'</b></h6>';
+//                             displayRoomList += '<h6>Time: <b>'+roomTime+'</b></h6>';
+//                             displayRoomList += '<h6>Remaining Time: <b><span id="countdown'+val.room_id+'"></span></b></h6>';
+//                         displayRoomList += '</div>';
+//                         displayRoomList += '<div class="icon">';
+//                             displayRoomList += backgroundIcon;
+//                         displayRoomList += '</div>';
+//                         displayRoomList += roomLink;
 
-                    displayRoomList += '</div>';
-                displayRoomList += '</div>';
-                $( displayRoomList ).appendTo(".displayRoomList");
+//                     displayRoomList += '</div>';
+//                 displayRoomList += '</div>';
+//                 $( displayRoomList ).appendTo(".displayRoomList");
 
-                if (endTime != 0) {
-                    var interValCountDowns = setInterval(function() {
-                        countdownInterval(val.room_id, val.data.start_time, val.data.end_time)
-                    }, 1000)
+//                 if (endTime != 0) {
+//                     var interValCountDowns = setInterval(function() {
+//                         countdownInterval(val.room_id, val.data.start_time, val.data.end_time)
+//                     }, 1000)
 
-                    interValCountDown[val.room_id] = interValCountDowns;
+//                     interValCountDown[val.room_id] = interValCountDowns;
 
-                }
-            });
-        }
-    });
-}
+//                 }
+//             });
+//         }
+//     });
+// }
 
 function getMasseurAvailability(spa_id)
 {

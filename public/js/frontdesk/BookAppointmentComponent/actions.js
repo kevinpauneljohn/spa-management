@@ -250,16 +250,16 @@ function submitAppointment()
                         $('.add-appointment-btn').addClass('hidden');
 
                         if (appointment_type == 'Walk-in') {
-                            loadRoom();
-                            getTotalSales(spa_id);
+                            loadRoomAvailability(spa_id);
+                            // getTotalSales(spa_id);
                         } else {
-                            getAppointmentCount();
-                            loadAppointments(spa_id);
+                            // getAppointmentCount();
+                            // loadAppointments(spa_id);
                         }
                         getMasseurAvailability(spa_id);
-                        getUpcomingGuest($('#spa_id_val').val());
+                        // getUpcomingGuest($('#spa_id_val').val());
 
-                        loadData(spa_id);
+                        // loadData(spa_id);
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-appointment-modal').modal('hide');
                     } else {
