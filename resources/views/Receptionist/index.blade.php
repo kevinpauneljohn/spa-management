@@ -75,7 +75,7 @@
 
         <div class="row">
             <section class="col-lg-6">
-                <x-pos.availability.therapist />
+                <x-pos.availability.therapist spaId="{{$spa_id}}" />
             </section>
             <section class="col-lg-6">
                 <x-pos.appointments.upcoming_appointment />
@@ -1098,7 +1098,7 @@
 
 
 
-        loadRoom();
+        // loadRoom();
         getTotalSales($('#spa_id_val').val());
         // getMasseurAvailability($('#spa_id_val').val());
         getUpcomingGuest($('#spa_id_val').val());
