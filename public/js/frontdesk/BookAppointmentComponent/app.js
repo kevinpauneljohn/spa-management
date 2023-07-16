@@ -32,17 +32,9 @@ $(document).on('click', '.addNewTabs', function () {
     createAppointmentForm(id, 'inactive', 'no', 'yes');
 });
 
-$(document).on('click', '.appointmentTabNav', function () {
-    // var id = this.id;
-    // $('.appointmentContent').removeClass('active');
-    // $('.tabAppointmentContent'+id).addClass('active');
-});
-
 $(document).on('click', '.closeTabs', function () {
     var id = this.id;
     var count = $('ul.dataTabsAppointment li').length;
-
-    // closeTabs(id, count);
     var li = $(this).closest('li').prev('li');
     if (id == 1) {
         li = $(this).closest('li').next('li');
@@ -78,16 +70,6 @@ $(document).on('click', '.closeTabs', function () {
 
         $('.select-appointment-masseur1').children('option[value="' + therapist_1 + '"]').attr('disabled', false);
         $('.select-appointment-masseur2').children('option[value="' + therapist_1 + '"]').attr('disabled', false);
-
-        $('.select-appointment-masseur1').select2({
-            placeholder: "Choose Masseur 1",
-            allowClear: false
-        });
-
-        $('.select-appointment-masseur2').select2({
-            placeholder: "Choose Masseur 2",
-            allowClear: false
-        });
     } 
 
     if (therapist_2 !== null || therapist_2 !== '') {
@@ -97,16 +79,6 @@ $(document).on('click', '.closeTabs', function () {
 
         $('.select-appointment-masseur2').children('option[value="' + therapist_2 + '"]').attr('disabled', false);
         $('.select-appointment-masseur1').children('option[value="' + therapist_2 + '"]').attr('disabled', false);
-
-        $('.select-appointment-masseur2').select2({
-            placeholder: "Choose Masseur 2",
-            allowClear: false
-        });
-
-        $('.select-appointment-masseur1').select2({
-            placeholder: "Choose Masseur 1",
-            allowClear: false
-        });
     }
 
     if ($('.appointmentNav'+id).hasClass('active')) {     
@@ -211,13 +183,16 @@ $(document).on('change', '.select-preparation-time', function() {
         $('.start_time_appointment_walkin').val(convertedTime);
         $('.walkInHiddenDiv'+id).removeClass('hidden');
         $('.appointment_room_div'+id).removeClass('hidden');
-        getPosTherapistApi(spa_id, val, id);
+
+        // getPosTherapistApi(spa_id, val, id);
         getPosRoomApi(spa_id, val, id);
         getServicesAppointment(spa_id, id);
         getPlusTime(id);
+
+        $('#appointment_service_multiple'+id).val('');
     } else {
         $('.walkInHiddenDiv'+id).addClass('hidden');
-        getPosTherapistApi(spa_id, val, id);
+        // getPosTherapistApi(spa_id, val, id);
         getPosRoomApi(spa_id, val, id);
         getServicesAppointment(spa_id, id);
         getPlusTime(id);
@@ -592,7 +567,6 @@ function processAppointment(data)
             var value_services_name = '';
             var reserve_now = 'no';
             var reserve_later = 'no';
-            var is_multiple_masseur = 'no';
             var value_start_time = $('#start_time_appointment'+value).val();
             var value_preparation_time = $('#preparation_time'+value).val();
             var price = parseInt($('#appointment_total_service_price'+value).val());
@@ -620,10 +594,6 @@ function processAppointment(data)
                     value_services = $('#appointment_app_services_id'+value).val();
                     value_start_time = $('#start_time_appointment_walkin'+value).val();
                     value_services_name = services[0].text;
-
-                    if ($('#appointmentCustomCheckbox'+value).is(':checked')) {
-                        is_multiple_masseur = 'yes';
-                    }
                 } else if ($('#reservelater'+value).is(':checked')) {
                     value_start_time = $('#start_time_appointment'+value).val();
                     reserve_later = 'yes';
@@ -741,11 +711,11 @@ function processAppointment(data)
                 value_services,
                 therapist_1,
                 therapist_2,
-                is_multiple_masseur,
                 room,
                 reserve_now,
                 reserve_later,
-                newDate
+                newDate,
+                is_multiple_service_masseur
             );
 
             if (validation) {
@@ -816,11 +786,11 @@ function vaidateAppointmentTab(
     value_services,
     therapist_1,
     therapist_2,
-    is_multiple_masseur,
     room,
     reserve_now,
     reserve_later,
-    newDate
+    newDate,
+    is_multiple_service_masseur
 ) {
     var status;
     var default_validation = firstname.length < 1 ||
@@ -857,7 +827,7 @@ function vaidateAppointmentTab(
             }
         } else if (value_appointment_type == 'Walk-in') {
             if (reserve_now == 'yes') {
-                if (is_multiple_masseur == 'yes') {
+                if (is_multiple_service_masseur == 1) {
                     if (multiple_service_validation) {
                         status = false;
                         $('.tabAppointmentTitle'+value).addClass('error-border');
@@ -927,7 +897,7 @@ function vaidateAppointmentTab(
                         $('.tabAppointmentTitle'+key_value).addClass('error-border');  
                     }
                 } else if (reserve_now == 'yes') {
-                    if (is_multiple_masseur == 'yes') {
+                    if (is_multiple_service_masseur == 1) {
                         if (multiple_service_validation) {
                             $('.tabAppointmentTitle'+value).addClass('error-border');
                         }
@@ -966,73 +936,4 @@ function vaidateAppointmentTab(
     }
 
     return status;
-}
-
-function submitAppointment()
-{
-    var data = appointment;
-    var appointment_type = $('.appointment_name_appointment').val();
-    var reserve_now = $('.reserveNow').is(':checked');
-    var amount = $('#totalAmountToPayAppointment').val();
-    var spa_id = $('#spa_id_val').val();
-
-    var message = 'Are you sure you want to save the appointment?';
-    var url = '/appointment-store/'+spa_id;
-    if (appointment_type == 'Walk-in' && reserve_now == true) {
-        message = 'Are you sure you want to save the appointment as sales?';
-        url = '/appointment-create-sales/'+spa_id+'/'+amount
-    }
-
-    swal.fire({
-        title: message,
-        icon: 'question',
-        text: "Please ensure and then confirm!",
-        type: "warning",
-        showCancelButton: !0,
-        confirmButtonText: "Yes!",
-        cancelButtonText: "No!",
-        reverseButtons: !0
-    }).then(function (e) {
-        if (e.value === true) {
-            $.ajax({
-                'url' : url,
-                'type' : 'POST',
-                'data': {value: data},
-                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                beforeSend: function () {
-                    $('#appointment-form').find('.add-appointment-btn').val('Saving ... ').attr('disabled',true);
-                },success: function (result) {
-                    if(result.status) {
-                        $('#appointment-form').trigger('reset');
-                        $('.process-appointment-btn').removeClass('hidden');
-                        $('.add-appointment-btn').addClass('hidden');
-
-                        if (appointment_type == 'Walk-in') {
-                            loadRoom();
-                            getTotalSales(spa_id);
-                        } else {
-                            getAppointmentCount();
-                            loadAppointments(spa_id);
-                        }
-                        getMasseurAvailability(spa_id);
-                        getUpcomingGuest($('#spa_id_val').val());
-
-                        loadData(spa_id);
-                        swal.fire("Done!", result.message, "success");
-                        $('#add-new-appointment-modal').modal('hide');
-                    } else {
-                        swal.fire("Warning!", result.message, "warning");
-                    }
-            
-                    $('#appointment-form').find('.add-appointment-btn').val('Save').attr('disabled',false);
-                },error: function(xhr, status, error){
-                    console.log(xhr);
-                }
-            });
-        } else {
-            e.dismiss;
-        }
-    }, function (dismiss) {
-        return false;
-    })
 }

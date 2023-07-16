@@ -54,6 +54,12 @@
 
 @push('js')
     @if(auth()->check())
+        <!-- <script src="{{asset('js/frontdesk/BookAppointmentComponent/app.js')}}"></script>
+        <script src="{{asset('js/frontdesk/BookAppointmentComponent/forms.js')}}"></script>
+        <script src="{{asset('js/frontdesk/BookAppointmentComponent/filter-client.js')}}"></script>
+        <script src="{{asset('js/frontdesk/BookAppointmentComponent/actions.js')}}"></script>
+        <script src="{{asset('js/frontdesk/TherapistAvailabilityComponent/therapistAvailabiltyFunction.js')}}"></script>
+        <script src="{{asset('js/frontdesk/UpcomingAppointmentComponent/upComingGuestFunction.js')}}"></script> -->
         <script>
 
         </script>

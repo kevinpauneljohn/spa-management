@@ -258,21 +258,14 @@ class AppointmentService
 
                 if ($check_client['status']) {
                     $client_id = $check_client['data']['id'];
-                    $client_name = $check_client['data']['firstname'].' '.$check_client['data']['lastname'];
+                    $client_name = ucfirst($check_client['data']['firstname']).' '.ucfirst($check_client['data']['lastname']);
 
-                    $check_transaction = $this->checkInTransaction($client_id, $spa_id, $now);
+                    $check_transaction = $this->checkInTransaction($client_id, $spa_id, $list['start_time']);
                     $check_appointment = $this->checkInAppointment($client_id, $spa_id);
 
                     $client = $this->clientUpdate($client_id, $list);
-                    if (!$check_transaction['status']) {
-                        if ($client) {
-                            $transaction = $this->transactionCreate($spa_id, $client_id, $sale['data']['id'], $list);
 
-                            if (!$transaction) {
-                                throw new \Exception('Unable to save transaction. Please try again.');
-                            }
-                        }
-                    } else if ($check_appointment < 1) {
+                    if (!$check_transaction['status'] && $check_appointment < 1) {
                         if ($client) {
                             $transaction = $this->transactionCreate($spa_id, $client_id, $sale['data']['id'], $list);
 
@@ -293,15 +286,7 @@ class AppointmentService
                     $check_appointment = $this->checkInAppointment($client_id, $spa_id);
 
                     $client = $this->clientCreate($list);
-                    if (!$check_transaction['status']) {
-                        if ($client) {
-                            $transaction = $this->transactionCreate($spa_id, $client['data']['id'], $sale['data']['id'], $list);
-
-                            if (!$transaction) {
-                                throw new \Exception('Unable to save transaction. Please try again.');
-                            }
-                        }
-                    } else if ($check_appointment < 1) {
+                    if (!$check_transaction['status'] && $check_appointment < 1) {
                         if ($client) {
                             $transaction = $this->transactionCreate($spa_id, $client['data']['id'], $sale['data']['id'], $list);
 
@@ -405,6 +390,7 @@ class AppointmentService
                 'start_time_formatted' => $appointment->start_time_formatted,
                 'amount' => $appointment->amount,
                 'start_time' => $appointment->start_time,
+                'appointment_status' => ucfirst($appointment->appointment_status),
             ];
         }
 
@@ -596,39 +582,26 @@ class AppointmentService
 
     public function createTransaction($data)
     {
-        $data_array = [$data['therapist_1']];
-        if (!empty($data['therapist_2'])) {
-            $data_array = [$data['therapist_1'], $data['therapist_2']];
-        }
-
-        foreach ($data_array as $key => $data_arrays) {
-            $therapist = $data['therapist_1'];
-            $amount = $data['amount'];
-            if ($key == 1) {
-                $therapist = $data['therapist_2'];
-                $amount = 0;
-            }
-
-            $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
-            $transaction = Transaction::create([
-                'spa_id' => $data['spa_id'],
-                'service_id' => $data['service_id'],
-                'service_name' => $data['service_name'],
-                'amount' => $amount,
-                'therapist_1' => $therapist,
-                'client_id' => $data['client_id'],
-                'start_time' => $start_time_val,
-                'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
-                'plus_time' => $data['plus_time'],
-                'discount_rate' => $data['discount_rate'],
-                'discount_amount' => $data['discount_amount'],
-                'tip' => $data['tip'],
-                'rating' => $data['rating'],
-                'sales_type' => $data['sales_type'],
-                'sales_id' => $data['sales_id'],
-                'room_id' => $data['room_id']
-            ]);
-        }
+        $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
+        $transaction = Transaction::create([
+            'spa_id' => $data['spa_id'],
+            'service_id' => $data['service_id'],
+            'service_name' => $data['service_name'],
+            'amount' => $data['amount'],
+            'therapist_1' => $data['therapist_1'],
+            'therapist_2' => $data['therapist_2'],
+            'client_id' => $data['client_id'],
+            'start_time' => $start_time_val,
+            'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
+            'plus_time' => $data['plus_time'],
+            'discount_rate' => $data['discount_rate'],
+            'discount_amount' => $data['discount_amount'],
+            'tip' => $data['tip'],
+            'rating' => $data['rating'],
+            'sales_type' => $data['sales_type'],
+            'sales_id' => $data['sales_id'],
+            'room_id' => $data['room_id']
+        ]);
 
         return true;
     }

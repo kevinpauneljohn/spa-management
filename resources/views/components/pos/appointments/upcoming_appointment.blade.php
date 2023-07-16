@@ -1,3 +1,4 @@
+<input type="hidden" class="form-control spaId" value="{{$spaId}}">
 <div class="card">
     <div class="card-header bg-light">
         <h3 class="card-title">
@@ -20,3 +21,18 @@
         </div>
     </div>
 </div>
+@push('css')
+    <style>
+
+    </style>
+@endpush
+
+@push('js')
+    @if(auth()->check())
+        <script src="{{asset('js/frontdesk/UpcomingAppointmentComponent/upComingGuestFunction.js')}}"></script>
+        <script>
+            getUpcomingGuest($('.spaId').val());
+        </script>
+    @endif
+@endpush
+

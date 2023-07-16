@@ -19,6 +19,31 @@ function getPrepTimeList(id)
     });
 }
 
+function getAppointmentType(id)
+{
+    $.ajax({
+        'url' : '/appointment-type',
+        'type' : 'GET',
+        'data' : {},
+        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        beforeSend: function () {
+            $("#appointment_name_appointment"+id).html('');
+            $("#social_media_appointment"+id).html('');
+        },
+        success: function(result){
+            $("#appointment_name_appointment"+id).append('<option value="" disabled selected> -- Choose Here --</option>');
+            $.each(result.appointment_type , function(index_appointment, val_appointment) {
+                $("#appointment_name_appointment"+id).append('<option value="'+val_appointment+'">'+val_appointment+'</option>');
+            });
+
+            $("#social_media_appointment"+id).append('<option value="" disabled selected> -- Choose Here --</option>');
+            $.each(result.social_media , function(index_social, val_social) {
+                $("#social_media_appointment"+id).append('<option value="'+val_social+'">'+val_social+'</option>');
+            });
+        }
+    });
+}
+
 function getServicesAppointment(spa_id, id)
 {
     $.ajax({
@@ -96,14 +121,14 @@ function getPosTherapistApi(spa_id, dateTime, id)
                     $('#appointment_masseur1'+id).children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
                     $('#appointment_masseur2'+id).children('option[value="' + val.therapist_id + '"]').attr('disabled', false);
                 } else {
-                    $('.select-appointment-masseur1').children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
+                    $('#appointment_masseur1'+id).children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
                     $('#appointment_masseur2'+id).children('option[value="' + val.therapist_id + '"]').attr('disabled', true);
                 }
                 
                 if (filterPreSelectedTherapist.length > 0) {
                     $.each(filterPreSelectedTherapist , function(un_index, un_val) {
-                        $('#appointment_masseur1'+id).children('option[value="' + un_val + '"]').attr('disabled', true);
-                        $('#appointment_masseur2'+id).children('option[value="' + un_val + '"]').attr('disabled', true);
+                        $('.select-appointment-masseur1').children('option[value="' + un_val + '"]').attr('disabled', true);
+                        $('.select-appointment-masseur2').children('option[value="' + un_val + '"]').attr('disabled', true);
 
                         $('#appointment_masseur1'+id).select2({
                             placeholder: "Choose Masseur 1",
@@ -205,7 +230,30 @@ function getServiceById(id, data_id)
 
                 $('.appointment_masseur1_div'+data_id).removeClass('hidden');
             }
+
             $('#appointment_service_multiple'+data_id).val(result.service.multiple_masseur);
+
+            var masseur_1 = $('#appointment_masseur1'+data_id+'_id').val();
+            var masseur_2 = $('#appointment_masseur2'+data_id+'_id').val();
+            if (masseur_1.length > 0) {
+                filterPreSelectedTherapist = $.grep(filterPreSelectedTherapist, function(element){
+                    return element !== masseur_1;
+                }); 
+
+                $('.select-appointment-masseur1').children('option[value="' + masseur_1 + '"]').attr('disabled', false);
+            }
+
+            if (masseur_2.length > 0) {
+                filterPreSelectedTherapist = $.grep(filterPreSelectedTherapist, function(element){
+                    return element !== masseur_2;
+                }); 
+
+                $('.select-appointment-masseur2').children('option[value="' + masseur_2 + '"]').attr('disabled', false);
+            }
+
+            var spa_id = $('#spa_id_val').val();
+            var dateTime = $('#start_time_appointment_walkin'+data_id).val();
+            getPosTherapistApi(spa_id, dateTime, data_id);
         }
     });
 }
@@ -257,9 +305,10 @@ function submitAppointment()
                             // loadAppointments(spa_id);
                         }
                         getMasseurAvailability(spa_id);
-                        // getUpcomingGuest($('#spa_id_val').val());
+                        getUpcomingGuest(spa_id)
 
                         // loadData(spa_id);
+                        searchFilter = [];
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-appointment-modal').modal('hide');
                     } else {
