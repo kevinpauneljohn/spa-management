@@ -1,19 +1,20 @@
 <?php
 
-namespace App\View\Components\Pos\Appointments\BookAppointment;
+namespace App\View\Components\Pos\FrontDeskShifts;
 
 use Illuminate\View\Component;
 
-class filter_client extends Component
+class view_report_shift extends Component
 {
+    public $spaId;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($spaId = null)
     {
-        //
+        $this->spaId = $spaId;
     }
 
     /**
@@ -23,6 +24,6 @@ class filter_client extends Component
      */
     public function render()
     {
-        return view('components.pos.appointments.book-appointment.filter_client');
+        return view('components.pos.front-desk-shifts.view_report_shift');
     }
 }

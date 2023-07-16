@@ -36,7 +36,7 @@ class TransactionController extends Controller
 
         return DataTables::of($transaction)
             ->editColumn('client',function($transaction){
-                return $transaction->client['firstname'].' '.$transaction->client['lastname'];
+                return ucfirst($transaction->client['firstname']).' '.ucfirst($transaction->client['lastname']);
             })
             ->addColumn('service',function ($transaction){
                 return '<span class="badge bg-primary">'.$transaction->service_name.'</span>';
@@ -88,10 +88,12 @@ class TransactionController extends Controller
                 $action = "";
 
                 if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
-                    if ($transaction->end_time >= $dateNow  || auth()->user()->hasRole('owner')) {
+                    if ($transaction->end_time >= $dateNow) {
                         $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
+                    } else {
+                        $action .= '<button class="btn btn-xs btn-outline-danger rounded" disabled><i class="fas fa-ban"></i></button>';
                     }
-                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
                 }
 
                 // if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
@@ -116,9 +118,16 @@ class TransactionController extends Controller
         $data = [];
         if (!empty($transaction)) {
             foreach ($transaction as $list) {
-                $therapist = Therapist::with(['user'])->findOrFail($list->therapist_1);
-
-                $data [] = $therapist->user['firstname'].' '.$therapist->user['lastname'];
+                if (!empty($list->therapist_2)) {
+                    $data = [
+                        $list->therapist->user['firstname'].' '.$list->therapist->user['lastname'],
+                        $list->therapist2->user['firstname'].' '.$list->therapist2->user['lastname']
+                    ];
+                } else {
+                    $data = [
+                        $list->therapist->user['firstname'].' '.$list->therapist->user['lastname']
+                    ];
+                }
             }
         }
 

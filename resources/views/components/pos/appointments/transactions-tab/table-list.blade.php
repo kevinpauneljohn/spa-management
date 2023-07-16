@@ -25,7 +25,8 @@
 
 @push('js')
     @if(auth()->check())
-        <script src="{{asset('js/alerts.js')}}"></script>
+        <script src="{{asset('js/frontdesk/TransactionTabComponent/app.js')}}"></script>
+        <script src="{{asset('js/frontdesk/TransactionTabComponent/action.js')}}"></script>
         <script>
             $(document).ready(function(){
                 $('#transaction-data-lists').DataTable({

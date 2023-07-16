@@ -114,7 +114,7 @@ class ReceptionistController extends Controller
             'room_id' => $room,
             'data' => $dataList,
             'is_available' => $isAvailable,
-            'is_color_set' => $isColorSet
+            'is_color_set' => $isColorSet,
         ];
 
         return $data;
