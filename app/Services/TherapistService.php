@@ -7,6 +7,7 @@ use App\Models\Therapist;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Service;
+use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Services\TransactionService;
@@ -18,11 +19,16 @@ class TherapistService
     private $roomService;
 
     public $grossCommission;
+    public $grossSales;
+    public $dateFrom;
+    public $dateTo;
 
-    public function __construct(TransactionService $transactionService, RoomService $roomService)
+    public function __construct(TransactionService $transactionService, RoomService $roomService, Request $request)
     {
         $this->transactionService = $transactionService;
         $this->roomService = $roomService;
+        $this->dateFrom = $request->session()->get('transactionsDateFrom');
+        $this->dateTo = $request->session()->get('transactionsDateTo');
     }
 
     public function all_therapist_thru_spa($therapist)
@@ -165,9 +171,10 @@ class TherapistService
         return Service::where('spa_id', $spa_id)->pluck('id', 'name');
     }
 
-    public function getSales(Spa $spa)
+    public function getSales($query, $spa)
     {
-        return DataTables::of($spa->therapists)
+
+        return DataTables::of($query)
             ->editColumn('commission_percentage',function($therapist){
                 return $therapist->commission_percentage !== null ? $therapist->commission_percentage.'%' : '';
             })
@@ -178,25 +185,37 @@ class TherapistService
                 return '<a href="'.route('therapists.profile',['id' => $therapist->id]).'">'.$therapist->fullName.'</a>';
             })
             ->addColumn('total_clients',function ($therapist){
-                return $therapist->transactions->count();
+
+                return $therapist->transactions()->whereDate('start_time','>=',$this->dateFrom)
+                        ->whereDate('start_time','<=',$this->dateTo)->count() +
+                    $therapist->transactionsTherapistTwo()->whereDate('start_time','>=',$this->dateFrom)
+                        ->whereDate('start_time','<=',$this->dateTo)->count();
             })
             ->addColumn('gross_sales',function($therapist){
-                return '<span class="text-info">'.number_format($therapist->transactions->sum('amount'),2).'</span>';
+                return '<span class="text-info">'.number_format($therapist->grossSales($this->dateFrom, $this->dateTo),2).'</span>';
             })
             ->addColumn('gross_commission',function ($therapist){
-                return '<span class="text-primary text-bold">'.number_format($therapist->grossSalesCommission(),2).'</span>';
+                return '<span class="text-primary text-bold">'.number_format($therapist->grossSalesCommission($this->dateFrom, $this->dateTo),2).'</span>';
             })
             ->addColumn('summary', function($therapist){
                 return '<button type="button" class="btn btn-sm btn-outline-info rounded view-summary" id="'.$therapist->id.'" title="View Summary"><i class="fas fa-file-invoice"></i></button>';
             })
             ->rawColumns(['gross_sales','therapist','summary','gross_commission'])
             ->with([
-                'total_clients' => number_format($spa->transactions->count(),0),
-                'total_gross_sales' => number_format($spa->transactions->sum('amount'),2),
-                'total_gross_sales_commissions' => number_format($this->grossCommission = collect($spa->therapists)->map(function ($item, $key){
-                    return collect($item->grossSalesCommission())->sum();
-                })->sum(), 2),
-                'net_sales' => number_format($spa->transactions->sum('amount') - $this->grossCommission,2)
+                'total_clients' => number_format(
+                    $spa->displayTransactionsTherapistOneFromDateRange($this->dateFrom, $this->dateTo)->count() +
+                    $spa->displayTransactionsTherapistTwoFromDateRange($this->dateFrom, $this->dateTo)->count()
+                    ,0),
+                'total_gross_sales' => number_format($this->grossSales = collect($spa->displayTransactionsTherapistOneFromDateRange($this->dateFrom, $this->dateTo)->get())
+                    ->concat($spa->displayTransactionsTherapistTwoFromDateRange($this->dateFrom, $this->dateTo)->get())->map(function($item, $key){
+                        return $item['therapist_2'] == null ? $item['commission_reference_amount'] : $item['commission_reference_amount'] / 2;
+                    })->sum(), 2),
+                'total_gross_sales_commissions' => $this->grossCommission = collect($spa->therapists)->map(function($item, $key){
+                    return $item->grossSalesCommission($this->dateFrom, $this->dateTo);
+                })->sum(),
+                'net_sales' => number_format(
+                    $this->grossSales
+                    - $this->grossCommission,2)
             ])
             ->make(true);
     }

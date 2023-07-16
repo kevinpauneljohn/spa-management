@@ -19,7 +19,8 @@ class Service extends Model
         'multiple_masseur',
         'price',
         'category',
-        'price_per_plus_time'
+        'price_per_plus_time',
+        'commission_reference_amount'
     ];
 
     public function transaction()

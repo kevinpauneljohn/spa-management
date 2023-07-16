@@ -6,7 +6,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
         </div>
-        <input type="text" name="date" class="form-control float-right" id="reservation">
+        <input type="text" name="date" class="form-control float-right" id="transaction-dates">
     </div>
     <!-- /.input group -->
 </div>
@@ -20,18 +20,17 @@
     <script>
         $(document).ready(function(){
             //Date range picker
-            $('#reservation').daterangepicker()
+            $('#transaction-dates').daterangepicker()
         });
-        $(document).on('change','#reservation',function(){
+        $(document).on('change','#transaction-dates',function(){
             let date = $(this).val();
-
             $.ajax({
-                url: '{!! route('expenses.set.date') !!}',
+                url: '{!! route('transactions.set.date') !!}',
                 type: 'POST',
                 data: {'date' : date},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             }).done((result) => {
-                ;                $('#expense-list').DataTable().ajax.reload(null, false);
+               $('#therapist-sales-list').DataTable().ajax.reload(null, false);
             });
         })
     </script>

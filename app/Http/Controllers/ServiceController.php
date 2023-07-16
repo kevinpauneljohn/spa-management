@@ -20,90 +20,71 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        $id = $request['spa_id'];
-        $name = $request['name'];
-        $description = $request['description'];
-        $duration = $request['duration'];
-        $price = $request['price'];
-        $category = $request['category'];
-        $price_per_plus_time = $request['price_per_plus_time'];
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
             'category' => 'required',
+            'commission_reference_amount' => 'required',
             'price_per_plus_time' => 'required'
         ]);
 
         if($validator->passes())
         {
-            $code = 201;
             $service = Service::create([
-                'spa_id' => $id,
-                'name' => $name,
-                'description' => $description,
-                'duration' => $duration,
-                'price' => $price,
-                'category' => $category,
-                'price_per_plus_time' => $price_per_plus_time
+                'spa_id' => $request->spa_id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'duration' => $request->duration,
+                'price' => $request->price,
+                'category' => $request->category,
+                'multiple_masseur' => $request->multiple_masseur === 'on',
+                'commission_reference_amount' => $request->commission_reference_amount,
+                'price_per_plus_time' => $request->price_per_plus_time
             ]);
 
-            $response = [
+            return response()->json([
                 'status'   => true,
                 'message'   => 'Services information successfully saved.',
                 'data'      => $service,
-            ];
-
-            return response($response, $code);
-        } else {
-            return response()->json($validator->errors());
+            ]);
         }
+        return response()->json($validator->errors());
     }
 
-    public function show($id)
+    public function show(Service $service)
     {
-        $service = Service::findOrFail($id);
-
-        $range = range(5, 300, 5);
-        $data = [];
-        foreach ($range as $ranges) {
-            $data [$ranges] = $ranges;
-        }
-        return response()->json(['service' => $service, 'range' => $data]);
+        return $service;
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Service $service)
     {
-        $name = $request['name'];
-        $description = $request['description'];
-        $duration = $request['duration'];
-        $price = $request['price'];
-        $category = $request['category'];
-        $price_per_plus_time = $request['price_per_plus_time'];
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
             'category' => 'required',
-            'price_per_plus_time' => 'required'
+            'price_per_plus_time' => 'required',
+            'commission_reference_amount' => 'required'
         ]);
 
         if($validator->passes())
         {
-            $service = Service::findOrFail($id);
-            $service->name = $name;
-            $service->description = $description;
-            $service->duration = $duration;
-            $service->price = $price;
-            $service->category = $category;
-            $service->price_per_plus_time = $price_per_plus_time;
+//            $multipleMasseur = $request->multiple_masseur !== null ? 1 : 0;
+            $service->name = $request->name;
+            $service->description = $request->description;
+            $service->multiple_masseur = $request->multiple_masseur !== null ? 1 : 0;
+            $service->duration = $request->duration;
+            $service->price = $request->price;
+            $service->category = $request->category;
+            $service->commission_reference_amount = $request->commission_reference_amount;
+            $service->price_per_plus_time = $request->price_per_plus_time;
 
             if($service->isDirty()){
                 $service->save();
+
                 return response()->json(['status' => true, 'message' => 'Services information successfully updated.']);
             } else {
                 return response()->json(['status' => false, 'message' => 'No changes made.']);
@@ -167,7 +148,7 @@ class ServiceController extends Controller
 
         return response()->json(['range' => $plus_time]);
     }
-    
+
     public function servicePricing($id, $spa_id)
     {
         $service = Service::where(['id' => $id, 'spa_id' => $spa_id])->first();

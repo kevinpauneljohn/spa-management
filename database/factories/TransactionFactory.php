@@ -22,13 +22,17 @@ class TransactionFactory extends Factory
         $this->spa = Spa::where('name','Thai Khun Lounge & Spa')->first();
         $services = collect($this->spa->services)->random();
         $hour = rand(1,10);
+        $therapist_one = collect($this->spa->therapists)->pluck('id')->random();
         return [
             'spa_id' => $this->spa->id,
             'service_id' => $services->id,
             'service_name' => $services->name,
             'amount' => $services->price,
-            'therapist_1' => collect($this->spa->therapists)->pluck('id')->random(),
-            'therapist_2' => null,
+            'commission_reference_amount' => $services->commission_reference_amount,
+            'therapist_1' => $therapist_one,
+            'therapist_2' => collect($this->spa->therapists)->pluck('id')->concat([null])->reject(function($value, $key) use ($therapist_one){
+                return $value === $therapist_one;
+            })->random(),
             'client_id' => collect(Client::all())->pluck('id')->random(),
             'start_time' => now()->addHours($hour),
             'end_time' => now()->addHours($hour+1),

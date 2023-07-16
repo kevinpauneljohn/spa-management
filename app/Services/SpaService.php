@@ -84,6 +84,9 @@ class SpaService
             ->addColumn('category',function ($service){
                 return ucfirst($service->category);
             })
+            ->editColumn('multiple_masseur', function($service){
+                return $service->multiple_masseur === 1 ? '<span class="fa fa-check multiple_masseur_check text-success mt-2"></span>' : '';
+            })
             ->addColumn('action', function($service){
                 $action = "";
                 if(auth()->user()->can('view service'))
@@ -100,7 +103,7 @@ class SpaService
                 }
                 return $action;
             })
-            ->rawColumns(['action','name'])
+            ->rawColumns(['action','name','multiple_masseur'])
             ->make(true);
     }
 

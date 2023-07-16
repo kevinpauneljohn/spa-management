@@ -9,8 +9,6 @@ use App\Services\SpaService;
 use App\Models\Spa;
 use App\Models\Owner;
 use App\Models\User;
-use Carbon\Carbon;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller

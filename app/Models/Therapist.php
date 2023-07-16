@@ -23,23 +23,28 @@ class Therapist extends Model
         'offer_type',
     ];
 
+    protected $appends = ['full_name','commission'];
+
+    public $therapist_one;
+    public $therapist_two;
+
     public function spa()
     {
         return $this->belongsTo(Spa::class);
     }
 
 
-    public function transactions()
+    public function transactions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Transaction::class, 'therapist_1');
     }
 
-    public function transactionsTherapistTwo()
+    public function transactionsTherapistTwo(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Transaction::class,'therapist_2');
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -58,18 +63,39 @@ class Therapist extends Model
         return $this->commission_percentage / 100;
     }
 
-    public function grossSalesCommission(): string
+    private function setTransactionsDate($dateFrom, $dateTo)
     {
-        return $this->offer_type === 'percentage_only'
-        || $this->offer_type === 'percentage_plus_allowance'
-            ? $this->transactions()->sum('amount') * $this->percentage:
-            $this->transactions()->count() * $this->commission_flat;
+        $this->therapist_one = $this->transactions()->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo);
+
+        $this->therapist_two = $this->transactionsTherapistTwo()->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo);
+    }
+    public function grossSales($dateFrom, $dateTo)
+    {
+        $this->setTransactionsDate($dateFrom, $dateTo);
+        return collect($this->therapist_one->get())->concat($this->therapist_two->get())->map(function($item, $key){
+            return $item['therapist_2'] == null ? $item['commission_reference_amount'] : $item['commission_reference_amount'] / 2;
+        })->sum();
     }
 
-    public function getClientNameAttribute()
+    /**
+     * this will get the total commission by percentage of by commission_reference_amount
+     * @param $dateFrom
+     * @param $dateTo
+     * @return string
+     */
+    public function grossSalesCommission($dateFrom, $dateTo): string
     {
+        //set date for the therapist_one and therapist_two properties
+        $this->setTransactionsDate($dateFrom, $dateTo);
 
-        return "{$this->firstname}";
+        return $this->offer_type === 'percentage_only'
+        || $this->offer_type === 'percentage_plus_allowance'
+            ? collect($this->therapist_one->get())->concat($this->therapist_two->get())->map(function($item, $key){
+                return $item['therapist_2'] == null ? $item['commission_reference_amount'] : $item['commission_reference_amount'] / 2;
+            })->sum() * ($this->commission_percentage / 100)
+            : ($this->therapist_one->count() + $this->therapist_two->count()) * $this->commission_flat;
     }
 
     public function displayTransactionsFromDateRange($dateFrom, $dateTo): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -77,5 +103,14 @@ class Therapist extends Model
         return $this->transactions()
             ->whereDate('start_time','>=',$dateFrom)
             ->whereDate('start_time','<=',$dateTo);
+    }
+
+    public function getCommissionAttribute()
+    {
+        if($this->offer_type === 'percentage_plus_allowance' || $this->offer_type === 'percentage_only')
+        {
+            return $this->commission_percentage.'%';
+        }
+        return number_format($this->commission_flat,2);
     }
 }

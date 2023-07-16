@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TherapistRequest;
 use App\Models\Role;
-use App\Models\Sale;
 use App\Models\Spa;
 use App\Services\TherapistService;
 use App\Services\UserService;
 use App\Models\User;
 use App\Models\Therapist;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TherapistController extends Controller
 {
@@ -88,18 +89,6 @@ class TherapistController extends Controller
 
         return response()->json(['success' => false,'message' => 'An error occured']);
     }
-
-//    public function overview($id)
-//    {
-//        $spa = Spa::where('id', $id)->first();
-//        $owner_id = $spa->owner_id;
-//
-//        $owner = Owner::where('id', $owner_id)->first();
-//        $owners = User::role(['owner'])->where('id', $owner->user_id)->first();
-//        $roles = $owners->getRoleNames()->first();
-//
-//        return view('Therapist.overview',compact('spa', 'owners', 'roles'));
-//    }
 
     public function saveUser($data)
     {
@@ -185,24 +174,42 @@ class TherapistController extends Controller
         return $therapistService->therapistTransactionsCount($id, $date);
     }
 
-    public function getTherapistSales(Spa $spa, TherapistService $therapistService, Request $request)
+    /**
+     * display the therapist payroll using datatable
+     * @param Spa $spa
+     * @param TherapistService $therapistService
+     * @return mixed
+     */
+    public function getTherapistSales(Spa $spa, TherapistService $therapistService)
     {
-//        if($request->session()->get('transactionsDateFrom') && $request->session()->get('transactionsDateTo'))
-//        {
-//            $query = $spa->therapists()->displayTransactionsFromDateRange($request->session()->get('transactionsDateFrom'), $request->session()->get('transactionsDateTo'))->get();
-//
-//        }
-//        return $therapistService->getSales($spa);
-        return $spa->therapists->displayTransactionsFromDateRange;
+        $query = $spa->therapists;
+        return $therapistService->getSales($query, $spa);
     }
 
-    public function transactions(Therapist $therapist)
+    /**
+     * this method is used for the payroll date range component in displaying the therapist payroll
+     * @param Therapist $therapist
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function transactions(Therapist $therapist, Request $request): \Illuminate\Http\JsonResponse
     {
+        $dateFrom = $request->session()->get('transactionsDateFrom');
+        $dateTo = $request->session()->get('transactionsDateTo');
+        $transactions = collect($therapist->transactions()
+            ->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo)->get())
+            ->concat($therapist->transactionsTherapistTwo()
+                ->whereDate('start_time','>=',$dateFrom)
+                ->whereDate('start_time','<=',$dateTo)->get());
+
         return response()->json([
-            'data' => $therapist->transactions->makeHidden(['client_id','id','spa_id','therapist_1','therapist_2','sales_id','updated_at','created_at','service_id'])->toArray(),
-            'gross_sales' => number_format($therapist->transactions->sum('amount'),2),
-            'gross_sales_commission' => number_format($therapist->grossSalesCommission(),2),
-            'therapist' => $therapist->fullName
+            'data' => $transactions,
+            'gross_sales' => number_format(collect($transactions)->map(function($item, $key){
+                return $item['therapist_2'] == null ? $item['commission_reference_amount'] : $item['commission_reference_amount'] / 2;
+            })->sum(), 2),
+            'gross_sales_commission' => number_format($therapist->grossSalesCommission($dateFrom, $dateTo),2),
+            'therapist' => $therapist->only(['commission','full_name','offer_type']),
         ]);
     }
 }

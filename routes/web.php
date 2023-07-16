@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/sales-update/{id}',[\App\Http\Controllers\SaleController::class,'updateSales'])->name('sale.update');
     Route::get('/sales-end-of-shift-report/{spa_id}/{shift_id}',[\App\Http\Controllers\SaleController::class,'endOfShiftReport'])->name('sale.end.shift.report');
 
+    Route::post('/transactions-set-date',[\App\Http\Controllers\TransactionController::class,'displayTransactionsByDateSelected'])->name('transactions.set.date');
     Route::get('/transaction/{id}',[\App\Http\Controllers\TransactionController::class,'show'])->name('transaction.show');
     Route::get('/transaction-list/{id}',[\App\Http\Controllers\TransactionController::class,'lists'])->name('transaction.lists');
     Route::get('/transaction-total-sales/{id}',[\App\Http\Controllers\TransactionController::class,'getTotalSales'])->name('transaction.count');
@@ -91,13 +92,14 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/service-list/{id}',[\App\Http\Controllers\ServiceController::class,'lists'])->name('service.lists');
     Route::get('/service/overview/{id}',[\App\Http\Controllers\ServiceController::class,'overview'])->name('service.overview');
-    Route::post('/service',[\App\Http\Controllers\ServiceController::class,'store'])->name('service.store');
-    Route::get('/service/{id}',[\App\Http\Controllers\ServiceController::class,'show'])->name('service.show');
+//    Route::post('/service',[\App\Http\Controllers\ServiceController::class,'store'])->name('service.store');
+//    Route::get('/service/{id}',[\App\Http\Controllers\ServiceController::class,'show'])->name('service.show');
     Route::get('/service-duration-range',[\App\Http\Controllers\ServiceController::class,'durationRange'])->name('service.duration.range');
-    Route::put('/service/{id}',[\App\Http\Controllers\ServiceController::class,'update'])->name('service.update');
-    Route::delete('/service/{id}',[\App\Http\Controllers\ServiceController::class,'destroy'])->name('service.delete');
+//    Route::put('/service/{id}',[\App\Http\Controllers\ServiceController::class,'update'])->name('service.update');
+//    Route::delete('/service/{id}',[\App\Http\Controllers\ServiceController::class,'destroy'])->name('service.delete');
     Route::get('/service-price/{id}/{spa_id}',[\App\Http\Controllers\ServiceController::class,'servicePricing'])->name('service.price');
     Route::get('/service-plus-time-price/{id}/{spa_id}/{selected_id}',[\App\Http\Controllers\ServiceController::class,'servicePricingPlusTime'])->name('service.price.plustime');
+    Route::resource('/service',\App\Http\Controllers\ServiceController::class);
 
     Route::get('/permission',[\App\Http\Controllers\PermissionController::class,'index'])->name('permission.index');
     Route::get('/permission-list',[\App\Http\Controllers\PermissionController::class,'lists'])->name('permission.list');
@@ -126,7 +128,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
     Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
     Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
-    Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
+//    Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
 
 
     Route::resource('/shift',\App\Http\Controllers\ShiftController::class);

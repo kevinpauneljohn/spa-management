@@ -19,6 +19,7 @@ class Transaction extends Model
         'service_id',
         'service_name',
         'amount',
+        'commission_reference_amount',
         'therapist_1',
         'therapist_2',
         'client_id',
@@ -35,52 +36,57 @@ class Transaction extends Model
         'primary',
     ];
 
-    protected $appends = ['client_name','start_date','end_date'];
+    protected $appends = ['client_name','start_date','end_date','gross_sale'];
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function therapist()
+    public function therapist(): BelongsTo
     {
         return $this->belongsTo(Therapist::class, 'therapist_1', 'id');
     }
 
-    public function therapist2()
+    public function therapist2(): BelongsTo
     {
         return $this->belongsTo(Therapist::class, 'therapist_2', 'id');
     }
 
-    public function service()
+    public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
-    public function spa()
+    public function spa(): BelongsTo
     {
         return $this->belongsTo(Spa::class);
     }
 
-    public function sale()
+    public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class);
     }
 
-    public function getClientNameAttribute()
+    public function getClientNameAttribute(): string
     {
         $client = DB::table('clients')
             ->where('id',$this->client_id)->first();
         return "{$client->firstname} {$client->lastname}";
     }
 
-    public function getStartDateAttribute()
+    public function getStartDateAttribute(): string
     {
         return Carbon::parse($this->start_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
     }
 
-    public function getEndDateAttribute()
+    public function getEndDateAttribute(): string
     {
         return Carbon::parse($this->end_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
+    }
+
+    public function getGrossSaleAttribute()
+    {
+        return $this->therapist_2 !== null ? $this->commission_reference_amount / 2 : $this->commission_reference_amount;
     }
 }

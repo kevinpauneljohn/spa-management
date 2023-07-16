@@ -73,4 +73,20 @@ class Spa extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function displayTransactionsTherapistOneFromDateRange($dateFrom, $dateTo)
+    {
+        return $this->transactions()
+            ->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo);
+    }
+
+    public function displayTransactionsTherapistTwoFromDateRange($dateFrom, $dateTo)
+    {
+        return $this->transactions()
+            ->where('therapist_2','!=',null)
+            ->whereDate('start_time','>=',$dateFrom)
+            ->whereDate('start_time','<=',$dateTo);
+    }
+
 }

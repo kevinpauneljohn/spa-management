@@ -45,7 +45,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <x-service.add-service-button />
+                                    @can('add service')
+                                        <x-service.add-service-button />
+                                    @endcan
                                 </div>
                             </div>
                             <br />
@@ -60,6 +62,7 @@
                                             <th>Price</th>
                                             <th>Duration</th>
                                             <th>Category</th>
+                                            <th>Multiple Masseur</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -207,12 +210,18 @@
 
 @section('plugins.Toastr',true)
 @section('css')
-
+<style>
+    .multiple_masseur_check{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+</style>
 @stop
 
 @section('js')
     <script src="{{asset('js/clear_errors.js')}}"></script>
-    <script src="{{asset('js/service.js')}}"></script>
+{{--    <script src="{{asset('js/service.js')}}"></script>--}}
     <script>
         $(document).ready(function() {
             var spa_id = $('.spa-id').val();
@@ -230,6 +239,7 @@
                     { data: 'price', name: 'price'},
                     { data: 'duration', name: 'duration'},
                     { data: 'category', name: 'category'},
+                    { data: 'multiple_masseur', name: 'multiple_masseur'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                 ],
                 responsive:true,
@@ -237,23 +247,23 @@
                 pageLength: 50
             });
 
-            $('#addNewService').on('click', function() {
-                $('#name').val('');
-                $('#description').val('');
-                $('#duration').val('');
-                $('#price').val('');
-                $('#category').val('');
-                $('#add-new-service-modal').modal('show');
-            });
-
-            $(document).on('click','.edit-service-btn',function() {
-                $('#edit_id').val('');
-                $('#edit_name').val('');
-                $('#edit_description').val('');
-                $('#edit_price').val('');
-
-                $('#update-service-modal').modal('show');
-            });
+            // $('#addNewService').on('click', function() {
+            //     $('#name').val('');
+            //     $('#description').val('');
+            //     $('#duration').val('');
+            //     $('#price').val('');
+            //     $('#category').val('');
+            //     $('#add-new-service-modal').modal('show');
+            // });
+            //
+            // $(document).on('click','.edit-service-btn',function() {
+            //     $('#edit_id').val('');
+            //     $('#edit_name').val('');
+            //     $('#edit_description').val('');
+            //     $('#edit_price').val('');
+            //
+            //     $('#update-service-modal').modal('show');
+            // });
 
         });
 

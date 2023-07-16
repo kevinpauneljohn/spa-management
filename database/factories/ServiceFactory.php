@@ -14,11 +14,13 @@ class ServiceFactory extends Factory
      */
     public function definition()
     {
+        $price = rand(1000,1500);
         return [
             'spa_id' => collect(Spa::all())->pluck('id')->random(),
             'description' => 'lorem ipsum',
-            'duration' => 6,
-            'price' => 670,
+            'duration' => 5,
+            'price' => $price,
+            'commission_reference_amount' => $price-500,
             'category' => 'regular',
             'price_per_plus_time' => 100,
         ];
