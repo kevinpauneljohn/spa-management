@@ -148,128 +148,128 @@
 //     }
 // }
 
-function updateAppointment()
-{
-    var spa_id = $('#spa_id_val').val();
-    var id = $('#edit_app_id').val();
-    var client_id = $('#edit_app_client_id').val();
-    var firstname = $('#edit_app_firstname').val();
-    var middlename = $('#edit_app_middlename').val();
-    var lastname = $('#edit_app_lastname').val();
-    var date_of_birth = $('#edit_app_date_of_birth').val();
-    var mobile_number = $('#edit_app_mobile_number').val();
-    var client_type = $('#edit_app_client_type').val();
-    var email = $('#edit_app_email').val();
-    var address = $('#edit_app_address').val();
-    var appointment_type = $('#appointment_name_appointmentup').val();
-    var appointment_social = $('#social_media_appointmentup').val();
-    var start_time = $('#start_time_appointment_up').val();
-    var validateMobile = mobileValidation(mobile_number);
+// function updateAppointment()
+// {
+//     var spa_id = $('#spa_id_val').val();
+//     var id = $('#edit_app_id').val();
+//     var client_id = $('#edit_app_client_id').val();
+//     var firstname = $('#edit_app_firstname').val();
+//     var middlename = $('#edit_app_middlename').val();
+//     var lastname = $('#edit_app_lastname').val();
+//     var date_of_birth = $('#edit_app_date_of_birth').val();
+//     var mobile_number = $('#edit_app_mobile_number').val();
+//     var client_type = $('#edit_app_client_type').val();
+//     var email = $('#edit_app_email').val();
+//     var address = $('#edit_app_address').val();
+//     var appointment_type = $('#appointment_name_appointmentup').val();
+//     var appointment_social = $('#social_media_appointmentup').val();
+//     var start_time = $('#start_time_appointment_up').val();
+//     var validateMobile = mobileValidation(mobile_number);
 
-    if (firstname.length < 1) {
-        toastr.error('The firstname field is required.');
-    }
+//     if (firstname.length < 1) {
+//         toastr.error('The firstname field is required.');
+//     }
 
-    if (lastname.length < 1) {
-        toastr.error('The lastname field is required.');
-    }
+//     if (lastname.length < 1) {
+//         toastr.error('The lastname field is required.');
+//     }
 
-    if (mobile_number.length < 1) {
-        toastr.error('The mobile number field is required.');
-    } else {
-        if (!validateMobile) {
-            toastr.error('The mobile number must be a number, have 10 characters, and not start with zero.');
-        }
-    }
+//     if (mobile_number.length < 1) {
+//         toastr.error('The mobile number field is required.');
+//     } else {
+//         if (!validateMobile) {
+//             toastr.error('The mobile number must be a number, have 10 characters, and not start with zero.');
+//         }
+//     }
 
-    if (start_time.length < 1) {
-        toastr.error('The start time field is required.');
-    }
+//     if (start_time.length < 1) {
+//         toastr.error('The start time field is required.');
+//     }
 
-    if (appointment_type == 'Social Media') {
-        if (appointment_social == null || typeof(appointment_social) == 'undefined') {
-            toastr.error('The social media field is required.');
-        }
-    }
+//     if (appointment_type == 'Social Media') {
+//         if (appointment_social == null || typeof(appointment_social) == 'undefined') {
+//             toastr.error('The social media field is required.');
+//         }
+//     }
 
-    var valid = false;
-    if (firstname.length > 0 && lastname.length > 0 && mobile_number.length > 0 && start_time.length > 0 && validateMobile) {
-        if (appointment_type == 'Social Media') {
-            if (appointment_social != null) {
-                valid = true;
-            } else {
-                valid = false;
-            }
-        } else {
-            valid = true;
-        }
-    }
+//     var valid = false;
+//     if (firstname.length > 0 && lastname.length > 0 && mobile_number.length > 0 && start_time.length > 0 && validateMobile) {
+//         if (appointment_type == 'Social Media') {
+//             if (appointment_social != null) {
+//                 valid = true;
+//             } else {
+//                 valid = false;
+//             }
+//         } else {
+//             valid = true;
+//         }
+//     }
 
-    if (valid) {
-        swal.fire({
-            title: "Are you sure you want to update the appointment?",
-            icon: 'question',
-            text: "Please ensure and then confirm!",
-            type: "warning",
-            showCancelButton: !0,
-            confirmButtonText: "Yes!",
-            cancelButtonText: "No!",
-            reverseButtons: !0
-        }).then(function (e) {
-            if (e.value === true) {
-                $.ajax({
-                    'url' : '/appointment-update/'+id,
-                    'type' : 'PUT',
-                    'data': {
-                        id: id,
-                        client_id: client_id,
-                        firstname: firstname,
-                        middlename: middlename,
-                        lastname: lastname,
-                        date_of_birth: date_of_birth,
-                        mobile_number: mobile_number,
-                        email: email,
-                        address: address,
-                        appointment_type: appointment_type,
-                        appointment_social: appointment_social,
-                        start_time: start_time,
-                        client_type: client_type
-                    },
-                    'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    beforeSend: function () {
-                        $('#update-appointment-form').find('.update-appointment-btn').val('Saving ... ').attr('disabled',true);
-                    },success: function (result) {
-                        if(result.status) {
-                            $('#update-appointment-form').trigger('reset');
-                            getAppointmentCount();
-                            loadAppointments(spa_id);
-                            loadRoom();
-                            // loadSales(spa_id);
-                            $('#sales-data-lists').DataTable().ajax.reload(null, false);
-                            getTotalSales(spa_id);
-                            getMasseurAvailability(spa_id);
-                            loadData(spa_id);
-                            getUpcomingGuest($('#spa_id_val').val());
+//     if (valid) {
+//         swal.fire({
+//             title: "Are you sure you want to update the appointment?",
+//             icon: 'question',
+//             text: "Please ensure and then confirm!",
+//             type: "warning",
+//             showCancelButton: !0,
+//             confirmButtonText: "Yes!",
+//             cancelButtonText: "No!",
+//             reverseButtons: !0
+//         }).then(function (e) {
+//             if (e.value === true) {
+//                 $.ajax({
+//                     'url' : '/appointment-update/'+id,
+//                     'type' : 'PUT',
+//                     'data': {
+//                         id: id,
+//                         client_id: client_id,
+//                         firstname: firstname,
+//                         middlename: middlename,
+//                         lastname: lastname,
+//                         date_of_birth: date_of_birth,
+//                         mobile_number: mobile_number,
+//                         email: email,
+//                         address: address,
+//                         appointment_type: appointment_type,
+//                         appointment_social: appointment_social,
+//                         start_time: start_time,
+//                         client_type: client_type
+//                     },
+//                     'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//                     beforeSend: function () {
+//                         $('#update-appointment-form').find('.update-appointment-btn').val('Saving ... ').attr('disabled',true);
+//                     },success: function (result) {
+//                         if(result.status) {
+//                             $('#update-appointment-form').trigger('reset');
+//                             getAppointmentCount();
+//                             loadAppointments(spa_id);
+//                             loadRoom();
+//                             // loadSales(spa_id);
+//                             $('#sales-data-lists').DataTable().ajax.reload(null, false);
+//                             getTotalSales(spa_id);
+//                             getMasseurAvailability(spa_id);
+//                             loadData(spa_id);
+//                             getUpcomingGuest($('#spa_id_val').val());
             
-                            swal.fire("Done!", result.message, "success");
-                            $('#update-appointment-modal').modal('hide');
-                        } else {
-                            swal.fire("Warning!", result.message, "warning");
-                        }
+//                             swal.fire("Done!", result.message, "success");
+//                             $('#update-appointment-modal').modal('hide');
+//                         } else {
+//                             swal.fire("Warning!", result.message, "warning");
+//                         }
                 
-                        $('#update-appointment-form').find('.update-appointment-btn').val('Save').attr('disabled',false);
-                    },error: function(xhr, status, error){
-                        console.log(xhr);
-                    }
-                });
-            } else {
-                e.dismiss;
-            }
-        }, function (dismiss) {
-            return false;
-        })
-    }
-}
+//                         $('#update-appointment-form').find('.update-appointment-btn').val('Save').attr('disabled',false);
+//                     },error: function(xhr, status, error){
+//                         console.log(xhr);
+//                     }
+//                 });
+//             } else {
+//                 e.dismiss;
+//             }
+//         }, function (dismiss) {
+//             return false;
+//         })
+//     }
+// }
 
 function updateInvoice(id)
 {
@@ -396,105 +396,105 @@ function updateInvoiceConfirmed(spa_id, payment_method, payment_status, payment_
     })
 }
 
-function startShiftMoney(id, amount)
-{
-    var spa_id = $('#spa_id_val').val();
-    $.ajax({
-        'url' : '/pos-update-shift/'+id+'/'+amount+'/start_money',
-        'type' : 'PUT',
-        'data' : {},
-        'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        beforeSend: function () {
-            $('.btnMoneyOnHand').text('Confirming ... ').attr('disabled',true)
-        },
-        success: function(result){
-            getPosShift(spa_id);
-            loadData(spa_id);
-            swal.fire("Done!", result.message, "success");
-            $('#money-on-hand-modal').modal('hide');
-            $('.btnMoneyOnHand').text('Click here to confirm').attr('disabled',false)
-        }
-    });
-}
+// function startShiftMoney(id, amount)
+// {
+//     var spa_id = $('#spa_id_val').val();
+//     $.ajax({
+//         'url' : '/pos-update-shift/'+id+'/'+amount+'/start_money',
+//         'type' : 'PUT',
+//         'data' : {},
+//         'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         beforeSend: function () {
+//             $('.btnMoneyOnHand').text('Confirming ... ').attr('disabled',true)
+//         },
+//         success: function(result){
+//             getPosShift(spa_id);
+//             loadData(spa_id);
+//             swal.fire("Done!", result.message, "success");
+//             $('#money-on-hand-modal').modal('hide');
+//             $('.btnMoneyOnHand').text('Click here to confirm').attr('disabled',false)
+//         }
+//     });
+// }
 
-function endShiftPost(id)
-{
-    var spa_id = $('#spa_id_val').val();
-    swal.fire({
-        title: "Are you sure you want to end your shift?",
-        icon: 'question',
-        text: "Please ensure and then confirm!",
-        type: "warning",
-        showCancelButton: !0,
-        confirmButtonText: "Yes!",
-        cancelButtonText: "No!",
-        reverseButtons: !0
-    }).then(function (e) {
-        if (e.value === true) {
-            $.ajax({
-                'url' : '/pos-update-shift/'+id+'/0/end_shift',
-                'type' : 'PUT',
-                'data' : {},
-                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                beforeSend: function () {
+// function endShiftPost(id)
+// {
+//     var spa_id = $('#spa_id_val').val();
+//     swal.fire({
+//         title: "Are you sure you want to end your shift?",
+//         icon: 'question',
+//         text: "Please ensure and then confirm!",
+//         type: "warning",
+//         showCancelButton: !0,
+//         confirmButtonText: "Yes!",
+//         cancelButtonText: "No!",
+//         reverseButtons: !0
+//     }).then(function (e) {
+//         if (e.value === true) {
+//             $.ajax({
+//                 'url' : '/pos-update-shift/'+id+'/0/end_shift',
+//                 'type' : 'PUT',
+//                 'data' : {},
+//                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//                 beforeSend: function () {
         
-                },
-                success: function(result){
-                    getPosShift(spa_id);
-                    swal.fire("Done!", result.message, "success");
-                }
-            });
-        } else {
-            e.dismiss;
-        }
-    }, function (dismiss) {
-        return false;
-    })
-}
+//                 },
+//                 success: function(result){
+//                     getPosShift(spa_id);
+//                     swal.fire("Done!", result.message, "success");
+//                 }
+//             });
+//         } else {
+//             e.dismiss;
+//         }
+//     }, function (dismiss) {
+//         return false;
+//     })
+// }
 
-function stopSales(id)
-{
-    var spa_id = $('#spa_id_val').val();
-    swal.fire({
-        title: "Are you sure you want to stop / cancel the on going reservation?",
-        icon: 'question',
-        text: "Please ensure and then confirm!",
-        type: "warning",
-        showCancelButton: !0,
-        confirmButtonText: "Yes!",
-        cancelButtonText: "No!",
-        reverseButtons: !0
-    }).then(function (e) {
-        if (e.value === true) {
-            $.ajax({
-                'url' : '/transaction-stop/'+id,
-                'type' : 'PUT',
-                'data': {},
-                'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                beforeSend: function () {
+// function stopSales(id)
+// {
+//     var spa_id = $('#spa_id_val').val();
+//     swal.fire({
+//         title: "Are you sure you want to stop / cancel the on going reservation?",
+//         icon: 'question',
+//         text: "Please ensure and then confirm!",
+//         type: "warning",
+//         showCancelButton: !0,
+//         confirmButtonText: "Yes!",
+//         cancelButtonText: "No!",
+//         reverseButtons: !0
+//     }).then(function (e) {
+//         if (e.value === true) {
+//             $.ajax({
+//                 'url' : '/transaction-stop/'+id,
+//                 'type' : 'PUT',
+//                 'data': {},
+//                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//                 beforeSend: function () {
 
-                },success: function (result) {
-                    if(result.status) {
-                        loadRoom();
-                        // loadSales(spa_id);
-                        $('#sales-data-lists').DataTable().ajax.reload(null, false);
-                        getTotalSales(spa_id);
-                        getMasseurAvailability(spa_id);
-                        loadData(spa_id);
-                        getUpcomingGuest(spa_id);
+//                 },success: function (result) {
+//                     if(result.status) {
+//                         loadRoom();
+//                         // loadSales(spa_id);
+//                         $('#sales-data-lists').DataTable().ajax.reload(null, false);
+//                         getTotalSales(spa_id);
+//                         getMasseurAvailability(spa_id);
+//                         loadData(spa_id);
+//                         getUpcomingGuest(spa_id);
 
-                        swal.fire("Done!", result.message, "success");
-                    } else {
-                        swal.fire("Warning!", result.message, "warning");
-                    }
-                },error: function(xhr, status, error){
-                    console.log(xhr);
-                }
-            });
-        } else {
-            e.dismiss;
-        }
-    }, function (dismiss) {
-        return false;
-    })
-}
+//                         swal.fire("Done!", result.message, "success");
+//                     } else {
+//                         swal.fire("Warning!", result.message, "warning");
+//                     }
+//                 },error: function(xhr, status, error){
+//                     console.log(xhr);
+//                 }
+//             });
+//         } else {
+//             e.dismiss;
+//         }
+//     }, function (dismiss) {
+//         return false;
+//     })
+// }

@@ -60,8 +60,8 @@ class PosService
     {
         $now = Carbon::now();
         $request_date = $now->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        if ($request) {
-            $request_date = $now->addMinutes($request)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        if (!empty($request)) {
+            $request_date = Carbon::parse($request)->format('Y-m-d H:i:s');
         }
 
         $therapist = Therapist::where('spa_id', $spa_id)->get();

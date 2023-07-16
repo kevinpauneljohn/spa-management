@@ -1,6 +1,5 @@
 function getMasseurAvailability(spa_id)
 {
-    filterPreSelectedTherapist = [];
     $.ajax({
         'url' : '/transaction-masseur-availability/'+spa_id,
         'type' : 'GET',
@@ -15,8 +14,7 @@ function getMasseurAvailability(spa_id)
             $.each(result, function (key, value) {
                 var names;
                 clearInterval(interValTherpist[value.id])
-                if (value.data != '') {
-                    filterPreSelectedTherapist.push(value.id);
+                if (value.data.length > 0) {
                     var interValTherpists = setInterval(function() {
                         countdownTherapistInterval(value.id, value.data.start_time, value.data.end_time, value.data.total_seconds)
                     }, 1000)
@@ -56,6 +54,6 @@ function countdownTherapistInterval(id, start_time, end_time, total_seconds)
         $('#progressBarCalc'+id).css('width', percentage+'%');
         $('#countdownTherapistPercentage'+id).text(percentage_text+'%');
     } else {
-        $('#countdownTherapistPercentage'+id).text('Available...');
+        $('#countdownTherapistPercentage'+id).text('Preparing...');
     }
 }

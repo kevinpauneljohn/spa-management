@@ -22,10 +22,11 @@ class TransactionService
 
     public function get_transaction($client_id, $spa_id, $dateTime)
     {
+        $date = date('Y-m-d H:i:s', strtotime($dateTime));
         $transaction = Transaction::where('client_id', $client_id)
             ->where('spa_id', $spa_id)
-            ->where('start_time', '<=', $dateTime)
-            ->where('end_time', '>=', $dateTime)
+            ->where('start_time', '<=', $date)
+            ->where('end_time', '>=', $date)
             ->first();
 
         $status = false;
@@ -174,11 +175,16 @@ class TransactionService
 
     public function therapistAvailability($spa_id, $therapist_id, $dateTime)
     {
-        $transaction = Transaction::where('therapist_1', $therapist_id)
-            ->where('spa_id', $spa_id)
-            ->where('start_time', '<=', $dateTime)
-            ->where('end_time', '>=', $dateTime)
-            ->first();
+        $transaction = transaction::where(function ($query) use ($therapist_id) {
+            $query->where('therapist_1', $therapist_id)
+                  ->orWhere('therapist_2', $therapist_id);
+        })->where(
+            'spa_id', $spa_id
+        )->where(
+            'start_time', '<=', $dateTime
+        )->where(
+            'end_time', '>=', $dateTime
+        )->first();
 
         $status = true;
         $data = [];
@@ -234,7 +240,37 @@ class TransactionService
         $transaction->client->firstname = ucwords($transaction->client->firstname);
         $transaction->client->middlename = ucwords($transaction->client->lastname) ? ucwords($transaction->client->middlename) : '';
         $transaction->client->lastname = ucwords($transaction->client->lastname);
+        $transaction->client->date_of_birth_formatted = $transaction->client->date_of_birth ? date('F d, Y', strtotime($transaction->client->date_of_birth)) : '';
         $transaction->amount_formatted = number_format($transaction->amount, 2);
+        $transaction->therapist_1_name = $transaction->therapist->user->fullname;
+        $transaction->therapist_2_name = $transaction->therapist_2 ? $transaction->therapist2->user->fullname : '';
+        $transaction->start_time_formatted = $transaction->start_time ? date('F d, Y h:i A', strtotime($transaction->start_time)) : '';
+        $transaction->end_time_formatted = $transaction->end_time ? date('F d, Y h:i A', strtotime($transaction->end_time)) : '';
+        $transaction->service_price = $transaction->service->price ? $transaction->service->price : 0;
+        $transaction->plus_time_price_total = $transaction->plus_time ? ($transaction->plus_time * $transaction->service->price_per_plus_time) / 15: 0;
+        $plus_time_formatted = '';
+        if ($transaction->plus_time > 0) {
+            $plus_time_hrs = floor($transaction->plus_time/60);
+            $plus_time_mins =$transaction->plus_time%60;
+
+            if ($plus_time_hrs > 1) {
+                $hours = $plus_time_hrs.' hrs';
+            } else {
+                $hours = $plus_time_hrs.' hr';
+            }
+
+            $value = '';
+            if ($plus_time_hrs == 0) {
+                $value = $plus_time_mins.' mins';
+            } else if ($plus_time_mins == 0) {
+                $value = $hours;
+            } else {
+                $value = $hours.' & '.$plus_time_mins.' mins';
+            }
+            $plus_time_formatted = $value;
+        }
+
+        $transaction->plus_time_formatted = $plus_time_formatted;
 
         $range = range(15, 300, 15);
         $plus_time = [];
@@ -242,7 +278,7 @@ class TransactionService
             $hrs = floor($ranges/60);
             $mins = $ranges%60;
 
-            if ($hrs > 0) {
+            if ($hrs > 1) {
                 $hours = $hrs.' hrs';
             } else {
                 $hours = $hrs.' hr';
@@ -267,8 +303,8 @@ class TransactionService
                 'services' => Service::where('spa_id', $transaction->spa_id)->get(),
                 'room' => $this->roomService->getRoomList($transaction->spa_id, $now),
                 'plus_time' => $plus_time,
-                'therapist_1' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_1, $transaction->end_time),
-                'therapist_2' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_2, $transaction->end_time),
+                'therapist_1' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_1, $transaction->start_time),
+                'therapist_2' => $this->getTherapistAvailability($transaction->spa_id, $transaction->therapist_2, $transaction->start_time),
             ],
         ];
 

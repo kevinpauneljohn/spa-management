@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\Pos\Appointments;
+namespace App\View\Components\Pos\FrontDeskShifts;
 
 use Illuminate\View\Component;
 
-class transaction_list extends Component
+class start_shift extends Component
 {
     public $spaId;
     /**
@@ -24,6 +24,6 @@ class transaction_list extends Component
      */
     public function render()
     {
-        return view('components.pos.appointments.transaction_list');
+        return view('components.pos.front-desk-shifts.start_shift');
     }
 }

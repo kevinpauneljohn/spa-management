@@ -35,9 +35,6 @@
                 <span class="info-box-text">Daily Sales</span>
                 <span class="info-box-number ">
                 <span class="badge badge-danger text-default dailySales float-left"></span>
-                @if(auth()->user()->hasRole('front desk') || auth()->user()->can('add sales'))
-                        <span class="badge badge-info text-default float-right pointer btnEndShift">End Shift</span>
-                    @endif
             </span>
                 <input type="hidden" class="form-control" id="daily_sales_amount">
             </div>

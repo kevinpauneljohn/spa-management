@@ -27,7 +27,8 @@
 
 @push('js')
     @if(auth()->check())
-        <script src="{{asset('js/alerts.js')}}"></script>
+        <script src="{{asset('js/frontdesk/UpcomingTabComponent/app.js')}}"></script>
+        <script src="{{asset('js/frontdesk/UpcomingTabComponent/action.js')}}"></script>
         <script>
             $(document).ready(function(){
                 $('#appointment-data-lists').DataTable({
@@ -54,6 +55,8 @@
                     order:[3,'desc'],
                     pageLength: 10
                 });
+
+                getUpcomingAppointmentType();
             });
         </script>
     @endif
