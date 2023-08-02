@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Client;
 use App\Models\Spa;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\AppointmentService;
 use Config;
@@ -84,25 +85,30 @@ class AppointmentController extends Controller
         return $this->appointmentService->getUpcomingGuest($id);
     }
 
-    public function checkBatch($id, $batch)
+    public function checkBatch($id, $batch): bool
     {
         return $this->appointmentService->checkBatch($id, $batch);
     }
-    public function getResponses($id)
+    public function getResponses($id): array
     {
         return $this->appointmentService->getAppointmentResponses($id);
     }
 
     public function getCalendarEvents(Spa $spa): \Illuminate\Support\Collection
     {
-//        $spa = Spa::find("b3e50a3b-6e8d-4f92-b0e8-8a9f4175c5dc");
-        return collect($spa->appointments)->mapWithKeys(function($item, $key){
+        $appointments = collect($spa->appointments)->toArray();
+        $transactions = collect($spa->transactions)->toArray();
+        $calendarBookings = collect($appointments)->merge($transactions)->toArray();
+
+        return collect($calendarBookings)->mapWithKeys(function($item, $key){
             return [
                 $key => [
                     'id' => $item['id'],
                     'title' => Client::find($item['client_id'])->fullName,
-                    'start' => $item['start_time'],
-                    'allDay' => false
+                    'start' => Carbon::parse($item['appointment_date']),
+                    'allDay' => false,
+                    'color' => collect($item)->has('sales_id') ? '#28a745' : '#17a2b8',
+                    'category' => collect($item)->has('sales_id') ? 'completed' : 'upcoming',
                 ]
             ];
         });

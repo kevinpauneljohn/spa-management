@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Models\Transaction;
@@ -43,9 +45,9 @@ class TransactionController extends Controller
             })
             ->addColumn('masseur',function ($transaction){
                 $masseur = $this->getMasseurName(
-                    $transaction->spa_id, 
-                    $transaction->service_id, 
-                    $transaction->client_id, 
+                    $transaction->spa_id,
+                    $transaction->service_id,
+                    $transaction->client_id,
                     $transaction->sales_id
                 );
 
@@ -289,19 +291,19 @@ class TransactionController extends Controller
         //         'service_name' => $getTranscations[0]->service_name,
         //         'therapist_1' => $getTranscations[0]->therapist_1,
         //         'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
-        //         'start_time' => $getTranscations[0]->start_time,     
-        //         'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
+        //         'start_time' => $getTranscations[0]->start_time,
+        //         'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,
         //         'start_date_formatted' => $start_date_formatted,
         //         'start_time_formatted' => $start_time_formatted,
         //         'end_time' => $getTranscations[0]->end_time,
         //         'end_date_formatted' => $end_time_formatted,
-        //         'plus_time' => $getTranscations[0]->plus_time,  
+        //         'plus_time' => $getTranscations[0]->plus_time,
         //         'plus_time_formatted' => $plus_time_formatted,
-        //         'room_id' => $getTranscations[0]->room_id, 
-        //         'amount' => $getAmount, 
-        //         'client_id' => $getTranscations[0]->client_id, 
-        //         'sales_id' => $getTranscations[0]->sales_id, 
-        //         'amount_formatted' => $amount_formatted, 
+        //         'room_id' => $getTranscations[0]->room_id,
+        //         'amount' => $getAmount,
+        //         'client_id' => $getTranscations[0]->client_id,
+        //         'sales_id' => $getTranscations[0]->sales_id,
+        //         'amount_formatted' => $amount_formatted,
         //         'therapist_2_id' => $therapist_2_id,
         //         'therapist_2' => $therapist_2,
         //         'therapist_2_name' => $therapist_2_name,
@@ -368,7 +370,7 @@ class TransactionController extends Controller
         $allClients = Client::whereIn('id', $allClientsTransactions)->get()->count();
 
         $saleShift = SalesShift::where([
-            'user_id' => auth()->user()->id, 
+            'user_id' => auth()->user()->id,
             'spa_id' => $id,
             'confirm_start_shift' => 'yes',
             ])->orderBy('id', 'desc')->first();
@@ -379,19 +381,19 @@ class TransactionController extends Controller
                 if (!empty($saleShift->end_shift)) {
                     $salesCondition = [$saleShift->start_shift, $saleShift->end_shift];
                 } else {
-                    $salesCondition = [$saleShift->start_shift, $todays_to]; 
+                    $salesCondition = [$saleShift->start_shift, $todays_to];
                 }
-                
+
             }
         } else {
             $salesCondition = [$todays_from, $todays_to];
         }
 
         $sale = Sale::where([
-            'user_id' => auth()->user()->id, 
+            'user_id' => auth()->user()->id,
             'payment_status' => 'paid'
         ])->whereBetween('paid_at', $salesCondition)->get();
-        
+
         $total_sale = 0;
         if (!empty($sale)) {
             foreach ($sale as $sales) {
@@ -400,16 +402,16 @@ class TransactionController extends Controller
         }
 
         if (auth()->user()->hasRole('front desk')) {
-            $total_sale += $saleShift->start_money;    
+            $total_sale += $saleShift->start_money;
         }
-        
+
         $response = [
             'daily_appointment'   => $dailyTransactionCount,
             'monthly_appointment'   => $monthlyTransactionCount,
             'new_clients' => $newClient,
             'total_sales' => '&#8369;'.number_format($total_sale, 2, '.', ','),
             'sales' => $total_sale,
-        ]; 
+        ];
 
         return $response;
     }
@@ -424,7 +426,7 @@ class TransactionController extends Controller
         //     'info'   => $transaction,
         //     'owner'   => User::findOrFail($owner->user_id),
         //     'sales' => $sales_id,
-        // ]; 
+        // ];
 
         // return $response;
 
@@ -437,7 +439,7 @@ class TransactionController extends Controller
         //     'info'   => $transaction,
         //     'owner'   => User::findOrFail($owner->user_id),
         //     'sales' => $sales_id,
-        // ]; 
+        // ];
 
         // return $response;
 
@@ -446,7 +448,7 @@ class TransactionController extends Controller
             'owner'   => User::findOrFail($owner->user_id),
             'sales' => $sales,
             'invoice' => substr($sales->id, -6)
-        ]; 
+        ];
 
         return $response;
     }
@@ -465,4 +467,57 @@ class TransactionController extends Controller
     {
         return $this->transactionService->preparation_time();
     }
+
+    public function displayTransactionsByDateSelected(Request $request)
+    {
+        $date = explode('-',$request->input('date'));
+        $request->session()->put('transactionsDateFrom',Carbon::parse($date[0]));
+        $request->session()->put('transactionsDateTo',Carbon::parse($date[1]));
+    }
+
+    public function index()
+    {
+
+    }
+
+    public function edit($id)
+    {
+
+    }
+
+    public function destroy()
+    {
+
+    }
+
+    public function store(Request $request)
+    {
+        //check if the submitted client exists
+//        if(collect($request->all())->has('client_id'))
+//        {
+//            $service = Service::find($request->input('service_id'));
+//
+//            $transaction = DB::table('transactions')->insert([
+//                'spa_id' => $request->input('spa_id'),
+//                'service_id' => $service->id,
+//                'service_name' => $service->name,
+//                'amount' => $service->price,
+//                'commission_reference_amount' => $service->commission_reference_amount,
+//                'therapist_1' => $request->input('therapist_1'),
+//                'therapist_2' => $request->input('therapist_2'),
+//                'client_id' => $request->input('client_id'),
+//                'preparation_time' => $request->input('preparation_time'),
+//                'start_time' => now(), //required to have values
+//                'end_time' => now(), //required to have values
+//                'plus_time' => $request->input('plus_time'), //required to have values
+//                'sales_type' => $request->input('appointment_type'), //required to have values
+//                'sales_id' => $request->input('sales_id'), //required to have values
+//                'room_id' => $request->input('room'), //required to have values
+//            ]);
+//
+//            return $transaction;
+//        }
+//        return '';
+    }
+
 }

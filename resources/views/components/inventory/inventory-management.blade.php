@@ -1,8 +1,6 @@
 <div class="row mb-1">
     <div class="col-md-12">
-        @if($spaId)
-            working
-            @endif
+
 {{--        <div class="alert alert-default-info">--}}
 {{--            <h5><i class="fas fa-info"></i> Note:</h5>--}}
 {{--            Add masseur/masseuse to your spa who will serve your valued customers--}}

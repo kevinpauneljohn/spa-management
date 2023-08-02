@@ -17,7 +17,9 @@ class CreateSalesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('transaction_id');
             $table->string('spa_id');
-            $table->string('amount_paid');
+            $table->string('amount_paid')->nullable();
+            $table->string('total_amount')->nullable();
+            $table->string('change')->nullable();
             $table->string('payment_status');
             $table->string('user_id');
             $table->timestamps();

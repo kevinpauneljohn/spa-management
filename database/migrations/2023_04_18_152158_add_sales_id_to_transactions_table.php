@@ -14,7 +14,7 @@ class AddSalesIdToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->string('sales_id');
+            $table->string('sales_id')->nullable();
 
             $table->foreign('sales_id')->references('id')->on('sales');
         });

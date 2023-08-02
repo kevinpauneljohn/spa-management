@@ -54,7 +54,7 @@
         border-radius: 75px;
     }
     .modal-body{
-        max-height: calc(100vh - 200px);
+        /*max-height: calc(100vh - 200px);*/
         overflow-y: auto;
     }
     .popup-btn{

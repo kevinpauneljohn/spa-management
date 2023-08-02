@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Spa;
 use Illuminate\Http\Request;
 use App\Services\PosService;
 use Config;

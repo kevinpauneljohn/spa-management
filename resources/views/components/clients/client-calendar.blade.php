@@ -1,30 +1,40 @@
 <div id='appointment-calendar'></div>
 
 <x-clients.client-details-modal/>
-<x-clients.book-client-modal />
+<x-clients.book-client-modal :spaId="$spaId"/>
 
 @section('plugins.Fullcalendar',true)
+@section('plugins.CustomCSS',true)
 
 @once
     @push('js')
         <script>
             $(document).ready(function(){
 
-                var calendarEl = document.getElementById('appointment-calendar');
-                var clientCalendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'timeGridWeek',
+                bookingCalendar();
+
+                $('.fc-bookAppointment-button').attr('data-bs-toggle','tooltip').attr('data-bs-placement','top').attr('title','Book Appointment')
+                    .html('<span class="fa fa-calendar"></span>');
+
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            });
+
+            const bookingCalendar = () => {
+                let calendarEl = document.getElementById('appointment-calendar');
+                let clientCalendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
                     headerToolbar: {
-                        left  : 'prev,next today myCustomButton',
+                        left  : 'prev,next today bookAppointment',
                         center: 'title',
-                        right : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                        right : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
                     },
                     displayEventTime: true,
                     slotEventOverlap: true,
                     dayMaxEventRows: true,
                     customButtons: {
-                        myCustomButton: {
-                            id: "create-booking-btn",
-                            text: "Book Appointment",
+                        bookAppointment: {
+                            icon: "- glyphicon glyphicon-calendar",
+                            // text: "Create",
                             click: function() {
                                 $('#book-client').modal('toggle');
                             }
@@ -38,14 +48,15 @@
                         console.log(info)
                         $('#book-client').modal('toggle');
                     },
-                    eventClick: async function(info){
-                        await $.ajax({
+                    eventClick: function(info){
+                        $.ajax({
                             url: '/appointment-show/'+info.event.id,
                             type: 'GET',
                             beforeSend: function(){
 
                             }
                         }).done( (appointment) => {
+                            console.log(appointment)
                             let fullName = appointment.firstname+' '+appointment.middlename+' '+appointment.lastname;
                             $('#client-info').find('.modal-title').text(fullName);
                             $('#client-info').find('#date').text(appointment.start_time_formatted);
@@ -57,9 +68,10 @@
 
                         $('#client-info').modal('toggle');
                     }
+
                 });
                 clientCalendar.render();
-            });
+            }
         </script>
     @endpush
 @endonce

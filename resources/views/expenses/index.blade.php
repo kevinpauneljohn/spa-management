@@ -5,9 +5,6 @@
 @section('content_header')
     <h1></h1>
 @stop
-<style>
-
-</style>
 @section('content')
     <div class="row mb-2">
         <div class="col-sm-6">

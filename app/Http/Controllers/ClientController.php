@@ -155,4 +155,17 @@ class ClientController extends Controller
             return $response;
         }
     }
+
+    public function searchClients(Request $request, Spa $spa)
+    {
+        return $spa->owner->clients()->where('firstname','LIKE','%'.$request->search.'%')
+            ->orWhere('lastname','LIKE','%'.$request->search.'%')
+            ->orWhere('mobile_number','LIKE','%'.$request->search.'%')->get();
+    }
+
+    public function getClient(Spa $spa, $client)
+    {
+        return $spa->owner->clients()
+            ->where('id','=',$client)->first();
+    }
 }

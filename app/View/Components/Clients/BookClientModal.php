@@ -2,18 +2,20 @@
 
 namespace App\View\Components\Clients;
 
+use App\Models\Spa;
 use Illuminate\View\Component;
 
 class BookClientModal extends Component
 {
+    public $spa;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($spaId)
     {
-        //
+        $this->spa = Spa::findOrFail($spaId);
     }
 
     /**

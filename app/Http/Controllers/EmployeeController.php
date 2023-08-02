@@ -30,8 +30,8 @@ class EmployeeController extends Controller
     public function index()
     {
         return view('Attendance.attendanceindex');
-    }   
-    
+    }
+
     public function phDate()
     {
         return Carbon::parse(now())->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
@@ -55,7 +55,7 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        
+
     }
 
     /**
@@ -65,7 +65,7 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
-    {   
+    {
             // $start = $request->input('start');
             // $end = $request->input('end');
 
@@ -74,8 +74,8 @@ class EmployeeController extends Controller
             // } else {
             //     return $start;
             // }
-       
-   
+
+
             $start = Carbon::parse($request->start)->setTimezone('Asia/Manila')->format('Y-m-d');
             $end = Carbon::parse($request->end)->setTimezone('Asia/Manila')->format('Y-m-d');
         // return $start.' '.$end;
@@ -88,26 +88,6 @@ class EmployeeController extends Controller
         else{
             return response()->json($attendances);
         }
-
-
-        // return DataTables::of($attendances)
-        //     ->editColumn('name', function($attendance){
-        //         return $attendance->first()->employee->user->firstname;
-        //     })
-        //     ->addColumn('timein', function($attendance){
-        //         return $attendance->first()->time_in;
-        //     })
-        //     ->addColumn('breakin', function($attendance){
-        //         return $attendance->first()->break_in;
-        //     })
-        //     ->addColumn('breakout', function($attendance){
-        //         return $attendance->first()->break_out;
-        //     })
-        //     ->addColumn('timeout', function($attendance){
-        //         return $attendance->first()->time_out;
-        //     })
-        //     ->rawColumns(['name'])
-        //     ->make(true);
     }
     /**
      * Show the form for editing the specified resource.
@@ -158,27 +138,27 @@ class EmployeeController extends Controller
 
     public function timeInApi($id, $spaCode)
     {
-     
+
             $collect = collect();
             $today = now()->format('Y-m-d');
-        
+
             $spas = Spa::where('code', $spaCode)->first();
             if(empty($spas))
             {
                 return 3;
             }
-            else{    
+            else{
                 $employeetable = EmployeeTable::where('spa_id', $spas->id)->where('id', $id)->get();
                 if($employeetable->isEmpty())
                 {
                     return 2;
                 }
-                else 
+                else
                 {
                     foreach ($employeetable as $emp) {
                         $collect->push($emp->id);
                     }
-            
+
                     $mycollect = $collect->first();
                     $attendance = Attendance::where('employee_id', $mycollect)->whereDate('created_at', $today)->where('time_in', '!=', '-')->count();
 
@@ -209,8 +189,8 @@ class EmployeeController extends Controller
                 }
             }
         }
-        
-    
+
+
 
     public function timeOutBreakInBreakOutApi($id,$action){
      $today = now()->format('Y-m-d');
@@ -218,7 +198,7 @@ class EmployeeController extends Controller
      $collect = collect();
      $spaCode = $exploded[0];
      $employeeID = $exploded[1];
-    
+
      $spa = Spa::where('code', $spaCode)->first();
         if(empty($spa))
         {
@@ -238,7 +218,7 @@ class EmployeeController extends Controller
                     }
                     $IDChecker = $collect->first();
                     $attendance = Attendance::where('employee_id', $IDChecker)->whereDate('created_at', $today)->first();
-                    
+
                     if(empty($attendance->time_in))
                     {
                         return 0;
@@ -265,13 +245,13 @@ class EmployeeController extends Controller
                             }
                         }
                         else{
-                            
+
                             if($attendance->time_out != '-'){
                                 return 2;
                             }
                             else{
                                 $user = Shift::where('employee_id', $employeeID)->first();
-                         
+
                                 $attendance->$action = $this->phDate();
                                 $timeout = Carbon::parse($attendance->time_out)->format('H:i A');
                                 $shiftout = Carbon::parse($user->shift_end)->format('g:i A');
@@ -279,20 +259,20 @@ class EmployeeController extends Controller
                                 if($timeout >= $shiftout && $user->allow_OT == 1){
                                     $attendance->allow_OT = $user->allow_OT;
                                     $attendance->OT = $user->OT;
-                                    
+
                                     $attendance->update();
                                 }
                                     $user->allow_OT = 0;
                                     $user->OT = 0;
-                                    $attendance->update(); 
-                                    $user->update();                             
+                                    $attendance->update();
+                                    $user->update();
                             }
                         }
-                        
+
                         return 1;
                     }
                }
         }
     }
-    
+
 }

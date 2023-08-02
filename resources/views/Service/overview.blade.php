@@ -169,6 +169,10 @@
                                             <label for="price">Price</label>
                                             <input type="number" class="form-control" id="price" name="price">
                                         </div>
+                                        <div class="form-group commission_reference_amount">
+                                            <label for="commission_reference_amount">Price</label>
+                                            <input type="number" class="form-control" id="commission_reference_amount" name="commission_reference_amount" step="any">
+                                        </div>
                                         <div class="form-group price_per_plus_time">
                                             <label for="price_per_plus_time">Plus time price every 15 minutes</label>
                                             <input type="number" class="form-control" id="price_per_plus_time" name="price_per_plus_time">

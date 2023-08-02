@@ -23,6 +23,8 @@ class Client extends Model
         'client_type'
     ];
 
+    protected $appends = ['full_name'];
+
     public function transaction()
     {
         return $this->hasMany('App\Models\Transaction');
@@ -31,6 +33,11 @@ class Client extends Model
     public function owners()
     {
         return $this->belongsToMany(Owner::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 
     public function getFullNameAttribute(): string

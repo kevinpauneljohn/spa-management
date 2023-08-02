@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrimaryToTransactionsTable extends Migration
+class AddCommissionReferenceAmountToTransactions extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddPrimaryToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->string('primary', 10)->nullable();
+            $table->float('commission_reference_amount',8,2)->after('amount');
         });
     }
 
@@ -26,7 +26,7 @@ class AddPrimaryToTransactionsTable extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            //
+            $table->dropColumn('commission_reference_amount');
         });
     }
 }

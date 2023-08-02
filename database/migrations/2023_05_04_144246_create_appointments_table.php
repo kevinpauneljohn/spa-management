@@ -16,16 +16,10 @@ class CreateAppointmentsTable extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('spa_id');
-            $table->string('client_id')->nullable();
-            $table->string('sales_id')->nullable();
-            $table->string('service_id')->nullable();
-            $table->string('service_name')->nullable();
-            $table->string('batch');
-            $table->string('amount');
-            $table->string('start_time')->nullable();
-            $table->string('appointment_type');
-            $table->string('social_media_type')->nullable();
-            $table->string('appointment_status');
+            $table->foreignUuid('client_id')->constrained();
+            $table->string('appointment_date');
+            $table->text('remarks');
+            $table->foreignUuid('user_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

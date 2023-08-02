@@ -1,19 +1,22 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\PointOfSale\Sales;
 
+use App\Models\Sale;
 use Illuminate\View\Component;
 
-class test extends Component
+class PrintInvoice extends Component
 {
+    public $salesId;
+    public $sales;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($salesId)
     {
-        //
+        $this->sales = Sale::find($salesId);
     }
 
     /**
@@ -23,6 +26,6 @@ class test extends Component
      */
     public function render()
     {
-        return view('components.test');
+        return view('components.point-of-sale.sales.print-invoice');
     }
 }
