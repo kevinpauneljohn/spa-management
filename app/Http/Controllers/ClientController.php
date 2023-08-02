@@ -12,21 +12,29 @@ use Carbon\Carbon;
 
 class ClientController extends Controller
 {
+    public function index()
+    {
+
+    }
+
     public function getList()
     {
         $client = Client::get();
-        
+
         $data = [];
         foreach ($client as $list) {
             $data [ucfirst($list->firstname).' '.ucfirst($list->lastname).' ['.$list->mobile_number.']'] = $list->id;
         }
-        
+
         return $data;
     }
 
     public function show($id)
     {
         $client = Client::findOrFail($id);
+        $client->firstname = ucfirst($client->firstname);
+        $client->middlename = ucfirst($client->middlename);
+        $client->lastname = ucfirst($client->lastname);
         return response()->json(['client' => $client]);
     }
 
@@ -55,7 +63,7 @@ class ClientController extends Controller
                             $data [ucfirst($list->firstname).' '.ucfirst($list->lastname). ' [0'.$list->mobile_number.']'] = $list->id;
                         }
                     }
-    
+
                     if (!empty($data)) {
                         $status = true;
                         $count = count($data);
@@ -67,7 +75,7 @@ class ClientController extends Controller
                 'status'   => $status,
                 'data'   => $data,
                 'count' => $count,
-            ]; 
+            ];
 
             return $response;
         }
@@ -100,7 +108,9 @@ class ClientController extends Controller
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         $from = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         if (!empty($get_latest_transaction)) {
-            $from = $get_latest_transaction->end_time;
+            if ($get_latest_transaction->start_time > $now) {
+                $now = $get_latest_transaction->start_time;
+            }
         }
 
         $transaction = Transaction::where('client_id', $id)
@@ -113,7 +123,7 @@ class ClientController extends Controller
         if (!empty($transaction)) {
             $id = $transaction->client_id;
         }
-        
+
         return $id;
     }
 
@@ -139,7 +149,7 @@ class ClientController extends Controller
                 $response = [
                     'status'   => $status,
                     'data'   => $data,
-                ]; 
+                ];
             }
 
             return $response;

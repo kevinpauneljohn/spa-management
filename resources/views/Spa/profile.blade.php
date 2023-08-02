@@ -23,10 +23,18 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header p-2">
-                    <ul class="nav nav-pills">
+                    <span class="float-left">
+                        <ul class="nav nav-pills">
                         <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">Services</a></li>
                         <li class="nav-item"><a class="nav-link" href="#therapists" data-toggle="tab">Masseur/Masseuse</a></li>
                     </ul>
+                    </span>
+                    <span class="float-right">
+                        @can('access pos')
+                            <a href="{{route('receptionist.dashboard',['id' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>
+                        @endcan
+                            <a href="{{route('spa.calendar',['spa' => $spa->id])}}" class="btn btn-default">Calendar</a>
+                    </span>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
@@ -37,9 +45,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    @can('add service')
-                                        <button type="button" class="btn bg-olive btn-sm float-right" id="addNewService"><i class="fa fa-plus-circle"></i> Add Service</button>
-                                    @endcan
+                                    <x-service.add-service-button />
                                 </div>
                             </div>
                             <br />
@@ -63,7 +69,7 @@
                         </div>
 
                         <div class="tab-pane" id="therapists">
-                            <x-all-therapist-thru-specific-spa :spaId="$spa->id"/>
+                            <x-therapists :spaId="$spa->id"/>
                         </div>
                     </div>
                 </div>
@@ -112,21 +118,13 @@
     </div>
 
     @can('add service')
-        <div class="modal fade" id="add-new-service-modal">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">New Services Form</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <x-service :spa="$spa"/>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-service.service-modal>
+
+            <x-slot name="form">
+                <x-service.service :spa="$spa"/>
+            </x-slot>
+
+        </x-service.service-modal>
     @endcan
 
     @can('edit service')
@@ -183,6 +181,10 @@
                                         <div class="form-group edit_price">
                                             <label for="price">Price</label>
                                             <input type="number" class="form-control" id="edit_price" name="edit_price">
+                                        </div>
+                                        <div class="form-group edit_price_per_plus_time">
+                                            <label for="edit_price_per_plus_time">Plus time price every 15 minutes</label>
+                                            <input type="number" class="form-control" id="edit_price_per_plus_time" name="edit_price_per_plus_time">
                                         </div>
                                         <div class="form-group edit_category">
                                             <label for="edit_category">Category</label>

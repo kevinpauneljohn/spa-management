@@ -1,7 +1,5 @@
 <!-- Date range -->
 <div class="form-group">
-    <label>Date range:</label>
-
     <div class="input-group">
         <div class="input-group-prepend">
                       <span class="input-group-text">

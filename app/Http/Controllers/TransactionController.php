@@ -36,7 +36,7 @@ class TransactionController extends Controller
 
         return DataTables::of($transaction)
             ->editColumn('client',function($transaction){
-                return $transaction->client['firstname'].' '.$transaction->client['lastname'];
+                return ucfirst($transaction->client['firstname']).' '.ucfirst($transaction->client['lastname']);
             })
             ->addColumn('service',function ($transaction){
                 return '<span class="badge bg-primary">'.$transaction->service_name.'</span>';
@@ -88,10 +88,12 @@ class TransactionController extends Controller
                 $action = "";
 
                 if(auth()->user()->can('edit sales') || auth()->user()->hasRole('owner')) {
-                    if ($transaction->end_time >= $dateNow  || auth()->user()->hasRole('owner')) {
+                    if ($transaction->end_time >= $dateNow) {
                         $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-primary rounded edit-sales-btn" id="'.$transaction->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                        $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
+                    } else {
+                        $action .= '<button class="btn btn-xs btn-outline-danger rounded" disabled><i class="fas fa-ban"></i></button>';
                     }
-                    $action .= '<a href="#" data-start_date="'.$date_start_time.'" data-end_date="'.$transaction->end_time.'" class="btn btn-xs btn-outline-warning rounded stop-sales-btn" id="'.$transaction->id.'"><i class="fas fa-ban"></i></a>&nbsp;';
                 }
 
                 // if(auth()->user()->can('delete sales') || auth()->user()->hasRole('owner')) {
@@ -116,9 +118,16 @@ class TransactionController extends Controller
         $data = [];
         if (!empty($transaction)) {
             foreach ($transaction as $list) {
-                $therapist = Therapist::with(['user'])->findOrFail($list->therapist_1);
-
-                $data [] = $therapist->user['firstname'].' '.$therapist->user['lastname'];
+                if (!empty($list->therapist_2)) {
+                    $data = [
+                        $list->therapist->user['firstname'].' '.$list->therapist->user['lastname'],
+                        $list->therapist2->user['firstname'].' '.$list->therapist2->user['lastname']
+                    ];
+                } else {
+                    $data = [
+                        $list->therapist->user['firstname'].' '.$list->therapist->user['lastname']
+                    ];
+                }
             }
         }
 
@@ -181,10 +190,10 @@ class TransactionController extends Controller
     public function getTherapistTransaction($spa_id, $therapist_id)
     {
         $now = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        $transaction = Transaction::where([
-            'spa_id' => $spa_id,
-            'therapist_1' => $therapist_id,
-        ])->where('end_time', '>=', $now)->with(['service'])->first();
+        $transaction = transaction::where(function ($query) use ($therapist_id) {
+            $query->where('therapist_1', $therapist_id)
+                  ->orWhere('therapist_2', $therapist_id);
+        })->where('spa_id', $spa_id)->where('end_time', '>=', $now)->with(['service'])->first();
 
         $data = [];
         if (!empty($transaction)) {
@@ -213,92 +222,93 @@ class TransactionController extends Controller
 
     public function show($id)
     {
-        $data = [];
-        $transaction = Transaction::where('id', $id)->first();
+        return $this->transactionService->view($id);
+        // $data = [];
+        // $transaction = Transaction::where('id', $id)->with(['client', 'therapist', 'therapist2', 'service'])->first();
 
-        if (!empty($transaction)) {
-            $spa_id = $transaction->spa_id;
-            $service_id = $transaction->service_id;
-            $client_id = $transaction->client_id;
-            $sales_id = $transaction->sales_id;
+        // if (!empty($transaction)) {
+        //     $spa_id = $transaction->spa_id;
+        //     $service_id = $transaction->service_id;
+        //     $client_id = $transaction->client_id;
+        //     $sales_id = $transaction->sales_id;
 
-            $getTranscations = Transaction::where([
-                'spa_id' => $spa_id,
-                'service_id' => $service_id,
-                'client_id' => $client_id,
-                'sales_id' => $sales_id,
-            ])->orderBy('amount', 'DESC')->with(['client'])->get();
+        //     $getTranscations = Transaction::where([
+        //         'spa_id' => $spa_id,
+        //         'service_id' => $service_id,
+        //         'client_id' => $client_id,
+        //         'sales_id' => $sales_id,
+        //     ])->orderBy('amount', 'DESC')->with(['client'])->get();
 
-            if ($getTranscations->count() > 1) {
-                $therapist_2_id = $getTranscations[1]->id;
-                $therapist_2 = $getTranscations[1]->therapist_1;
-                $therapist_2_name = $this->getTherapistName($getTranscations[1]->therapist_1);
-            } else {
-                $therapist_2_id = '';
-                $therapist_2 = '';
-                $therapist_2_name = '';
-            }
+        //     if ($getTranscations->count() > 1) {
+        //         $therapist_2_id = $getTranscations[1]->id;
+        //         $therapist_2 = $getTranscations[1]->therapist_1;
+        //         $therapist_2_name = $this->getTherapistName($getTranscations[1]->therapist_1);
+        //     } else {
+        //         $therapist_2_id = '';
+        //         $therapist_2 = '';
+        //         $therapist_2_name = '';
+        //     }
 
-            $getAmount = $getTranscations[0]->amount;
-            $getId = $getTranscations[0]->id;
-            if ($getTranscations[0]->amount == 0) {
-                $getAmount = $getTranscations[1]->amount;
-                $getId = $getTranscations[1]->id;
-            }
+        //     $getAmount = $getTranscations[0]->amount;
+        //     $getId = $getTranscations[0]->id;
+        //     if ($getTranscations[0]->amount == 0) {
+        //         $getAmount = $getTranscations[1]->amount;
+        //         $getId = $getTranscations[1]->id;
+        //     }
 
-            $amount_formatted = number_format($getAmount);
-            $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
-            $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
-            $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
-            $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
-            $birth_date_formatted = '';
-            if (!empty($getTranscations[0]->client['date_of_birth'])) {
-                $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
-            }
+        //     $amount_formatted = number_format($getAmount);
+        //     $start_time = date('d F Y h:i A', strtotime($getTranscations[0]->start_time));
+        //     $start_date_formatted = date('h:i:s A', strtotime($getTranscations[0]->start_time));
+        //     $start_time_formatted = date('Y-m-d H:i:s', strtotime($getTranscations[0]->start_time));
+        //     $end_time_formatted = date('h:i:s A', strtotime($getTranscations[0]->end_time));
+        //     $birth_date_formatted = '';
+        //     if (!empty($getTranscations[0]->client['date_of_birth'])) {
+        //         $birth_date_formatted = date('F d, Y', strtotime($getTranscations[0]->client['date_of_birth']));
+        //     }
 
-            $plus_time_formatted = 'None';
-            if ($getTranscations[0]->plus_time > 0) {
-                $plus_time = $transaction->plus_time * 60;
-                $converted_plus_time = gmdate("H:i:s", $plus_time);
-                $plus_time_formatted =  CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
-                    ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
-            }
+        //     $plus_time_formatted = 'None';
+        //     if ($getTranscations[0]->plus_time > 0) {
+        //         $plus_time = $transaction->plus_time * 60;
+        //         $converted_plus_time = gmdate("H:i:s", $plus_time);
+        //         $plus_time_formatted =  CarbonInterval::createFromFormat('H:i:s', $converted_plus_time)
+        //             ->forHumans(CarbonInterface::DIFF_ABSOLUTE, true, 3);
+        //     }
 
-            $data = [
-                'id' => $getId,
-                'firstname' => $getTranscations[0]->client['firstname'],
-                'middlename' => $getTranscations[0]->client['middlename'],
-                'lastname' => $getTranscations[0]->client['lastname'],
-                'date_of_birth' => $getTranscations[0]->client['date_of_birth'],
-                'date_of_birth_formatted' => $birth_date_formatted,
-                'mobile_number' => $getTranscations[0]->client['mobile_number'],
-                'email' => $getTranscations[0]->client['email'],
-                'address' => $getTranscations[0]->client['address'],
-                'client_type' => $getTranscations[0]->client['client_type'],
-                'service_id' => $getTranscations[0]->service_id,
-                'service_name' => $getTranscations[0]->service_name,
-                'therapist_1' => $getTranscations[0]->therapist_1,
-                'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
-                'start_time' => $getTranscations[0]->start_time,     
-                'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
-                'start_date_formatted' => $start_date_formatted,
-                'start_time_formatted' => $start_time_formatted,
-                'end_time' => $getTranscations[0]->end_time,
-                'end_date_formatted' => $end_time_formatted,
-                'plus_time' => $getTranscations[0]->plus_time,  
-                'plus_time_formatted' => $plus_time_formatted,
-                'room_id' => $getTranscations[0]->room_id, 
-                'amount' => $getAmount, 
-                'client_id' => $getTranscations[0]->client_id, 
-                'sales_id' => $getTranscations[0]->sales_id, 
-                'amount_formatted' => $amount_formatted, 
-                'therapist_2_id' => $therapist_2_id,
-                'therapist_2' => $therapist_2,
-                'therapist_2_name' => $therapist_2_name,
-            ];
-        }
+        //     $data = [
+        //         'id' => $getId,
+        //         'firstname' => $getTranscations[0]->client['firstname'],
+        //         'middlename' => $getTranscations[0]->client['middlename'],
+        //         'lastname' => $getTranscations[0]->client['lastname'],
+        //         'date_of_birth' => $getTranscations[0]->client['date_of_birth'],
+        //         'date_of_birth_formatted' => $birth_date_formatted,
+        //         'mobile_number' => $getTranscations[0]->client['mobile_number'],
+        //         'email' => $getTranscations[0]->client['email'],
+        //         'address' => $getTranscations[0]->client['address'],
+        //         'client_type' => $getTranscations[0]->client['client_type'],
+        //         'service_id' => $getTranscations[0]->service_id,
+        //         'service_name' => $getTranscations[0]->service_name,
+        //         'therapist_1' => $getTranscations[0]->therapist_1,
+        //         'therapist_1_name' => $this->getTherapistName($getTranscations[0]->therapist_1),
+        //         'start_time' => $getTranscations[0]->start_time,     
+        //         'start_and_end_time' => $start_date_formatted.' to '.$end_time_formatted,  
+        //         'start_date_formatted' => $start_date_formatted,
+        //         'start_time_formatted' => $start_time_formatted,
+        //         'end_time' => $getTranscations[0]->end_time,
+        //         'end_date_formatted' => $end_time_formatted,
+        //         'plus_time' => $getTranscations[0]->plus_time,  
+        //         'plus_time_formatted' => $plus_time_formatted,
+        //         'room_id' => $getTranscations[0]->room_id, 
+        //         'amount' => $getAmount, 
+        //         'client_id' => $getTranscations[0]->client_id, 
+        //         'sales_id' => $getTranscations[0]->sales_id, 
+        //         'amount_formatted' => $amount_formatted, 
+        //         'therapist_2_id' => $therapist_2_id,
+        //         'therapist_2' => $therapist_2,
+        //         'therapist_2_name' => $therapist_2_name,
+        //     ];
+        // }
 
-        return $data;
+        // return $transaction;
     }
 
     public function getTherapistName($id)
@@ -444,5 +454,15 @@ class TransactionController extends Controller
     public function stopTransaction($id)
     {
         return $this->transactionService->stopTransactions($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->transactionService->update($request, $id);
+    }
+
+    public function preparation_time()
+    {
+        return $this->transactionService->preparation_time();
     }
 }

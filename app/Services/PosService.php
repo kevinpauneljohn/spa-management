@@ -58,8 +58,9 @@ class PosService
 
     public function getTherapistList($spa_id, $request)
     {
-        $request_date = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
-        if ($request) {
+        $now = Carbon::now();
+        $request_date = $now->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        if (!empty($request)) {
             $request_date = Carbon::parse($request)->format('Y-m-d H:i:s');
         }
 
@@ -86,9 +87,10 @@ class PosService
 
     public function getRoomList($spa_id, $request)
     {
-        $request_date = Carbon::now()->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
+        $now = Carbon::now();
+        $request_date = $now->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         if ($request) {
-            $request_date = Carbon::parse($request)->format('Y-m-d H:i:s');
+            $request_date = $now->addMinutes($request)->setTimezone('Asia/Manila')->format('Y-m-d H:i:s');
         }
 
         $data = $this->roomService->getRoomList($spa_id, $request_date);
