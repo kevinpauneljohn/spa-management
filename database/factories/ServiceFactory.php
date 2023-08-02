@@ -19,6 +19,7 @@ class ServiceFactory extends Factory
             'spa_id' => collect(Spa::all())->pluck('id')->random(),
             'description' => 'lorem ipsum',
             'duration' => 5,
+            'multiple_masseur' => collect([true, false])->random(),
             'price' => $price,
             'commission_reference_amount' => $price-500,
             'category' => 'regular',

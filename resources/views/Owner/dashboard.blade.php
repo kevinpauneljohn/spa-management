@@ -45,7 +45,7 @@
                             </div>
                             <div class="card-footer">
                             <div class="text-right">
-                                <a href="{{route('receptionist.dashboard', ['id' => $data->id])}}" class="btn btn-sm btn-primary">
+                                <a href="{{route('point-of-sale.show', ['point_of_sale' => $data->id])}}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-spa"></i> View Spa
                                 </a>
                             </div>

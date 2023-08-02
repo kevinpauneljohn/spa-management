@@ -49,54 +49,7 @@ class OwnerController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
-//        $firstname = $request['firstname'];
-//        $middlename = $request['middlename'];
-//        $lastname = $request['lastname'];
-//        $mobile_number = $request['mobile_number'];
-//        $email = $request['email'];
-//        $username = $request['username'];
-//        $password = $request['password'];
-//
-//        $validator = Validator::make($request->all(), [
-//            'firstname'     => 'required',
-//            'lastname'     => 'required',
-//            'mobile_number'     => 'required|unique:users,mobile_number',
-//            'email'     => 'required|unique:users,email',
-//            'username'     => 'required|unique:users,username',
-//            'password' => 'required|min:6,confirmed,required_with:password_confirmed',
-//            'password_confirmation' => 'required|min:6'
-//        ]);
-//
-//        if($validator->passes())
-//        {
-//            $code = 201;
-//            $user = User::create([
-//                'firstname' => $firstname,
-//                'middlename' => $middlename,
-//                'lastname' => $lastname,
-//                'mobile_number' => $mobile_number,
-//                'email' => $email,
-//                'username' => $username,
-//                'password' => Hash::make($password),
-//            ]);
-//
-//            if ($user) {
-//                $user->assignRole('owner');
-//                $owner = Owner::create([
-//                    'user_id' => $user->id
-//                ]);
-//            }
-//            $response = [
-//                'status'   => true,
-//                'message'   => 'Owner Registration successfully saved.',
-//                'data'      => $user,
-//            ];
-//
-//            return response($response, $code);
-//        } else {
-//            return response()->json($validator->errors());
-//        }
+        //
     }
 
     /**

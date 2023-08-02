@@ -9,13 +9,14 @@ use App\Models\Client;
 use Carbon\Carbon;
 use App\Services\RoomService;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransactionService
 {
     private $roomService;
 
     public function __construct(
-        RoomService $roomService,
+        RoomService $roomService
     ) {
         $this->roomService = $roomService;
     }
@@ -36,12 +37,10 @@ class TransactionService
             $data = $transaction;
         }
 
-        $response = [
+        return [
             'status' => $status,
             'data' => $data,
         ];
-
-        return $response;
     }
 
     public function create($spa_id, $client_id, $sales_id, $data)
@@ -351,5 +350,119 @@ class TransactionService
         }
 
         return $prep_time;
+    }
+
+    /**
+     * @param $salesId
+     * @param $clientId
+     * @return bool
+     */
+    public function checkIfClientExists($salesId, $clientId): bool
+    {
+        $transaction = Transaction::where('client_id','=',$clientId)
+            ->where('sales_id','=',$salesId)->count();
+
+        return $transaction > 0;
+    }
+
+    public function getTransactions($spaId, $saleId)
+    {
+        return Transaction::where('spa_id','=',$spaId)
+            ->where('sales_id','=',$saleId)
+            ->get();
+    }
+
+    public function clientTransactionLists($spaId, $saleId)
+    {
+        $transactions = $this->getTransactions($spaId, $saleId);
+        return DataTables::of($transactions)
+            ->editColumn('amount', function($transaction){
+                return '<span class="text-primary">'.number_format($transaction->service->price,2).'</span>';
+            })
+            ->editColumn('plus_time_amount', function($transaction){
+                return '<span class="text-primary">'.number_format($transaction->price_per_plus_time_total,2).'</span>';
+            })
+            ->addColumn('payable_amount', function($transaction){
+                return '<span class="text-danger text-bold">'.number_format($transaction->total_amount,2).'</span>';
+            })
+            ->editColumn('room_id', function($transaction){
+                return '<span class="text-info text-bold">#'.$transaction->room_id.'</span>';
+            })
+            ->editColumn('spa_id', function($transaction){
+                return $transaction->spa->name;
+            })
+            ->editColumn('commission_reference_amount', function($transaction){
+                return number_format($transaction->commission_reference_amount,2);
+            })
+            ->editColumn('start_date', function($transaction){
+                return '<span class="text-primary">'.$transaction->start_date.'</span>';
+            })
+            ->editColumn('end_date', function($transaction){
+                return '<span class="text-primary">'.$transaction->end_date.'</span>';
+            })
+            ->editColumn('duration', function($transaction){
+                return '<span class="text-danger text-bold">'.$transaction->service->duration.' mins</span>';
+            })
+            ->editColumn('plus_time', function($transaction){
+                return '<span class="text-success text-bold">'.$transaction->plus_time.' mins</span>';
+            })
+            ->editColumn('total_time', function($transaction){
+                return '<span class="text-fuchsia text-bold">' . ($transaction->plus_time + $transaction->service->duration) .' mins</span>';
+            })
+            ->addColumn('status',function($transaction){
+                return Carbon::parse($transaction->end_time) >= now() ? '<span class="badge badge-info">on-going</span>' : '<span class="badge badge-success">completed</span>';
+            })
+            ->addColumn('therapists', function($transaction){
+                $therapist = '<span class="badge badge-info m-1">'.$transaction->therapist->full_name.'</span>';
+                if($transaction->therapist2 !== null) $therapist .= '<span class="badge badge-success m-1">'.$transaction->therapist2->full_name.'</span>';
+
+                return $therapist;
+
+            })
+            ->addColumn('extend_time', function($transaction){
+                $option = '';
+                if($transaction->sale->payment_status === 'pending')
+                {
+                    $option .= '<select class="form-control extend_time" id="'.$transaction->id.'">';
+                    $option .= '<option value="">--Select--</option>';
+                    for($minute = 15; $minute <= 120; $minute = $minute + 5)
+                    {
+                        $option .= '<option value="'.$minute.'">'.$minute.' mins</option>';
+                    }
+                    $option .= '</select>';
+                }
+
+                    return $option;
+            })
+            ->addColumn('isolate', function($transaction){
+                if($transaction->sale->payment_status === 'pending')
+                {
+                    return '<button type="button" class="btn btn-sm btn-outline-info isolate" id="'.$transaction->id.'" title="Isolate"><span class="fa fa-level-up-alt"></span></button>';
+                }
+                return '';
+            })
+            ->addColumn('action',function($transaction){
+                $action = "";
+                if(Carbon::parse($transaction->end_time) > now() && $transaction->sale->payment_status === 'pending')
+                {
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger m-1 void-transaction" id="'.$transaction->id.'" title="Void Transaction"><i class="fas fa-times"></i></button>';
+                }
+                return $action;
+            })
+            ->setRowId(function($transaction){
+                return 'view-'.$transaction->id;
+            })
+            ->setRowClass(function ($transaction) {
+                return Carbon::parse($transaction->end_time) >= now() ? 'on-going-transaction' : '';
+            })
+            ->rawColumns(['plus_time_amount','payable_amount','total_time','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time'])
+            ->with([
+                'total_amount' => number_format(collect($transactions)->sum('amount'),2),
+                'total_clients' => collect($transactions)->count(),
+                'payment_status' => collect($transactions)->first() !== null ? collect($transactions)->first()->sale->payment_status : 0,
+                'amount_paid' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->amount_paid,2) : 0,
+                'change' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->change,2) : 0
+            ])
+            ->make(true);
     }
 }

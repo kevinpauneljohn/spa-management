@@ -3,8 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\ShiftController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -17,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+require __DIR__ . '/web/sales.php';
+require __DIR__ . '/web/appointment.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
@@ -34,6 +35,8 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/create/{id}/{amount}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'store'])->name('receptionist.create');
     // Route::put('/update/{id}',[\App\Http\Controllers\Receptionists\ReceptionistController::class,'update'])->name('receptionist.update');
 
+    Route::post('/get-spa/{spa}/client/{client}',[\App\Http\Controllers\ClientController::class,'getClient'])->name('get-selected-client');
+    Route::post('/search/clients/{spa}',[\App\Http\Controllers\ClientController::class,'searchClients'])->name('search.clients');
     Route::get('/client',[\App\Http\Controllers\ClientController::class,'index'])->name('client.index');
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
@@ -54,6 +57,13 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/transaction-stop/{id}',[\App\Http\Controllers\TransactionController::class,'stopTransaction'])->name('transaction.stop');
     Route::put('/transaction-update/{id}',[\App\Http\Controllers\TransactionController::class,'update'])->name('transaction.update');
     Route::get('/preparation_time',[\App\Http\Controllers\TransactionController::class,'preparation_time'])->name('transaction.preparation_time');
+
+    Route::get('/room-availability-dashboard-update/{spaId}',[\App\Http\Controllers\Pos\TransactionController::class,'roomAvailabilityDashboardChecker'])->name('room-availability-dashboard-checker');
+    Route::patch('/void-transaction/{transactionId}',[\App\Http\Controllers\Pos\TransactionController::class,'voidTransaction'])->name('void-transaction');
+    Route::get('/get-transaction-details/{spaId}/{transactionId}',[\App\Http\Controllers\Pos\TransactionController::class,'getTransactionDetails'])->name('get-transaction-details');
+    Route::get('/room-availability/{spaId}',[\App\Http\Controllers\Pos\TransactionController::class,'roomAvailability'])->name('room-availability');
+    Route::get('/masseur-availability/{spaId}',[\App\Http\Controllers\Pos\TransactionController::class,'masseurAvailability'])->name('masseur-availability');
+    Route::resource('pos-transaction',\App\Http\Controllers\Pos\TransactionController::class);
 
     Route::resource('owners',\App\Http\Controllers\Owners\OwnerController::class);
     Route::get('/owners-list',[\App\Http\Controllers\Owners\OwnerController::class,'owner_lists'])->name('owner.lists');
@@ -184,12 +194,14 @@ Route::middleware(['auth'])->group(function(){
     Route::get('get-sales-report/{id}',[\App\Http\Controllers\ReportController::class,'getSales'])->name('spa.get.sales.report');
     // Route::get('/employeecreate', [\App\Http\Controllers\EmployeeController::class, 'create']);
 
+    Route::get('/spa/{spa}/retrieve-by-name/{serviceName}',[\App\Http\Controllers\SpaController::class,'retrieveService'])->name('retrieve-service-by-name');
     Route::get('/spa/expenses/{spa}',[\App\Http\Controllers\SpaController::class,'displaySpaExpenses'])->name('spa.expenses.display');
     Route::get('/spa-expense-list/{spa}',[\App\Http\Controllers\SpaController::class,'spaExpenses'])->name('spa.expenses');
     Route::post('/expenses-set-date',[\App\Http\Controllers\ExpenseController::class,'displayExpensesByDateSelected'])->name('expenses.set.date');
     Route::resource('expenses',\App\Http\Controllers\ExpenseController::class);
 
     Route::get('/test-kevin', \App\Http\Controllers\TestController::class);
+
 });
 
 

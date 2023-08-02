@@ -139,4 +139,9 @@ class SpaController extends Controller
         return view('Spa.inventory',compact('spa'));
     }
 
+    public function retrieveService(Spa $spa, $serviceName)
+    {
+        return $spa->getServiceByName($serviceName);
+    }
+
 }

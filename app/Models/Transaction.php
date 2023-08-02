@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Transaction extends Model
 {
@@ -34,9 +35,27 @@ class Transaction extends Model
         'sales_id',
         'room_id',
         'primary',
+        'void',
+        'user_id',
+        'void_reason'
     ];
 
-    protected $appends = ['client_name','start_date','end_date','gross_sale'];
+    protected static $logAttributes = [
+        'service_name',
+        'amount',
+        'therapist_1',
+        'therapist_2',
+        'client_id',
+        'start_time',
+        'end_time',
+        'sales_type',
+        'sales_id',
+        'room_id',
+        'void',
+        'void_reason'
+    ];
+    protected $appends = ['client_name','start_date','end_date','gross_sale','price_per_plus_time_total',
+        'total_amount','plus_time_multiplicand','end_time_twelve_hour_format','appointment_date'];
 
     public function client(): BelongsTo
     {
@@ -65,7 +84,7 @@ class Transaction extends Model
 
     public function sale(): BelongsTo
     {
-        return $this->belongsTo(Sale::class);
+        return $this->belongsTo(Sale::class,'sales_id');
     }
 
     public function getClientNameAttribute(): string
@@ -88,5 +107,30 @@ class Transaction extends Model
     public function getGrossSaleAttribute()
     {
         return $this->therapist_2 !== null ? $this->commission_reference_amount / 2 : $this->commission_reference_amount;
+    }
+
+    public function getPricePerPlusTimeTotalAttribute()
+    {
+        return $this->plus_time_multiplicand * $this->service->price_per_plus_time;
+    }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->getPricePerPlusTimeTotalAttribute() + $this->service->price;
+    }
+
+    public function getPlusTimeMultiplicandAttribute()
+    {
+        return $this->plus_time / 15;
+    }
+
+    public function getEndTimeTwelveHourFormatAttribute()
+    {
+        return Carbon::parse($this->end_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s');
+    }
+
+    public function getAppointmentDateAttribute()
+    {
+        return Carbon::parse($this->start_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i A');
     }
 }

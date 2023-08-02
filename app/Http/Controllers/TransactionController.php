@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Models\Transaction;
@@ -472,4 +474,50 @@ class TransactionController extends Controller
         $request->session()->put('transactionsDateFrom',Carbon::parse($date[0]));
         $request->session()->put('transactionsDateTo',Carbon::parse($date[1]));
     }
+
+    public function index()
+    {
+
+    }
+
+    public function edit($id)
+    {
+
+    }
+
+    public function destroy()
+    {
+
+    }
+
+    public function store(Request $request)
+    {
+        //check if the submitted client exists
+//        if(collect($request->all())->has('client_id'))
+//        {
+//            $service = Service::find($request->input('service_id'));
+//
+//            $transaction = DB::table('transactions')->insert([
+//                'spa_id' => $request->input('spa_id'),
+//                'service_id' => $service->id,
+//                'service_name' => $service->name,
+//                'amount' => $service->price,
+//                'commission_reference_amount' => $service->commission_reference_amount,
+//                'therapist_1' => $request->input('therapist_1'),
+//                'therapist_2' => $request->input('therapist_2'),
+//                'client_id' => $request->input('client_id'),
+//                'preparation_time' => $request->input('preparation_time'),
+//                'start_time' => now(), //required to have values
+//                'end_time' => now(), //required to have values
+//                'plus_time' => $request->input('plus_time'), //required to have values
+//                'sales_type' => $request->input('appointment_type'), //required to have values
+//                'sales_id' => $request->input('sales_id'), //required to have values
+//                'room_id' => $request->input('room'), //required to have values
+//            ]);
+//
+//            return $transaction;
+//        }
+//        return '';
+    }
+
 }

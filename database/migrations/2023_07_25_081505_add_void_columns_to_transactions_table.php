@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrimaryToTransactionsTable extends Migration
+class AddVoidColumnsToTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class AddPrimaryToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->string('primary', 10)->nullable();
+            $table->boolean('void');
+            $table->foreignUuid('user_id')->nullable()->constrained();
+            $table->text('void_reason')->nullable();
         });
     }
 
@@ -26,7 +28,7 @@ class AddPrimaryToTransactionsTable extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            //
+            $table->dropColumn(['void','user_id','void_reason']);
         });
     }
 }

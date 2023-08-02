@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Spa extends Model
@@ -45,6 +46,16 @@ class Spa extends Model
     public function services()
     {
         return $this->hasMany(Service::class);
+    }
+
+    /**
+     * retrieve the service by the service name, this will get the first record only
+     * @param $name
+     * @return Model|HasMany|object|null
+     */
+    public function getServiceByName($name)
+    {
+        return $this->services()->where('name','=',$name)->first();
     }
 
     public function expenses(): \Illuminate\Database\Eloquent\Relations\HasMany

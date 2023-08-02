@@ -211,7 +211,7 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => false,
+    'sidebar_collapse' => true,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
@@ -399,6 +399,12 @@ return [
             'text' => 'Product Management',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-store',
+        ],
+        [
+            'text' => 'Activity Logs',
+            'url'  => '#',
+            'icon' => 'fa fa-list-ol',
+            'can' => 'view activity'
         ],
         [
             'text' => 'Payroll Management',
@@ -707,6 +713,16 @@ return [
                 ],
             ],
         ],
+        'InputMask' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/inputmask/jquery.inputmask.min.js',
+                ],
+            ]
+        ],
         'DateRangePicker' => [
             'active' => false,
             'files' => [
@@ -722,17 +738,6 @@ return [
                 ],
             ],
         ],
-
-        // 'BootstrapBundle' => [
-        //     'active' => true,
-        //     'files' => [
-        //         [
-        //             'type' => 'js',
-        //             'asset' => false,
-        //             'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js',
-        //         ],
-        //     ],
-        // ],
         'Inventories' => [
             'active' => false,
             'files' => [
@@ -783,6 +788,7 @@ return [
                 ],
             ],
         ],
+
     ],
 
     /*

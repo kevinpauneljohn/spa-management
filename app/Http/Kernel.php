@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\CheckIfSpaBelongsToOwner;
 use App\Http\Middleware\CheckIfUserLoggedInIsAnOwner;
+use App\Http\Middleware\OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance;
+use App\Http\Middleware\UpgradeToHttpsUnderNgrok;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -39,6 +41,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            UpgradeToHttpsUnderNgrok::class
         ],
 
         'api' => [
@@ -70,5 +73,6 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'only_employee_and_owner_of_the_spa' => OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance::class
     ];
 }

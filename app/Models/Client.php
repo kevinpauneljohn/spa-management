@@ -23,6 +23,8 @@ class Client extends Model
         'client_type'
     ];
 
+    protected $appends = ['full_name'];
+
     public function transaction()
     {
         return $this->hasMany('App\Models\Transaction');

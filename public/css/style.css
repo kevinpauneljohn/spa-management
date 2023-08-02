@@ -24,4 +24,60 @@
     color: #3d9970;
 }
 
+.no-transaction{
+    background-color: #fcc2c2!important;
+}
+.sales-info-bg{
+    background-color: #eef7fc;
+}
+
+.fc-myCustomButton-button,
+.fc-listWeek-button,
+.fc-timeGridDay-button,
+.fc-dayGridMonth-button,
+.fc-timeGridWeek-button,
+.fc-today-button,
+.fc-prev-button,
+.fc-next-button,
+.fc-today-button{
+    font-size: 10pt;
+}
+
+.fc-icon.fc-icon-fa {
+    font-family: "FontAwesome", serif !important;
+}
+
+.fc-toolbar-title{
+    font-size: 15pt !important;
+    font-weight: bold;
+}
+
+.room-taken-bg-color{
+    background-color: #eeeeee;
+}
+
+.room-available-bg-color{
+    background-color: #bafdc9;
+}
+
+.on-going-transaction{
+    background-color: #edf8ff;
+}
+
+.payment-required{
+    background-color: #ffeded;
+}
+
+.sales-active{
+    background-color: #0c84ff!important;
+    color: white !important;
+}
+
+@media only screen and (max-width: 1700px) {
+    .table-wrapper{
+        overflow-x:auto;
+    }
+}
+
+
 
