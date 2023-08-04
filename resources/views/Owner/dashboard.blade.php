@@ -66,7 +66,14 @@
     @if(auth()->check())
         <script>
             $(document).ready(function(){
+                $(document).on('click','#api-btn', function(){
 
+                    $.ajax({
+                        url: '/test-kevin',
+                    }).done( (posts) => {
+                        console.log(posts)
+                    });
+                });
             });
         </script>
     @endif

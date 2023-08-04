@@ -1,5 +1,5 @@
-<div class="modal fade" id="client-info">
-    <div class="modal-dialog">
+<div class="modal fade" id="client-info" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-olive">
                 <h4 class="modal-title"></h4>
@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="client-booking-info">
                     <tr><td>Date:</td><td id="date"></td></tr>
                     <tr><td>Mobile Number:</td><td id="mobile_number"></td></tr>
                     <tr><td>Email:</td><td id="email"></td></tr>
