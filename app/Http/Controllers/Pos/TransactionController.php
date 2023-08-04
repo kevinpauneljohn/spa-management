@@ -63,15 +63,15 @@ class TransactionController extends Controller
                 'transaction' => $transaction]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+//    /**
+//     * Display the specified resource.
+//     *
+//     * @param  int  $id
+//     * @return \Illuminate\Http\Response
+//     */
+    public function show($id, \App\Services\PointOfSales\TransactionService $service)
     {
-        //
+        return $service->transaction($id);
     }
 
     /**

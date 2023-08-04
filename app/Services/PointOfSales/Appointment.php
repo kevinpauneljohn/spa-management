@@ -67,4 +67,15 @@ class Appointment extends TransactionService
             })
             ->log('created an appointment');
     }
+
+    public function rescheduleAppointment($appointmentId, $appointmentDate): bool
+    {
+        $appointment = \App\Models\Appointment::findOrFail($appointmentId);
+        $appointment->appointment_date = $appointmentDate;
+        if($appointment->isDirty())
+        {
+            return (bool)$appointment->save();
+        }
+        return false;
+    }
 }

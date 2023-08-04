@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="client-booking-info">
                     <tr><td>Date:</td><td id="date"></td></tr>
                     <tr><td>Mobile Number:</td><td id="mobile_number"></td></tr>
                     <tr><td>Email:</td><td id="email"></td></tr>

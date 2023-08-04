@@ -250,7 +250,7 @@ class TransactionService
         }])->where('spa_id','=',$spaId)->get();
     }
 
-    private function transaction($transactionId)
+    public function transaction($transactionId)
     {
         return Transaction::find($transactionId);
     }

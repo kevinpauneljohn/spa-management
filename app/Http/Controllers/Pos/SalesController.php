@@ -204,4 +204,9 @@ class SalesController extends Controller
         return $service->displayProgressBar($spa->id);
     }
 
+    public function convertBookingToSales($spaId, $bookingId)
+    {
+
+    }
+
 }

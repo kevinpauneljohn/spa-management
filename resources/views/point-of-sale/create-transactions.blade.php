@@ -45,6 +45,8 @@
         </div>
     </div>
     <x-point-of-sale.transactions.add-client-form :spa="$spa" :sale="$sale"/>
+
+
 @stop
 @section('plugins.CustomCSS',true)
 @section('css')

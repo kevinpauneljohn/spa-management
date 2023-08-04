@@ -20,7 +20,7 @@
             </ol>
         </div>
     </div>
-
+    <button class="btn btn-primary" id="replace-btn">Replace URL</button>
     @if(in_array('owner',collect(auth()->user()->getRoleNames())->toArray()) ||
         in_array('manager',collect(auth()->user()->getRoleNames())->toArray()))
         <div class="row">
@@ -156,5 +156,10 @@
 
             </script>
         @endif
+        <script>
+            $(document).on('click','#replace-btn',function(){
+
+            })
+        </script>
     @endpush
 @endonce

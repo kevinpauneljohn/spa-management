@@ -359,7 +359,7 @@ class AppointmentService
     public function view($id)
     {
         $appointment = Appointment::with(['client'])->findOrFail($id);
-        $appointment->start_time_formatted = date('d F Y, h:i A', strtotime($appointment->start_time));
+        $appointment->start_time_formatted = date('d F Y, h:i A', strtotime($appointment->appointment_date));
 
         $appointment->client_id = '';
         $appointment->firstname = '';
@@ -374,7 +374,7 @@ class AppointmentService
         if ($appointment) {
             $data = [
                 'id' => $appointment->id,
-                'start_time' => $appointment->start_time_formatted,
+                'appointment_date' => $appointment->start_time_formatted,
                 'appointment_type' => $appointment->appointment_type,
                 'social_media_type' => $appointment->social_media_type,
                 'batch' => $appointment->batch,
@@ -517,7 +517,7 @@ class AppointmentService
             'therapist_1' => $data->therapist_1,
             'therapist_2' => $data->therapist_2,
             'client_id' => $data->client_id,
-            'start_time' => $data->start_time,
+            'appointment_date' => $data->appointment_date,
             'end_time' => '',
             'plus_time' => $data->value_plus_time,
             'discount_rate' => '',
@@ -582,7 +582,7 @@ class AppointmentService
 
     public function createTransaction($data)
     {
-        $start_time_val = date('Y-m-d H:i:s', strtotime($data['start_time']));
+        $start_time_val = date('Y-m-d H:i:s', strtotime($data['appointment_date']));
         $transaction = Transaction::create([
             'spa_id' => $data['spa_id'],
             'service_id' => $data['service_id'],
@@ -591,7 +591,7 @@ class AppointmentService
             'therapist_1' => $data['therapist_1'],
             'therapist_2' => $data['therapist_2'],
             'client_id' => $data['client_id'],
-            'start_time' => $start_time_val,
+            'appointment_date' => $start_time_val,
             'end_time' => $this->getEndTime($data['service_id'], $start_time_val, $data['plus_time']),
             'plus_time' => $data['plus_time'],
             'discount_rate' => $data['discount_rate'],

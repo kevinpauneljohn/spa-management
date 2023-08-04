@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
                 <div class="modal-header bg-olive">
-                    <h4 class="modal-title"></h4>
+                    <h4 class="modal-title">Add Transaction</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -300,6 +300,18 @@
 
                         masseurAvailability(salesTransaction.spa_id, 'therapist_1')
                         roomAvailability()
+
+                        @if(isset($_GET['booking']))
+                        @php
+                            $bookingId = $_GET['booking'];
+                                $appointment = \App\Models\Appointment::findOrFail($bookingId);
+                        @endphp
+                        $('#client-search-form').find('input, button').attr('disabled',false);
+                        addClientModal.find('#close-modal-btn, #reset-personal-info-btn, #sales-transaction-reset-btn, .close').attr('disabled',false);
+                        history.pushState({}, null, '/point-of-sale/add-transaction/{{$spa->id}}/{{$sale->id}}');
+
+                        removeBooking('{{$bookingId}}')
+                        @endif
                     }
                     else if(transaction.success === false)
                     {
@@ -524,6 +536,28 @@
                     }
                 })
             });
+
+            @if(isset($_GET['booking']))
+                @php
+                $bookingId = $_GET['booking'];
+                    $appointment = \App\Models\Appointment::findOrFail($bookingId);
+                @endphp
+                addClientModal.modal('toggle')
+                getClient('{{$appointment->client_id}}','{{$appointment->spa_id}}');
+                $('#client-search-form').find('input, button').attr('disabled',true);
+                addClientModal.find('#close-modal-btn, #reset-personal-info-btn, #sales-transaction-reset-btn, .close').attr('disabled',true);
+
+                const removeBooking = (bookingId) => {
+                    $.ajax({
+                        url: '/appointments/'+bookingId,
+                        type: 'delete',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    }).done((booking) => {
+                        console.log(booking)
+                    });
+
+                }
+            @endif
         </script>
     @endpush
 @endonce

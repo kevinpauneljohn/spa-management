@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AppointmentController extends Controller
 {
@@ -73,23 +75,27 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateAppointmentRequest  $request
-     * @param  \App\Models\Appointment  $appointment
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Appointment $appointment
+     * @param \App\Services\PointOfSales\Appointment $appointment
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
+    public function update(Request $request, $id, \App\Services\PointOfSales\Appointment $appointment): \Illuminate\Http\JsonResponse
     {
-        //
+        return $appointment->rescheduleAppointment($id, $request['appointmentDate']) ?
+            \response()->json(['success' => true, 'message' => 'Appointment Successfully Rescheduled'])
+            : \response()->json(['success' => false, 'message' => 'No changes made']);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Appointment  $appointment
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(Appointment $appointment): \Illuminate\Http\JsonResponse
     {
-        //
+        return $appointment->delete() ? response()->json(['success' => true, 'message' => 'Booking successfully deleted'])
+            : response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
 }

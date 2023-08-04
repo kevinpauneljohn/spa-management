@@ -213,6 +213,7 @@
                     type: 'post',
                     data: data,
                     beforeSend: function(){
+                        bookClient.find('.modal-content').append(overlay);
                         appointmentClientForm.find('.text-danger').remove();
                         appointmentClientForm.find('.is-invalid').removeClass('is-invalid');
                     }
@@ -255,7 +256,7 @@
                         appointmentClientForm.find('#'+key).addClass('is-invalid').after('<p class="text-danger">'+value+'</p>');
                     });
                 }).always((appointment) => {
-                    // console.log(appointment)
+                    bookClient.find('.overlay').remove();
                 });
             });
 
@@ -272,7 +273,6 @@
                         appointmentClientForm.find('input[name=client_id]').remove();
                         appointmentClientForm.find('.is-invalid').removeClass('is-invalid');
                         appointmentClientForm.find('.text-danger').remove();
-                        bookClient.find('.modal-title').text('Add Transaction');
                         Swal.fire('Form Cleared!', '', 'success')
                     }
                 })
