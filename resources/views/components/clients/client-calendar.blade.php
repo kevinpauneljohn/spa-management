@@ -71,7 +71,7 @@
                             clientInfoModal.find('#client-booking-info').html(details)
                                 .append('<tr><td>' +
                                     '<button type="button" class="btn btn-primary btn-sm convert-booking-to-sales" id="'+appointment.id+'">Convert to sales</button>' +
-                                    '</td><td><label>Reschedule</label><br/><input type="datetime-local" name="reschedule" class="form-control" id="'+appointment.id+'"/></td></tr>');
+                                    '</td><td><form id="reschedule-form">@csrf<div class="row"><div class="col-lg-9 col-md-6 mb-2"><input type="datetime-local" name="reschedule" class="form-control" id="'+appointment.id+'"/></div><div class="col-lg-3 col-md-6"><button type="submit" class="btn btn-primary">Reschedule</button></div></div></form></td></tr>');
                             return appointment;
 
                         }).fail( (xhr, data, error) => {
@@ -119,14 +119,15 @@
                 });
             }
 
-            $(document).on('change','input[name=reschedule]',function(){
-                let dateValue = $(this).val();
-                let bookingId = this.id;
+            $(document).on('submit','#reschedule-form',function(form){
+                form.preventDefault();
+                let dateValue = $('input[name="reschedule"]').val();
+                let bookingId = $('input[name="reschedule"]').attr('id');
 
                 swal.fire({
                     title: "Reschedule Appointment?",
                     html:
-                        '<h4 class="text-fuchsia">'+moment( $(this).val() ).format( "dddd h:mm a DD MMM YYYY" )+'</h4>Click <b class="text-info">YES</b>, to confirm',
+                        '<h4 class="text-fuchsia">'+moment( dateValue ).format( "dddd h:mm a DD MMM YYYY" )+'</h4>Click <b class="text-info">YES</b>, to confirm',
                     type: "warning",
                     showCancelButton: true,
                     cancelButtonColor: '#d33',
@@ -138,8 +139,9 @@
                     if (e.value === true) {
                        rescheduleAppointment(bookingId, dateValue)
 
-                    } else if(e.dismiss === 'cancel') {
-                        $('input[name=reschedule]').val('')
+                    }
+                    else if(e.dismiss === 'cancel') {
+
                     }
 
                 })
@@ -154,7 +156,7 @@
                     data: {booking:bookingId, appointmentDate: date},
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     beforeSend: function(){
-
+                        $('#reschedule-form').find('button').attr('disabled',true).text('Processing...')
                     }
                 }).done((appointment) => {
                     console.log(appointment)
@@ -163,9 +165,17 @@
                     {
                         Swal.fire('Hooray!', appointment.message, 'success')
                         bookingCalendar()
+                        $('input[name=reschedule]').val('')
                     }else{
                         Swal.fire('Warning!', appointment.message, 'warning')
                     }
+                }).fail((xhr, data, error) => {
+                    if(error === 'Not Found')
+                    {
+                        Swal.fire('Warning!', 'Please select a date!', 'warning')
+                    }
+                }).always(() => {
+                    $('#reschedule-form').find('button').attr('disabled',false).text('Reschedule')
                 });
             }
 
