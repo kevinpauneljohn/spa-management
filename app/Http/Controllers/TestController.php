@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Http;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 
@@ -16,7 +17,7 @@ class TestController extends Controller
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function __invoke(Request $request)
     {
@@ -27,7 +28,8 @@ class TestController extends Controller
 //        $test = Permission::create(['name' => 'testing only']);
 //        $user = auth()->user()->givePermissionTo($test);
 //        return auth()->user()->hasPermissionTo('testing only');
-        return auth()->user()->permissions;
+        $data = Http::accept('application/json')->withToken('7|DrWxWO4hzNhDjYarjcRlaBjO0oSxHh8lAvUfshcI')->post('http://application.test/api/posts');
+        return $data;
 //        return view('Payroll.index');
 //        $spa = Spa::where('name','Thai Khun Lounge & Spa')->first();
 //        return User::where('spa_id',$spa->id)->whereHas("roles", function($q){ $q->where("name", "front desk"); })->first();
