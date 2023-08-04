@@ -31,7 +31,8 @@ class StoreAppointmentRequest extends FormRequest
             'lastname' => ['max:100',Rule::requiredIf(!collect($request->all())->has('client_id'))],
             'date_of_birth' => ['nullable','date'],
             'email' => ['nullable','email'],
-            'appointment_date' => ['required','date']
+            'appointment_date' => ['required','date'],
+            'remarks' => ['required']
         ];
     }
 }
