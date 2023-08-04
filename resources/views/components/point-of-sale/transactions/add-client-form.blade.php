@@ -8,7 +8,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    test
                     <div class="row">
                         <div class="col-lg-5 bg-gray-light">
                             <div class="form-group check">
