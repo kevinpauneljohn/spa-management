@@ -110,7 +110,7 @@
                             '<tr><td>End Date:</td><td>'+transaction.end_date+'</td></tr>' +
                             '<tr><td>Service:</td><td class="text-fuchsia">'+transaction.service.name+'</td></tr>' +
                             '<tr><td>Service Amount</td><td>'+parseFloat(transaction.service.price).toFixed(2)+'</td></tr>' +
-                            '<tr><td>Plus Time</td><td>'+transaction.plus_time+'</td></tr>' +
+                            '<tr><td>Plus Time</td><td>'+transaction.plus_time+' minutes</td></tr>' +
                             '<tr><td>Plus Time Amount</td><td>'+parseFloat(transaction.price_per_plus_time_total).toFixed(2)+'</td></tr>' +
                             '<tr><td>Total Amount</td><td>'+transaction.total_amount.toFixed(2)+'</td></tr>');
                 }).always(() => {
