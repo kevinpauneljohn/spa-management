@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-lg-4 date_of_birth">
-                                            <label for="date_of_birth">Date Of Birth</label><span class="required">*</span>
+                                            <label for="date_of_birth">Date Of Birth</label>
                                             <input type="date" name="date_of_birth" class="form-control" id="date_of_birth" />
                                         </div><div class="col-lg-4 mobile_number">
                                             <label for="mobile_number">Mobile Number</label>

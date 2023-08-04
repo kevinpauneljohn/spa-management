@@ -41,7 +41,7 @@
                             @csrf
                                 <div class="row">
                                     <div class="col-lg-4 firstname">
-                                        <label for="firstname">First Name</label>
+                                        <label for="firstname">First Name</label><span class="required">*</span>
                                         <input type="text" name="firstname" class="form-control" id="firstname">
                                     </div>
                                     <div class="col-lg-4 middlename">
@@ -49,13 +49,13 @@
                                         <input type="text" name="middlename" class="form-control" id="middlename">
                                     </div>
                                     <div class="col-lg-4 lastname">
-                                        <label for="lastname">Last Name</label>
+                                        <label for="lastname">Last Name</label><span class="required">*</span>
                                         <input type="text" name="lastname" class="form-control" id="lastname">
                                     </div>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-lg-4 date_of_birth">
-                                        <label for="date_of_birth">Date Of Birth</label><span class="required">*</span>
+                                        <label for="date_of_birth">Date Of Birth</label>
                                         <input type="date" name="date_of_birth" class="form-control" id="date_of_birth" />
                                     </div><div class="col-lg-4 mobile_number">
                                         <label for="mobile_number">Mobile Number</label>
@@ -72,7 +72,7 @@
                                         <textarea name="address" class="form-control" id="address"></textarea>
                                     </div>
                                     <div class="col-lg-6 appointment_date">
-                                        <label for="reservation_date">Appointment Date</label>
+                                        <label for="reservation_date">Appointment Date</label><span class="required">*</span>
                                         <div class="input-group date" id="appointment_date" data-target-input="nearest">
                                             <input name="appointment_date" type="text" class="form-control datetimepicker-input" id="reservation_date"  data-target="#appointment_date"/>
                                             <div class="input-group-append" data-target="#appointment_date" data-toggle="datetimepicker">
@@ -82,8 +82,8 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <div class="col-lg-12 address">
-                                        <label for="remarks">Remarks</label>
+                                    <div class="col-lg-12 remarks">
+                                        <label for="remarks">Remarks</label><span class="required">*</span>
                                         <textarea name="remarks" class="form-control" id="remarks" style="min-height: 200px;"></textarea>
                                     </div>
                                 </div>
