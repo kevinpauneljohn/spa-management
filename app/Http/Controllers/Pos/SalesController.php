@@ -12,19 +12,20 @@ use App\Services\PointOfSales\Sales\AmountToBePaid;
 use App\Services\PointOfSales\Sales\ClientPayment;
 use App\Services\PointOfSales\Sales\IsolateTransaction;
 use App\Services\PointOfSales\Sales\SalesService;
-use App\View\Components\Pos\Appointments\UpcomingTab\view;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Spatie\Activitylog\Models\Activity;
 
 class SalesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['only_employee_and_owner_of_the_spa'])->only(['addTransactions']);
+        $this->middleware(['only_employee_and_owner_of_the_spa','CheckSalesIfExists','role_or_permission:front desk|owner|manager|access pos'])->only(['addTransactions']);
+        $this->middleware(['allow_to_access_spa','role_or_permission:front desk|owner|manager|access pos'])->only(['show']);
+        $this->middleware(['role_or_permission:front desk|owner|manager|process payment','CheckSalesIfExistsForPayment'])->only(['pay']);
+        $this->middleware(['permission:isolate transaction','sales.transaction.verifier','allow_to_access_spa'])->only(['isolateTransaction']);
     }
     /**
      * Display a listing of the resource.

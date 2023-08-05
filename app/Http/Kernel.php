@@ -4,6 +4,9 @@ namespace App\Http;
 
 use App\Http\Middleware\CheckIfSpaBelongsToOwner;
 use App\Http\Middleware\CheckIfUserLoggedInIsAnOwner;
+use App\Http\Middleware\CheckSalesIfExists;
+use App\Http\Middleware\CheckSalesIfExistsForPayment;
+use App\Http\Middleware\CheckUserBelongsToSpaSegmentTwo;
 use App\Http\Middleware\OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance;
 use App\Http\Middleware\UpgradeToHttpsUnderNgrok;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -73,6 +76,10 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
-        'only_employee_and_owner_of_the_spa' => OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance::class
+        'only_employee_and_owner_of_the_spa' => OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance::class,
+        'allow_to_access_spa' => CheckUserBelongsToSpaSegmentTwo::class,
+        'CheckSalesIfExists' => CheckSalesIfExists::class,
+        'CheckSalesIfExistsForPayment' => CheckSalesIfExistsForPayment::class,
+        'sales.transaction.verifier' => \App\Http\Middleware\Pos\SalesTransactionVerifier::class
     ];
 }

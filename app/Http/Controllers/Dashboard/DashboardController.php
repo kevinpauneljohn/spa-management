@@ -16,8 +16,9 @@ class DashboardController extends Controller
             return view('Dashboard.dashboard');
         } else if (auth()->user()->hasRole('owner')) {
             return redirect('owner-dashboard');
-        } else if (!empty($user)) {
-            return redirect('/receptionist-dashboard');
+        } else if (!empty($user) && auth()->user()->hasRole('front desk')) {
+            return redirect(route('point-of-sale.show',['point_of_sale' => auth()->user()->spa_id]));
+//            return redirect('/receptionist-dashboard');
         } else {
             return view('Dashboard.dashboard');
         }
