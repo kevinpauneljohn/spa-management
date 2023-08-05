@@ -391,6 +391,7 @@ class AppointmentService
                 'amount' => $appointment->amount,
                 'start_time' => $appointment->start_time,
                 'appointment_status' => ucfirst($appointment->appointment_status),
+                'remarks' => nl2br($appointment->remarks)
             ];
         }
 
