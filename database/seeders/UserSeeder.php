@@ -51,6 +51,19 @@ class UserSeeder extends Seeder
         $spa->number_of_rooms = rand(3,7);
         $spa->save();
 
+        $frontDesk = new User([
+            'firstname' => 'john',
+            'spa_id' => $spa->id,
+            'middlename' => null,
+            'lastname' => 'doe',
+            'email' => 'john@gmail.com',
+            'username' => 'john',
+            'mobile_number' => '09218173624',
+            'password' => bcrypt(123),
+        ]);
+        $frontDesk->assignRole('front desk');
+        $frontDesk->save();
+
         Service::factory()->count(5)->state(new Sequence(
             ['name' => 'swedish'],
             ['name' => 'siatsu'],

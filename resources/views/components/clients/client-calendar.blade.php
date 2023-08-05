@@ -44,10 +44,28 @@
                     themeSystem: 'bootstrap',
                     editable: true,
                     selectable: true,
+                    selectConstraint:{
+                        start: '00:00',
+                        end: '24:00'
+                    },
+                    select: function(info){
+                        let selectedDate = info.startStr;
+
+                        if(moment(selectedDate).isBefore(moment('{{now()}}')))
+                        {
+                        }
+                    },
                     events: '{!! route('appointment.events',['spa' => $spaId]) !!}',
                     dateClick: function (info){
-                        // console.log(info)
-                        $('#book-client').modal('toggle');
+                        let selectedDate = info.dateStr;
+
+                        if(moment(selectedDate).isBefore(moment('{{now()}}')))
+                        {
+                            Swal.fire('Warning!', 'The date selected cannot be processed', 'warning')
+                        }else{
+                            $('#book-client').find('input[name=appointment_date]').val(moment(info.date).format('MM/DD/YYYY hh:mm A'));
+                            $('#book-client').modal('toggle');
+                        }
                     },
                     eventClick: function(info){
                         // console.log(info.event.id)
@@ -58,7 +76,7 @@
                                 $('#client-info').find('.modal-content').append(overlay);
                             }
                         }).done( (appointment) => {
-                            // console.log(appointment)
+                            console.log(appointment)
                             let fullName = appointment.firstname+' '+appointment.middlename+' '+appointment.lastname;
                             clientInfoModal.find('.modal-title').text(fullName);
 
@@ -66,7 +84,8 @@
                                 '<tr><td>Appointment Date:</td><td>'+appointment.start_time_formatted+'</td></tr>' +
                                 '<tr><td>Mobile Number:</td><td><a href="tel:+63'+appointment.mobile_number+'">+63'+appointment.mobile_number+'</a></td></tr>' +
                                 '<tr><td>Email:</td><td><a href="mailto:'+appointment.email+'">'+(appointment.email != null ? appointment.email : '')+'</a></td></tr>' +
-                                '<tr><td>Client Type:</td><td>'+appointment.client_type+'</td></tr>';
+                                '<tr><td>Client Type:</td><td>'+appointment.client_type+'</td></tr>' +
+                                '<tr><td>Remarks:</td><td>'+appointment.remarks+'</td></tr>';
 
                             clientInfoModal.find('#client-booking-info').html(details)
                                 .append('<tr><td>' +
