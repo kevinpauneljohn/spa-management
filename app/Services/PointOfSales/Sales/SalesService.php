@@ -2,6 +2,7 @@
 
 namespace App\Services\PointOfSales\Sales;
 
+use App\Models\Client;
 use Yajra\DataTables\Facades\DataTables;
 
 class SalesService
@@ -34,6 +35,17 @@ class SalesService
             ->addColumn('completed',function($sale){
                 $completed = $sale->transactions()->where('end_time','<',now())->count();
                 return $completed.'/'.$sale->transactions->count();
+            })
+            ->addColumn('clients',function($sale)
+            {
+                $clientIds = collect($sale->transactions)->pluck('client_id')->toArray();
+                $clients = collect(Client::whereIn('id',$clientIds)->get())->pluck('full_name');
+                $clientNames = '';
+                    foreach ($clients as $client)
+                    {
+                        $clientNames .= '<span class="float-left">-</span> <span class="float-right"><span class="text-info">'.$client.'</span></span><br/>';
+                    }
+                return $clientNames;
             })
             ->addColumn('total_amount',function($sale){
                 return '<span class="text-info">'.number_format($sale->transactions->sum('amount'),2).'</span>';
@@ -94,7 +106,7 @@ class SalesService
                     return $classes;
                 }
             ])
-            ->rawColumns(['total_amount','action','invoice_number','payment_status','rooms'])
+            ->rawColumns(['clients','total_amount','action','invoice_number','payment_status','rooms'])
             ->with([
                 'transactions' => $transactions = collect($sales->pluck('transactions')),
                 'total_sales' => $sales->count(),

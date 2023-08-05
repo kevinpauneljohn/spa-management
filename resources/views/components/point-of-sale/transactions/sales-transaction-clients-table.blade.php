@@ -148,6 +148,13 @@
                             }else{
                                 Swal.fire(transaction.message, '', 'warning')
                             }
+                        }).fail( (xhr, data, error) => {
+                            console.log(xhr)
+                            if(xhr.status === 403 || xhr.status === 404)
+                            {
+                                let errorMessage = xhr.responseJSON.message !== '' ? xhr.responseJSON.message : 'An error occurred'
+                                Swal.fire('Warning!', errorMessage, 'warning')
+                            }
                         });
 
                     }
