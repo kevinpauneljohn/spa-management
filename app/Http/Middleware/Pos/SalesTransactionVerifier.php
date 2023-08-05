@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Pos;
 
-use App\Models\Spa;
-use App\Services\UserService;
+use App\Models\Transaction;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance
+class SalesTransactionVerifier
 {
     /**
      * Handle an incoming request.
@@ -19,19 +17,21 @@ class OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance
      */
     public function handle(Request $request, Closure $next)
     {
-
-        $spaOwner = Spa::findOrFail($request->segment(3))->owner;
-        $user = Auth::user();
-        if($user->hasRole('owner'))
+        $user = auth()->user();
+        $transaction = Transaction::where('id',$request->segment(3));
+        if($user->hasAnyRole('front desk','manager'))
         {
-            if($user->owner->id !== $spaOwner->id)
+            if($transaction->where('spa_id',$user->spa_id)->count() === 0
+                || $transaction->where('spa_id',$request->segment(2))->count() === 0)
             {
                 abort(404);
             }
+
         }
-        elseif ($user->hasRole(['therapist','manager','front desk']))
+        elseif ($user->hasAnyRole('owner'))
         {
-            if($user->spa_id !== $request->segment(3))
+            $spaIds = collect($user->owner->spas)->pluck('id')->toArray();
+            if($transaction->whereIn('spa_id',$spaIds)->count() === 0)
             {
                 abort(404);
             }
