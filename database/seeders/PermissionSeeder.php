@@ -14,5 +14,7 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         Permission::create(['name' => 'download attendance'])->syncRoles(['owner']);
+        Permission::create(['name' => 'process payment'])->syncRoles(['owner','manager','front desk']);
+        Permission::create(['name' => 'isolate transaction'])->syncRoles(['owner','manager','front desk']);
     }
 }

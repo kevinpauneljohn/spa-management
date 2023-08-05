@@ -16,6 +16,8 @@ use Illuminate\Support\Collection;
 
 class TransactionController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
@@ -63,13 +65,13 @@ class TransactionController extends Controller
                 'transaction' => $transaction]);
     }
 
-//    /**
-//     * Display the specified resource.
-//     *
-//     * @param  int  $id
-//     * @return \Illuminate\Http\Response
-//     */
-    public function show($id, \App\Services\PointOfSales\TransactionService $service)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id, \App\Services\PointOfSales\TransactionService $service): \Illuminate\Http\Response
     {
         return $service->transaction($id);
     }
