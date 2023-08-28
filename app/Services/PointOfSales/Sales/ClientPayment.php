@@ -2,10 +2,50 @@
 
 namespace App\Services\PointOfSales\Sales;
 
+use App\Models\Payment;
+use App\Models\SalesShift;
 use Spatie\Activitylog\Contracts\Activity;
 
 class ClientPayment extends AmountToBePaid
 {
+    protected $shift_id;
+    public function __construct()
+    {
+        $this->shift_id = $this->getSalesShift()->id;
+    }
+    private function getSalesShift()
+    {
+        return SalesShift::where('user_id',auth()->user()->id)->where('completed',false)->first();
+    }
+
+    /**
+     * update the cash on drawer
+     * @param $amountPaid
+     * @param $change
+     * @return void
+     */
+    private function updateCashDrawer($amountPaid, $change): void
+    {
+        $salesShift = SalesShift::find($this->shift_id);
+        $salesShift->start_money = ($salesShift->start_money + $amountPaid) - $change;
+        $salesShift->save();
+    }
+
+    /**
+     * @param $paymentType
+     * @param $amount
+     * @param $referenceNo
+     * @return void
+     */
+    private function saveSalesShiftPayments($paymentType, $amount, $referenceNo): void
+    {
+        Payment::create([
+            'sales_shift_id' => $this->shift_id,
+            'payment' => $amount,
+            'payment_type' => $paymentType,
+            'reference_number' => $referenceNo
+        ]);
+    }
     public function payment($salesId, $paymentType, $amount, $referenceNo): bool
     {
         if($paymentType === 'Cash')
@@ -40,6 +80,8 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
+                $this->saveSalesShiftPayments($paymentType, $amount, null);
+                $this->updateCashDrawer($sales->amount_paid, $sales->change);
                 $this->activityLogs($sales, $amount);
                 return true;
             }
@@ -67,6 +109,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
+                $this->saveSalesShiftPayments($paymentType, $sales->amount_paid, $referenceNo);
                 $this->activityLogs($sales, 0);
                 return true;
             }

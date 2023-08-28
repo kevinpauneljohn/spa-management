@@ -80,6 +80,7 @@ class Kernel extends HttpKernel
         'allow_to_access_spa' => CheckUserBelongsToSpaSegmentTwo::class,
         'CheckSalesIfExists' => CheckSalesIfExists::class,
         'CheckSalesIfExistsForPayment' => CheckSalesIfExistsForPayment::class,
-        'sales.transaction.verifier' => \App\Http\Middleware\Pos\SalesTransactionVerifier::class
+        'sales.transaction.verifier' => \App\Http\Middleware\Pos\SalesTransactionVerifier::class,
+        'verify.sales.instance' => \App\Http\Middleware\Pos\CheckIfSalesShiftInstantiated::class
     ];
 }

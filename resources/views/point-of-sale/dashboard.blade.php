@@ -20,24 +20,30 @@
             </ol>
         </div>
     </div>
-    @if(in_array('owner',collect(auth()->user()->getRoleNames())->toArray()) ||
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    @if(in_array('owner',collect(auth()->user()->getRoleNames())->toArray()) ||
         in_array('manager',collect(auth()->user()->getRoleNames())->toArray()))
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
                         <a href="{{route('sales-activity-logs',['spaId' => $spa->id])}}" class="btn btn-default btn-xs">
                             <i class="fa fa-list-ol mr-1" aria-hidden="true"></i>
                             Activity Logs
                         </a>
-                        <div class="float-right">
-                            <x-clock.digital-clock />
-                        </div>
+                    @else
+
+                    @endif
+
+                    <x-point-of-sale.sales.end-shift-button :spaId="$spa->id"/>
+
+                    <div class="float-right">
+                        <x-clock.digital-clock />
                     </div>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
     <div class="row">
         <div class="col-lg-7">
             <div class="row">
@@ -45,10 +51,19 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="float-left"><h4 class="text-muted card-title">Sales Management</h4></div>
-                            <div class="float-right"><x-point-of-sale.add-sales :spa="$spa"/></div>
+                            <div class="float-right">
+                                <x-point-of-sale.add-sales :spa="$spa"/>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <x-point-of-sale.sales.date-range :spaId="$spa->id"/>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <x-point-of-sale.sales.date-range :spaId="$spa->id"/>
+                                </div>
+                                <div class="col-lg-4">
+                                    <x-point-of-sale.sales.cash-on-drawer :spaId="$spa->id"/>
+                                </div>
+                            </div>
                             <div class="table-wrapper">
                                 <x-point-of-sale.sales.sales-table :spaId="$spa->id"/>
                             </div>
