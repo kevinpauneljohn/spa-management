@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sale;
+use App\Models\SalesShift;
 use App\Models\Spa;
 use App\Models\Transaction;
 use App\Services\PointOfSales\MasseurAvailabilityService;
@@ -12,6 +13,7 @@ use App\Services\PointOfSales\Sales\AmountToBePaid;
 use App\Services\PointOfSales\Sales\ClientPayment;
 use App\Services\PointOfSales\Sales\IsolateTransaction;
 use App\Services\PointOfSales\Sales\SalesService;
+use App\Services\PointOfSales\Shift\ShiftService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -73,6 +75,7 @@ class SalesController extends Controller
         $spa = Spa::findOrFail($id);
         $pageTitle = 'Dashboard';
         $availableRooms = collect($service->availableRooms($id))->count();
+
         return view('point-of-sale.dashboard',
         compact('pageTitle','spa','availableRooms'));
     }
@@ -205,9 +208,12 @@ class SalesController extends Controller
         return $service->displayProgressBar($spa->id);
     }
 
-    public function convertBookingToSales($spaId, $bookingId)
+    public function startShift($spaId, ShiftService $shiftService)
     {
-
+//        $shiftService->abortDirectAccessToStartShiftPageIfExists();
+        $pageTitle = 'Start Shift';
+        $spa = Spa::findOrFail($spaId);
+        return view('point-of-sale.start-shift',compact('pageTitle','spa'));
     }
 
 }

@@ -367,6 +367,7 @@ return [
             'text' => 'Sales Management',
             'route'  => 'spa.sales.report',
             'icon' => 'fas fa-fw fa-search-dollar',
+            'can' => 'view sales management'
         ],
         [
             'text' => 'Inventory Management',
@@ -399,6 +400,7 @@ return [
             'text' => 'Product Management',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-store',
+            'can' => 'view product'
         ],
         [
             'text' => 'Activity Logs',
@@ -406,45 +408,45 @@ return [
             'icon' => 'fa fa-list-ol',
             'can' => 'view activity'
         ],
-        [
-            'text' => 'Payroll Management',
-            'icon' => 'fas fa-fw  fa-money-check-alt',
-
-            'submenu' => [
-                [
-                    'text' => 'Employee Payroll',
-                    'route'  => 'payroll.index',
-                    'icon' => 'fas fa-fw  fa-money-check-alt',
-
-                ],
-                [
-                    'text' => 'Employee Rate',
-                    'route'  => 'setting.index',
-                    'icon' => 'fas fa-fw fa-store',
-                ],
-            ],
-
-            // 'can' => 'view payroll',
-        ],
-        [
-            'text' => 'Attendance',
-            'icon' => 'fas fa-fw fa-store',
-
-            'submenu' => [
-                [
-                    'text' => 'Employee Attendance',
-                    'route'  => 'attendance.index',
-                    'icon' => 'fas fa-fw fa-calendar',
-
-                ],
-                [
-                    'text' => 'Shift Management',
-                    'route'  => 'shift.index',
-                    'icon' => 'fas fa-fw fa-store',
-                ],
-            ],
-
-        ],
+//        [
+//            'text' => 'Payroll Management',
+//            'icon' => 'fas fa-fw  fa-money-check-alt',
+//
+//            'submenu' => [
+//                [
+//                    'text' => 'Employee Payroll',
+//                    'route'  => 'payroll.index',
+//                    'icon' => 'fas fa-fw  fa-money-check-alt',
+//
+//                ],
+//                [
+//                    'text' => 'Employee Rate',
+//                    'route'  => 'setting.index',
+//                    'icon' => 'fas fa-fw fa-store',
+//                ],
+//            ],
+//
+//            // 'can' => 'view payroll',
+//        ],
+//        [
+//            'text' => 'Attendance',
+//            'icon' => 'fas fa-fw fa-store',
+//
+//            'submenu' => [
+//                [
+//                    'text' => 'Employee Attendance',
+//                    'route'  => 'attendance.index',
+//                    'icon' => 'fas fa-fw fa-calendar',
+//
+//                ],
+//                [
+//                    'text' => 'Shift Management',
+//                    'route'  => 'shift.index',
+//                    'icon' => 'fas fa-fw fa-store',
+//                ],
+//            ],
+//
+//        ],
         [
             'text'    => 'Settings',
             'icon'    => 'fas fa-cogs',
