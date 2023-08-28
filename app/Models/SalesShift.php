@@ -16,9 +16,7 @@ class SalesShift extends Model
         'user_id',
         'spa_id',
         'start_money',
-        'confirm_start_shift',
-        'confirm_end_shift',
-        'confirm_start_money'
+        'completed'
     ];
 
     protected static $logAttributes = [
@@ -27,8 +25,5 @@ class SalesShift extends Model
         'user_id',
         'spa_id',
         'start_money',
-        'confirm_start_shift',
-        'confirm_end_shift',
-        'confirm_start_money'
     ];
 }

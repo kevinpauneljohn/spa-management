@@ -27,7 +27,7 @@
                     { data: 'created_at', name: 'created_at'},
                     { data: 'invoice_number', name: 'invoice_number'},
                     { data: 'rooms', name: 'rooms', className: 'text-center'},
-                    { data: 'clients', name: 'clients'},
+                    { data: 'clients', name: 'clients', className: 'client-width'},
                     { data: 'completed', name: 'completed', className: 'text-center'},
                     { data: 'total_amount', name: 'total_amount'},
                     { data: 'payment_status', name: 'payment_status'},

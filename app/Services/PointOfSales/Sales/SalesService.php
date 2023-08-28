@@ -45,7 +45,7 @@ class SalesService
                     {
                         $clientNames .= '<span class="float-left">-</span> <span class="float-right"><span class="text-info">'.$client.'</span></span><br/>';
                     }
-                return $clientNames;
+                return '<div style="width: 200px;">'.$clientNames.'</div>';
             })
             ->addColumn('total_amount',function($sale){
                 return '<span class="text-info">'.number_format($sale->transactions->sum('amount'),2).'</span>';

@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth','verify.sales.instance'])->group(function(){
     Route::get('/display-therapist-availability-in-progress-bar/{spa}',[\App\Http\Controllers\Pos\SalesController::class,'displayTherapistsAvailabilityInProgressBar'])->name('display-availability-in-progress-bar');
     Route::patch('/extend-time/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'extendTime'])->name('extend-time');
     Route::get('/print-invoice/{sale}',[\App\Http\Controllers\Pos\SalesController::class,'printInvoice'])->name('print-invoice');
@@ -15,4 +15,11 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/point-of-sale/add-transaction/{spa}/{sale}',[\App\Http\Controllers\Pos\SalesController::class,'addTransactions'])->name('pos.add.transaction');
     Route::resource('point-of-sale',\App\Http\Controllers\Pos\SalesController::class);
 });
+
+Route::middleware(['auth'])->group(function(){
+    Route::post('/end-shift/{spaId}',[\App\Http\Controllers\Pos\SalesShiftController::class,'endShift'])->name('end-shift');
+    Route::get('/start-shift/{spaId}',[\App\Http\Controllers\Pos\SalesController::class,'startShift'])->name('required.start-shift');
+    Route::resource('sales-shift',\App\Http\Controllers\Pos\SalesShiftController::class);
+});
+
 

@@ -16,5 +16,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'download attendance'])->syncRoles(['owner']);
         Permission::create(['name' => 'process payment'])->syncRoles(['owner','manager','front desk']);
         Permission::create(['name' => 'isolate transaction'])->syncRoles(['owner','manager','front desk']);
+        Permission::create(['name' => 'view sales management'])->syncRoles(['owner']);
+
+        Permission::create(['name' => 'view product'])->syncRoles(['owner']);
+        Permission::create(['name' => 'add product'])->syncRoles(['owner']);
+        Permission::create(['name' => 'edit product'])->syncRoles(['owner']);
+        Permission::create(['name' => 'delete product'])->syncRoles(['owner']);
     }
 }

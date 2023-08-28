@@ -11,6 +11,7 @@ use App\Services\PointOfSales\VoidTransaction;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 
@@ -68,10 +69,11 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @param \App\Services\PointOfSales\TransactionService $service
+     * @return mixed
      */
-    public function show($id, \App\Services\PointOfSales\TransactionService $service): \Illuminate\Http\Response
+    public function show($id, \App\Services\PointOfSales\TransactionService $service)
     {
         return $service->transaction($id);
     }

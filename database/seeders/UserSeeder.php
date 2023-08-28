@@ -64,6 +64,19 @@ class UserSeeder extends Seeder
         $frontDesk->assignRole('front desk');
         $frontDesk->save();
 
+        $frontDesk2 = new User([
+            'firstname' => 'jane',
+            'spa_id' => $spa->id,
+            'middlename' => null,
+            'lastname' => 'doe',
+            'email' => 'jane@gmail.com',
+            'username' => 'jane',
+            'mobile_number' => '09218173625',
+            'password' => bcrypt(123),
+        ]);
+        $frontDesk2->assignRole('front desk');
+        $frontDesk2->save();
+
         Service::factory()->count(5)->state(new Sequence(
             ['name' => 'swedish'],
             ['name' => 'siatsu'],
