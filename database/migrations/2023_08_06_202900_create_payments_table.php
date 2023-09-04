@@ -16,6 +16,7 @@ class CreatePaymentsTable extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sales_shift_id')->constrained();
+            $table->foreignUuid('sale_id')->constrained();
             $table->decimal('payment',8,2);
             $table->string('payment_type');
             $table->string('reference_number')->nullable();

@@ -37,10 +37,11 @@ class ClientPayment extends AmountToBePaid
      * @param $referenceNo
      * @return void
      */
-    private function saveSalesShiftPayments($paymentType, $amount, $referenceNo): void
+    private function saveSalesShiftPayments($paymentType, $amount, $referenceNo, $saleId): void
     {
         Payment::create([
             'sales_shift_id' => $this->shift_id,
+            'sale_id' => $saleId,
             'payment' => $amount,
             'payment_type' => $paymentType,
             'reference_number' => $referenceNo
@@ -80,7 +81,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
-                $this->saveSalesShiftPayments($paymentType, $amount, null);
+                $this->saveSalesShiftPayments($paymentType, $amount, null, $sales->id);
                 $this->updateCashDrawer($sales->amount_paid, $sales->change);
                 $this->activityLogs($sales, $amount);
                 return true;
@@ -109,7 +110,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
-                $this->saveSalesShiftPayments($paymentType, $sales->amount_paid, $referenceNo);
+                $this->saveSalesShiftPayments($paymentType, $sales->amount_paid, $referenceNo, $sales->id);
                 $this->activityLogs($sales, 0);
                 return true;
             }

@@ -25,7 +25,7 @@
                             console.log(response);
                             if(response.success === true)
                             {
-                                window.location.reload()
+                                window.location.href = '/start-shift/{{$spaId}}?endShift=true'
                             }
                         }).always(function(){
                         });
