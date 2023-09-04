@@ -6,7 +6,6 @@ use App\Models\SalesShift;
 
 class ShiftService
 {
-
     public function start($money)
     {
         return SalesShift::create([

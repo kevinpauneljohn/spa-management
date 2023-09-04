@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesShift;
 use App\Models\Spa;
@@ -214,6 +215,13 @@ class SalesController extends Controller
         $pageTitle = 'Start Shift';
         $spa = Spa::findOrFail($spaId);
         return view('point-of-sale.start-shift',compact('pageTitle','spa'));
+    }
+
+    public function printShiftSales($shiftId)
+    {
+        $salesShift = SalesShift::find($shiftId);
+        $payments = Payment::where('sales_shift_id',$shiftId)->orderBy('payment_type')->get();
+        return view('point-of-sale.print-shift-sales',compact('payments','salesShift'));
     }
 
 }

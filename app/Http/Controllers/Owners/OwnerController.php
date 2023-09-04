@@ -186,6 +186,11 @@ class OwnerController extends Controller
 
     public function dashboard()
     {
+        if(!auth()->user()->hasRole('owner'))
+        {
+            return redirect(route('dashboard'));
+        }
+
         $id = auth()->user()->id;
         $owner = Owner::where('user_id', $id)->first();
         $spa = Spa::where('owner_id', $owner->id)->get();
