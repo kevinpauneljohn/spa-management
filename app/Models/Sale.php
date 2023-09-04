@@ -39,4 +39,9 @@ class Sale extends Model
         return substr($this->id,0,8);
     }
 
+    public function payment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
+
 }
