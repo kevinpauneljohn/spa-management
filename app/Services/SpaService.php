@@ -119,4 +119,9 @@ class SpaService
 
         return $spa;
     }
+
+    public function getAllSpaByOwnerId($ownerId)
+    {
+        return Spa::where('owner_id',$ownerId)->get();
+    }
 }

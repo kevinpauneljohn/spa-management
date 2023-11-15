@@ -435,7 +435,7 @@ class TransactionService
                     return $option;
             })
             ->addColumn('isolate', function($transaction){
-                if($transaction->sale->payment_status === 'pending')
+                if($transaction->sale->payment_status === 'pending' && $transaction->countNumberOfClientExistMoreThanOnceInSalesTransaction($transaction->sales_id, $transaction->client_id) < 2)
                 {
                     return '<button type="button" class="btn btn-sm btn-outline-info isolate" id="'.$transaction->id.'" title="Isolate"><span class="fa fa-level-up-alt"></span></button>';
                 }

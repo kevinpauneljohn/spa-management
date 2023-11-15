@@ -11,19 +11,16 @@
             <th>Client</th>
             <th>Service</th>
             <th>Service Amount</th>
-            <th>Plus Time Amount</th>
             <th>Payable Amount</th>
             <th>Commission Reference Amount</th>
             <th>Status</th>
             <th>Service Duration</th>
-            <th>Plus Time</th>
             <th>Total Time</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Room</th>
             <th>Masseur</th>
             <th>Sales Type</th>
-            <th>Extend Time</th>
             <th>Isolate</th>
         @endif
             <th>Void Transaction</th>
@@ -64,19 +61,17 @@
                             { data: 'client_name', name: 'client_name'},
                             { data: 'service_name', name: 'service_name'},
                             { data: 'amount', name: 'amount'},
-                            { data: 'plus_time_amount', name: 'plus_time_amount'},
                             { data: 'payable_amount', name: 'payable_amount'},
                             { data: 'commission_reference_amount', name: 'commission_reference_amount'},
                             { data: 'status', name: 'status'},
                             { data: 'duration', name: 'duration'},
-                            { data: 'plus_time', name: 'plus_time'},
                             { data: 'total_time', name: 'total_time'},
                             { data: 'start_date', name: 'start_date'},
                             { data: 'end_date', name: 'end_date'},
                             { data: 'room_id', name: 'room_id'},
                             { data: 'therapists', name: 'therapists'},
                             { data: 'sales_type', name: 'sales_type'},
-                            { data: 'extend_time', name: 'extend_time'},
+                            // { data: 'extend_time', name: 'extend_time'},
                             { data: 'isolate', name: 'isolate',className: 'text-center'},
                         @endif
                             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}

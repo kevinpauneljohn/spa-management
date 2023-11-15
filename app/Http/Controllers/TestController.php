@@ -28,9 +28,8 @@ class TestController extends Controller
 //        $test = Permission::create(['name' => 'testing only']);
 //        $user = auth()->user()->givePermissionTo($test);
 //        return auth()->user()->hasPermissionTo('testing only');
-        $data = Http::accept('application/json')->withToken('7|DrWxWO4hzNhDjYarjcRlaBjO0oSxHh8lAvUfshcI')->post('http://application.test/api/posts');
-        return $data;
-//        return view('Payroll.index');
+
+        return view('Payroll.index');
 //        $spa = Spa::where('name','Thai Khun Lounge & Spa')->first();
 //        return User::where('spa_id',$spa->id)->whereHas("roles", function($q){ $q->where("name", "front desk"); })->first();
 //        $spa = Spa::where('name','Thai Khun Lounge & Spa')->first();
