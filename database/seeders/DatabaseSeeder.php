@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
                 ExpenseSeeder::class,
                 ClientSeeder::class,
                 ActivityLogsSeeder::class,
-                AppointmentSeeder::class
+                AppointmentSeeder::class,
+                PayrollSeeder::class,
             ]);
     }
 }

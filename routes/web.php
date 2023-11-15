@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 
 require __DIR__ . '/web/sales.php';
 require __DIR__ . '/web/appointment.php';
+require __DIR__ . '/web/payroll.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
@@ -126,18 +127,19 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/role/{id}',[\App\Http\Controllers\RoleController::class,'destroy'])->name('role.delete');
     Route::get('/roles',[\App\Http\Controllers\RoleController::class,'getRoleList'])->name('role.lists');
 
-    Route::get('/payroll',[\App\Http\Controllers\PayrollController::class, 'index'])->name('payroll.index');
-    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'therapist'])->name('generate.payroll.by.date');
-    Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
-    Route::get('/employee-salary',[\App\Http\Controllers\PayrollController::class, 'getEmployeeSalary']);
-    Route::get('/employee-summary/{id}', [\App\Http\Controllers\PayrollController::class, 'getEmployeeSummary']);
-    Route::get('/dateRangechecker', [\App\Http\Controllers\PayrollController::class, 'dateLimit']);
-    Route::get('/create', [\App\Http\Controllers\PayrollController::class, 'create']);
-    Route::get('/payslip/{type}', [\App\Http\Controllers\PayrollController::class, 'payslip']);
-    Route::get('/payslip-view', [\App\Http\Controllers\PayrollController::class, 'payslipview']);
-    Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
-    Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
-    Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
+//    Route::get('/payroll',[\App\Http\Controllers\Payroll\PayrollController::class, 'index'])->name('payroll.index');
+//
+//    Route::get('/show-date',[\App\Http\Controllers\PayrollController::class, 'therapist'])->name('generate.payroll.by.date');
+//    Route::get('/info/{id}',[\App\Http\Controllers\PayrollController::class, 'getSummary']);
+//    Route::get('/employee-salary',[\App\Http\Controllers\PayrollController::class, 'getEmployeeSalary']);
+//    Route::get('/employee-summary/{id}', [\App\Http\Controllers\PayrollController::class, 'getEmployeeSummary']);
+//    Route::get('/dateRangechecker', [\App\Http\Controllers\PayrollController::class, 'dateLimit']);
+//    Route::get('/create', [\App\Http\Controllers\PayrollController::class, 'create']);
+//    Route::get('/payslip/{type}', [\App\Http\Controllers\PayrollController::class, 'payslip']);
+//    Route::get('/payslip-view', [\App\Http\Controllers\PayrollController::class, 'payslipview']);
+//    Route::get('/practice', [\App\Http\Controllers\PayrollController::class, 'practice']);
+//    Route::get('/therapists-attendance', [\App\Http\Controllers\PayrollController::class, 'attendanceCounter']);
+//    Route::get('/therapist-payslip',[\App\Http\Controllers\PayrollController::class, 'therapistPayslip']);
 //    Route::get('/spatie',[\App\Http\Controllers\PayrollController::class, 'spatietest']);
 
 

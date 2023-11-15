@@ -3,19 +3,32 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
+use App\Models\Spa;
+use App\Services\PayrollService;
+use App\Services\SpaService;
+use App\Services\UserService;
 use App\View\Components\Pos\Appointments\UpcomingTab\view;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 
 class PayrollController extends Controller
 {
+
+    public function __construct()
+    {
+
+    }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|\Illuminate\Contracts\View\View
      */
     public function index()
     {
-        return view('Payroll.index');
+        $pageTitle = 'Payroll Management';
+        return view('Payroll.updated.index',
+            compact('pageTitle'));
     }
 
     /**
@@ -42,12 +55,14 @@ class PayrollController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $id
+     * @return Application|Factory|\Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show(string $id)
     {
-        //
+        $spa = Spa::findOrFail($id);
+        $pageTitle = $spa->name;
+        return view('Payroll.index',compact('spa','pageTitle'));
     }
 
     /**
@@ -82,5 +97,12 @@ class PayrollController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function accessPayrollBySpa(PayrollService $payrollService, UserService $userService, SpaService $spaService)
+    {
+        $ownerId = $userService->get_staff_owner()->id;
+        $spas = $spaService->getAllSpaByOwnerId($ownerId);
+        return $payrollService->payrollTable($spas);
     }
 }

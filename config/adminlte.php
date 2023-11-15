@@ -370,6 +370,12 @@ return [
             'can' => 'view sales management'
         ],
         [
+            'text' => 'Payroll Management',
+            'route'  => 'payroll.index',
+            'icon' => 'fas fa-fw fa-money-check-alt',
+            'can' => 'view payroll'
+        ],
+        [
             'text' => 'Inventory Management',
             'icon' => 'fas fa-fw fa-shopping-cart',
             'can' => 'view inventory',

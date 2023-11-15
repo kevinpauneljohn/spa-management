@@ -58,6 +58,12 @@
                         @else
                             <div class="modal-header bg-olive">
                                 <h4 class="modal-title">Start Shift</h4>
+                                <div class="float-right">
+                                    <form method="post" action="{{route('logout')}}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger"><i class="fa fa-power-off" aria-hidden="true"></i> Sign Out</button>
+                                    </form>
+                                </div>
                             </div>
                             <form class="form-start-shift">
                                 @csrf

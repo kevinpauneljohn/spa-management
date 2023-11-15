@@ -133,4 +133,9 @@ class Transaction extends Model
     {
         return Carbon::parse($this->start_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i A');
     }
+
+    public function countNumberOfClientExistMoreThanOnceInSalesTransaction($sales_id, $client_id)
+    {
+        return Transaction::where('sales_id',$sales_id)->where('client_id',$client_id)->count();
+    }
 }
