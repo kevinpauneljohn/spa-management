@@ -6,9 +6,9 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PayrollService
 {
-    public function payrollTable($payroll)
+    public function payrollTable($spas)
     {
-        return DataTables::of($payroll)
+        return DataTables::of($spas)
             ->editColumn('created_at',function($spa){
                 return $spa->created_at->format('M d, Y');
             })
@@ -21,7 +21,10 @@ class PayrollService
             })
             ->addColumn('action', function($spa){
                 $action = "";
-
+                if(auth()->user()->can('view payroll'))
+                {
+                    $action .= '<a href="'.route('payroll.show',['payroll' => $spa->id]).'" class="btn btn-success btn-sm">View Payroll</a>';
+                }
                 return $action;
             })
             ->rawColumns(['action','name'])

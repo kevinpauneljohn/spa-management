@@ -54,11 +54,12 @@ class TransactionController extends Controller
      */
     public function store(SalesTransactionRequest $request, \App\Services\PointOfSales\TransactionService $transactionService)
     {
-        if($transactionService->checkIfClientExistsFromTransactions($request->sales_id, $request->client_id))
+        if($transactionService->checkIfClientExistsFromTransactions($request->sales_id, $request->client_id) && !collect($request)->has('confirm'))
         {
             return response()->json(['success' => false, 'message' => 'client already exist']);
         }
             $transaction = $transactionService->saveClient($request);
+//            $transaction = $request;
 
             return response()->json([
                 'success' => true,

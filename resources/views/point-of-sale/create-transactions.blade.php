@@ -36,8 +36,12 @@
             </span>
             <span class="float-right">
                 <x-point-of-sale.sales.print-invoice :salesId="$sale->id"/>
-                <x-point-of-sale.sales.pay-button :spaId="$spa->id" :salesId="$sale->id"/>
-                <x-point-of-sale.transactions.add-transaction :salesId="$sale->id"/>
+
+                @if(auth()->user()->hasRole('front desk'))
+                    <x-point-of-sale.sales.pay-button :spaId="$spa->id" :salesId="$sale->id"/>
+                    <x-point-of-sale.transactions.add-transaction :salesId="$sale->id"/>
+                @endif
+
             </span>
         </div>
         <div class="card-body table-wrapper">

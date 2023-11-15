@@ -35,7 +35,9 @@
 
                     @endif
 
-                    <x-point-of-sale.sales.end-shift-button :spaId="$spa->id"/>
+                    @if(auth()->user()->hasRole(['front desk']))
+                        <x-point-of-sale.sales.end-shift-button :spaId="$spa->id"/>
+                    @endif
 
                     <div class="float-right">
                         <x-clock.digital-clock />
@@ -51,9 +53,13 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="float-left"><h4 class="text-muted card-title">Sales Management</h4></div>
-                            <div class="float-right">
-                                <x-point-of-sale.add-sales :spa="$spa"/>
-                            </div>
+
+                            @if(auth()->user()->hasRole(['front desk']))
+                                <div class="float-right">
+                                    <x-point-of-sale.add-sales :spa="$spa"/>
+                                </div>
+                            @endif
+
                         </div>
                         <div class="card-body">
                             <div class="row">

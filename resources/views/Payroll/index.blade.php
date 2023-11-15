@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Payroll')
+@section('title', $pageTitle)
 
 @section('content_header')
     <h1></h1>
@@ -9,10 +9,19 @@
 
 </style>
 @section('content')
-
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h3 class="text-cyan">{{ucwords($pageTitle)}}</h3>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item active"><a href="{{route('payroll.index')}}">Spa</a> </li>
+            </ol>
+        </div>
+    </div>
     <div class="container-fluid">
         <x-payroll.payroll-date-range />
-        <x-payroll.payroll-table spaId="{{\App\Models\Spa::where('name','Thai Khun Lounge & Spa')->first()->id}}" />
+        <x-payroll.payroll-table :spaId="$spa->id" />
     </div>
 @stop
 @section('plugins.CustomCSS',true)

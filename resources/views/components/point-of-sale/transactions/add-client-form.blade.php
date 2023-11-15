@@ -262,7 +262,12 @@
             $(document).on('submit','#add-client-form', function(form){
                 form.preventDefault();
                 let data = $(this).serializeArray();
-                console.log(data);
+
+                addClientToTransaction(data);
+            })
+
+            function addClientToTransaction(data)
+            {
                 $.ajax({
                     url: '/pos-transaction',
                     type: 'POST',
@@ -315,7 +320,12 @@
                     }
                     else if(transaction.success === false)
                     {
-                        alert('Client already exists in the sales transaction!');
+                        if(confirm('Client already exists in the sales transaction. Do you want to proceed?'))
+                        {
+                            addClientToTransaction(data.concat({name: 'confirm', value:true}))
+                        }else{
+                            alert('cancelled')
+                        }
                     }
                 }).fail(function(xhr){
                     let errors = xhr.responseJSON.errors;
@@ -326,7 +336,7 @@
                 }).always(function(){
                     addClientModal.find('.overlay').remove();
                 });
-            })
+            }
 
             $(document).on('change','#preparation_time', function(){
                 let prepTimeValue = $(this).val();
