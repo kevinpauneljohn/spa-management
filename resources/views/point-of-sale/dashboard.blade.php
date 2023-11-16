@@ -99,7 +99,7 @@
                             <h3 class="text-muted card-title">Therapist Availability</h3>
                         </div>
                         <div class="card-body">
-                            <x-point-of-sale.sales.masseuravailability :spaId="$spa->id" />
+                            <x-point-of-sale.sales.masseur-availability :spaId="$spa->id" />
                         </div>
                     </div>
                 </div>

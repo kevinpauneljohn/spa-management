@@ -48,53 +48,53 @@ class UserSeeder extends Seeder
         $spa->owner_id = $ownerUser->id;
         $spa->name = 'Thai Khun Lounge & Spa';
         $spa->address = 'Mabalacat city, Pampanga';
-        $spa->number_of_rooms = rand(3,7);
+        $spa->number_of_rooms = 7;
         $spa->save();
 
-        $frontDesk = new User([
-            'firstname' => 'john',
-            'spa_id' => $spa->id,
-            'middlename' => null,
-            'lastname' => 'doe',
-            'email' => 'john@gmail.com',
-            'username' => 'john',
-            'mobile_number' => '09218173624',
-            'password' => bcrypt(123),
-        ]);
-        $frontDesk->assignRole('front desk');
-        $frontDesk->save();
+//        $frontDesk = new User([
+//            'firstname' => 'john',
+//            'spa_id' => $spa->id,
+//            'middlename' => null,
+//            'lastname' => 'doe',
+//            'email' => 'john@gmail.com',
+//            'username' => 'john',
+//            'mobile_number' => '09218173624',
+//            'password' => bcrypt(123),
+//        ]);
+//        $frontDesk->assignRole('front desk');
+//        $frontDesk->save();
 
-        $frontDesk2 = new User([
-            'firstname' => 'jane',
-            'spa_id' => $spa->id,
-            'middlename' => null,
-            'lastname' => 'doe',
-            'email' => 'jane@gmail.com',
-            'username' => 'jane',
-            'mobile_number' => '09218173625',
-            'password' => bcrypt(123),
-        ]);
-        $frontDesk2->assignRole('front desk');
-        $frontDesk2->save();
+//        $frontDesk2 = new User([
+//            'firstname' => 'jane',
+//            'spa_id' => $spa->id,
+//            'middlename' => null,
+//            'lastname' => 'doe',
+//            'email' => 'jane@gmail.com',
+//            'username' => 'jane',
+//            'mobile_number' => '09218173625',
+//            'password' => bcrypt(123),
+//        ]);
+//        $frontDesk2->assignRole('front desk');
+//        $frontDesk2->save();
 
-        Service::factory()->count(5)->state(new Sequence(
-            ['name' => 'swedish'],
-            ['name' => 'siatsu'],
-            ['name' => 'couple deluxe'],
-            ['name' => 'Thai Massage'],
-            ['name' => 'Herbal balls with rice hot pad'],
-        ))->create([
-            'spa_id' => $spa->id
-        ]);
+//        Service::factory()->count(5)->state(new Sequence(
+//            ['name' => 'swedish'],
+//            ['name' => 'siatsu'],
+//            ['name' => 'couple deluxe'],
+//            ['name' => 'Thai Massage'],
+//            ['name' => 'Herbal balls with rice hot pad'],
+//        ))->create([
+//            'spa_id' => $spa->id
+//        ]);
 
-        Spa::factory()->has(Service::factory()->state(new Sequence(
-            ['name' => 'swedish'],
-            ['name' => 'siatsu'],
-            ['name' => 'couple deluxe'],
-            ['name' => 'Thai Massage'],
-            ['name' => 'Herbal balls with rice hot pad'],
-        ))->count(5))->count(2)->create();
-
-        User::factory()->count(50)->create();
+//        Spa::factory()->has(Service::factory()->state(new Sequence(
+//            ['name' => 'swedish'],
+//            ['name' => 'siatsu'],
+//            ['name' => 'couple deluxe'],
+//            ['name' => 'Thai Massage'],
+//            ['name' => 'Herbal balls with rice hot pad'],
+//        ))->count(5))->count(2)->create();
+//
+//        User::factory()->count(50)->create();
     }
 }
