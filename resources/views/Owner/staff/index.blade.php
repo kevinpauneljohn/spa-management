@@ -528,6 +528,8 @@
                 return $(this).text();
             }).get();
 
+                $('#change-password-form').trigger('reset')
+
                 changePasswordModal.find('#staff-name').text(data[2])
                 changePasswordModal.find('#role').text(data[5])
                 changePasswordModal.modal('show')
@@ -553,6 +555,7 @@
                     if(response.success === true)
                     {
                         swal.fire(response.message, "", "success");
+                        changePasswordModal.modal('toggle')
                     }
                 }).fail(function(xhr, status, error){
                     console.log(xhr)
