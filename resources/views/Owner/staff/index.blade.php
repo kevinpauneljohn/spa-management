@@ -400,6 +400,46 @@
             </form>
         </div>
     @endcan
+
+    @can('change staff password')
+        <div class="modal fade" id="change-password-modal">
+            <form role="form" id="change-password-form" class="form-submit">
+                @csrf
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title">Change Password</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-responsive-lg mb-4 table-bordered">
+                                <tr>
+                                    <td style="width: 10%">Staff</td>
+                                    <td id="staff-name" style="width: 40%">Staff name here</td>
+                                    <td style="width: 10%">Role</td>
+                                    <td id="role" style="width: 40%">Role here</td>
+                                </tr>
+                            </table>
+                            <div class="form-group new_password">
+                                <label for="new_password">New Password</label>
+                                <input type="password" name="new_password" class="form-control" id="new_password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password_confirmation">Re-type Password</label>
+                                <input type="password" name="new_password_confirmation" class="form-control" id="new_password_confirmation">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary change-password-btn">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endcan
 @stop
 @section('plugins.BsStepper',true)
 @section('css')
@@ -475,5 +515,61 @@
         document.addEventListener('DOMContentLoaded', function () {
             window.steppers = new Stepper(document.querySelector('#bs-stepper-update'))
         });
+
+
+        @can('change staff password')
+            let changePasswordModal = $('#change-password-modal')
+            let staffId;
+            $(document).on('click','.change-staff-password-btn',function(){
+            staffId = this.id;
+            let $tr = $(this).closest('tr');
+
+            let data = $tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+                changePasswordModal.find('#staff-name').text(data[2])
+                changePasswordModal.find('#role').text(data[5])
+                changePasswordModal.modal('show')
+            })
+
+            $(document).on('submit','#change-password-form', function(form){
+                form.preventDefault();
+                let data = $(this).serializeArray()
+
+                $.ajax({
+                    url: '/staff/'+staffId+'/change-password',
+                    type: 'put',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    data: data,
+                    beforeSend: function(){
+                        changePasswordModal.find('.is-invalid').removeClass('is-invalid')
+                        changePasswordModal.find('.text-danger').remove()
+
+                        changePasswordModal.find('.change-password-btn').attr('disabled',true).text('Updating...')
+                    }
+                }).done(function(response){
+                    console.log(response)
+                    if(response.success === true)
+                    {
+                        swal.fire(response.message, "", "success");
+                    }
+                }).fail(function(xhr, status, error){
+                    console.log(xhr)
+                    if(xhr.status === 403)
+                    {
+                        swal.fire(xhr.responseJSON.message, xhr.statusText, "warning");
+                    }
+
+                    $.each(xhr.responseJSON.errors,function(key, value){
+                        console.log(key)
+                        changePasswordModal.find('#'+key).addClass('is-invalid')
+                        changePasswordModal.find('.'+key).append('<p class="text-danger">'+value+'</p>')
+                    })
+                }).always(function(){
+                    changePasswordModal.find('.change-password-btn').attr('disabled',false).text('Update')
+                })
+            })
+        @endcan
     </script>
 @stop

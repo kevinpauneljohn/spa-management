@@ -63,6 +63,10 @@ class StaffService
                     $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-staff-btn" id="'.$staff->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
 
+                if (auth()->user()->can('change staff password')) {
+                    $action .= '<button class="btn btn-sm btn-outline-primary change-staff-password-btn" id="'.$staff->id.'"><i class="fa fa-lock"></i></button>&nbsp;';
+                }
+
                 if (auth()->user()->can('delete staff')) {
                     // $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-staff-btn" id="'.$staff->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
@@ -346,5 +350,12 @@ class StaffService
         } else {
             return response()->json(['status' => false, 'message' => 'Staff information could not be deleted.']);
         }
+    }
+
+    public function change_password($staff_id, $new_password): bool
+    {
+        $staff = User::findOrFail($staff_id);
+        $staff->password = bcrypt($new_password);
+        return (bool)$staff->save();
     }
 }

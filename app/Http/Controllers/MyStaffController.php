@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangeStaffPasswordRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Spa;
@@ -16,6 +17,7 @@ class MyStaffController extends Controller
     public function __construct(StaffService $staffService)
     {
         $this->middleware('check.if.user.is.owner')->only(['get_owner_staffs', 'my_staffs', 'store', 'show', 'update', 'destroy']);
+        $this->middleware(['permission:change staff password'])->only(['change_password']);
 
         $this->staffService = $staffService;
     }
@@ -51,5 +53,12 @@ class MyStaffController extends Controller
     public function destroy($id)
     {
         return $this->staffService->delete($id);
+    }
+
+    public function change_password(ChangeStaffPasswordRequest $request, $staff_id, StaffService $staffService): \Illuminate\Http\JsonResponse
+    {
+        return $staffService->change_password($staff_id, $request->input('new_password')) ?
+            response()->json(['success' => true, 'message' => 'Password Updated!']) :
+            response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
 }

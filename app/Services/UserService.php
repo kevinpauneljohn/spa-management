@@ -26,7 +26,7 @@ class UserService
         }
     }
 
-    public function check_user_password($password)
+    public function check_user_password($password): bool
     {
         $credentials = [
             'email' => auth()->user()->email,

@@ -53,5 +53,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'view staff'])->assignRole($owner);
         Permission::create(['name' => 'edit staff'])->assignRole($owner);
         Permission::create(['name' => 'delete staff'])->assignRole($owner);
+        Permission::create(['name' => 'change staff password'])->assignRole($owner);
+
     }
 }

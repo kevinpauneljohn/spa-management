@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 require __DIR__ . '/web/sales.php';
 require __DIR__ . '/web/appointment.php';
 require __DIR__ . '/web/payroll.php';
+require __DIR__ . '/web/staff.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
