@@ -1,3 +1,3 @@
 <?php
-echo  'hello world';
-echo  'test world sdfgsdf';
+echo  'working auto deployment';
+
