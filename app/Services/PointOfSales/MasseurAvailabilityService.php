@@ -14,7 +14,7 @@ class MasseurAvailabilityService extends TransactionService
     public function masseurs($spaId)
     {
         return Therapist::where('spa_id','=',$spaId)
-            ->whereNotIn('id', $this->excludeMasseur($spaId))->get();
+            ->whereNotIn('id', $this->excludeMasseur($spaId))->where('is_excluded',false)->get();
     }
 
     /**

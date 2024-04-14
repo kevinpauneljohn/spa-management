@@ -21,6 +21,7 @@ class Therapist extends Model
         'commission_flat',
         'allowance',
         'offer_type',
+        'is_excluded',
     ];
 
     protected $appends = ['full_name','commission'];

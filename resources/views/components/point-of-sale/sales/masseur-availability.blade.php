@@ -1,14 +1,17 @@
 
 @foreach($spa->therapists as $therapist)
 
-    <span class="text-info text-bold">{{$therapist->full_name}}</span> <span class="text-danger text-bold progress-transaction-details" id="room-{{$therapist->id}}"></span>
-    <span class="text-info progress-transaction-details" id="end-time-{{$therapist->id}}"></span>
-    <div class="progress mb-3">
-        <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar"
-             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progress-{{$therapist->id}}">
-            <span id="progress-indicator-{{$therapist->id}}">40% Complete (success)</span>
+    @if(!$therapist->is_excluded)
+        <span class="text-info text-bold">{{$therapist->full_name}}</span> <span class="text-danger text-bold progress-transaction-details" id="room-{{$therapist->id}}"></span>
+        <span class="text-info progress-transaction-details" id="end-time-{{$therapist->id}}"></span>
+        <div class="progress mb-3">
+            <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progress-{{$therapist->id}}">
+                <span id="progress-indicator-{{$therapist->id}}">40% Complete (success)</span>
+            </div>
         </div>
-    </div>
+    @endif
+
 @endforeach
 
 @once

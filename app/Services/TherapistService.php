@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Services\TransactionService;
@@ -34,6 +35,9 @@ class TherapistService
     public function all_therapist_thru_spa($therapist)
     {
         return DataTables::of($therapist)
+            ->editColumn('checkbox',function($therapist){
+                return '<div class="form-check"><input type="checkbox" name="exclude_therapists" class="form-check-input exclude_therapists" id="exclude_therapists" value="'.$therapist->id.'"></div>';
+            })
             ->editColumn('created_at',function($therapist){
                 return $therapist->created_at->format('M d, Y');
             })
@@ -57,6 +61,12 @@ class TherapistService
             ->addColumn('gender',function ($therapist){
                 return $therapist->gender;
             })
+            ->editColumn('is_excluded',function ($therapist){
+                return $therapist->is_excluded ? '<span class="text-danger">Yes</span>' : '';
+            })
+            ->setRowClass(function($therapist){
+                return $therapist->is_excluded ? 'excluded' : '';
+            })
             ->addColumn('action', function($therapist){
                 $action = "";
                 if(auth()->user()->can('view therapist'))
@@ -78,7 +88,7 @@ class TherapistService
                 }
                 return $action;
             })
-            ->rawColumns(['action','fullname'])
+            ->rawColumns(['action','fullname','checkbox','is_excluded'])
             ->make(true);
     }
 
@@ -218,5 +228,21 @@ class TherapistService
                     - $this->grossCommission,2)
             ])
             ->make(true);
+    }
+
+    public function selected_therapists(array $therapists)
+    {
+        return Therapist::with('user')->whereIn('id',$therapists)->get();
+    }
+
+    public function excluded_therapists(array $therapists): bool
+    {
+        if(collect($therapists)->count() > 0)
+        {
+            return DB::table('therapists')->whereIn('id',$therapists)->update([
+                    'is_excluded' => true
+                ]) > 0;
+        }
+        return false;
     }
 }

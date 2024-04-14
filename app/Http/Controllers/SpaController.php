@@ -36,8 +36,6 @@ class SpaController extends Controller
         $owner = $ownerServices->getOwnerBySpaID($spa->id);
         $range = range(5, 300, 5);
         return view('Spa.profile',  compact('spa','owner','range'));
-//        $spa = collect($owner->spas)->where('id','=',"bcbbc4a0-d928-425c-8aae-e367d81edf61")->first();
-//        return $spa->therapists->count();
     }
 
     public function edit(Spa $spa)

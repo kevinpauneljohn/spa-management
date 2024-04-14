@@ -169,7 +169,7 @@ class TherapistController extends Controller
             ]);
     }
 
-    public function getTherapistTransactionCount(TherapistService $therapistService, $id, $date)
+    public function getTherapistTransactionCount(TherapistService $therapistService, $id, $date): array
     {
         return $therapistService->therapistTransactionsCount($id, $date);
     }
@@ -211,5 +211,17 @@ class TherapistController extends Controller
             'gross_sales_commission' => number_format($therapist->grossSalesCommission($dateFrom, $dateTo),2),
             'therapist' => $therapist->only(['commission','full_name','offer_type']),
         ]);
+    }
+
+    public function getTherapists(Request $request, TherapistService $therapistService)
+    {
+        return $therapistService->selected_therapists($request->input('excluded'));
+    }
+
+    public function excludeTherapists(Request $request, TherapistService $therapistService): JsonResponse
+    {
+        return $therapistService->excluded_therapists((array)$request->input('excluded')) ?
+            response()->json(['success' => true, 'message' => 'Therapists excluded!']) :
+            response()->json(['success' => false, 'message' => 'No therapists excluded!']) ;
     }
 }

@@ -209,6 +209,8 @@
 @stop
 
 @section('plugins.Toastr',true)
+@section('plugins.CustomAlert',true)
+@section('plugins.CustomCSS',true)
 @section('css')
 <style>
     .multiple_masseur_check{
@@ -221,7 +223,6 @@
 
 @section('js')
     <script src="{{asset('js/clear_errors.js')}}"></script>
-{{--    <script src="{{asset('js/service.js')}}"></script>--}}
     <script>
         $(document).ready(function() {
             var spa_id = $('.spa-id').val();
