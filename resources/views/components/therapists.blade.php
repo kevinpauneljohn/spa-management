@@ -6,14 +6,19 @@
         </div>
 
         @can('add therapist')
-            <x-adminlte-button label="Exclude" data-toggle="modal" data-target="#exclude-therapist-modal" id="exclude-therapist-modal-btn" class="bg-olive float-right"/>
+            <label for="exclude_status"></label><select name="exclude_status" id="exclude_status" class="form-control w-25 float-left">
+                <option value="">--Select--</option>
+                <option value="Exclude">Exclude</option>
+                <option value="Unexclude">Unexclude</option>
+            </select>
+            <x-adminlte-button label="Submit" data-toggle="modal" data-target="#exclude-therapist-modal" id="exclude-therapist-modal-btn" class="bg-olive float-left"/>
             <x-adminlte-button label="Add Masseur/Masseuse" data-toggle="modal" data-target="#therapist-modal" id="therapist-modal-btn" class="bg-olive float-right"/>
         @endcan
     </div>
 </div>
-<div class="row">
+<div class="row mt-4">
     <div class="col-md-12 table-responsive">
-        <table id="therapist-list" class="table table-bordered table-hover" role="grid">
+        <table id="therapist-list" class="table table-bordered table-hover w-100" role="grid">
             <thead>
             <tr role="row">
                 <th><label for="select_all"></label><input type="checkbox" name="select_all" id="select_all"></th>
@@ -52,7 +57,7 @@
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-olive">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Exclude Masseur/Masseuse Form</h5>
+                    <h5 class="modal-title">Exclude Masseur/Masseuse Form</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -95,10 +100,14 @@
 
             let excludeTherapistModal = $('#exclude-therapist-modal')
             let exclude_therapists = '';
+            let excludeStatus = '';
             $(document).on('click','#exclude-therapist-modal-btn',function(){
                 exclude_therapists = $('input[name=exclude_therapists]:checked').map(function () {
                     return this.value;
                 }).get();
+                excludeStatus = $('#exclude_status').val();
+
+                excludeTherapistModal.find('.modal-title').text(excludeStatus+' Masseur/Masseuse')
 
                 $('#exclude-therapist-modal').find('.modal-body').html('<h5>Select therapists</h5>')
 
@@ -116,18 +125,26 @@
                         $.each(response, function(key, value){
                             tableRow += '<tr><td>'+value.full_name+'</td></tr>'
                         })
-                        tableRow += '</table><button type="button" class="btn btn-success mt-3 w-100 confirm-exclude-btn">Exclude</button>'
+                        tableRow += '</table><button type="button" class="btn btn-success mt-3 w-100 confirm-exclude-btn">'+excludeStatus+'</button>'
 
                         $('#exclude-therapist-modal').find('.modal-body').html(tableRow)
                     }).fail(function(xhr, status, error){
                         console.log(xhr)
-                    })
+                    }).always(function(){
+                        $('#exclude_status').val('').change()
+                    });
                 }
             })
 
             $(document).on('click','.confirm-exclude-btn',function(){
+                let url = '/exclude-therapists';
+                if(excludeStatus === 'Unexclude')
+                {
+                    url = '/unexclude-therapists'
+                }
+
                 $.ajax({
-                    url: '/exclude-therapists',
+                    url: url,
                     type: 'put',
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     data: {excluded: exclude_therapists},
@@ -135,13 +152,13 @@
                         excludeTherapistModal.find('.confirm-exclude-btn').attr('disabled',true).text('Excluding...')
                     }
                 }).done(function(response){
-                    console.log(response)
                     if(response.success === true)
                     {
                         Toast.fire({
                             type: "success",
                             title: response.message
                         })
+                        $('#therapist-list').DataTable().ajax.reload(null, false);
                         excludeTherapistModal.modal('toggle')
                     }else{
                         Toast.fire({

@@ -239,7 +239,7 @@
                                 {{--$('.sales-client-form').trigger('reset')--}}
                                 {{--$('#{{$tableId}}').DataTable().ajax.reload(null, false);--}}
                                 // Swal.fire(transaction.message, '', 'success')
-                                Swal.fire(transaction.message, '', 'success')
+                                Swal.fire(transaction.message, 'Page Reloading...', 'success')
                                 setTimeout(function(){
                                     window.location.reload()
                                 },2000)

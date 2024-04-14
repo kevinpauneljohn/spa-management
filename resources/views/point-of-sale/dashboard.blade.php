@@ -70,7 +70,7 @@
                                     <x-point-of-sale.sales.cash-on-drawer :spaId="$spa->id"/>
                                 </div>
                             </div>
-                            <div class="table-wrapper">
+                            <div class="table-wrapper table-responsive">
                                 <x-point-of-sale.sales.sales-table :spaId="$spa->id"/>
                             </div>
                         </div>

@@ -220,8 +220,15 @@ class TherapistController extends Controller
 
     public function excludeTherapists(Request $request, TherapistService $therapistService): JsonResponse
     {
-        return $therapistService->excluded_therapists((array)$request->input('excluded')) ?
+        return $therapistService->excluded_therapists((array)$request->input('excluded'), true) ?
             response()->json(['success' => true, 'message' => 'Therapists excluded!']) :
             response()->json(['success' => false, 'message' => 'No therapists excluded!']) ;
+    }
+
+    public function unexcludeTherapists(Request $request, TherapistService $therapistService): JsonResponse
+    {
+        return $therapistService->excluded_therapists((array)$request->input('excluded'), false) ?
+            response()->json(['success' => true, 'message' => 'Therapists unexcluded!']) :
+            response()->json(['success' => false, 'message' => 'No therapists unexcluded!']) ;
     }
 }

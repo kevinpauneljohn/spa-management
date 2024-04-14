@@ -235,12 +235,12 @@ class TherapistService
         return Therapist::with('user')->whereIn('id',$therapists)->get();
     }
 
-    public function excluded_therapists(array $therapists): bool
+    public function excluded_therapists(array $therapists, bool $exclude): bool
     {
         if(collect($therapists)->count() > 0)
         {
             return DB::table('therapists')->whereIn('id',$therapists)->update([
-                    'is_excluded' => true
+                    'is_excluded' => $exclude
                 ]) > 0;
         }
         return false;
