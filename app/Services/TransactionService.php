@@ -449,13 +449,21 @@ class TransactionService
                 }
                 return $action;
             })
+            ->addColumn('under_time',function($transaction){
+                $action = "";
+                if(Carbon::parse($transaction->end_time) > now())
+                {
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger m-1 under-time" id="'.$transaction->id.'" title="Under time"><i class="fa fa-clock"></i></button>';
+                }
+                return $action;
+            })
             ->setRowId(function($transaction){
                 return 'view-'.$transaction->id;
             })
             ->setRowClass(function ($transaction) {
                 return Carbon::parse($transaction->end_time) >= now() ? 'on-going-transaction' : '';
             })
-            ->rawColumns(['plus_time_amount','payable_amount','total_time','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time'])
+            ->rawColumns(['plus_time_amount','payable_amount','total_time','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time'])
             ->with([
                 'total_amount' => number_format(collect($transactions)->sum('amount'),2),
                 'total_clients' => collect($transactions)->count(),

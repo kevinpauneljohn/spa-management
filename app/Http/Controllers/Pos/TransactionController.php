@@ -183,4 +183,11 @@ class TransactionController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'No changes made!']);
     }
+
+    public function underTime($transactionId, \App\Services\PointOfSales\TransactionService $transactionService): JsonResponse
+    {
+        return $transactionService->underTime($transactionId) ?
+            \response()->json(['success' => true, 'message' => 'Transaction completed']):
+            \response()->json(['success' => false, 'message' => 'An error occurred']);
+    }
 }

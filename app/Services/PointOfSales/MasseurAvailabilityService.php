@@ -39,7 +39,7 @@ class MasseurAvailabilityService extends TransactionService
         return collect($therapistOne)->merge($therapistTwo);
     }
 
-    public function displayProgressBar($spaId)
+    public function displayProgressBar($spaId): \Illuminate\Support\Collection
     {
         return $this->getMasseursInTransactions($spaId);
     }

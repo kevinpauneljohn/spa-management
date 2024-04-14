@@ -340,4 +340,8 @@ class TransactionService
         return $originalAmount - $additionalAmount;
     }
 
+    public function underTime($transactionId): bool
+    {
+        return (bool)$this->transaction($transactionId)->fill(['end_time' => now()])->save();
+    }
 }

@@ -22,8 +22,10 @@
             <th>Masseur</th>
             <th>Sales Type</th>
             <th>Isolate</th>
+            <th>Under Time</th>
         @endif
             <th>Void Transaction</th>
+
 
     </tr>
     </thead>
@@ -73,6 +75,7 @@
                             { data: 'sales_type', name: 'sales_type'},
                             // { data: 'extend_time', name: 'extend_time'},
                             { data: 'isolate', name: 'isolate',className: 'text-center'},
+                            { data: 'under_time', name: 'under_time',className: 'text-center'},
                         @endif
                             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                     ],
@@ -191,6 +194,55 @@
                             {
                                 $('#{{$tableId}}').DataTable().ajax.reload(null, false);
                                 Swal.fire(transaction.message, '', 'success')
+
+                            }else{
+                                Swal.fire(transaction.message, '', 'warning')
+                            }
+                        });
+
+                    }else{
+                        $('#{{$tableId}}').DataTable().ajax.reload(null, false);
+                    }
+                })
+            })
+
+            $(document).on('click','.under-time',function(){
+
+                $tr = $(this).closest('tr');
+                let id = this.id;
+                let data = $tr.children('td').map(function () {
+                    return $(this).text();
+                }).get();
+
+
+                Swal.fire({
+                    type: 'warning',
+                    title: 'Under Time?',
+                    html:'<strong class="text-primary" style="font-size: 20pt">'+data[0]+'</strong>',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                }).then((result) => {
+
+                    if (result.value === true) {
+
+                        $.ajax({
+                            url: '/under-time/transaction/'+id,
+                            type: 'patch',
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            beforeSend: function(){
+
+                            },
+                        }).done(function(transaction){
+                            console.log(transaction)
+                            if(transaction.success === true)
+                            {
+                                {{--$('.sales-client-form').trigger('reset')--}}
+                                {{--$('#{{$tableId}}').DataTable().ajax.reload(null, false);--}}
+                                // Swal.fire(transaction.message, '', 'success')
+                                Swal.fire(transaction.message, '', 'success')
+                                setTimeout(function(){
+                                    window.location.reload()
+                                },2000)
 
                             }else{
                                 Swal.fire(transaction.message, '', 'warning')

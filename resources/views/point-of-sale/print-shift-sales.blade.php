@@ -4,7 +4,7 @@
     <style>
         table, p{
             width: 100%;
-            font-size: 6pt;
+            font-size: 10pt;
         }
         table, th, td{
             border:solid 1px black;
@@ -27,7 +27,7 @@
         <td>
             Shift:
             <span class="payment">{{$salesShift->created_at->format('M-d-y h:m a')}}</span> -
-            <span class="payment">{{$salesShift->end_shift}}</span>
+            <span class="payment">{{\Carbon\Carbon::parse($salesShift->end_shift)->format('M-d-y h:m a')}}</span>
         </td>
         <td>
             Money on hand: <span class="payment">{{number_format($salesShift->start_money,2)}}</span>
@@ -57,7 +57,7 @@
             <tr>
                 <td>#{{$payment->sale->invoice_number}}</td>
                 <td>{{$payment->payment_type}}</td>
-                <td>{{$payment->payment_type == 'Cash' ? $payment->sale->total_amount : $payment->payment}}</td>
+                <td>{{$payment->payment_type == 'Cash' ? number_format($payment->sale->total_amount,2) : number_format($payment->payment,2)}}</td>
             </tr>
         @endforeach
         <tr>

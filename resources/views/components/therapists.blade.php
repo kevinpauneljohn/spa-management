@@ -12,11 +12,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <table id="therapist-list" class="table table-bordered table-hover table-responsive" role="grid" style="width:100%;">
+    <div class="col-md-12 table-responsive">
+        <table id="therapist-list" class="table table-bordered table-hover" role="grid">
             <thead>
             <tr role="row">
-                <th><input type="checkbox" name="select_all"  id="select_all"></th>
+                <th><label for="select_all"></label><input type="checkbox" name="select_all" id="select_all"></th>
                 <th>Date Added</th>
                 <th>Full Name</th>
                 <th>Birth Date</th>
