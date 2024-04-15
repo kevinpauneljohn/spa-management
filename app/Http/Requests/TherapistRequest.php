@@ -86,7 +86,7 @@ class TherapistRequest extends FormRequest
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
-            'email' => ['unique:users,email','nullable',Rule::requiredIf($request->isMethod('post'))],
+            'email' => ['unique:users,email','nullable'],
             'mobile_number' => ['unique:users,mobile_number',Rule::requiredIf($request->isMethod('post'))],
             'offer_type' => 'required',
             'commission_percentage' => 'min:0|max:100'
