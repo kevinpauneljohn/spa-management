@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Rules\OfferType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TherapistRequest extends FormRequest
 {
@@ -78,14 +80,14 @@ class TherapistRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
         return [
             'firstname' => 'required',
             'lastname' => 'required',
             'gender' => 'required',
-            'email' => 'unique:users,email',
-            'mobile_number' => 'unique:users,mobile_number',
+            'email' => ['unique:users,email','nullable',Rule::requiredIf($request->isMethod('post'))],
+            'mobile_number' => ['unique:users,mobile_number',Rule::requiredIf($request->isMethod('post'))],
             'offer_type' => 'required',
             'commission_percentage' => 'min:0|max:100'
         ];

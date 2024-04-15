@@ -46,7 +46,7 @@ class TherapistController extends Controller
 
         $therapist = collect($request->all())
             ->only(['spa_id','gender','certificate','commission_percentage','commission_flat','allowance','offer_type'])
-            ->merge(['user_id' => $user->id])->toArray();
+            ->merge(['user_id' => $user->id, 'is_excluded' => false])->toArray();
 
         if($user && Therapist::create($therapist))
         {

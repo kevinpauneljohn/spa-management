@@ -36,11 +36,13 @@ $(document).on('change','#offer_type',function(){
 $('#therapist-modal-btn').click(function(){
     therapistModal.find('form').removeClass().addClass('therapist-form');
     therapistModal.find('.modal-title').text('New Masseur/Masseuse Form')
+    therapistForm.find('#email').attr('disabled',false)
 });
 
 $('#therapist-modal-btn').click(function(){
     addTherapistStepper.to(0);
     therapistForm.trigger('reset');
+    therapistForm.find('.text-danger').remove()
     $('#offer-part').find('.commission_percentage, .commission_flat, .allowance').hide();
 });
 
@@ -72,7 +74,8 @@ $(document).on('submit','.therapist-form',function(form){
                 $('#offer-part').find('.commission_percentage, .commission_flat, .allowance').hide();
                 tableName.DataTable().ajax.reload(null, false);
             }
-    }).fail(function(xhr){
+    }).fail(function(xhr, status, error){
+        console.log(xhr)
             $.each(xhr.responseJSON.errors, function (key, value) {
                 let element = $('.'+key);
 
@@ -95,6 +98,8 @@ $(document).on('click','.edit-therapist-btn',function(){
 
     therapistModal.modal('toggle');
     addTherapistStepper.to(0);
+
+    therapistForm.find('#email').attr('disabled',true)
 
     $.ajax({
         url: '/therapists/'+id+'/edit',
