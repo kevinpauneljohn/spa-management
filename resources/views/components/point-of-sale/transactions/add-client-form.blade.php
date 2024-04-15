@@ -68,8 +68,8 @@
 
                                 <!-- end personal info -->
                                 <div class="row mt-4">
-                                    <div class="col-lg-4 preparation_time">
-                                        <label for="preparation_time">Preparation Time</label>
+                                    <div class="col-lg-3 preparation_time">
+                                        <label for="preparation_time">Prep Time</label>
                                         <select name="preparation_time" class="form-control" id="preparation_time">
                                             <option value=""> -- Select -- </option>
                                             @for($minutes = 0; $minutes <= 30; $minutes++)
@@ -77,25 +77,25 @@
                                             @endfor
                                         </select>
                                     </div>
-                                    <div class="col-lg-4 service">
+                                    <div class="col-lg-9 service">
                                         <label for="service">Services</label>
-                                        <select name="service" class="form-control" id="service">
+                                        <select name="service" class="form-control select2" id="service" style="width: 100%;">
                                             <option value=""> -- Select -- </option>
                                             @foreach($spa->services as $service)
                                                 <option value="{{$service->name}}">{{$service->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-lg-4 plus_time">
-                                        <label for="plus_time">Plus Time</label>
-                                        <select name="plus_time" class="form-control" id="plus_time">
-                                            <option value="0"> 0 </option>
-                                            <option value="3"> 3 mins </option>
-                                            @for($minutes = 15; $minutes <= 120; $minutes = $minutes + 5)
-                                                <option value="{{$minutes}}">{{$minutes}} @if($minutes === 1) min @else mins @endif</option>
-                                            @endfor
-                                        </select>
-                                    </div>
+{{--                                    <div class="col-lg-4 plus_time">--}}
+{{--                                        <label for="plus_time">Plus Time</label>--}}
+{{--                                        <select name="plus_time" class="form-control" id="plus_time" disabled>--}}
+{{--                                            <option value="0"> 0 </option>--}}
+{{--                                            <option value="3"> 3 mins </option>--}}
+{{--                                            @for($minutes = 15; $minutes <= 120; $minutes = $minutes + 5)--}}
+{{--                                                <option value="{{$minutes}}">{{$minutes}} @if($minutes === 1) min @else mins @endif</option>--}}
+{{--                                            @endfor--}}
+{{--                                        </select>--}}
+{{--                                    </div>--}}
                                 </div>
 
                                 <div class="row mt-3">
@@ -156,7 +156,7 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+@section('plugins.Select2',true)
 @section('css')
 <style>
     .list-group-item{
@@ -179,6 +179,8 @@
             let addClientModal = $('#add-client-modal');
             let therapists = [];
             let multipleMasseur = false;
+
+            $('.select2').select2()
 
             $(document).ready(function(){
                 $('#clear-client-search, #appointment-info, #sales-transaction-reset-btn, #reset-personal-info-btn, #close-modal-btn').tooltip();
