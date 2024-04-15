@@ -30,8 +30,8 @@
                     { data: 'clients', name: 'clients', className: 'client-width'},
                     { data: 'completed', name: 'completed', className: 'text-center'},
                     { data: 'total_amount', name: 'total_amount'},
-                    { data: 'payment_status', name: 'payment_status'},
                     { data: 'payment_required', name: 'payment_required'},
+                    { data: 'payment_status', name: 'payment_status'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                 ],
                 autoFill:'off',
@@ -45,7 +45,8 @@
                     $('#dashboard-sales-table-list').find('tbody')
                         .append('<tr class="sales-info-bg">' +
                             '<td colspan="2">Total No. Clients: <span class="text-info text-bold">'+sale.total_clients+'</span></td>' +
-                            '<td colspan="7">Total Amount: <span class="text-info text-bold">'+sale.total_expected_amount+'</span></td></tr>' +
+                            '<td colspan="3">Total Expected Amount: <span class="text-info text-bold">'+sale.total_expected_amount+'</span></td>' +
+                            '<td colspan="4">Total Amount Paid: <span class="text-info text-bold">'+sale.total_amount_paid+'</span></td></tr>' +
                             '<tr class="sales-info-bg"><td colspan="2">Completed Sales: <span class="text-success text-bold">'+sale.completed_sales+'</span></td>' +
                             '<td colspan="3">Pending Sales: <span class="text-danger text-bold">'+sale.pending_sales+'</span></td>' +
                             '<td colspan="4">Total No. of Sales: <span class="text-info text-bold">'+sale.total_sales+'</span></td></tr>')
