@@ -6,7 +6,7 @@
         <span class="text-info progress-transaction-details" id="end-time-{{$therapist->id}}"></span>
         <div class="progress mb-3">
             <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar"
-                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="progress-{{$therapist->id}}">
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0" id="progress-{{$therapist->id}}">
                 <span id="progress-indicator-{{$therapist->id}}">40% Complete (success)</span>
             </div>
         </div>
@@ -26,7 +26,6 @@
                 $.get('/display-therapist-availability-in-progress-bar/{{$spa->id}}', function(therapists){
                     // console.log(therapists)
                     $.each(therapists, function(key, value){
-                        // console.log(key.length)
                         let totalTime = 0;
 
                         if(key.length > 0)
@@ -39,7 +38,7 @@
 
                             let remaining_minutes = getMinutes(moment().format("YYYY-MM-DD, hh:mm:ss"), value[0].end_time_twelve_hour_format);
                             let percentage = (remaining_minutes / totalTime) * 100;
-                            // console.log('end date '+value[0].end_time_twelve_hour_format+' - end time'+value[0].end_time)
+
                             if(percentage > 30 && percentage < 80)
                             {
                                 $('#progress-'+key).closest('.progress-bar').removeClass('bg-primary').addClass('bg-warning')
