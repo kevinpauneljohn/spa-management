@@ -107,7 +107,7 @@ class AppointmentController extends Controller
                     'title' => Client::find($item['client_id'])->fullName,
                     'start' => Carbon::parse($item['appointment_date']),
                     'allDay' => false,
-                    'color' => collect($item)->has('sales_id') ? '#28a745' : '#17a2b8',
+                    'color' => collect($item)->has('sales_id') ? '#28a745' : '#ff2f25',
                     'category' => collect($item)->has('sales_id') ? 'completed' : 'upcoming',
                 ]
             ];

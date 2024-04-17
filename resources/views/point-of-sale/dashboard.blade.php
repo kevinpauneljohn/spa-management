@@ -109,7 +109,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="float-left">
-                                <h3 class="text-muted">Calendar</h3>
+                                <h3 class="text-muted">Bookings</h3>
                             </div>
                             <div class="d-flex flex-row justify-content-end">
                               <span class="mr-2">

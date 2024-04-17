@@ -23,7 +23,7 @@
             const bookingCalendar = () => {
                 let calendarEl = document.getElementById('appointment-calendar');
                 let clientCalendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
+                    initialView: 'listWeek',
                     headerToolbar: {
                         left  : 'prev,next today bookAppointment',
                         center: 'title',
