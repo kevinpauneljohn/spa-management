@@ -117,7 +117,7 @@
                               </span>
 
                                 <span>
-                                    <i class="fas fa-square text-info"></i> Upcoming
+                                    <i class="fas fa-square"  style="color: #ff2f25"></i> Upcoming
                                 </span>
                             </div>
                         </div>
