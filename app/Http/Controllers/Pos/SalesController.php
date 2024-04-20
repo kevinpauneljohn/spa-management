@@ -138,7 +138,6 @@ class SalesController extends Controller
         $date = explode('-',$request->input('date'));
         $request->session()->put('salesDateFrom',Carbon::parse($date[0]));
         $request->session()->put('salesDateTo',Carbon::parse($date[1]));
-        return $date;
     }
 
     public function salesList(Spa $spa, SalesService $salesService, Request $request)

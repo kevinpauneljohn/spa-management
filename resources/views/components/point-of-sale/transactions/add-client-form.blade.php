@@ -72,7 +72,7 @@
                                         <label for="preparation_time">Prep Time</label>
                                         <select name="preparation_time" class="form-control" id="preparation_time">
                                             <option value=""> -- Select -- </option>
-                                            @for($minutes = 0; $minutes <= 30; $minutes++)
+                                            @for($minutes = 0; $minutes <= 180; $minutes++)
                                                 <option value="{{$minutes}}">{{$minutes}} @if($minutes === 1) min @else mins @endif</option>
                                             @endfor
                                         </select>
@@ -112,18 +112,18 @@
                                         <label for="therapist_1">Therapist #1</label>
                                         <select name="therapist_1" class="form-control" id="therapist_1">
                                             <option value=""> -- Select -- </option>
-{{--                                            @foreach($spa->therapists as $therapist)--}}
-{{--                                                <option value="{{$therapist->id}}"> {{$therapist->full_name}}</option>--}}
-{{--                                            @endforeach--}}
+                                            @foreach($spa->therapists()->where('is_excluded',false)->get() as $therapist)
+                                                <option value="{{$therapist->id}}"> {{$therapist->full_name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-lg-4 therapist_2">
                                         <label for="therapist_2">Therapist #2</label>
                                         <select name="therapist_2" class="form-control" id="therapist_2">
                                             <option value=""> -- Select -- </option>
-{{--                                            @foreach($spa->therapists as $therapist)--}}
-{{--                                                <option value="{{$therapist->id}}"> {{$therapist->full_name}}</option>--}}
-{{--                                            @endforeach--}}
+                                            @foreach($spa->therapists()->where('is_excluded',false)->get() as $therapist)
+                                                <option value="{{$therapist->id}}"> {{$therapist->full_name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -177,18 +177,18 @@
             let addClientForm = $('.sales-client-form');
             let overlay = '<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>';
             let addClientModal = $('#add-client-modal');
-            let therapists = [];
+            // let therapists = [];
             let multipleMasseur = false;
 
             $('.select2').select2()
 
             $(document).ready(function(){
                 $('#clear-client-search, #appointment-info, #sales-transaction-reset-btn, #reset-personal-info-btn, #close-modal-btn').tooltip();
-                $('#therapist_2').attr('disabled',true);
-                addClientForm.find('#therapist_1').html('').attr('disabled',true).append('<option value="">--Select--</option>')
+                $('#therapist_1, #therapist_2').attr('disabled',true);
+                // addClientForm.find('#therapist_1').html('').attr('disabled',true).append('<option value="">--Select--</option>')
                 services({disabled: true});
                 room({disabled: true});
-                roomAvailability();
+                // roomAvailability();
             });
 
             $(document).on('submit','#client-search-form', function(form){
@@ -291,6 +291,7 @@
                         $('.display-sales-client').DataTable().ajax.reload(null, false);
 
                         addClientForm.find('input[name=client_id]').remove();
+                        addClientForm.find('select[name=service]').val('').change();
                         addClientForm.trigger('reset');
                         $('#therapist_2').attr('disabled',true);
 
@@ -305,8 +306,8 @@
                         addClientForm.find('#service, #room, #therapist_1, #therapist_2').attr('disabled',true)
 
 
-                        masseurAvailability(salesTransaction.spa_id, 'therapist_1')
-                        roomAvailability()
+                        // masseurAvailability(salesTransaction.spa_id, 'therapist_1')
+                        // roomAvailability()
 
                         @if(isset($_GET['booking']))
                         @php
@@ -358,30 +359,29 @@
                 {
                     room({disabled: false});
                     $('#therapist_1').attr('disabled',false);
-                    masseurAvailability('{{$spa->id}}', 'therapist_1');
+                    {{--masseurAvailability('{{$spa->id}}', 'therapist_1');--}}
                     $.ajax({
                         url: '/spa/{{$spa->id}}/retrieve-by-name/'+value,
                         async: false,
                         beforeSend: function(){
-
                         }
                     }).done(function(service){
                         addClientForm.find('input[name=service_id]').val(service.id)
                         if(service.multiple_masseur === 1 )
                         {
                             multipleMasseur = true;
-                            $('#therapist_2').attr('disabled',false);
+                            $('#therapist_2').val('').attr('disabled',false);
                         }
                         else{
                             multipleMasseur = false;
-                            $('#therapist_2').attr('disabled',true);
+                            $('#therapist_2').val('').attr('disabled',true);
                         }
                     });
                 }else{
                     // $('#therapist_2').attr('disabled',true);
                     room({disabled: true});
-                    therapists = [];
-                    $('#therapist_1, #therapist_2').html('').attr('disabled',true).append('<option value="">--Select--</option>');
+                    // therapists = [];
+                    // $('#therapist_1, #therapist_2').html('').attr('disabled',true).append('<option value="">--Select--</option>');
                 }
             })
 
@@ -453,6 +453,8 @@
 
             $('.sales-client-form #therapist_1').on('change', function(){
                 let selectedValue = $(this).val();
+
+                console.log(therapists)
 
                 addClientForm.find('#therapist_2').html('').append('<option value=""> --Select-- </option>').val('');
                 if(multipleMasseur === true)
