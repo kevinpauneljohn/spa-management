@@ -133,6 +133,14 @@ class SalesController extends Controller
         compact('spa','pageTitle','sale'));
     }
 
+    public function getSalesByDateRange(Request $request, $spaId)
+    {
+        $date = explode('-',$request->input('date'));
+        $request->session()->put('salesDateFrom',Carbon::parse($date[0]));
+        $request->session()->put('salesDateTo',Carbon::parse($date[1]));
+        return $date;
+    }
+
     public function salesList(Spa $spa, SalesService $salesService, Request $request)
     {
         if($request->session()->get('salesDateFrom') && $request->session()->get('salesDateTo'))
@@ -148,14 +156,6 @@ class SalesController extends Controller
             $query = $spa->sales;
         }
         return $salesService->salesList($query);
-    }
-
-    public function getSalesByDateRange(Request $request, $spaId)
-    {
-        $date = explode('-',$request->input('date'));
-        $request->session()->put('salesDateFrom',Carbon::parse($date[0]));
-        $request->session()->put('salesDateTo',Carbon::parse($date[1]));
-        return $date;
     }
 
     /**

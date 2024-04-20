@@ -22,7 +22,9 @@
         <script>
             $(document).ready(function(){
                 //Date range picker
-                $('#sales-dates').daterangepicker()
+                setTimeout(function(){
+                    $('#sales-dates').daterangepicker()
+                },1000)
             });
 
             $(document).on('change','#sales-dates',function(){
