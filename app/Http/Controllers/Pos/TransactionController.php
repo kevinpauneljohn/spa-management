@@ -26,11 +26,6 @@ class TransactionController extends Controller
      */
     public function index()
     {
-//        return Activity::whereIn('description',[
-//            'created transaction','voided a transaction'
-//        ])->where('spa_id','97d9f261-6d8a-4954-94ff-dad7a6b94b57')->paginate();
-
-
         $pageTitle = 'Transaction Logs';
         $spa = Spa::find('97d9f261-6d8a-4954-94ff-dad7a6b94b57');
         return view('point-of-sale.transaction-logs',compact('pageTitle','spa'));
@@ -52,15 +47,13 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(SalesTransactionRequest $request, \App\Services\PointOfSales\TransactionService $transactionService)
+    public function store(SalesTransactionRequest $request, \App\Services\PointOfSales\TransactionService $transactionService): JsonResponse
     {
         if($transactionService->checkIfClientExistsFromTransactions($request->sales_id, $request->client_id) && !collect($request)->has('confirm'))
         {
             return response()->json(['success' => false, 'message' => 'client already exist']);
         }
             $transaction = $transactionService->saveClient($request);
-//            $transaction = $request;
-
             return response()->json([
                 'success' => true,
                 'message' => 'Client successfully added!',
@@ -145,7 +138,7 @@ class TransactionController extends Controller
         return $roomAvailabilityService->availableRooms($spaId);
     }
 
-    public function roomAvailabilityDashboardChecker($spaId, RoomAvailabilityService $roomAvailabilityService)
+    public function roomAvailabilityDashboardChecker($spaId, RoomAvailabilityService $roomAvailabilityService): JsonResponse
     {
         return response()->json([
             'available' => $roomAvailabilityService->availableRooms($spaId),

@@ -96,7 +96,12 @@
                                 '<td colspan="3" class="text-bold">Total Clients: <span class="text-primary">'+transaction.total_clients+'</span></td>' +
                                 '<td colspan="8" class="text-bold">Payment Status: <span class="'+color+'">'+transaction.payment_status+'</span></td></tr>' +
                                 '<tr class="text-bold client-payment" style="background-color: #f3fdf5!important;">' +
-                                '<td colspan="3">Amount Paid: <span class="text-success">'+transaction.amount_paid+'</span></td><td colspan="15">Change: <span class="text-success">'+transaction.change+'</span></td></tr>')
+                                '<td colspan="3">Amount Paid: <span class="text-success">'+transaction.amount_paid+'</span></td>' +
+                                '<td colspan="4">Change: <span class="text-success">'+transaction.change+'</span></td>' +
+                                @if($displayAllColumns === true)'<td colspan="3">Payment Method: <span class="text-success">'+transaction.payment_method+'</span></td>' +
+                                '<td colspan="3">Non-cash amount: <span class="text-success">'+transaction.non_cash_amount+'</span></td>' +
+                                '<td colspan="3">Cash amount: <span class="text-success">'+transaction.cash_amount+'</span></td>' +
+                                @endif'</tr>')
                     }
                 });
 

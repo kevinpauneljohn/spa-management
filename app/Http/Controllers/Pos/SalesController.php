@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaymentRequest;
 use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesShift;
@@ -178,13 +179,14 @@ class SalesController extends Controller
         return $toBePaid->invoiceDetails($salesId);
     }
 
-    public function pay(Request $request, $salesId, ClientPayment $payment)
+    public function pay(PaymentRequest $request, $salesId, ClientPayment $payment)
     {
         $paymentType = $request->payment_type;
         $amount = collect($request->all())->has('cash') ? $request->cash : 0;
+        $nonCashAmount = collect($request->all())->has('non_cash_amount') ? $request->non_cash_amount : 0;
         $referenceNo = collect($request->all())->has('reference_no') ? $request->reference_no : null;
 
-        if($payment->payment($salesId, $paymentType, $amount, $referenceNo))
+        if($payment->payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount))
         {
             return response()->json(['success' => true, 'message' => 'Payment successful!']);
         }

@@ -469,7 +469,12 @@ class TransactionService
                 'total_clients' => collect($transactions)->count(),
                 'payment_status' => collect($transactions)->first() !== null ? collect($transactions)->first()->sale->payment_status : 0,
                 'amount_paid' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->amount_paid,2) : 0,
-                'change' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->change,2) : 0
+                'change' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->change,2) : 0,
+                'payment_method' => collect($transactions)->first() !== null ? !is_null(collect($transactions)->first()->sale->payment_method) ? collect($transactions)->first()->sale->payment_method : '' : '',
+                'non_cash_amount' => collect($transactions)->first() !== null ?
+                    !is_null(collect($transactions)->first()->sale->non_cash_payment) ? number_format(collect($transactions)->first()->sale->non_cash_payment->non_cash_amount,2) : '' : '',
+                'cash_amount' => collect($transactions)->first() !== null ?
+                    !is_null(collect($transactions)->first()->sale->non_cash_payment) ? number_format(collect($transactions)->first()->sale->non_cash_payment->cash_amount,2) : '' : '',
             ])
             ->make(true);
     }

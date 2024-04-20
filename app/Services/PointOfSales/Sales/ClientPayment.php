@@ -47,14 +47,14 @@ class ClientPayment extends AmountToBePaid
             'reference_number' => $referenceNo
         ]);
     }
-    public function payment($salesId, $paymentType, $amount, $referenceNo): bool
+    public function payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount): bool
     {
         if($paymentType === 'Cash')
         {
             return $this->cash($salesId, $paymentType, $amount);
         }
         else{
-            return $this->nonCash($salesId, $paymentType, $referenceNo);
+            return $this->nonCash($salesId, $paymentType, $referenceNo, $nonCashAmount, $amount);
         }
     }
 
@@ -97,13 +97,21 @@ class ClientPayment extends AmountToBePaid
      * @param $referenceNo
      * @return bool
      */
-    private function nonCash($salesId, $paymentType, $referenceNo): bool
+    private function nonCash($salesId, $paymentType, $referenceNo, $nonCashAmount, $cashAmount): bool
     {
-        if($referenceNo !== null)
+        $amount = $nonCashAmount + $cashAmount;
+        $amount_to_be_paid = $this->salesTransactions($salesId)->sum('amount');
+        if(!is_null($referenceNo) && !$this->isNonCashAmountExceeded($nonCashAmount, $amount_to_be_paid))
         {
             $sales = $this->sales($salesId);
             $sales->payment_method = $paymentType;
-            $sales->amount_paid = $this->salesTransactions($salesId)->sum('amount');
+            $sales->amount_paid = $amount;
+            $sales->non_cash_payment = [
+                'non_cash_amount' => $nonCashAmount,
+                'cash_amount' => $cashAmount
+            ];
+            $sales->total_amount = $amount_to_be_paid;
+            $sales->change = $amount - $sales->total_amount;
             $sales->payment_status = 'completed';
             $sales->payment_account_number = $referenceNo;
             $sales->paid_at = now();
@@ -111,11 +119,17 @@ class ClientPayment extends AmountToBePaid
             if($sales->save())
             {
                 $this->saveSalesShiftPayments($paymentType, $sales->amount_paid, $referenceNo, $sales->id);
+                $this->updateCashDrawer($cashAmount, $sales->change);
                 $this->activityLogs($sales, 0);
                 return true;
             }
         }
         return false;
+    }
+
+    private function isNonCashAmountExceeded($nonCashAmount, $amount_to_be_paid): bool
+    {
+        return $nonCashAmount > $amount_to_be_paid;
     }
 
     /**

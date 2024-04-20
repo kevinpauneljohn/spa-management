@@ -14,6 +14,7 @@ class Sale extends Model
     protected $fillable = [
         'spa_id',
         'amount_paid',
+        'non_cash_payment',
         'payment_status',
         'user_id',
         'appointment_batch',
@@ -42,6 +43,16 @@ class Sale extends Model
     public function payment(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function setNonCashPaymentAttribute($value): void
+    {
+        $this->attributes['non_cash_payment'] = json_encode($value);
+    }
+
+    public function getNonCashPaymentAttribute($value)
+    {
+        return json_decode($value);
     }
 
 }
