@@ -21,6 +21,7 @@ require __DIR__ . '/web/appointment.php';
 require __DIR__ . '/web/payroll.php';
 require __DIR__ . '/web/staff.php';
 require __DIR__ . '/web/therapist.php';
+require __DIR__ . '/web/client.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
@@ -40,7 +41,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('/get-spa/{spa}/client/{client}',[\App\Http\Controllers\ClientController::class,'getClient'])->name('get-selected-client');
     Route::post('/search/clients/{spa}',[\App\Http\Controllers\ClientController::class,'searchClients'])->name('search.clients');
-    Route::get('/client',[\App\Http\Controllers\ClientController::class,'index'])->name('client.index');
+//    Route::get('/client',[\App\Http\Controllers\ClientController::class,'index'])->name('client.index');
     Route::get('/client-list',[\App\Http\Controllers\ClientController::class,'getList'])->name('client.lists');
     Route::get('/client/{id}',[\App\Http\Controllers\ClientController::class,'show'])->name('client.show');
     Route::get('/client-filter/{id}/{spa}',[\App\Http\Controllers\ClientController::class,'filter'])->name('client.filter');

@@ -16,6 +16,7 @@ use App\Services\PointOfSales\Sales\ClientPayment;
 use App\Services\PointOfSales\Sales\IsolateTransaction;
 use App\Services\PointOfSales\Sales\SalesService;
 use App\Services\PointOfSales\Shift\ShiftService;
+use App\View\Components\Pos\Appointments\UpcomingTab\view;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -38,7 +39,6 @@ class SalesController extends Controller
      */
     public function index()
     {
-
     }
 
     /**

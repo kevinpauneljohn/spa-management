@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'PAUNEL',
+    'title' => 'TKLS POS',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>PAUNEL</b> V1',
+    'logo' => '<b>TKLS</b> POS',
     'logo_img' => 'vendor/adminlte/dist/img/plant.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -368,6 +368,12 @@ return [
             'route'  => 'spa.sales.report',
             'icon' => 'fas fa-fw fa-search-dollar',
             'can' => 'view sales management'
+        ],
+        [
+            'text' => 'Client Management',
+            'route'  => 'clients.index',
+            'icon' => 'fa fa-users',
+            'can' => 'view client'
         ],
         [
             'text' => 'Payroll Management',

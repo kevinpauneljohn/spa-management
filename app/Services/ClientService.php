@@ -33,15 +33,15 @@ class ClientService
             $data = $client;
             $check_owner = $owner->clients();
             if ($check_owner) {
-                $owner_client = true; 
-            }  
+                $owner_client = true;
+            }
         }
 
         $response = [
             'status' => $status,
             'data' => $data,
             'owner_client' => $owner_client
-        ]; 
+        ];
 
         return $response;
     }
@@ -53,7 +53,7 @@ class ClientService
         $spa = Spa::findOrFail($data['spa_id']);
         $owner = Owner::findOrFail($spa->owner_id);
         DB::beginTransaction();
-        try {  
+        try {
             $client = Client::create([
                 'firstname' => strtolower($data['firstname']),
                 'middlename' => strtolower($data['middlename']),
@@ -82,7 +82,7 @@ class ClientService
         $response = [
             'status' => $status,
             'data' => $value
-        ]; 
+        ];
 
         return $response;
     }
@@ -101,7 +101,7 @@ class ClientService
         $client->email = strtolower($data['email']);
         $client->address = strtolower($data['address']);
         $client->client_type = $data['client_type'];
-        
+
         $status = false;
         $data = [];
         if ($client->save()) {
@@ -112,8 +112,26 @@ class ClientService
         $response = [
             'status' => $status,
             'data' => $data
-        ]; 
+        ];
 
         return $response;
+    }
+
+    public function updateClient($request, $id): \Illuminate\Http\JsonResponse
+    {
+        $client = Client::findOrFail($id);
+        $client->firstname = $request->firstname;
+        $client->middlename = $request->middlename;
+        $client->lastname = $request->lastname;
+        $client->date_of_birth = $request->date_of_birth;
+        $client->mobile_number = $request->mobile_number;
+        $client->email = $request->email;
+        $client->address = $request->address;
+        if($client->isDirty())
+        {
+            $client->save();
+            return response()->json(['success' => true, 'message' => 'Client successfully updated']);
+        }
+        return response()->json(['success' => false, 'message' => 'No changes made']);
     }
 }
