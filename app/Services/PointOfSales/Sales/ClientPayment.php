@@ -37,12 +37,14 @@ class ClientPayment extends AmountToBePaid
      * @param $referenceNo
      * @return void
      */
-    private function saveSalesShiftPayments($paymentType, $amount, $referenceNo, $saleId): void
+    private function saveSalesShiftPayments($paymentType, $amount, $nonCashAmount, $change, $referenceNo, $saleId): void
     {
         Payment::create([
             'sales_shift_id' => $this->shift_id,
             'sale_id' => $saleId,
-            'payment' => $amount,
+            'payment' => is_null($amount) ? 0 : $amount,
+            'non_cash_payment' => is_null($nonCashAmount) ? 0 : $nonCashAmount,
+            'change' => $change,
             'payment_type' => $paymentType,
             'reference_number' => $referenceNo
         ]);
@@ -81,7 +83,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
-                $this->saveSalesShiftPayments($paymentType, $amount, null, $sales->id);
+                $this->saveSalesShiftPayments($paymentType, ($amount - $sales->change), null, $sales->change, null, $sales->id);
                 $this->updateCashDrawer($sales->amount_paid, $sales->change);
                 $this->activityLogs($sales, $amount);
                 return true;
@@ -99,7 +101,10 @@ class ClientPayment extends AmountToBePaid
      */
     private function nonCash($salesId, $paymentType, $referenceNo, $nonCashAmount, $cashAmount): bool
     {
+        $cashAmount = is_null($cashAmount) ? 0 : $cashAmount;
+        $nonCashAmount = is_null($nonCashAmount) ? 0 : $nonCashAmount;
         $amount = $nonCashAmount + $cashAmount;
+
         $amount_to_be_paid = $this->salesTransactions($salesId)->sum('amount');
         if(!is_null($referenceNo) && !$this->isNonCashAmountExceeded($nonCashAmount, $amount_to_be_paid))
         {
@@ -118,7 +123,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
-                $this->saveSalesShiftPayments($paymentType, $sales->amount_paid, $referenceNo, $sales->id);
+                $this->saveSalesShiftPayments($paymentType, ($cashAmount - $sales->change), $nonCashAmount, $sales->change, $referenceNo, $sales->id);
                 $this->updateCashDrawer($cashAmount, $sales->change);
                 $this->activityLogs($sales, 0);
                 return true;

@@ -38,31 +38,21 @@
         <tr>
             <th>Invoice</th>
             <th>Payment Type</th>
-            <th>Amount</th>
+            <th>Cash Amount</th>
+            <th>Non-cash Amount</th>
         </tr>
-        @php
-            $totalCash = 0;
-            $totalNonCash = 0;
-        @endphp
         @foreach($payments as $payment)
-            @php
-                if($payment->payment_type == 'Cash')
-                {
-                    $totalCash = $totalCash + $payment->sale->total_amount;
-                }
-                else{
-                    $totalNonCash = $totalNonCash + $payment->payment;
-                }
-            @endphp
             <tr>
                 <td>#{{$payment->sale->invoice_number}}</td>
                 <td>{{$payment->payment_type}}</td>
-                <td>{{$payment->payment_type == 'Cash' ? number_format($payment->sale->total_amount,2) : number_format($payment->payment,2)}}</td>
+                <td>{{number_format($payment->payment,2)}}</td>
+                <td>{{number_format($payment->non_cash_payment,2)}}</td>
             </tr>
         @endforeach
         <tr>
-            <td>Total Cash: <span class="payment">{{number_format($totalCash,2)}}</span></td>
-            <td>Total Non Cash: <span class="payment">{{number_format($totalNonCash,2)}}</span></td>
+            <td></td>
+            <td>Total Cash: <span class="payment">{{$totalCash}}</span></td>
+            <td>Total Non Cash: <span class="payment">{{$totalNonCash}}</span></td>
             <td>Gross Sales: <span class="payment">{{ number_format(($totalCash + $totalNonCash),2)  }}</span></td>
         </tr>
     </table>

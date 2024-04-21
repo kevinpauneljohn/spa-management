@@ -33,36 +33,13 @@ class SalesShift extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function totalCash($shiftId)
+    public function cash($shiftId)
     {
-        return $this->formatPayment($this->cash($shiftId));
-
+        return Payment::where('sales_shift_id',$shiftId)->sum('payment');
     }
 
-    public function totalNonCash($shiftId)
+    public function nonCash($shiftId)
     {
-        return $this->formatPayment($this->nonCash($shiftId));
-
-    }
-
-    private function cash($shiftId)
-    {
-        return Payment::where('sales_shift_id',$shiftId)->where('payment_type','Cash')->get();
-    }
-
-    private function nonCash($shiftId)
-    {
-        return Payment::where('sales_shift_id',$shiftId)->where('payment_type','!=','Cash')->get();
-    }
-
-    private function formatPayment($payments)
-    {
-        $cashPayments = 0;
-        foreach ($payments as $payment)
-        {
-            $cashPayments = $payment->payment_type == 'Cash' ? $cashPayments + $payment->sale->total_amount
-                : $cashPayments + $payment->sale->amount_paid;
-        }
-        return $cashPayments;
+        return Payment::where('sales_shift_id',$shiftId)->sum('non_cash_payment');
     }
 }

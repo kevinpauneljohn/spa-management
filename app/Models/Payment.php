@@ -9,7 +9,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sales_shift_id','sale_id','payment','payment_type','reference_number'];
+    protected $fillable = ['sales_shift_id','sale_id','payment','non_cash_payment','change','payment_type','reference_number'];
 
     public function salesShift(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

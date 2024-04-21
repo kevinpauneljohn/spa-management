@@ -223,7 +223,9 @@ class SalesController extends Controller
     {
         $salesShift = SalesShift::find($shiftId);
         $payments = Payment::where('sales_shift_id',$shiftId)->orderBy('payment_type')->get();
-        return view('point-of-sale.print-shift-sales',compact('payments','salesShift'));
+        $totalCash = $salesShift->payments()->sum('payment');
+        $totalNonCash = $salesShift->payments()->sum('non_cash_payment');
+        return view('point-of-sale.print-shift-sales',compact('payments','salesShift','totalCash','totalNonCash'));
     }
 
 }
