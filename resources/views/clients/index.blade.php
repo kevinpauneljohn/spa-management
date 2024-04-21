@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Clients')
+@section('title', 'Client Management')
 
 @section('content_header')
     <h1></h1>
@@ -9,6 +9,17 @@
 
 </style>
 @section('content')
+    <div class="row mb-2">
+        <div class="col-sm-6 mt-3">
+            <h3 class="text-cyan">Client Management</h3>
+        </div>
+        <div class="col-sm-6 mt-3">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Spa</a> </li>
+                <li class="breadcrumb-item active">Client Management </li>
+            </ol>
+        </div>
+    </div>
 <div class="card clients-card">
     <div class="card-header">
         <div class="float-right">
