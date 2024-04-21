@@ -24,14 +24,14 @@
         <td>
             Cashier: <span class="payment">{{auth()->user()->fullname}}</span>
         </td>
-        <td>
+        <td colspan="2">
             Shift:
             <span class="payment">{{$salesShift->created_at->format('M-d-y h:m a')}}</span> -
             <span class="payment">{{\Carbon\Carbon::parse($salesShift->end_shift)->format('M-d-y h:m a')}}</span>
         </td>
-        <td>
-            Money on hand: <span class="payment">{{number_format($salesShift->start_money,2)}}</span>
-        </td>
+{{--        <td>--}}
+{{--            Money on hand: <span class="payment">{{number_format($salesShift->start_money,2)}}</span>--}}
+{{--        </td>--}}
     </tr>
 </table>
     <table>
@@ -51,9 +51,9 @@
         @endforeach
         <tr>
             <td></td>
+            <td>Gross Sales: <span class="payment">{{ number_format(($totalCash + $totalNonCash),2)  }}</span></td>
             <td>Total Cash: <span class="payment">{{$totalCash}}</span></td>
             <td>Total Non Cash: <span class="payment">{{$totalNonCash}}</span></td>
-            <td>Gross Sales: <span class="payment">{{ number_format(($totalCash + $totalNonCash),2)  }}</span></td>
         </tr>
     </table>
 
