@@ -55,4 +55,9 @@ class Sale extends Model
         return json_decode($value);
     }
 
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class);
+    }
+
 }

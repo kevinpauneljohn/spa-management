@@ -22,6 +22,7 @@ require __DIR__ . '/web/payroll.php';
 require __DIR__ . '/web/staff.php';
 require __DIR__ . '/web/therapist.php';
 require __DIR__ . '/web/client.php';
+require __DIR__ . '/web/discount.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));

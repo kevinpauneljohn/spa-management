@@ -370,6 +370,11 @@ return [
             'can' => 'view sales management'
         ],
         [
+            'text' => 'Discounts',
+            'route'  => 'discounts.index',
+            'icon' => 'fas fa-fw fa-search-dollar',
+        ],
+        [
             'text' => 'Client Management',
             'route'  => 'clients.index',
             'icon' => 'fa fa-users',
@@ -560,6 +565,11 @@ return [
                     'type' => 'css',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css',
                 ],
             ],
         ],

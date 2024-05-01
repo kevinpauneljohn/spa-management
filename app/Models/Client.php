@@ -25,17 +25,17 @@ class Client extends Model
 
     protected $appends = ['full_name'];
 
-    public function transaction()
+    public function transaction(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany('App\Models\Transaction');
     }
 
-    public function owners()
+    public function owners(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Owner::class);
     }
 
-    public function appointments()
+    public function appointments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Appointment::class);
     }
@@ -43,5 +43,10 @@ class Client extends Model
     public function getFullNameAttribute(): string
     {
         return "{$this->firstname} {$this->lastname}";
+    }
+
+    public function discounts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Discount::class);
     }
 }
