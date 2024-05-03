@@ -142,4 +142,9 @@ class SpaController extends Controller
         return $spa->getServiceByName($serviceName);
     }
 
+    public function retrieveServiceById(Spa $spa, $serviceId)
+    {
+        return $spa->getServiceById($serviceId);
+    }
+
 }

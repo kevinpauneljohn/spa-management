@@ -58,6 +58,11 @@ class Spa extends Model
         return $this->services()->where('name','=',$name)->first();
     }
 
+    public function getServiceById($id)
+    {
+        return $this->services()->where('id','=',$id)->first();
+    }
+
     public function expenses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Expense::class);

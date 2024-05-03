@@ -82,7 +82,7 @@
                                         <select name="service" class="form-control select2" id="service" style="width: 100%;">
                                             <option value=""> -- Select -- </option>
                                             @foreach($spa->services as $service)
-                                                <option value="{{$service->name}}">{{$service->name}}</option>
+                                                <option value="{{$service->id}}">{{$service->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -361,7 +361,8 @@
                     $('#therapist_1').attr('disabled',false);
                     {{--masseurAvailability('{{$spa->id}}', 'therapist_1');--}}
                     $.ajax({
-                        url: '/spa/{{$spa->id}}/retrieve-by-name/'+value,
+                        {{--url: '/spa/{{$spa->id}}/retrieve-by-name/'+value,--}}
+                        url: '/spa/{{$spa->id}}/retrieve-by-id/'+value,
                         async: false,
                         beforeSend: function(){
                         }
@@ -382,6 +383,7 @@
                     room({disabled: true});
                     // therapists = [];
                     // $('#therapist_1, #therapist_2').html('').attr('disabled',true).append('<option value="">--Select--</option>');
+                    $('#therapist_1, #therapist_2').val('').attr('disabled',true);
                 }
             })
 
@@ -438,36 +440,36 @@
                 })
             });
 
-            function masseurAvailability(spaId, therapist)
-            {
-                addClientForm.find('#'+therapist).html('');
-                addClientForm.find('#'+therapist).append('<option value=""> --Select-- </option>').val('').change();
+            // function masseurAvailability(spaId, therapist)
+            // {
+            //     addClientForm.find('#'+therapist).html('');
+            //     addClientForm.find('#'+therapist).append('<option value=""> --Select-- </option>').val('').change();
+            //
+            //     $.get('/masseur-availability/'+spaId, function (masseurs){
+            //         therapists = masseurs;
+            //         $.each(masseurs, function (key, value){
+            //             addClientForm.find('#'+therapist).append('<option value="'+value.id+'">'+value.user.firstname+' '+value.user.lastname+'</option>');
+            //         })
+            //     },'json')
+            // }
 
-                $.get('/masseur-availability/'+spaId, function (masseurs){
-                    therapists = masseurs;
-                    $.each(masseurs, function (key, value){
-                        addClientForm.find('#'+therapist).append('<option value="'+value.id+'">'+value.user.firstname+' '+value.user.lastname+'</option>');
-                    })
-                },'json')
-            }
-
-            $('.sales-client-form #therapist_1').on('change', function(){
-                let selectedValue = $(this).val();
-
-                console.log(therapists)
-
-                addClientForm.find('#therapist_2').html('').append('<option value=""> --Select-- </option>').val('');
-                if(multipleMasseur === true)
-                {
-                    $.each(therapists, function (key, value){
-                        if(selectedValue !== value.id)
-                        {
-                            addClientForm.find('#therapist_2').append('<option value="'+value.id+'">'+value.user.firstname+' '+value.user.lastname+'</option>');
-                        }
-                    })
-                }else{
-                }
-            });
+            // $('.sales-client-form #therapist_1').on('change', function(){
+            //     let selectedValue = $(this).val();
+            //
+            //     console.log(therapists)
+            //
+            //     addClientForm.find('#therapist_2').html('').append('<option value=""> --Select-- </option>').val('');
+            //     if(multipleMasseur === true)
+            //     {
+            //         $.each(therapists, function (key, value){
+            //             if(selectedValue !== value.id)
+            //             {
+            //                 addClientForm.find('#therapist_2').append('<option value="'+value.id+'">'+value.user.firstname+' '+value.user.lastname+'</option>');
+            //             }
+            //         })
+            //     }else{
+            //     }
+            // });
 
 
             const room = ({disabled: disabled = true}) => {
