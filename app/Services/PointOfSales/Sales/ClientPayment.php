@@ -96,6 +96,13 @@ class ClientPayment extends AmountToBePaid
         return false;
     }
 
+    /**
+     * once the sales transactions has been completed the voucher codes will be
+     * claimed in the discounts table
+     * @param $salesId
+     * @param $voucherCode
+     * @return void
+     */
     private function claimVoucher($salesId, $voucherCode): void
     {
         DB::table('discounts')->whereIn('code', $voucherCode)->update([
@@ -113,10 +120,8 @@ class ClientPayment extends AmountToBePaid
      */
     private function cash($salesId, $paymentType, $amount): bool
     {
-//        if($this->salesTransactions($salesId)->sum('amount') <= $amount)
         if($this->totalAmount($salesId) <= $amount)
         {
-//            $sum = $this->salesTransactions($salesId)->sum('amount');
             $sum = $this->totalAmount($salesId);
 
             $sales = $this->sales($salesId);

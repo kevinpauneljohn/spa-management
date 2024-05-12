@@ -82,7 +82,7 @@
                                         <select name="service" class="form-control select2" id="service" style="width: 100%;">
                                             <option value=""> -- Select -- </option>
                                             @foreach($spa->services as $service)
-                                                <option value="{{$service->id}}">{{$service->name}}</option>
+                                                <option value="{{$service->id}}" title="{{number_format($service->price,2)}}">{{$service->name}} (Price: {{number_format($service->price,2)}})</option>
                                             @endforeach
                                         </select>
                                     </div>
