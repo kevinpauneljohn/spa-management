@@ -142,7 +142,7 @@
                                 </div>
                             </form>
                         </div>
-                            <div class="col-lg-7 second-row">
+                            <div class="col-lg-7 second-row table-responsive">
                                 <x-sales-transaction-table :spaId="$spa->id" :saleId="$sale->id" :displayAllColumns="false" tableId="display-sales-client-1"/>
                             </div>
                         </div>

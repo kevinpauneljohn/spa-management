@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function(){
     Route::resource('sales-shift',\App\Http\Controllers\Pos\SalesShiftController::class);
     Route::get('/print-shift-sales/{shiftId}',[\App\Http\Controllers\Pos\SalesController::class,'printShiftSales'])->name('print-shift-sales');
     Route::patch('/under-time/transaction/{transactionId}',[\App\Http\Controllers\Pos\TransactionController::class,'underTime'])->name('under-time-transaction');
+    Route::patch('/buy-voucher',[\App\Http\Controllers\Pos\SalesController::class,'buyVoucher'])->name('buy.voucher');
 });
 
 

@@ -16,6 +16,7 @@ use App\Services\PointOfSales\Sales\ClientPayment;
 use App\Services\PointOfSales\Sales\IsolateTransaction;
 use App\Services\PointOfSales\Sales\SalesService;
 use App\Services\PointOfSales\Shift\ShiftService;
+use App\Services\PointOfSales\TransactionService;
 use App\View\Components\Pos\Appointments\UpcomingTab\view;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
@@ -31,6 +32,7 @@ class SalesController extends Controller
         $this->middleware(['allow_to_access_spa','role_or_permission:front desk|owner|manager|access pos'])->only(['show']);
         $this->middleware(['role_or_permission:front desk|owner|manager|process payment','CheckSalesIfExistsForPayment'])->only(['pay']);
         $this->middleware(['permission:isolate transaction','sales.transaction.verifier','allow_to_access_spa'])->only(['isolateTransaction']);
+        $this->middleware(['role:front desk|owner|manager|access pos'])->only(['buyVoucher']);
     }
     /**
      * Display a listing of the resource.
@@ -126,11 +128,12 @@ class SalesController extends Controller
         return response()->json(['success' => false, 'message' => 'An error occurred']);
     }
 
-    public function addTransactions(Spa $spa, Sale $sale)
+    public function addTransactions(Spa $spa, Sale $sale, \App\Services\TransactionService $transactionService)
     {
         $pageTitle = 'Create Sales Transaction';
         return view('point-of-sale.create-transactions',
         compact('spa','pageTitle','sale'));
+//        return $transactionService->getTransactions($spa->id, $sale->id);
     }
 
     public function getSalesByDateRange(Request $request, $spaId)
@@ -181,16 +184,30 @@ class SalesController extends Controller
 
     public function pay(PaymentRequest $request, $salesId, ClientPayment $payment)
     {
+//        return $request->all();
         $paymentType = $request->payment_type;
         $amount = collect($request->all())->has('cash') ? $request->cash : 0;
-        $nonCashAmount = collect($request->all())->has('non_cash_amount') ? $request->non_cash_amount : 0;
+        $nonCashAmount = $this->nonCashPayment($paymentType, $request, $request->input('total_service_amount'));
         $referenceNo = collect($request->all())->has('reference_no') ? $request->reference_no : null;
+        $voucherCode = collect($request->all())->has('voucher') ? $request->voucher : null;
 
-        if($payment->payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount))
+        if($payment->payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount, $voucherCode))
         {
             return response()->json(['success' => true, 'message' => 'Payment successful!']);
         }
         return response()->json(['success' => false, 'message' => 'An error occurred!']);
+    }
+
+    private function nonCashPayment($paymentType, Request $request, $totalServiceAmount)
+    {
+        if($paymentType == 'Voucher')
+        {
+            $voucher_amount = collect($request->amount)->sum();
+            $nonCashAmount = min($voucher_amount, $totalServiceAmount);
+        }else{
+            $nonCashAmount = collect($request->all())->has('non_cash_amount') ? $request->non_cash_amount : 0;
+        }
+        return $nonCashAmount;
     }
 
     public function salesActivityLogs($spaId)
@@ -226,6 +243,16 @@ class SalesController extends Controller
         $totalCash = $salesShift->payments()->sum('payment');
         $totalNonCash = $salesShift->payments()->sum('non_cash_payment');
         return view('point-of-sale.print-shift-sales',compact('payments','salesShift','totalCash','totalNonCash'));
+    }
+
+    public function buyVoucher(Request $request, TransactionService $transactionService)
+    {
+        $request->validate([
+            'voucher' => ['required']
+        ]);
+        return $transactionService->buyVoucher($request->input('voucher'), $request->input('sales_id')) ?
+            response()->json(['success' => true, 'message' => 'Voucher successfully added!']) :
+            response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
 
 }

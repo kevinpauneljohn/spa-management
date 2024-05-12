@@ -536,21 +536,6 @@ return [
                     'asset' => false,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
                 ],
-//                [
-//                    'type' => 'js',
-//                    'asset' => true,
-//                    'location' => 'public/vendor/datatables/js/jquery.dataTables.min.js',
-//                ],
-//                [
-//                    'type' => 'js',
-//                    'asset' => true,
-//                    'location' => 'vendor/datatables/js/dataTables.bootstrap4.min.js',
-//                ],
-//                [
-//                    'type' => 'css',
-//                    'asset' => true,
-//                    'location' => 'vendor/datatables/css/dataTables.bootstrap4.min.css',
-//                ],
             ],
         ],
         'Select2' => [
@@ -702,16 +687,6 @@ return [
             ],
         ],
 
-//       'BootstrapBundle' => [
-//           'active' => true,
-//           'files' => [
-//               [
-//                   'type' => 'js',
-//                   'asset' => false,
-//                   'location' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
-//               ],
-//           ],
-//       ],
         'Moment' => [
             'active' => false,
             'files' => [
@@ -746,6 +721,16 @@ return [
                     'location' => 'vendor/inputmask/jquery.inputmask.min.js',
                 ],
             ]
+        ],
+        'IcheckBootstrap' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/icheck-bootstrap/icheck-bootstrap.min.css',
+                ],
+            ],
         ],
         'DateRangePicker' => [
             'active' => false,

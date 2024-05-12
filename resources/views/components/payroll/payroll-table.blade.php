@@ -22,7 +22,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body table-responsive">
                 <table class="table table-bordered" id="view-summary-details-table"></table>
             </div>
             <div class="modal-footer justify-content-between">

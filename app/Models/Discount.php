@@ -10,7 +10,7 @@ class Discount extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'code','type','is_amount','amount','percent','client_id','sales_id','date_claimed'
+        'code','type','is_amount','price','amount','percent','client_id','sales_id','date_claimed','sales_id_claimed'
     ];
 
     protected $appends = ['discount_amount'];

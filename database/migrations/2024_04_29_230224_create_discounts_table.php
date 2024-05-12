@@ -18,11 +18,13 @@ class CreateDiscountsTable extends Migration
             $table->string('code')->nullable();
             $table->enum('type',['voucher','coupon']);
             $table->boolean('is_amount');
+            $table->decimal('price',10,2)->nullable();
             $table->decimal('amount',10,2)->nullable();
             $table->decimal('percent',5,2)->nullable();
             $table->foreignUuid('client_id')->nullable();
-            $table->foreignUuid('sales_id')->nullable();
+            $table->foreignUuid('sale_id')->nullable();
             $table->dateTime('date_claimed')->nullable();
+            $table->foreignUuid('sales_id_claimed')->nullable();
             $table->timestamps();
         });
     }

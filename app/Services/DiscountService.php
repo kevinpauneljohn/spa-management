@@ -70,7 +70,11 @@ class DiscountService
                 return $discount->discount_amount.$unit;
             })
             ->addColumn('sales_invoice',function($discount){
-                return $discount->sales_id;
+                if(is_null($discount->sale))
+                {
+                    return '';
+                }
+                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sale->spa->id, 'sale' => $discount->sale->id]).'" class="text-primary" target="_blank">#'.$discount->sale->invoice_number.'</a>';
             })
             ->addColumn('action',function($discount){
                 $action = '';
@@ -91,7 +95,7 @@ class DiscountService
 
                 return $action;
             })
-            ->rawColumns(['action','code'])
+            ->rawColumns(['action','code','sales_invoice'])
             ->make(true);
     }
 
@@ -112,7 +116,13 @@ class DiscountService
             'is_amount' => $request->input('value_type') == "amount",
             'amount' => $request->input('value_type') == "amount" ? $request->input('amount') : null,
             'percent' => $request->input('value_type') == "percentage" ? $request->input('amount') : null,
+            'price' => $request->input('price'),
             'client_id' => $request->input('client')
         ]);
+    }
+
+    public function getDiscountByCode($code)
+    {
+        return Discount::where('code',$code)->first();
     }
 }

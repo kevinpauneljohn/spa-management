@@ -182,7 +182,7 @@ class TherapistController extends Controller
      */
     public function getTherapistSales(Spa $spa, TherapistService $therapistService)
     {
-        $query = $spa->therapists;
+        $query = $spa->therapists()->where('is_excluded',false)->get();
         return $therapistService->getSales($query, $spa);
     }
 

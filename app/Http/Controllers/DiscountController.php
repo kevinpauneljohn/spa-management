@@ -102,4 +102,9 @@ class DiscountController extends Controller
         $discount = Discount::findOrFail($id);
         return response()->json(['discount' => $discount, 'code' => $discountService->generateQrCode($discount->code)]);
     }
+
+    public function getDiscount($code, DiscountService $discountService)
+    {
+        return $discountService->getDiscountByCode($code);
+    }
 }

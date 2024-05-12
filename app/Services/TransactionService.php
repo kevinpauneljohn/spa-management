@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Models\Discount;
 use App\Models\Transaction;
 use App\Models\Service;
 use App\Models\Therapist;
@@ -367,14 +368,25 @@ class TransactionService
 
     public function getTransactions($spaId, $saleId)
     {
-        return Transaction::where('spa_id','=',$spaId)
-            ->where('sales_id','=',$saleId)
-            ->get();
+//        return Transaction::where('spa_id','=',$spaId)
+//            ->where('sales_id','=',$saleId)
+//            ->get();
+        return Sale::with(['discounts','transactions' => function($transaction) use ($spaId){
+            return $transaction->where('spa_id',$spaId)->get();
+        }])
+            ->where('id','=',$saleId)
+            ->first();
+    }
+
+    public function getSoldVouchers($saleId)
+    {
+        return Discount::where('sale_id',$saleId)->get();
     }
 
     public function clientTransactionLists($spaId, $saleId)
     {
-        $transactions = $this->getTransactions($spaId, $saleId);
+        $sales = $this->getTransactions($spaId, $saleId);
+        $transactions = $this->getTransactions($spaId, $saleId)->transactions;
         return DataTables::of($transactions)
             ->editColumn('amount', function($transaction){
                 return '<span class="text-primary">'.number_format($transaction->service->price,2).'</span>';
@@ -465,7 +477,10 @@ class TransactionService
             })
             ->rawColumns(['plus_time_amount','payable_amount','total_time','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time'])
             ->with([
-                'total_amount' => number_format(collect($transactions)->sum('amount'),2),
+                'sale_status' => $sales->payment_status,
+                'vouchers' => $sales->discounts,
+                'total_vouchers_amount' => $total_voucher = collect($sales->discounts)->sum('price'),
+                'total_amount' => number_format(collect($transactions)->sum('amount') + $total_voucher,2),
                 'total_clients' => collect($transactions)->count(),
                 'payment_status' => collect($transactions)->first() !== null ? collect($transactions)->first()->sale->payment_status : 0,
                 'amount_paid' => collect($transactions)->first() !== null ? number_format(collect($transactions)->first()->sale->amount_paid,2) : 0,

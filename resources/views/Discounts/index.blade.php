@@ -31,6 +31,7 @@
                     <th>Code</th>
                     <th>Type</th>
                     <th>Amount/Percent</th>
+                    <th>Price</th>
                     <th>Client</th>
                     <th>Sales Invoice</th>
                     <th>Date Claimed</th>
@@ -72,6 +73,10 @@
                 <label for="amount">Amount / Percentage</label>
                 <input type="number" step="any" name="amount" class="form-control" id="amount" min="0">
             </div>
+            <div class="form-group price">
+                <label for="price">Price</label>
+                <input type="number" step="any" name="price" class="form-control" id="price" min="0">
+            </div>
             <div class="form-group client">
                 <label for="client">Assign Client</label>
                 <select name="client" class="form-control select2" id="client" style="width: 100%;">
@@ -110,6 +115,7 @@
                     { data: 'code', name: 'code'},
                     { data: 'type', name: 'type'},
                     { data: 'discount_amount', name: 'discount_amount'},
+                    { data: 'price', name: 'price'},
                     { data: 'client_id', name: 'client_id'},
                     { data: 'sales_invoice', name: 'sales_invoice'},
                     { data: 'date_claimed', name: 'date_claimed'},

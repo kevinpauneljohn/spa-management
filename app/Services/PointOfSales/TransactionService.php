@@ -3,17 +3,19 @@
 namespace App\Services\PointOfSales;
 
 use App\Models\Client;
+use App\Models\Discount;
 use App\Models\Sale;
 use App\Models\Service;
 use App\Models\Spa;
 use App\Models\Transaction;
+use App\Services\PointOfSales\Sales\SalesService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Contracts\Activity;
 
-class TransactionService
+class TransactionService extends SalesService
 {
     protected $owner;
 
@@ -343,5 +345,15 @@ class TransactionService
     public function underTime($transactionId): bool
     {
         return (bool)$this->transaction($transactionId)->fill(['end_time' => now()])->save();
+    }
+
+    public function buyVoucher($voucherId, $salesId): bool
+    {
+        if(!$this->isSalesIdExists($salesId))
+            return false;
+
+        $voucher = Discount::find($voucherId);
+        $voucher->sale_id = $salesId;
+        return (bool)$voucher->save();
     }
 }

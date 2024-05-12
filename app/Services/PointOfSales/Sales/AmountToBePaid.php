@@ -25,6 +25,8 @@ class AmountToBePaid
 
     protected function totalAmount($salesId)
     {
-        return $this->salesTransactions($salesId)->sum('amount');
+        $voucher_client_bought = $this->sales($salesId)->discounts->sum('price');
+        $total_transaction_amount_due = $this->salesTransactions($salesId)->sum('amount');
+        return $total_transaction_amount_due + $voucher_client_bought;
     }
 }

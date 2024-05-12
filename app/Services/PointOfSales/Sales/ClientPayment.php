@@ -4,6 +4,7 @@ namespace App\Services\PointOfSales\Sales;
 
 use App\Models\Payment;
 use App\Models\SalesShift;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Contracts\Activity;
 
 class ClientPayment extends AmountToBePaid
@@ -49,16 +50,59 @@ class ClientPayment extends AmountToBePaid
             'reference_number' => $referenceNo
         ]);
     }
-    public function payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount): bool
+    public function payment($salesId, $paymentType, $amount, $referenceNo, $nonCashAmount, $voucherCode = null): bool
     {
         if($paymentType === 'Cash')
         {
             return $this->cash($salesId, $paymentType, $amount);
         }
+        elseif ($paymentType === 'Voucher')
+        {
+            return $this->voucher($salesId, $paymentType, $nonCashAmount, $amount, $voucherCode);
+        }
         else{
             return $this->nonCash($salesId, $paymentType, $referenceNo, $nonCashAmount, $amount);
         }
     }
+
+
+    private function voucher($salesId, $paymentType, $voucherAmount, $cashAmount, $voucherCode): bool
+    {
+        $cashAmount = is_null($cashAmount) ? 0 : $cashAmount;
+        $voucherAmount = is_null($voucherAmount) ? 0 : $voucherAmount;
+        $amount = $voucherAmount + $cashAmount;
+
+        $amount_to_be_paid = $this->totalAmount($salesId);
+
+        $sales = $this->sales($salesId);
+        $sales->payment_method = $paymentType;
+        $sales->amount_paid = $amount;
+        $sales->non_cash_payment = [
+            'non_cash_amount' => $voucherAmount,
+            'cash_amount' => $cashAmount,
+        ];
+        $sales->total_amount = $amount_to_be_paid;
+        $sales->change = $amount - $sales->total_amount;
+        $sales->payment_status = 'completed';
+        $sales->paid_at = now();
+        if($sales->save())
+        {
+            $this->saveSalesShiftPayments($paymentType, ($amount - $sales->change), null, $sales->change, null, $sales->id);
+            $this->claimVoucher($salesId, $voucherCode);
+            $this->updateCashDrawer($cashAmount, 0);
+            $this->activityLogs($sales, $amount);
+            return true;
+        }
+        return false;
+    }
+
+    private function claimVoucher($salesId, $voucherCode): void
+    {
+        DB::table('discounts')->whereIn('code', $voucherCode)->update([
+            'sales_id_claimed' => $salesId, 'date_claimed' => now()
+        ]);
+    }
+
 
     /**
      * payment process for cash payment type
@@ -69,9 +113,11 @@ class ClientPayment extends AmountToBePaid
      */
     private function cash($salesId, $paymentType, $amount): bool
     {
-        if($this->salesTransactions($salesId)->sum('amount') <= $amount)
+//        if($this->salesTransactions($salesId)->sum('amount') <= $amount)
+        if($this->totalAmount($salesId) <= $amount)
         {
-            $sum = $this->salesTransactions($salesId)->sum('amount');
+//            $sum = $this->salesTransactions($salesId)->sum('amount');
+            $sum = $this->totalAmount($salesId);
 
             $sales = $this->sales($salesId);
             $sales->payment_method = $paymentType;
@@ -105,7 +151,7 @@ class ClientPayment extends AmountToBePaid
         $nonCashAmount = is_null($nonCashAmount) ? 0 : $nonCashAmount;
         $amount = $nonCashAmount + $cashAmount;
 
-        $amount_to_be_paid = $this->salesTransactions($salesId)->sum('amount');
+        $amount_to_be_paid = $this->totalAmount($salesId);
         if(!is_null($referenceNo) && !$this->isNonCashAmountExceeded($nonCashAmount, $amount_to_be_paid))
         {
             $sales = $this->sales($salesId);

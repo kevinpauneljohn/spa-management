@@ -27,22 +27,22 @@ class PaymentRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'non_cash_amount' => [Rule::requiredIf($request->payment_type !== 'Cash'),'min:0','max:'.$request->total_service_amount,'numeric','nullable'],
-            'cash' => [Rule::requiredIf($request->payment_type === 'Cash'),'min:0'],
+            'non_cash_amount' => [Rule::requiredIf($request->payment_type !== 'Cash' && $request->payment_type !== 'Voucher'),'min:0','max:'.$request->total_service_amount,'numeric','nullable'],
+            'cash' => [Rule::requiredIf($request->payment_type === 'Cash' && $request->payment_type !== 'Voucher'),'min:0'],
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function($validator){
-            if($this->input('payment_type') !== 'Cash')
+            if($this->input('payment_type') !== 'Cash' && $this->input('payment_type') !== 'Voucher')
             {
                 if($this->totalAmountPaid() < $this->input('total_service_amount'))
                 {
                     $validator->errors()->add('non_cash_amount', 'Your payment is less than the amount due');
                 }
             }
-            else{
+            elseif ($this->input('payment_type') == 'GCash' ||$this->input('payment_type') == 'Maya' || $this->input('payment_type') == 'Bank Transfer'){
                 if($this->cash() < $this->input('total_service_amount'))
                 {
                     $validator->errors()->add('cash', 'Your payment is less than the amount due');

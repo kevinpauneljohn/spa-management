@@ -40,6 +40,9 @@
                 @if(auth()->user()->hasRole('front desk'))
                     <x-point-of-sale.sales.pay-button :spaId="$spa->id" :salesId="$sale->id"/>
                     <x-point-of-sale.transactions.add-transaction :salesId="$sale->id"/>
+                    @if($sale->payment_status !== 'completed')
+                            <x-point-of-sale.transactions.buy-voucher :salesId="$sale->id" tableId="display-sales-client-2"/>
+                    @endif
                 @endif
 
             </span>

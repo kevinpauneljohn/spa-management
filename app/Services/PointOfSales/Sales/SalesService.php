@@ -3,6 +3,7 @@
 namespace App\Services\PointOfSales\Sales;
 
 use App\Models\Client;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class SalesService
@@ -48,7 +49,7 @@ class SalesService
                 return '<div style="width: 200px;">'.$clientNames.'</div>';
             })
             ->addColumn('total_amount',function($sale){
-                return '<span class="text-info">'.number_format($sale->transactions->sum('amount'),2).'</span>';
+                return '<span class="text-info">'.number_format($sale->transactions->sum('amount') + $sale->discounts->sum('price'),2).'</span>';
             })
             ->addColumn('rooms',function($sale){
                 $rooms = '';
@@ -108,14 +109,20 @@ class SalesService
             ])
             ->rawColumns(['clients','total_amount','action','invoice_number','payment_status','rooms'])
             ->with([
-                'transactions' => $transactions = collect($sales->pluck('transactions')),
+                'transactions' => collect($sales->pluck('transactions')),
                 'total_sales' => $sales->count(),
                 'pending_sales' => $sales->where('payment_status','pending')->count(),
                 'completed_sales' => $sales->where('payment_status','completed')->count(),
-                'total_expected_amount' => number_format($sales->pluck('transactions')->flatten()->sum('amount'),2),
+                'total_discounts' => $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price'),
+                'total_expected_amount' => number_format($sales->pluck('transactions')->flatten()->sum('amount') + $total_vouchers,2),
                 'total_clients' => $sales->pluck('transactions')->flatten()->count(),
                 'total_amount_paid' => number_format($sales->where('payment_status','completed')->sum('amount_paid'),2)
             ])
             ->make(true);
+    }
+
+    public function isSalesIdExists($salesId): bool
+    {
+        return DB::table('sales')->where('id',$salesId)->count() > 0;
     }
 }
