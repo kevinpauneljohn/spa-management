@@ -85,15 +85,15 @@
                 <label for="price">Price</label>
                 <input type="number" step="any" name="price" class="form-control" id="price" min="0">
             </div>
-            <div class="form-group client">
-                <label for="client">Assign Client</label>
-                <select name="client" class="form-control select2" id="client" style="width: 100%;">
-                    <option value=""> -- Select Client -- </option>
-                    @foreach($clients as $client)
-                        <option value="{{$client->id}}">{{ucwords(strtolower($client->full_name))}} - {{$client->mobile_number}}</option>
-                    @endforeach
-                </select>
-            </div>
+{{--            <div class="form-group client">--}}
+{{--                <label for="client">Assign Client</label>--}}
+{{--                <select name="client" class="form-control select2" id="client" style="width: 100%;">--}}
+{{--                    <option value=""> -- Select Client -- </option>--}}
+{{--                    @foreach($clients as $client)--}}
+{{--                        <option value="{{$client->id}}">{{ucwords(strtolower($client->full_name))}} - {{$client->mobile_number}}</option>--}}
+{{--                    @endforeach--}}
+{{--                </select>--}}
+{{--            </div>--}}
             <div class="form-group quantity">
                 <label for="quantity">Quantity</label>
                 <input type="number" name="quantity" min="0" max="50" class="form-control w-25" id="quantity">
