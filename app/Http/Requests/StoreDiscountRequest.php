@@ -32,7 +32,8 @@ class StoreDiscountRequest extends FormRequest
             'type' => ['required',Rule::in(['voucher','coupon'])],
             'value_type' => ['required',Rule::in(['amount','percentage'])],
             'amount' => ['required'],
-            'price' => [Rule::requiredIf($this->input('type') == 'voucher')]
+            'price' => [Rule::requiredIf($this->input('type') == 'voucher')],
+            'quantity' => ['min:0','max:50','numeric','nullable']
         ];
     }
 

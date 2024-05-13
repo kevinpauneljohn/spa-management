@@ -90,26 +90,37 @@ class DiscountService
                 }
                 return '<a href="'.route('pos.add.transaction',['spa' => $discount->sale->spa->id, 'sale' => $discount->sale->id]).'" class="text-primary" target="_blank">#'.$discount->sale->invoice_number.'</a>';
             })
+            ->addColumn('sales_invoice_claimed',function($discount){
+                if(is_null($discount->sales_id_claimed))
+                {
+                    return '';
+                }
+                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sales_claiming->spa->id, 'sale' => $discount->sales_claiming->id]).'" class="text-primary" target="_blank">#'.$discount->invoice_number_claimed.'</a>';
+            })
             ->addColumn('action',function($discount){
                 $action = '';
                 if(auth()->user()->can('view discounts'))
                 {
                     $action .= '<button class="btn btn-info btn-xs mr-1 view-bar-code" id="'.$discount->id.'">View Bar Code</button>';
-                    $action .= '<button class="btn btn-success btn-xs mr-1" id="'.$discount->id.'">View</button>';
+//                    $action .= '<button class="btn btn-success btn-xs mr-1" id="'.$discount->id.'">View</button>';
                 }
-                if(auth()->user()->can('edit discounts'))
-                {
-                    $action .= '<button class="btn btn-primary btn-xs mr-1" id="'.$discount->id.'">Edit</button>';
-                }
+//                if(auth()->user()->can('edit discounts'))
+//                {
+//                    $action .= '<button class="btn btn-primary btn-xs mr-1" id="'.$discount->id.'">Edit</button>';
+//                }
 
-                if(auth()->user()->can('delete discounts'))
+                if(auth()->user()->can('delete discounts') )
                 {
-                    $action .= '<button class="btn btn-danger btn-xs mr-1" id="'.$discount->id.'">Delete</button>';
+                    if(is_null($discount->sales_id_claimed) && is_null($discount->sale_id))
+                    {
+                        $action .= '<button class="btn btn-danger btn-xs mr-1 delete-discount" id="'.$discount->id.'">Delete</button>';
+                    }
+
                 }
 
                 return $action;
             })
-            ->rawColumns(['action','code','sales_invoice'])
+            ->rawColumns(['action','code','sales_invoice','sales_invoice_claimed'])
             ->make(true);
     }
 
@@ -125,15 +136,20 @@ class DiscountService
 
     public function saveDiscount($request): bool
     {
-        return (bool)Discount::create([
-            'title' => $request->input('title'),
-            'type' => $request->input('type'),
-            'is_amount' => $request->input('value_type') == "amount",
-            'amount' => $request->input('value_type') == "amount" ? $request->input('amount') : null,
-            'percent' => $request->input('value_type') == "percentage" ? $request->input('amount') : null,
-            'price' => $request->input('price'),
-            'client_id' => $request->input('client')
-        ]);
+        $quantity = $request->input('quantity');
+
+        for ($voucher = 1; $voucher <= $quantity; $voucher++){
+            Discount::create([
+                'title' => $request->input('title'),
+                'type' => $request->input('type'),
+                'is_amount' => $request->input('value_type') == "amount",
+                'amount' => $request->input('value_type') == "amount" ? $request->input('amount') : null,
+                'percent' => $request->input('value_type') == "percentage" ? $request->input('amount') : null,
+                'price' => $request->input('price'),
+                'client_id' => $request->input('client')
+            ]);
+        }
+        return true;
     }
 
     public function removeVoucher($voucherId): bool
@@ -143,6 +159,6 @@ class DiscountService
 
     public function getDiscountByCode($code)
     {
-        return Discount::where('code',$code)->first();
+        return Discount::where('code',$code)->where('date_claimed',null)->first();
     }
 }

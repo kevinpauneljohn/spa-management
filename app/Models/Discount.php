@@ -13,11 +13,21 @@ class Discount extends Model
         'code','title','type','is_amount','price','amount','percent','client_id','sales_id','date_claimed','sales_id_claimed'
     ];
 
-    protected $appends = ['discount_amount'];
+    protected $appends = ['discount_amount','invoice_number_claimed'];
 
     public function sale(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Sale::class);
+    }
+
+    public function getInvoiceNumberClaimedAttribute()
+    {
+        return substr($this->sales_id_claimed,0,8);
+    }
+
+    public function sales_claiming()
+    {
+        return $this->belongsTo(Sale::class,'sales_id_claimed');
     }
 
     public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo

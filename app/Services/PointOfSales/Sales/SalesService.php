@@ -21,7 +21,7 @@ class SalesService
                 $status = "";
                 $completed = $sale->transactions()->where('end_time','<',now())->count();
 
-                if($sale->transactions->count() === 0)
+                if($sale->transactions->count() === 0 && $sale->payment_status !== 'completed')
                 {
                     $status .= "No Transaction,";
                 }
@@ -100,7 +100,7 @@ class SalesService
                     {
                         $classes .= "payment-required";
                     }
-                    if($sale->transactions->count() === 0)
+                    if($sale->transactions->count() === 0 && $sale->payment_status !== 'completed')
                     {
                         $classes .= " no-transaction";
                     }

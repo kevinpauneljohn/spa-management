@@ -101,3 +101,47 @@ $(document).on('submit','#discount-form',function(form){
     });
 })
 
+$(document).on('click','.delete-discount',function(){
+    let id = this.id;
+    $tr = $(this).closest('tr');
+
+    let data = $tr.children("td").map(function () {
+        return $(this).text();
+    }).get();
+
+
+    Swal.fire({
+        title: '#'+data[2],
+        text: 'Delete Coupon/Voucher?',
+        showCancelButton: true,
+        confirmButtonText: 'Confirm',
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.value === true) {
+
+            $.ajax({
+                url: '/delete-discount/'+id,
+                type: 'delete',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                beforeSend: function(){
+                    addDiscountModal.find('.modal-content').append(overlay);
+                }
+            }).done(function(response){
+                console.log(response);
+                if(response.success === true)
+                {
+                    Swal.fire(response.message, '', 'success')
+                    $('#discount-list').DataTable().ajax.reload(null, false);
+                }else{
+                    Swal.fire(response.message, '', 'warning')
+                }
+            }).fail(function(xhr, status, error){
+                console.log(xhr)
+            }).always(function(){
+                addDiscountModal.find('.overlay').remove();
+            });
+
+        }
+    })
+});
+

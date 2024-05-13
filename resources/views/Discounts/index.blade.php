@@ -34,7 +34,8 @@
                     <th>Amount/Percent</th>
                     <th>Price</th>
                     <th>Client</th>
-                    <th>Sales Invoice</th>
+                    <th>Sales Invoice Purchased</th>
+                    <th>Sales Invoice Claimed</th>
                     <th>Date Claimed</th>
                     <th>Action</th>
                 </tr>
@@ -44,7 +45,9 @@
     </div>
 
     <x-adminlte-modal id="code-modal" title="Code Generator" theme="teal" size="sm">
-        <div id="code-content" style="display: flex; align-items: center; justify-content: center"></div>
+        <div style="border: solid 2px black; padding-top:20px;">
+            <div id="code-content" style="display: flex; align-items: center; justify-content: center"></div>
+        </div>
         <x-slot name="footerSlot">
             <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal" class="w-100"/>
         </x-slot>
@@ -91,6 +94,10 @@
                     @endforeach
                 </select>
             </div>
+            <div class="form-group quantity">
+                <label for="quantity">Quantity</label>
+                <input type="number" name="quantity" min="0" max="50" class="form-control w-25" id="quantity">
+            </div>
             <x-slot name="footerSlot">
                 <x-adminlte-button theme="success" label="Save" type="submit"/>
             </x-slot>
@@ -124,6 +131,7 @@
                     { data: 'price', name: 'price'},
                     { data: 'client_id', name: 'client_id'},
                     { data: 'sales_invoice', name: 'sales_invoice'},
+                    { data: 'sales_invoice_claimed', name: 'sales_invoice_claimed'},
                     { data: 'date_claimed', name: 'date_claimed'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
                 ],
@@ -131,6 +139,7 @@
                 order:[0,'desc'],
                 pageLength: 10
             });
+
         });
     </script>
 @stop

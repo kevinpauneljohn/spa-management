@@ -308,7 +308,6 @@
                     {
                         if(voucherScannedCode.indexOf(code) === -1)
                         {
-                            // console.log(voucherScannedCode.indexOf(code))
                             $.ajax({
                                 'url' : '/get-discount/'+code,
                                 type: 'get',
@@ -316,8 +315,16 @@
                                     payFormModal.find('.modal-content').append(overlay);
                                 }
                             }).done(function(response){
-                                // console.log(response)
+                                console.log(response)
                                 let value = "";
+                                if(response === '')
+                                {
+                                    Toast.fire({
+                                        type: 'warning',
+                                        title: 'Voucher already claimed'
+                                    });
+                                    $('.voucher-row').find('.voucher-code#'+id).val('').change();
+                                }
                                 if(response.is_amount === 1)
                                 {
                                     value = response.amount;

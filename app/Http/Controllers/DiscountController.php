@@ -81,6 +81,13 @@ class DiscountController extends Controller
         //
     }
 
+    public function deleteDiscount(Discount $discount): \Illuminate\Http\JsonResponse
+    {
+        return $discount->delete() ?
+            response()->json(['success' => true, 'message' => 'Coupon/Voucher successfully removed!']) :
+            response()->json(['success' => false, 'message' => 'An error occurred']);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

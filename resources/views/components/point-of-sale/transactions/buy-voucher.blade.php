@@ -53,8 +53,11 @@
                         $('#voucher').load(url+' #voucher option');
                         swal.fire(response.message, '', "success");
                         $('#{{$tableId}}').DataTable().ajax.reload(null, false);
-                        // buyVoucherModal.find('select[name=voucher]').val('').change();
                         $('#button-container').load('{{url()->current()}} #button-container');
+
+                        setTimeout(function(){
+                            buyVoucherModal.find('select[name=voucher]').val('').change();
+                        },1000)
 
                     }else{
                         swal.fire(response.message, '', "warning");

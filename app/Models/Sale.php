@@ -60,4 +60,8 @@ class Sale extends Model
         return $this->hasMany(Discount::class);
     }
 
+    public function vouchers()
+    {
+        return $this->hasMany(Discount::class,'sales_id_claimed');
+    }
 }
