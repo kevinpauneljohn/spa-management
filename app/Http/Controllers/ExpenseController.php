@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
+use App\Services\ExpenseService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,11 +23,11 @@ class ExpenseController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index(UserService $userService)
+    public function index(UserService $userService, ExpenseService $expenseService)
     {
         $pageTitle = 'Expenses';
         $owner = $userService->get_staff_owner(); //you may now call any related models
-        $spaId = 'bcbbc4a0-d928-425c-8aae-e367d81edf61';
+        $spaId = $owner->spas->first()->id;
         return view('expenses.index',compact('owner','pageTitle','spaId'));
     }
 

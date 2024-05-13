@@ -1,5 +1,4 @@
-<div>
-
+<div class="table-responsive">
 
     <table id="expense-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
         <thead>
@@ -33,7 +32,7 @@
                         <input type="text" name="title" class="form-control" id="title" />
                     </div>
                     <div class="form-group description">
-                        <label for="description">Description</label><span class="required">*</span>
+                        <label for="description">Description</label>
                         <textarea name="description" class="form-control" id="description" ></textarea>
                     </div>
                     <div class="form-group amount">
@@ -65,6 +64,10 @@
     @if(auth()->check())
         <script src="{{asset('js/alerts.js')}}"></script>
         <script>
+            let expenseId;
+            let expenseModal = $('#expense-modal');
+            let overlay = '<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>';
+            let tableName = $('#expense-list');
             $(document).ready(function(){
                 $('#expense-list').DataTable({
                     processing: true,
@@ -85,10 +88,7 @@
         </script>
         @if(auth()->user()->can('edit expenses'))
             <script>
-                let expenseId;
-                let expenseModal = $('#expense-modal');
-                let overlay = '<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>';
-                let tableName = $('#expense-list');
+
 
                 $(document).on('click','.edit-expense-btn', function(){
                     expenseId  = this.id;

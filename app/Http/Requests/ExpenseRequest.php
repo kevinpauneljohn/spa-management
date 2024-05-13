@@ -25,7 +25,7 @@ class ExpenseRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'description' => 'required|max:8000',
+            'description' => ['max:8000','nullable'],
             'amount' => 'required'
         ];
     }

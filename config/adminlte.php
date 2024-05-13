@@ -392,28 +392,28 @@ return [
             'icon' => 'fas fa-fw fa-shopping-cart',
             'can' => 'view inventory',
             'submenu' => [
-                [
-                    'text'    => 'Categories',
-                    'shift'   => 'ml-3',
-                    'route'  => 'inventory-categories.index',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view category'
-                ],
-                [
-                    'text'    => 'Inventories',
-                    'shift'   => 'ml-3',
-                    'route'  => 'inventories.index',
-                    'icon'  => 'fas fa-angle-right',
-                ],
+                    [
+                        'text'    => 'Categories',
+                        'shift'   => 'ml-3',
+                        'route'  => 'inventory-categories.index',
+                        'icon'  => 'fas fa-angle-right',
+                        'can' => 'view category'
+                    ],
+                    [
+                        'text'    => 'Inventories',
+                        'shift'   => 'ml-3',
+                        'route'  => 'inventories.index',
+                        'icon'  => 'fas fa-angle-right',
+                    ],
+            ],
         ],
+        [
+            'text' => 'Expense Management',
+            'route'  => 'expenses.index',
+            'icon' => 'fas fa-fw fa-chart-pie',
+            'can' => 'view expenses'
+
         ],
-//        [
-//            'text' => 'Expense Management',
-//            'route'  => 'expenses.index',
-//            'icon' => 'fas fa-fw fa-chart-pie',
-//            'can' => 'view expenses'
-//
-//        ],
         [
             'text' => 'Product Management',
             'url'  => '#',

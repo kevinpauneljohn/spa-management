@@ -12,7 +12,7 @@
 }
 
 #description{
-    min-height: 250px;
+    min-height: 100px;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {

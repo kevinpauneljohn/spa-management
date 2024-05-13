@@ -6,11 +6,52 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ExpenseService
 {
+    public $types = [
+            [
+                'name' => 'Cost Of Goods Sold',
+                'description' => '',
+            ],
+            [
+                'name' => 'Marketing Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Advertising Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Salaries Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Rent Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Extraordinary Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Non-Operating Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Non-Cash Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Prepaid Expense',
+                'description' => '',
+            ],
+            [
+                'name' => 'Accrued Expense',
+                'description' => '',
+            ],
+        ];
     public function expenses($expenses)
     {
         return DataTables::of($expenses)
             ->editColumn('created_at',function($expense){
-//                return $expense->created_at->format('M d, Y');
                 return $expense->created_at->format('m-d-y');
             })
             ->editColumn('title',function($expense){

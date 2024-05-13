@@ -3,7 +3,7 @@
 @endcan
 
 @push('js')
-    @can('add expenses')
+    @if(auth()->user()->can('add expenses'))
         <script>
             let spaId = '{{$spaId}}';
             $(document).on('click','#add-expense', function(){
@@ -56,5 +56,5 @@
                     });
             });
         </script>
-    @endcan
+    @endif
 @endpush
