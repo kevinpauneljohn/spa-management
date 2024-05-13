@@ -47,7 +47,7 @@
 
             </span>
         </div>
-        <div class="card-body table-wrapper">
+        <div class="card-body table-wrapper table-responsive">
             <x-sales-transaction-table :spaId="$spa->id" :saleId="$sale->id" tableId="display-sales-client-2"/>
         </div>
     </div>

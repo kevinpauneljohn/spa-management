@@ -28,6 +28,7 @@
                 <thead>
                 <tr role="row">
                     <th>Date Added</th>
+                    <th>Title</th>
                     <th>Code</th>
                     <th>Type</th>
                     <th>Amount/Percent</th>
@@ -53,6 +54,10 @@
     <form id="discount-form">
         @csrf
         <x-adminlte-modal id="add-discount" title="Add Voucher/Coupon" theme="teal">
+            <div class="form-group title">
+                <label for="title">Title</label> <span class="font-italic">(Optional)</span>
+                <input type="text" name="title" class="form-control" id="title">
+            </div>
             <div class="form-group type">
                 <label for="type">Type</label>
                 <select name="type" id="type" class="form-control">
@@ -112,6 +117,7 @@
                 ajax: '{!! route('discount.table') !!}',
                 columns: [
                     { data: 'created_at', name: 'created_at', className: 'text-center' },
+                    { data: 'title', name: 'title'},
                     { data: 'code', name: 'code'},
                     { data: 'type', name: 'type'},
                     { data: 'discount_amount', name: 'discount_amount'},

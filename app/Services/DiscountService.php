@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Discount;
+use Illuminate\Support\Facades\DB;
 use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
 use Spatie\Permission\Models\Permission;
@@ -12,10 +13,20 @@ class DiscountService
 {
     public function checkPermissions()
     {
-        $this->createViewDiscount()
+        $this->createAccessDiscounts()
+            ->createViewDiscount()
             ->createAddDiscount()
             ->createEditDiscount()
             ->createDeleteDiscount();
+    }
+
+    private function createAccessDiscounts(): DiscountService
+    {
+        if(Permission::where('name','access discounts')->count() == 0)
+        {
+            Permission::create(['name' => 'access discounts'])->syncRoles(['owner']);
+        }
+        return $this;
     }
 
     private function createViewDiscount(): DiscountService
@@ -58,6 +69,9 @@ class DiscountService
         return DataTables::of($query)
             ->editColumn('created_at',function($discount){
                 return $discount->created_at->format('M d, Y g:i:s a');
+            })
+            ->editColumn('title',function($discount){
+                return ucwords($discount->title);
             })
             ->editColumn('code',function($discount){
                 return $discount->code;
@@ -112,6 +126,7 @@ class DiscountService
     public function saveDiscount($request): bool
     {
         return (bool)Discount::create([
+            'title' => $request->input('title'),
             'type' => $request->input('type'),
             'is_amount' => $request->input('value_type') == "amount",
             'amount' => $request->input('value_type') == "amount" ? $request->input('amount') : null,
@@ -119,6 +134,11 @@ class DiscountService
             'price' => $request->input('price'),
             'client_id' => $request->input('client')
         ]);
+    }
+
+    public function removeVoucher($voucherId): bool
+    {
+        return (bool)DB::table('discounts')->where('id',$voucherId)->update(['sale_id' => null]);
     }
 
     public function getDiscountByCode($code)

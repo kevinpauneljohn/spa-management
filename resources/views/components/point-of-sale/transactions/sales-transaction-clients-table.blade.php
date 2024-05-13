@@ -93,7 +93,7 @@
                         }
 
                         $.each(transaction.vouchers,function(key, value){
-                            let voidButton = transaction.sale_status !== 'completed' ? '<button type="button" class="btn btn-sm btn-outline-danger m-1 void-transaction" id="'+value.id+'" title="Void Transaction"><i class="fas fa-times"></i></button>' : '';
+                            let voidButton = transaction.sale_status !== 'completed' ? '<button type="button" class="btn btn-sm btn-outline-danger m-1 remove-voucher" id="'+value.id+'" title="Void Transaction"><i class="fas fa-times"></i></button>' : '';
                             $('#{{$tableId}}').find('tbody').append('<tr><td colspan="2" class="text-primary">Voucher</td><td class="text-primary">'+value.amount+'</td>' +
                                 '<td class="text-danger text-bold">'+value.price+'</td><td colspan="11"></td><td class="text-center">'+voidButton+'</td></tr>')
                         })
@@ -112,6 +112,29 @@
                 });
 
             });
+
+            $(document).on('click','.remove-voucher',function(){
+                let id = this.id;
+                $.ajax({
+                    url: '/discounts/'+id,
+                    type: 'delete',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    beforeSend: function(){
+
+                    }
+                }).done(function(response){
+                    console.log(response)
+                    $('#button-container').load('{{url()->current()}} #button-container');
+                    $('.display-sales-client').DataTable().ajax.reload(null, false);
+
+                    let url = window.location.href;
+                    $('#voucher').load(url+' #voucher option');
+                }).fail(function(xhr, status, error){
+                    console.log(xhr)
+                }).always(function(){
+
+                });
+            })
         </script>
     @endpush
 

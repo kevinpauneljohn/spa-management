@@ -373,6 +373,7 @@ return [
             'text' => 'Discounts',
             'route'  => 'discounts.index',
             'icon' => 'fas fa-fw fa-search-dollar',
+            'can' => 'access discounts'
         ],
         [
             'text' => 'Client Management',

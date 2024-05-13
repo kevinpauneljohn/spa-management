@@ -2,13 +2,13 @@
 <form id="buy-voucher-form">
     @csrf
     <x-adminlte-modal id="buy-voucher-modal" title="Account Policy" theme="olive"
-                      icon="fas fa-bell" v-centered static-backdrop scrollable>
+                      icon="fas fa-bell" size="lg" v-centered static-backdrop scrollable>
         <div>
             <div class="form-group voucher">
                 <x-adminlte-select2 name="voucher" id="voucher">
                     <option value="">-- Select Voucher</option>
                     @foreach($vouchers as $voucher)
-                        <option value="{{$voucher->id}}">{{$voucher->is_amount ? $voucher->amount  :$voucher->percent.'%'}}</option>
+                        <option value="{{$voucher->id}}">{{$voucher->is_amount ? $voucher->amount  :$voucher->percent.'%'}} - {{$voucher->title}}</option>
                     @endforeach
                 </x-adminlte-select2>
             </div>
@@ -23,6 +23,9 @@
     @push('js')
         <script>
             let buyVoucherModal = $('#buy-voucher-modal');
+            $(document).ready(function (){
+
+            });
 
             $(document).on('click','#buy-voucher-btn', function(){
                 buyVoucherModal.modal('toggle');
@@ -46,9 +49,13 @@
 
                     if(response.success === true)
                     {
+                        let url = window.location.href;
+                        $('#voucher').load(url+' #voucher option');
                         swal.fire(response.message, '', "success");
                         $('#{{$tableId}}').DataTable().ajax.reload(null, false);
-                        buyVoucherModal.find('select[name=voucher]').val('').change();
+                        // buyVoucherModal.find('select[name=voucher]').val('').change();
+                        $('#button-container').load('{{url()->current()}} #button-container');
+
                     }else{
                         swal.fire(response.message, '', "warning");
                     }
@@ -59,7 +66,7 @@
                         buyVoucherModal.find('#'+key).addClass('is-invalid').closest('.'+key).append('<p class="text-danger">'+value+'</p>');
                     });
                 }).always(function(){
-
+                    $('#buy-voucher-form').trigger('reset');
                 });
             });
         </script>

@@ -18,7 +18,7 @@ class DiscountController extends Controller
     {
         $this->discountService = $discountService;
         $this->discountService->checkPermissions();
-        $this->middleware(['permission:view discounts'])->only(['index','discountTable']);
+        $this->middleware(['permission:access discounts'])->only(['index','discountTable']);
     }
     /**
      * @return Application|Factory|View
@@ -85,11 +85,13 @@ class DiscountController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Discount  $discount
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Discount $discount)
+    public function destroy(Discount $discount, DiscountService $discountService)
     {
-        //
+        return $discountService->removeVoucher($discount->id) ?
+            response()->json(['success' => true, 'message' => 'Voucher successfully removed']) :
+            response()->json(['success' => false, 'message' => 'An error occurred']) ;
     }
 
     public function discountTable()

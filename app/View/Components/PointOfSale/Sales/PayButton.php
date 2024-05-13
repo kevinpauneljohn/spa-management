@@ -2,6 +2,7 @@
 
 namespace App\View\Components\PointOfSale\Sales;
 
+use App\Models\Discount;
 use App\Models\Sale;
 use Illuminate\View\Component;
 
@@ -22,7 +23,8 @@ class PayButton extends Component
         $this->salesId = $salesId;
 
         $this->sales = Sale::find($salesId);
-        $this->display = $this->sales->payment_status === 'pending' && $this->sales->transactions->count() > 0;
+        $discounts = Discount::where('sale_id',$salesId)->count();
+        $this->display = $this->sales->payment_status === 'pending' && $this->sales->transactions->count() > 0 || $discounts > 0;
     }
 
     /**
