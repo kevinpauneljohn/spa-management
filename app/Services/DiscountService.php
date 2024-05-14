@@ -154,7 +154,7 @@ class DiscountService
 
     public function removeVoucher($voucherId): bool
     {
-        return (bool)DB::table('discounts')->where('id',$voucherId)->update(['sale_id' => null]);
+        return (bool)DB::table('discounts')->where('id',$voucherId)->update(['sale_id' => null,'payment_status' => null]);
     }
 
     public function getDiscountByCode($code)
