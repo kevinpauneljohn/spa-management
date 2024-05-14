@@ -354,6 +354,7 @@ class TransactionService extends SalesService
 
         $voucher = Discount::find($voucherId);
         $voucher->sale_id = $salesId;
+        $voucher->payment_status = 'pending';
         return (bool)$voucher->save();
     }
 }

@@ -116,4 +116,11 @@ class DiscountController extends Controller
     {
         return $discountService->getDiscountByCode($code);
     }
+
+    public function checkVoucherAvailability($code, DiscountService $discountService)
+    {
+        return $discountService->checkVoucherAvailability($code);
+    }
+
+
 }

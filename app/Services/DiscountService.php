@@ -159,6 +159,12 @@ class DiscountService
 
     public function getDiscountByCode($code)
     {
-        return Discount::where('code',$code)->where('date_claimed',null)->first();
+        return Discount::where('code',$code)->where('payment_status','completed')->where('date_claimed',null)->first();
     }
+
+    public function checkVoucherAvailability($code)
+    {
+        return Discount::where('code',$code)->where('sale_id',null)->where('date_claimed',null)->first();
+    }
+
 }

@@ -95,7 +95,7 @@
                         $.each(transaction.vouchers,function(key, value){
                             let voidButton = transaction.sale_status !== 'completed' ? '<button type="button" class="btn btn-sm btn-outline-danger m-1 remove-voucher" id="'+value.id+'" title="Void Transaction"><i class="fas fa-times"></i></button>' : '';
                             $('#{{$tableId}}').find('tbody').append('<tr><td colspan="2" class="text-primary">Voucher</td><td class="text-primary">'+value.amount+'</td>' +
-                                '<td class="text-danger text-bold">'+value.price+'</td><td colspan="11"></td><td class="text-center">'+voidButton+'</td></tr>')
+                                '<td class="text-danger text-bold">'+value.price+'</td><td colspan="9">'+value.title+'</td><td colspan="2"></td><td class="text-center">'+voidButton+'</td></tr>')
                         })
                         $('#{{$tableId}}').find('tbody')
                             .append('<tr><td class="text-bold" colspan="@if($displayAllColumns === false) 2 @else 7 @endif">Total Amount: <span class="text-primary">'+transaction.total_amount+'</span></td>' +

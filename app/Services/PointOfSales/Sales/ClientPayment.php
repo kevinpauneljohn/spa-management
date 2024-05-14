@@ -63,6 +63,7 @@ class ClientPayment extends AmountToBePaid
         else{
             return $this->nonCash($salesId, $paymentType, $referenceNo, $nonCashAmount, $amount);
         }
+
     }
 
 
@@ -94,6 +95,11 @@ class ClientPayment extends AmountToBePaid
             return true;
         }
         return false;
+    }
+
+    private function payVoucher($salesId)
+    {
+        DB::table('discounts')->where('sale_id',$salesId)->update(['payment_status' => 'completed']);
     }
 
     /**
@@ -134,6 +140,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
+                $this->payVoucher($salesId);
                 $this->saveSalesShiftPayments($paymentType, ($amount - $sales->change), null, $sales->change, null, $sales->id);
                 $this->updateCashDrawer($sales->amount_paid, $sales->change);
                 $this->activityLogs($sales, $amount);
@@ -174,6 +181,7 @@ class ClientPayment extends AmountToBePaid
 
             if($sales->save())
             {
+                $this->payVoucher($salesId);
                 $this->saveSalesShiftPayments($paymentType, ($cashAmount - $sales->change), $nonCashAmount, $sales->change, $referenceNo, $sales->id);
                 $this->updateCashDrawer($cashAmount, $sales->change);
                 $this->activityLogs($sales, 0);

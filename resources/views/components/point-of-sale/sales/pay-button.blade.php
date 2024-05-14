@@ -306,7 +306,7 @@
                     let id = this.id;
                     if(code.length === 8)
                     {
-                        if(voucherScannedCode.indexOf(code) === -1)
+                        if(voucherScannedCode.indexOf(code) == -1)
                         {
                             $.ajax({
                                 'url' : '/get-discount/'+code,

@@ -184,7 +184,6 @@ class SalesController extends Controller
 
     public function pay(PaymentRequest $request, $salesId, ClientPayment $payment)
     {
-//        return $request->all();
         $paymentType = $request->payment_type;
         $amount = collect($request->all())->has('cash') ? $request->cash : 0;
         $nonCashAmount = $this->nonCashPayment($paymentType, $request, $request->input('total_service_amount'));
@@ -250,7 +249,7 @@ class SalesController extends Controller
         $request->validate([
             'voucher' => ['required']
         ]);
-        return $transactionService->buyVoucher($request->input('voucher'), $request->input('sales_id')) ?
+        return $transactionService->buyVoucher($request->input('voucher_id'), $request->input('sales_id')) ?
             response()->json(['success' => true, 'message' => 'Voucher successfully added!']) :
             response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
