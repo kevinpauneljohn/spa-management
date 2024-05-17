@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 
 class ExpenseService
@@ -51,8 +52,8 @@ class ExpenseService
     public function expenses($expenses)
     {
         return DataTables::of($expenses)
-            ->editColumn('created_at',function($expense){
-                return $expense->created_at->format('m-d-y');
+            ->editColumn('date_expended',function($expense){
+                return Carbon::parse($expense->date_expended)->format('M-d-Y');
             })
             ->editColumn('title',function($expense){
                 return ucfirst($expense->title);

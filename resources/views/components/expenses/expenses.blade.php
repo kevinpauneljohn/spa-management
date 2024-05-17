@@ -27,6 +27,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group date_expended">
+                        <label for="date_expended">Date</label>
+                        <input type="date" name="date_expended" id="date_expended" class="form-control" >
+                    </div>
                     <div class="form-group title">
                         <label for="title">Title</label><span class="required">*</span>
                         <input type="text" name="title" class="form-control" id="title" />
@@ -74,7 +78,7 @@
                     serverSide: true,
                     ajax: '{!! route('spa.expenses',['spa' => $spaId]) !!}',
                     columns: [
-                        { data: 'created_at', name: 'created_at', className: 'text-center' },
+                        { data: 'date_expended', name: 'date_expended'},
                         { data: 'title', name: 'title'},
                         { data: 'description', name: 'description'},
                         { data: 'amount', name: 'amount'},

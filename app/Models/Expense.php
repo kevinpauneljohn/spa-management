@@ -10,8 +10,8 @@ class Expense extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $fillable = ['title','description','amount','spa_id'];
+    protected $fillable = ['title','description','amount','spa_id','date_expended'];
 
-    protected static $logAttributes = ['title','description','amount','spa_id'];
+    protected static $logAttributes = ['title','description','amount','spa_id','date_expended'];
 }
 
