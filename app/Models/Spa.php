@@ -71,8 +71,8 @@ class Spa extends Model
     public function displayExpensesFromDateRange($dateFrom, $dateTo): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->expenses()
-            ->whereDate('created_at','>=',$dateFrom)
-            ->whereDate('created_at','<=',$dateTo);
+            ->whereDate('date_expended','>=',$dateFrom)
+            ->whereDate('date_expended','<=',$dateTo);
     }
 
     public function sales()

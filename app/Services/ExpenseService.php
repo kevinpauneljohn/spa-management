@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class ExpenseService
@@ -74,6 +75,9 @@ class ExpenseService
                 return $action;
             })
             ->rawColumns(['action'])
+            ->with([
+                'total_expenses' => number_format($expenses->sum('amount'),2)
+            ])
             ->make(true);
     }
 }

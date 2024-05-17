@@ -86,7 +86,15 @@
                     ],
                     responsive:true,
                     order:[0,'desc'],
-                    pageLength: 5
+                    pageLength: 10,
+                    drawCallback: function(row){
+                        let expenses = row.json;
+
+                        $('#expense-list').find('tbody')
+                            .append('<tr class="sales-info-bg">' +
+                                '<td colspan="3"></td>' +
+                                '<td colspan="2">Total Amount: <span class="text-primary" ">'+expenses.total_expenses+'</span></td></tr>')
+                    }
                 });
             });
         </script>
