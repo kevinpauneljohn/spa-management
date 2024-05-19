@@ -94,7 +94,7 @@ class ReportService
             $sales = Sale::whereBetween('paid_at', [$startDate, $endDate])
                 ->where('payment_status', 'completed')
                 ->whereIn('spa_id', $spa_ids)
-                ->sum('amount_paid');
+                ->sum('total_amount');
 
             $data [] = $sales;
         }
@@ -108,14 +108,14 @@ class ReportService
             ->where('payment_status', 'completed')
             ->whereMonth('paid_at', $month)
             ->whereIn('spa_id', $spa_ids)
-            ->sum('amount_paid');
+            ->sum('total_amount');
 
         $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
         $lastMonthSales = Sale::whereYear('paid_at', $lastMonth->year)
             ->whereMonth('paid_at', $lastMonth->month)
             ->where('payment_status', 'completed')
             ->whereIn('spa_id', $spa_ids)
-            ->sum('amount_paid');
+            ->sum('total_amount');
 
         if ($lastMonthSales == 0) {
             $percentageChange = 0;

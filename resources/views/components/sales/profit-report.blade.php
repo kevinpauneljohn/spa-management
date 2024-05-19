@@ -6,7 +6,7 @@
         </p>
         <p class="d-flex flex-column text-right">
                 <span class="font-weight-bold">
-                  <i class="ion ion-android-arrow-up text-success"></i> {{number_format($sales,2)}}
+                  <i class="ion ion-android-arrow-up text-success"></i> {{number_format($total_sales,2)}}
                 </span>
             <span class="text-muted">Total Sales</span>
         </p>
