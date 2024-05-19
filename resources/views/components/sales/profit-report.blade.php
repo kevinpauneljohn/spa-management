@@ -1,4 +1,5 @@
 <div>
+    {{now()->format('Y')}}
     <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
         <p class="text-success text-xl">
             <i class="ion ion-ios-refresh-empty"></i>

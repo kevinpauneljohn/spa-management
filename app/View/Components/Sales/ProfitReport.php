@@ -21,9 +21,9 @@ class ProfitReport extends Component
         $current_year = now()->format('Y');
         $this->sales = DB::table('sales')->where('spa_id',$spaId)
             ->where('payment_status','completed')
-            ->whereYear('paid_at',$current_year)->sum('amount_paid');
+            ->whereYear('created_at','=',$current_year)->sum('amount_paid');
 
-        $this->expenses = DB::table('expenses',$current_year)->where('spa_id',$spaId)->sum('amount');
+        $this->expenses = DB::table('expenses')->whereYear('date_expended','=',$current_year)->where('spa_id',$spaId)->sum('amount');
 
         $this->profit = $this->sales - $this->expenses;
     }
