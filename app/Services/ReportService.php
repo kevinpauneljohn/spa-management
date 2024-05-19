@@ -10,7 +10,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
-{    
+{
     public function salesReport($request, $owner_id)
     {
         $spa_ids = [];
@@ -85,17 +85,17 @@ class ReportService
     {
         $startOfYear = Carbon::create($year, 1, 1);
         $endOfYear = Carbon::create($year, 12, 31);
-        
+
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-    
+
             $sales = Sale::whereBetween('paid_at', [$startDate, $endDate])
-                ->where('payment_status', 'paid')
+                ->where('payment_status', 'completed')
                 ->whereIn('spa_id', $spa_ids)
                 ->sum('amount_paid');
-    
+
             $data [] = $sales;
         }
 
@@ -105,42 +105,42 @@ class ReportService
     protected function getMonthlySalesPercentageChange($spa_ids, $year, $month)
     {
         $currentMonthSales = Sale::whereYear('paid_at', $year)
-            ->where('payment_status', 'paid')
+            ->where('payment_status', 'completed')
             ->whereMonth('paid_at', $month)
             ->whereIn('spa_id', $spa_ids)
             ->sum('amount_paid');
-    
+
         $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
         $lastMonthSales = Sale::whereYear('paid_at', $lastMonth->year)
             ->whereMonth('paid_at', $lastMonth->month)
-            ->where('payment_status', 'paid')
+            ->where('payment_status', 'completed')
             ->whereIn('spa_id', $spa_ids)
             ->sum('amount_paid');
-    
+
         if ($lastMonthSales == 0) {
             $percentageChange = 0;
         } else {
             $percentageChange = (($currentMonthSales - $lastMonthSales) / $lastMonthSales) * 100;
         }
-    
+
         return number_format($percentageChange, 2);
     }
-    
+
     protected function getDataVisitorForYear($year, $spa_ids)
     {
         $startOfYear = Carbon::create($year, 1, 1);
         $endOfYear = Carbon::create($year, 12, 31);
-        
+
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
-    
+
             $sales = Transaction::whereBetween('end_time', [$startDate, $endDate])
             ->where('amount','>', 0)
                 ->whereIn('spa_id', $spa_ids)
                 ->count();
-    
+
             $data [] = $sales;
         }
 
@@ -154,20 +154,20 @@ class ReportService
             ->whereMonth('end_time', $month)
             ->whereIn('spa_id', $spa_ids)
             ->count();
-    
+
         $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
         $lastMonthVisitor = Transaction::whereYear('end_time', $lastMonth->year)
             ->whereMonth('end_time', $lastMonth->month)
             ->where('amount','>', 0)
             ->whereIn('spa_id', $spa_ids)
             ->count();
-    
+
         if ($lastMonthVisitor == 0) {
             $percentageChange = 0;
         } else {
             $percentageChange = (($currentMonthVisitors - $lastMonthVisitor) / $lastMonthVisitor) * 100;
         }
-    
+
         return number_format($percentageChange, 2);
     }
 }

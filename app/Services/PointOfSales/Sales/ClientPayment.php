@@ -2,7 +2,9 @@
 
 namespace App\Services\PointOfSales\Sales;
 
+use App\Models\Expense;
 use App\Models\Payment;
+use App\Models\Sale;
 use App\Models\SalesShift;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Contracts\Activity;
@@ -89,7 +91,7 @@ class ClientPayment extends AmountToBePaid
         if($sales->save())
         {
             $this->saveSalesShiftPayments($paymentType, ($amount - $sales->change), null, $sales->change, null, $sales->id);
-            $this->claimVoucher($salesId, $voucherCode);
+            $this->claimVoucher($salesId, $voucherCode, $voucherAmount);
             $this->updateCashDrawer($cashAmount, 0);
             $this->activityLogs($sales, $amount);
             return true;
@@ -109,10 +111,24 @@ class ClientPayment extends AmountToBePaid
      * @param $voucherCode
      * @return void
      */
-    private function claimVoucher($salesId, $voucherCode): void
+    private function claimVoucher($salesId, $voucherCode, $voucherAmount): void
     {
-        DB::table('discounts')->whereIn('code', $voucherCode)->update([
+        $sales= Sale::find($salesId);
+        $vouchers = DB::table('discounts')->whereIn('code', $voucherCode);
+        $vouchers->update([
             'sales_id_claimed' => $salesId, 'date_claimed' => now()
+        ]);
+        $this->saveVoucherToExpenses($voucherCode, $sales->invoice_number, $sales->spa_id, $voucherAmount);
+    }
+
+    private function saveVoucherToExpenses($vouchers, $salesInvoice, $spa_id, $voucherAmount)
+    {
+        Expense::create([
+            'title' => 'Voucher Claimed',
+            'description' => nl2br('Sales invoice# '.$salesInvoice.'--/-- Voucher Used: '.collect($vouchers)->toJson()),
+            'amount' => $voucherAmount,
+            'spa_id' => $spa_id,
+            'date_expended' => now()->format('Y-m-d')
         ]);
     }
 

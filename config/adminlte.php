@@ -364,7 +364,7 @@ return [
             'can' => 'view spa'
         ],
         [
-            'text' => 'Sales Management',
+            'text' => 'Sales Report',
             'route'  => 'spa.sales.report',
             'icon' => 'fas fa-fw fa-search-dollar',
             'can' => 'view sales management'

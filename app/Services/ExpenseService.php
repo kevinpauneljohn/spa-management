@@ -59,6 +59,9 @@ class ExpenseService
             ->editColumn('title',function($expense){
                 return ucfirst($expense->title);
             })
+            ->editColumn('description',function($expense){
+                return nl2br($expense->description);
+            })
             ->editColumn('amount',function($expense){
                 return number_format($expense->amount,2);
             })
@@ -74,7 +77,7 @@ class ExpenseService
                 }
                 return $action;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','description'])
             ->with([
                 'total_expenses' => number_format($expenses->sum('amount'),2)
             ])
