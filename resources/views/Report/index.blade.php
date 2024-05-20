@@ -41,7 +41,7 @@
           <div class="card-body">
             <div class="d-flex">
               <p class="d-flex flex-column">
-                <span class="text-bold text-lg currentMonthVisitors"></span>
+                <span class="text-bold text-lg currentMonthVisitors text-orange"></span>
                 <span>Visitors {{date('F, Y')}}</span>
               </p>
               <p class="ml-auto d-flex flex-column text-right">
@@ -60,7 +60,7 @@
 
             <div class="d-flex flex-row justify-content-end">
               <span class="mr-2">
-                <i class="fas fa-square text-primary"></i> This year
+                <i class="fas fa-square text-success"></i> This year
               </span>
 
               <span>
@@ -102,7 +102,7 @@
           <div class="card-body">
             <div class="d-flex">
               <p class="d-flex flex-column">
-                <span class="text-bold text-lg currentMonthSales"></span>
+                <span class="text-bold text-lg currentMonthSales text-orange"></span>
                 <span>Sales {{date('F, Y')}}</span>
               </p>
               <p class="ml-auto d-flex flex-column text-right">
@@ -121,7 +121,7 @@
 
             <div class="d-flex flex-row justify-content-end">
               <span class="mr-2">
-                <i class="fas fa-square text-primary"></i> This year
+                <i class="fas fa-square text-success"></i> This year
               </span>
 
               <span>

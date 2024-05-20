@@ -2,15 +2,15 @@
 
 // $(function () {
     //'use strict'
-  
+
     var ticksStyle = {
       fontColor: '#495057',
       fontStyle: 'bold'
     }
-  
+
     var mode = 'index'
     var intersect = true
-  
+
     var $salesChart = $('#sales-chart')
     // eslint-disable-next-line no-unused-vars
     var salesChart = new Chart($salesChart, {
@@ -20,8 +20,8 @@
           datasets: [{
               label: 'Current Year',
               data: [],
-              backgroundColor: '#007bff',
-              borderColor: '#007bff',
+              backgroundColor: '#28a745',
+              borderColor: '#28a745',
               borderWidth: 1
           }, {
               label: 'Last Year',
@@ -61,7 +61,7 @@
                   value /= 1000
                   value += 'k'
                 }
-  
+
                 return '₱' + value;
               }
             }, ticksStyle)
@@ -101,13 +101,13 @@
                 salesChart.data.datasets[0].data = data.sales.currentYearValues;
                 salesChart.data.datasets[1].data = data.sales.lastYearValues;
                 salesChart.update();
-  
+
                 if (data.sales.percentageSalesStatus) {
                   if (!$('.textPercentage').hasClass('text-success')) {
                     $('.textPercentage').addClass('text-success');
                     $('.textPercentage').removeClass('text-danger');
                   }
-  
+
                   if (!$('.iconPercentage').hasClass('fa-arrow-up')) {
                     $('.iconPercentage').addClass('fa-arrow-up');
                     $('.iconPercentage').removeClass('fa-arrow-down');
@@ -117,7 +117,7 @@
                     $('.textPercentage').addClass('text-danger');
                     $('.textPercentage').removeClass('text-success');
                   }
-  
+
                   if (!$('.iconPercentage').hasClass('fa-arrow-down')) {
                     $('.iconPercentage').addClass('fa-arrow-down');
                     $('.iconPercentage').removeClass('fa-arrow-up');
@@ -125,7 +125,7 @@
                 }
                 $('.lastMonthPercentage').text(data.sales.lastMonthSalesComparison + '%');
                 $('.currentMonthSales').html('&#8369; '+data.sales.currentMonthSales);
-              } 
+              }
               if (data.visitors) {
                 visitorsChart.data.labels = data.visitors.labels;
                 visitorsChart.data.datasets[0].data = data.visitors.currentYearValues;
@@ -137,7 +137,7 @@
                     $('.textVisitorPercentage').addClass('text-success');
                     $('.textVisitorPercentage').removeClass('text-danger');
                   }
-  
+
                   if (!$('.iconVisitorPercentage').hasClass('fa-arrow-up')) {
                     $('.iconVisitorPercentage').addClass('fa-arrow-up');
                     $('.iconVisitorPercentage').removeClass('fa-arrow-down');
@@ -147,7 +147,7 @@
                     $('.textVisitorPercentage').addClass('text-danger');
                     $('.textVisitorPercentage').removeClass('text-success');
                   }
-  
+
                   if (!$('.iconVisitorPercentage').hasClass('fa-arrow-down')) {
                     $('.iconVisitorPercentage').addClass('fa-arrow-down');
                     $('.iconVisitorPercentage').removeClass('fa-arrow-up');
@@ -162,7 +162,7 @@
           }
       });
     }
-  
+
     var $visitorsChart = $('#visitors-chart')
     // eslint-disable-next-line no-unused-vars
     var visitorsChart = new Chart($visitorsChart, {
@@ -172,8 +172,8 @@
         datasets: [{
             label: 'Current Year',
             data: [],
-            backgroundColor: '#007bff',
-            borderColor: '#007bff',
+            backgroundColor: '#28a745',
+            borderColor: '#28a745',
             borderWidth: 1
         }, {
             label: 'Last Year',
@@ -221,6 +221,5 @@
       }
     })
   // })
-  
+
   // lgtm [js/unused-local-variable]
-  
