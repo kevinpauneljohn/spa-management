@@ -27,7 +27,7 @@
             $('#profit-report').daterangepicker();
             setTimeout(function(){
                 $('#profit-report').val('{{now()->startOfMonth()->format('m/d/Y')}} - {{now()->endOfMonth()->format('m/d/Y')}}').change();
-            },1000)
+            },50)
 
         });
 
@@ -41,9 +41,9 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             }).done((response) => {
                 console.log(response)
-                profitReportComponent.find('#total-sales').text(response.sales);
-                profitReportComponent.find('#total-expenses').text(response.expenses);
-                profitReportComponent.find('#total-profit').text(response.profit);
+                profitReportComponent.find('#total-sales').html('&#8369; '+response.sales);
+                profitReportComponent.find('#total-expenses').html('&#8369; '+response.expenses);
+                profitReportComponent.find('#total-profit').html('&#8369; '+response.profit);
 
                 $('#date-range-title').text('As of '+response.startDate+' to '+response.endDate)
             });

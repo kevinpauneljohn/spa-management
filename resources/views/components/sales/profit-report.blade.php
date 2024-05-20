@@ -29,7 +29,7 @@
         </p>
         <p class="d-flex flex-column text-right">
                 <span class="font-weight-bold">
-                  <i class="ion ion-android-arrow-down text-danger"></i> <span id="total-profit">{{number_format($profit,2)}}</span>
+                  <i class="ion ion-android-arrow-down text-danger"></i> <span id="total-profit" class="text-orange">{{number_format($profit,2)}}</span>
                 </span>
             <span class="text-muted">Total Profit</span>
         </p>
