@@ -84,7 +84,7 @@
             </div>
           </div>
           <div class="card-body table-responsive">
-              <h5 id="date-range-title" class="text-info"></h5>
+{{--              <h5 id="date-range-title" class="text-info"></h5>--}}
               <x-sales.profit-report spaId="774a6ccf-d0e6-4cb7-a56c-9f0f470d3272"/>
           </div>
         </div>

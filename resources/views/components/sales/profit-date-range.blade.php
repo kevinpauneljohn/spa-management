@@ -1,4 +1,5 @@
 <!-- Date range -->
+
 <div class="form-group">
     <div class="input-group">
         <div class="input-group-prepend">
@@ -21,8 +22,15 @@
         let profitReportComponent = $('#profit-report-component');
         $(document).ready(function(){
             //Date range picker
-            $('#profit-report').daterangepicker()
+
+            // $('#profit-report').attr('value', '01/01/2018 - 01/15/2018');
+            $('#profit-report').daterangepicker();
+            setTimeout(function(){
+                $('#profit-report').val('{{now()->startOfMonth()->format('m/d/Y')}} - {{now()->endOfMonth()->format('m/d/Y')}}').change();
+            },1000)
+
         });
+
         $(document).on('change','#profit-report',function(){
             let date = $(this).val();
 
