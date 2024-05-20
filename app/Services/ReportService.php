@@ -45,7 +45,7 @@ class ReportService
             $lastYearVisitorsValues[] = $lastYearVisitorData[$month] ?? 0;
         }
 
-        $lastMonthSalesComparison = $this->getMonthlySalesPercentageChange($spa_ids, $currentYear, $currentMonth - 1);
+        $lastMonthSalesComparison = $this->getMonthlySalesPercentageChange($spa_ids, $currentYear, $currentMonth );
         $lastTwoMonthSalesComparison = $this->getMonthlySalesPercentageChange($spa_ids, $currentYear, $currentMonth - 2);
         $currentMonthSales = $currentYearSalesData[$currentMonth] ?? 0;
         $percentageSalesStatus = false;
@@ -53,7 +53,7 @@ class ReportService
             $percentageSalesStatus = true;
         }
 
-        $lastMonthVisitorsComparison = $this->getMonthlyVisitorPercentageChange($spa_ids, $currentYear, $currentMonth - 1);
+        $lastMonthVisitorsComparison = $this->getMonthlyVisitorPercentageChange($spa_ids, $currentYear, $currentMonth );
         $lastTwoMonthVisitorsComparison = $this->getMonthlyVisitorPercentageChange($spa_ids, $currentYear, $currentMonth - 2);
         $currentMonthVisitors = $currentYearVisitorData[$currentMonth] ?? 0;
         $percentageVisitorsStatus = false;
@@ -82,11 +82,8 @@ class ReportService
         return response()->json($data);
     }
 
-    protected function getSalesDataForYear($year, $spa_ids)
+    protected function getSalesDataForYear($year, $spa_ids): array
     {
-//        $startOfYear = Carbon::create($year, 1, 1);
-//        $endOfYear = Carbon::create($year, 12, 31);
-
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
@@ -103,7 +100,7 @@ class ReportService
         return $data;
     }
 
-    protected function getMonthlySalesPercentageChange($spa_ids, $year, $month)
+    protected function getMonthlySalesPercentageChange($spa_ids, $year, $month): string
     {
         $currentMonthSales = Sale::whereYear('paid_at', $year)
             ->where('payment_status', 'completed')
@@ -127,11 +124,8 @@ class ReportService
         return number_format($percentageChange, 2);
     }
 
-    protected function getDataVisitorForYear($year, $spa_ids)
+    protected function getDataVisitorForYear($year, $spa_ids): array
     {
-        $startOfYear = Carbon::create($year, 1, 1);
-        $endOfYear = Carbon::create($year, 12, 31);
-
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
@@ -148,7 +142,7 @@ class ReportService
         return $data;
     }
 
-    protected function getMonthlyVisitorPercentageChange($spa_ids, $year, $month)
+    protected function getMonthlyVisitorPercentageChange($spa_ids, $year, $month): string
     {
         $currentMonthVisitors = Transaction::whereYear('end_time', $year)
             ->where('amount','>', 0)
