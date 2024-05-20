@@ -12,6 +12,8 @@ class ProfitReport extends Component
     public $total_sales;
     public $expenses;
     public $profit;
+    public $spaId;
+    public $current_month;
     /**
      * Create a new component instance.
      *
@@ -19,8 +21,9 @@ class ProfitReport extends Component
      */
     public function __construct($spaId)
     {
-        $current_year = now()->format('Y');
-        $sales = Spa::find($spaId)->sales()->whereYear('created_at',$current_year)
+        $this->spaId = $spaId;
+        $this->current_month = now()->format('m');
+        $sales = Spa::find($spaId)->sales()->whereMonth('created_at',$this->current_month)
             ->where('payment_status','completed')->get();
 
         $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
@@ -28,7 +31,7 @@ class ProfitReport extends Component
 
         $this->total_sales = $total_transactions + $total_vouchers;
 
-        $this->expenses = DB::table('expenses')->whereYear('date_expended','=',$current_year)->where('spa_id',$spaId)->sum('amount');
+        $this->expenses = DB::table('expenses')->whereMonth('date_expended','=',$this->current_month)->where('spa_id',$spaId)->sum('amount');
 
         $this->profit = $this->total_sales - $this->expenses;
     }

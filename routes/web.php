@@ -23,6 +23,7 @@ require __DIR__ . '/web/staff.php';
 require __DIR__ . '/web/therapist.php';
 require __DIR__ . '/web/client.php';
 require __DIR__ . '/web/discount.php';
+require __DIR__ . '/web/report.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));

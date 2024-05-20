@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\Request;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use App\Models\Sale;
@@ -83,8 +84,8 @@ class ReportService
 
     protected function getSalesDataForYear($year, $spa_ids)
     {
-        $startOfYear = Carbon::create($year, 1, 1);
-        $endOfYear = Carbon::create($year, 12, 31);
+//        $startOfYear = Carbon::create($year, 1, 1);
+//        $endOfYear = Carbon::create($year, 12, 31);
 
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
@@ -169,5 +170,27 @@ class ReportService
         }
 
         return number_format($percentageChange, 2);
+    }
+
+
+    public function profit($spaId, $startDate, $endDate)
+    {
+        return $this->sales($spaId, $startDate, $endDate) - $this->expenses($spaId, $startDate, $endDate);
+    }
+
+    public function sales($spaId, $startDate, $endDate)
+    {
+        $sales = Spa::find($spaId)->sales()->whereBetween('created_at',[$startDate, $endDate])
+            ->where('payment_status','completed')->get();
+        $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
+        $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
+
+        return $total_transactions + $total_vouchers;
+    }
+
+    public function expenses($spaId, $startDate, $endDate)
+    {
+        return DB::table('expenses')->whereBetween('created_at',[$startDate, $endDate])
+            ->where('spa_id',$spaId)->sum('amount');
     }
 }

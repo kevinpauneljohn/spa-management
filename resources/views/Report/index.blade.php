@@ -73,7 +73,7 @@
 
         <div class="card">
           <div class="card-header border-0">
-            <h3 class="card-title">Profit</h3>
+            <h3 class="card-title">Sales/Expenses/Profit Report</h3>
             <div class="card-tools">
               <a href="#" class="btn btn-tool btn-sm">
                 <i class="fas fa-download"></i>
@@ -84,6 +84,7 @@
             </div>
           </div>
           <div class="card-body table-responsive">
+              <h5 id="date-range-title" class="text-info"></h5>
               <x-sales.profit-report spaId="774a6ccf-d0e6-4cb7-a56c-9f0f470d3272"/>
           </div>
         </div>
