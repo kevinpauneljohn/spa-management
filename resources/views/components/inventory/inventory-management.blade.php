@@ -20,8 +20,8 @@
                 <th style="width:40%">Description</th>
                 <th>Quantity</th>
                 <th>Unit</th>
+                <th>Re-stock Limit</th>
                 <th>Category</th>
-{{--                <th>SKU</th>--}}
                 <th>Action</th>
             </tr>
             </thead>
@@ -48,7 +48,7 @@
 @if(auth()->user()->can('manage inventory'))
     <x-inventory.inventory-update />
 @endif
-
+@section('plugins.CustomCSS',true)
 @once
     @push('js')
         <script>
@@ -63,8 +63,8 @@
                         { data: 'description', name: 'description'},
                         { data: 'quantity', name: 'quantity'},
                         { data: 'unit', name: 'unit'},
+                        { data: 'restock_limit', name: 'restock_limit'},
                         { data: 'category', name: 'category'},
-                        // { data: 'sku', name: 'sku'},
                         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                     ],
                     autoFill:'off',

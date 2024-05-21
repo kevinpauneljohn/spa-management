@@ -36,6 +36,9 @@ class InventoryService
                 }
                 return $action;
             })
+            ->setRowClass(function($inventory){
+                return $inventory->quantity <= $inventory->restock_limit ? 're-stock-required' : '';
+            })
             ->rawColumns(['action','spa_id'])
             ->make(true);
     }
