@@ -10,8 +10,8 @@
             <label for="action">Action</label>
             <select id="action" name="action" class="form-control">
                 <option value="">-- Select Action -- </option>
-                <option value="increase">Increase</option>
-                <option value="decrease">Decrease</option>
+                <option value="increase">In</option>
+                <option value="decrease">Out</option>
             </select>
         </div>
         <div class="form-group update_quantity">

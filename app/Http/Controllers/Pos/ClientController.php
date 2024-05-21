@@ -63,9 +63,10 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, UserService $userService)
     {
-        //
+        $client =  $userService->get_staff_owner()->clients()->where('id',$id)->first();
+        return view('clients.show',compact('client'));
     }
 
     /**
