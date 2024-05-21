@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\InventoryRequest;
+use App\Http\Requests\ManageInventoryRequest;
 use App\Models\Inventory;
 use App\Models\Spa;
 use App\Services\InventoryService;
@@ -16,6 +17,7 @@ class InventoryController extends Controller
         $this->middleware(['role_or_permission:owner|view inventory'])->only(['index','show','lists']);
         $this->middleware(['role_or_permission:owner|add inventory'])->only(['store']);
         $this->middleware(['role_or_permission:owner|edit inventory'])->only(['edit','update']);
+        $this->middleware(['role_or_permission:owner|manage inventory'])->only(['updateInventory']);
         $this->middleware(['role_or_permission:owner|delete inventory'])->only(['destroy']);
     }
 
@@ -149,5 +151,12 @@ class InventoryController extends Controller
             return response()->json(['success' => true,'message' => 'inventory successfully updated!']);
         }
         return response()->json(['success' => false,'message' => 'An error occurred!'],500);
+    }
+
+    public function updateInventory($inventory, InventoryService $inventoryService, ManageInventoryRequest $request)
+    {
+        return $inventoryService->updateQuantity($inventory, $request->action,$request->update_quantity) ?
+            response()->json(['success' => true, 'message' => 'Inventory successfully updated!']):
+            response()->json(['success' => false, 'message' => 'An error occured!']);
     }
 }

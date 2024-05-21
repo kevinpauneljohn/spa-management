@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Inventory;
 use App\Models\InventoryCategory;
 use Yajra\DataTables\DataTables;
 
@@ -21,9 +22,9 @@ class InventoryService
             })
             ->addColumn('action', function($inventory){
                 $action = "";
-                if(auth()->user()->can('view inventory'))
+                if(auth()->user()->can('manage inventory'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-success mr-1" title="View"><i class="fas fa-eye"></i></a>';
+                    $action .= '<button class="btn btn-sm btn-outline-success update-inventory mr-1" title="Manage inventory" id="'.$inventory->id.'"><i class="fas fa-fw fa-shopping-cart"></i></button>';
                 }
                 if(auth()->user()->can('edit inventory'))
                 {
@@ -65,6 +66,15 @@ class InventoryService
     public function categories(UserService $userService)
     {
         return InventoryCategory::where('owner_id', $userService->get_staff_owner()->id)->get();
+    }
+
+    public function updateQuantity($inventory_id, $action, $quantity): bool
+    {
+        $inventory = Inventory::findOrFail($inventory_id);
+        $inventory->quantity = $action === 'increase' ?
+            $inventory->quantity + $quantity :
+            $inventory->quantity - $quantity;
+        return (bool)$inventory->save();
     }
 
 }

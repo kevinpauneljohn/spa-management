@@ -15,12 +15,12 @@ class InventorySeeder extends Seeder
      */
     public function run()
     {
-        $permissions = ['name' => 'view inventory','add inventory','edit inventory','delete inventory'];
+        $permissions = ['name' => 'view inventory','add inventory','edit inventory','delete inventory','manage inventory'];
         foreach ($permissions as $permission)
         {
             if(\App\Models\Permission::where('name',$permission)->count() == 0)
             {
-                \Spatie\Permission\Models\Permission::create(['name' => $permission])->syncRoles(['owner','manager']);
+                \Spatie\Permission\Models\Permission::create(['name' => $permission])->syncRoles(['owner','manager','inventory manager','front desk']);
             }
         }
 

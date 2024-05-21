@@ -17,11 +17,11 @@
             <tr role="row">
                 <th>Spa</th>
                 <th>Item Name</th>
-                <th>Description</th>
+                <th style="width:40%">Description</th>
                 <th>Quantity</th>
                 <th>Unit</th>
                 <th>Category</th>
-                <th>SKU</th>
+{{--                <th>SKU</th>--}}
                 <th>Action</th>
             </tr>
             </thead>
@@ -44,6 +44,11 @@
         </x-adminlte-modal>
     </form>
     @endif
+
+@if(auth()->user()->can('manage inventory'))
+    <x-inventory.inventory-update />
+@endif
+
 @once
     @push('js')
         <script>
@@ -59,7 +64,7 @@
                         { data: 'quantity', name: 'quantity'},
                         { data: 'unit', name: 'unit'},
                         { data: 'category', name: 'category'},
-                        { data: 'sku', name: 'sku'},
+                        // { data: 'sku', name: 'sku'},
                         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                     ],
                     autoFill:'off',

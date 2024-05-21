@@ -20,7 +20,7 @@ class ExpenseSeeder extends Seeder
         {
             if(Permission::where('name',$permission)->count() == 0)
             {
-                \Spatie\Permission\Models\Permission::create(['name' => $permission])->syncRoles(['owner']);
+                \Spatie\Permission\Models\Permission::create(['name' => $permission])->syncRoles(['owner','expense manager']);
             }
         }
 
