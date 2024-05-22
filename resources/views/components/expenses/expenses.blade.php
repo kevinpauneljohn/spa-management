@@ -86,7 +86,7 @@
                     ],
                     responsive:true,
                     order:[0,'desc'],
-                    pageLength: 10,
+                    pageLength: 100,
                     drawCallback: function(row){
                         let expenses = row.json;
 
