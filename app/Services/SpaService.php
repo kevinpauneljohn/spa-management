@@ -23,10 +23,10 @@ class SpaService
             })
             ->addColumn('action', function($spa){
                 $action = "";
-                if(auth()->user()->can('access pos'))
-                {
-                    $action .= '<a href="'.route('receptionist.dashboard',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
-                }
+//                if(auth()->user()->can('access pos'))
+//                {
+//                    $action .= '<a href="'.route('receptionist.dashboard',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
+//                }
                 if(auth()->user()->can('view spa'))
                 {
                     $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-secondary" title="View Spa Profile" ><i class="fas fa-eye"></i></a>&nbsp;';
@@ -47,10 +47,10 @@ class SpaService
                 {
                     $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success" id="'.$spa->name.'" title="View Inventory"><i class="fa fa-fw fa-cubes"></i></a>&nbsp;';
                 }
-                if(auth()->user()->can('download attendance'))
-                {
-                    $action .= '<a href="/download/'.urldecode($spa->name).'" class="btn btn-sm btn-outline-warning" id="'.$spa->name.'" title="Download Attendance Form"><i class="fas fa-fw fa-file-download"></i></a>&nbsp;';
-                }
+//                if(auth()->user()->can('download attendance'))
+//                {
+//                    $action .= '<a href="/download/'.urldecode($spa->name).'" class="btn btn-sm btn-outline-warning" id="'.$spa->name.'" title="Download Attendance Form"><i class="fas fa-fw fa-file-download"></i></a>&nbsp;';
+//                }
                 return $action;
             })
             ->rawColumns(['action','name'])
