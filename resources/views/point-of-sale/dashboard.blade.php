@@ -11,7 +11,7 @@
 @section('content')
     <div class="row mb-2">
         <div class="col-sm-6 mt-3">
-            <h3 class="text-cyan">{{ucwords($pageTitle)}}</h3>
+            <h3 class="text-cyan">{{ucwords($spa->name)}}</h3>
         </div>
         <div class="col-sm-6 mt-3">
             <ol class="breadcrumb float-sm-right">

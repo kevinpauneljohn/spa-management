@@ -27,7 +27,12 @@ class ExpenseController extends Controller
     {
         $pageTitle = 'Expenses';
         $owner = $userService->get_staff_owner(); //you may now call any related models
-        $spaId = $owner->spas->first()->id;
+        if(auth()->user()->hasRole(['owner']))
+        {
+            $spaId = $owner->spas->first()->id;
+        }else{
+            $spaId = auth()->user()->spa_id;
+        }
         return view('expenses.index',compact('owner','pageTitle','spaId'));
     }
 
