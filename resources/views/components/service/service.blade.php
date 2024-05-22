@@ -52,10 +52,10 @@
                                 <label for="commission_reference_amount">Commission Reference Amount</label>
                                 <input type="number" class="form-control" id="commission_reference_amount" name="commission_reference_amount" step="any">
                             </div>
-                            <div class="form-group price_per_plus_time">
-                                <label for="price_per_plus_time">Plus time price every 15 minutes</label>
-                                <input type="number" class="form-control" id="price_per_plus_time" name="price_per_plus_time">
-                            </div>
+{{--                            <div class="form-group price_per_plus_time">--}}
+{{--                                <label for="price_per_plus_time">Plus time price every 15 minutes</label>--}}
+{{--                                <input type="number" class="form-control" id="price_per_plus_time" name="price_per_plus_time">--}}
+{{--                            </div>--}}
                             <div class="form-group category">
                                 <label for="category">Category</label>
                                 <select name="category" class="form-control" id="category">
@@ -64,7 +64,7 @@
                                     <option value="promo">Promo</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-default price_previous_btn hiddenBtn" onclick="addServiceStepper.previous()">Previous</button>
+                            <button type="button" class="btn btn-default price_previous_btn" onclick="addServiceStepper.previous()">Previous</button>
                             <button type="submit" class="btn btn-primary price_submit_btn add-service-btn">Submit</button>
                         </div>
                     </div>

@@ -22,12 +22,12 @@ class ServiceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'description' => 'required',
+//            'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
             'category' => 'required',
             'commission_reference_amount' => 'required',
-            'price_per_plus_time' => 'required'
+//            'price_per_plus_time' => 'required'
         ]);
 
         if($validator->passes())
@@ -62,11 +62,11 @@ class ServiceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'description' => 'required',
+//            'description' => 'required',
             'duration' => 'required',
             'price' => 'required',
             'category' => 'required',
-            'price_per_plus_time' => 'required',
+//            'price_per_plus_time' => 'required',
             'commission_reference_amount' => 'required'
         ]);
 
