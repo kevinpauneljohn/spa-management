@@ -184,7 +184,7 @@ class ReportService
 
     public function expenses($spaId, $startDate, $endDate)
     {
-        return DB::table('expenses')->whereBetween('created_at',[$startDate, $endDate])
+        return DB::table('expenses')->whereBetween('date_expended',[$startDate, $endDate])
             ->where('spa_id',$spaId)->sum('amount');
     }
 }
