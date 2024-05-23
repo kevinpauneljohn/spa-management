@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Sales;
 
+use App\Models\Expense;
 use App\Models\Sale;
 use App\Models\Spa;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,8 @@ class ProfitReport extends Component
 
         $this->total_sales = $total_transactions + $total_vouchers;
 
-        $this->expenses = DB::table('expenses')->whereMonth('date_expended','=',$this->current_month)->where('spa_id',$spaId)->sum('amount');
+//        $this->expenses = DB::table('expenses')->whereMonth('date_expended','=',$this->current_month)->where('spa_id',$spaId)->sum('amount');
+        $this->expenses = Expense::where('spa_id','=','774a6ccf-d0e6-4cb7-a56c-9f0f470d3272')->whereMonth('date_expended','=',$this->current_month)->sum('amount');
 
         $this->profit = $this->total_sales - $this->expenses;
     }
