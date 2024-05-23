@@ -391,6 +391,7 @@ return [
             'text' => 'Inventory Management',
             'icon' => 'fas fa-fw fa-shopping-cart',
             'can' => 'view inventory',
+            'key' => 'inventory',
             'submenu' => [
                     [
                         'text'    => 'Categories',
@@ -407,13 +408,12 @@ return [
                     ],
             ],
         ],
-        [
-            'text' => 'Expense Management',
-            'route'  => 'expenses.index',
-            'icon' => 'fas fa-fw fa-chart-pie',
-            'can' => 'view expenses'
-
-        ],
+//        [
+//            'text' => 'Expense Management',
+//            'route'  => 'expenses.index',
+//            'icon' => 'fas fa-fw fa-chart-pie',
+//            'can' => 'view expenses'
+//        ],
         [
             'text' => 'Product Management',
             'url'  => '#',

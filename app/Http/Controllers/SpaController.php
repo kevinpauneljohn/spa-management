@@ -112,7 +112,7 @@ class SpaController extends Controller
     {
         $pageTitle = 'Expenses';
         $spaId = $spa->id;
-        return view('expenses.index',compact('pageTitle','spaId','spa'));
+        return view('expenses.show',compact('pageTitle','spaId','spa'));
     }
 
     /**
