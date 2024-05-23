@@ -27,7 +27,7 @@
             $('#profit-report').daterangepicker();
             setTimeout(function(){
                 $('#profit-report').val('{{now()->startOfMonth()->format('m/d/Y')}} - {{now()->endOfMonth()->format('m/d/Y')}}').change();
-            },50)
+            },1000)
 
         });
 
