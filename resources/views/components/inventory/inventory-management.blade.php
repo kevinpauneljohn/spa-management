@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 table-responsive">
         <table id="inventory-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
             <thead>
             <tr role="row">
