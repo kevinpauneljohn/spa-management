@@ -23,10 +23,10 @@ class SpaService
             })
             ->addColumn('action', function($spa){
                 $action = "";
-//                if(auth()->user()->can('access pos'))
-//                {
-//                    $action .= '<a href="'.route('receptionist.dashboard',['id' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
-//                }
+                if(auth()->user()->can('access pos'))
+                {
+                    $action .= '<a href="'.route('point-of-sale.show',['point_of_sale' => $spa->id]).'" class="btn btn-sm btn-outline-success" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
+                }
                 if(auth()->user()->can('view spa'))
                 {
                     $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-secondary" title="View Spa Profile" ><i class="fas fa-eye"></i></a>&nbsp;';

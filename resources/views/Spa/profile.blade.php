@@ -31,7 +31,8 @@
                     </span>
                     <span class="float-right">
                         @can('access pos')
-                            <a href="{{route('receptionist.dashboard',['id' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>
+                            <a href="{{route('point-of-sale.show',['point_of_sale' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>
+{{--                            <a href="{{route('receptionist.dashboard',['id' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>--}}
                         @endcan
                             <a href="{{route('spa.calendar',['spa' => $spa->id])}}" class="btn btn-default">Calendar</a>
                     </span>
