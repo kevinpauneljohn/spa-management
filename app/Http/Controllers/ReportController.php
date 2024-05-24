@@ -22,7 +22,7 @@ class ReportController extends Controller
 
         $spa = $owner->spas;
 
-        return view('Report.index', ['spa' => $spa, 'owner' => $owner->id]);
+        return view('Report.index', ['spas' => $spa, 'owner' => $owner->id]);
     }
 
     public function getSales(Request $request, $owner_id)

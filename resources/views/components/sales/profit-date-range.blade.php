@@ -7,7 +7,7 @@
                         <i class="far fa-calendar-alt"></i>
                       </span>
         </div>
-        <input type="text" name="date" class="form-control float-right" id="profit-report">
+        <input type="text" name="date" class="form-control float-right" id="profit-report-{{$spaId}}">
     </div>
     <!-- /.input group -->
 </div>
@@ -19,19 +19,16 @@
 @section('plugins.tempusdominusBootstrap4',true)
 @push('js')
     <script>
-        let profitReportComponent = $('#profit-report-component');
         $(document).ready(function(){
             //Date range picker
-
-            // $('#profit-report').attr('value', '01/01/2018 - 01/15/2018');
-            $('#profit-report').daterangepicker();
+            $('#profit-report-{{$spaId}}').daterangepicker();
             setTimeout(function(){
-                $('#profit-report').val('{{now()->startOfMonth()->format('m/d/Y')}} - {{now()->endOfMonth()->format('m/d/Y')}}').change();
-            },1000)
+                $('#profit-report-{{$spaId}}').val('{{now()->startOfMonth()->format('m/d/Y')}} - {{now()->endOfMonth()->format('m/d/Y')}}').change();
+            },500)
 
         });
 
-        $(document).on('change','#profit-report',function(){
+        $(document).on('change','#profit-report-{{$spaId}}',function(){
             let date = $(this).val();
 
             $.ajax({
@@ -40,12 +37,11 @@
                 data: {'date' : date},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             }).done((response) => {
-                console.log(response)
-                profitReportComponent.find('#total-sales').html('&#8369; '+response.sales);
-                profitReportComponent.find('#total-expenses').html('&#8369; '+response.expenses);
-                profitReportComponent.find('#total-profit').html('&#8369; '+response.profit);
 
-                $('#date-range-title').text('As of '+response.startDate+' to '+response.endDate)
+                $('#profit-report-component-{{$spaId}}').find('#total-sales').html('&#8369; '+response.sales);
+                $('#profit-report-component-{{$spaId}}').find('#total-expenses').html('&#8369; '+response.expenses);
+                $('#profit-report-component-{{$spaId}}').find('#total-profit').html('&#8369; '+response.profit);
+
             });
         })
     </script>

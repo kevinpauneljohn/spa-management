@@ -1,5 +1,5 @@
-<div id="profit-report-component">
-    <x-sales.profit-date-range spaId="774a6ccf-d0e6-4cb7-a56c-9f0f470d3272"/>
+<div id="profit-report-component-{{$spaId}}">
+    <x-sales.profit-date-range :spaId="$spaId"/>
 
     <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
         <p class="text-success text-xl">

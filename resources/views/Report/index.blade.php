@@ -15,10 +15,10 @@
         <li class="nav-item">
           <a class="nav-link active spaTabs" id="all" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true">All Store</a>
         </li>
-        @if (count($spa) > 1)
-          @foreach ($spa as $spas)
+        @if (count($spas) > 1)
+          @foreach ($spas as $spa)
           <li class="nav-item">
-            <a class="nav-link spaTabs" id="{{$spas->id}}" data-toggle="pill" href="#{{$spas->name}}" role="tab" aria-controls="{{$spas->name}}" aria-selected="false">{{$spas->name}}</a>
+            <a class="nav-link spaTabs" id="{{$spa->id}}" data-toggle="pill" href="#{{$spa->name}}" role="tab" aria-controls="{{$spa->name}}" aria-selected="false">{{$spa->name}}</a>
           </li>
           @endforeach
         @endif
@@ -71,23 +71,6 @@
         </div>
         <!-- /.card -->
 
-        <div class="card">
-          <div class="card-header border-0">
-            <h3 class="card-title">Sales/Expenses/Profit Report</h3>
-            <div class="card-tools">
-              <a href="#" class="btn btn-tool btn-sm">
-                <i class="fas fa-download"></i>
-              </a>
-              <a href="#" class="btn btn-tool btn-sm">
-                <i class="fas fa-bars"></i>
-              </a>
-            </div>
-          </div>
-          <div class="card-body table-responsive">
-{{--              <h5 id="date-range-title" class="text-info"></h5>--}}
-              <x-sales.profit-report spaId="774a6ccf-d0e6-4cb7-a56c-9f0f470d3272"/>
-          </div>
-        </div>
       </div>
 
       <!-- /.col-md-6 -->
@@ -130,8 +113,8 @@
             </div>
           </div>
         </div>
-        <!-- /.card -->
 
+        <!-- /.card -->
 {{--        <div class="card">--}}
 {{--          <div class="card-header border-0">--}}
 {{--            <h3 class="card-title">Store Overview</h3>--}}
@@ -184,6 +167,29 @@
       <!-- /.col-md-6 -->
     </div>
     <!-- /.row -->
+
+      <div class="row">
+          @foreach($spas as $spa)
+              <div class="col-lg-6">
+                  <div class="card">
+                      <div class="card-header border-0">
+                          <h3 class="card-title">Sales/Expenses/Profit Report - <span class="text-primary">{{ucwords($spa->name)}}</span></h3>
+                          <div class="card-tools">
+                              <a href="#" class="btn btn-tool btn-sm">
+                                  <i class="fas fa-download"></i>
+                              </a>
+                              <a href="#" class="btn btn-tool btn-sm">
+                                  <i class="fas fa-bars"></i>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="card-body table-responsive">
+                          <x-sales.profit-report :spaId="$spa->id"/>
+                      </div>
+                  </div>
+              </div>
+          @endforeach
+      </div>
   </div>
 @stop
 

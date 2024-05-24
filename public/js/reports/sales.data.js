@@ -96,6 +96,7 @@
           },
           dataType: 'json',
           success: function(data) {
+              // console.log(data)
               if (data.sales) {
                 salesChart.data.labels = data.sales.labels;
                 salesChart.data.datasets[0].data = data.sales.currentYearValues;
