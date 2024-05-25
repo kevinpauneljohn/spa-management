@@ -15,13 +15,17 @@
         <table id="inventory-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
             <thead>
             <tr role="row">
-                <th>Spa</th>
+                @if(auth()->user()->hasRole('owner'))
+                    <th>Spa</th>
+                @endif
                 <th>Item Name</th>
-                <th style="width:40%">Description</th>
+                <th style="width:30%">Description</th>
                 <th>Quantity</th>
                 <th>Unit</th>
                 <th>Re-stock Limit</th>
                 <th>Category</th>
+                <th>Updated By</th>
+                <th>Updated At <br/><span class="text-muted font-italic">(Y-M-D h:m:s)</span></th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -58,18 +62,24 @@
                     serverSide: true,
                     ajax: '@if($spaId){!! route('spa.inventory.lists',['spa' => $spaId]) !!}@else{!! route('inventory.lists') !!}@endif',
                     columns: [
+                        @if(auth()->user()->hasRole('owner'))
                         { data: 'spa_id', name: 'spa_id'},
+                        @endif
+
                         { data: 'name', name: 'name'},
                         { data: 'description', name: 'description'},
                         { data: 'quantity', name: 'quantity'},
                         { data: 'unit', name: 'unit'},
                         { data: 'restock_limit', name: 'restock_limit'},
                         { data: 'category', name: 'category'},
+                        { data: 'user_id', name: 'user_id'},
+                        { data: 'updated_at', name: 'updated_at'},
                         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                     ],
                     autoFill:'off',
                     responsive:true,
-                    order:[0,'desc'],
+                    order:[@if(auth()->user()->hasRole('owner')) 8 @else 7 @endif,'desc'],
+
                     pageLength: 50
                 });
             });

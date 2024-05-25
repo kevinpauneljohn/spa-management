@@ -2,19 +2,25 @@
     <form class="inventory-form" id="inventory-form"> @csrf
         @endif
 
-    <x-adminlte-select name="spa_id"  fgroup-class="spa_id" label="Spa">
+        @if(auth()->user()->hasRole('owner'))
+            <x-adminlte-select name="spa_id"  fgroup-class="spa_id" label="Spa">
 
-        @if(!$spaId)
-            <option value=""> --Select--</option>
-            @foreach($spas as $spa)
-                <option value="{{$spa->id}}"> {{$spa->name}}</option>
-            @endforeach
+                @if(!$spaId)
+                    <option value=""> --Select--</option>
+                    @foreach($spas as $spa)
+                        <option value="{{$spa->id}}"> {{$spa->name}}</option>
+                    @endforeach
 
+                @else
+                    <option value="{{$spas->id}}"> {{$spas->name}}</option>
+                @endif
+
+            </x-adminlte-select>
         @else
-            <option value="{{$spas->id}}"> {{$spas->name}}</option>
+            <input type="hidden" name="spa_id" value="{{auth()->user()->spa_id}}">
         @endif
 
-    </x-adminlte-select>
+
 
     <x-adminlte-input type="text" name="name" label="Item Name" fgroup-class="name" id="name"/>
     <x-adminlte-textarea name="description" label="Description" fgroup-class="description" id="description"/>

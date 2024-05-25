@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
+use App\Models\Spa;
 use App\Services\ExpenseService;
 use App\Services\UserService;
 use Carbon\Carbon;
@@ -26,9 +27,9 @@ class ExpenseController extends Controller
     public function index(UserService $userService, ExpenseService $expenseService)
     {
         $pageTitle = 'Expenses';
-        $owner = $userService->get_staff_owner(); //you may now call any related models
-        $spaId = auth()->user()->spa_id;
-        return view('expenses.index',compact('owner','pageTitle','spaId'));
+//        $owner = $userService->get_staff_owner(); //you may now call any related models
+        $spa = auth()->user()->spa;
+        return view('expenses.index',compact('pageTitle','spa'));
     }
 
     /**

@@ -20,6 +20,12 @@ class InventoryService
             ->editColumn('category',function($inventory){
                 return InventoryCategory::find($inventory->category)->name;
             })
+            ->editColumn('updated_at',function($inventory){
+                return $inventory->updated_at->format('Y-m-d h:i:s a');
+            })
+            ->editColumn('user_id',function($inventory){
+                return is_null($inventory->user_id) ? '' : ucwords($inventory->user->full_name);
+            })
             ->addColumn('action', function($inventory){
                 $action = "";
                 if(auth()->user()->can('manage inventory'))
@@ -77,6 +83,7 @@ class InventoryService
         $inventory->quantity = $action === 'increase' ?
             $inventory->quantity + $quantity :
             $inventory->quantity - $quantity;
+        $inventory->user_id = auth()->user()->id;
         return (bool)$inventory->save();
     }
 

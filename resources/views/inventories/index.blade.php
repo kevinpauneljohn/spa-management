@@ -9,7 +9,7 @@
 @section('content')
     <div class="row mb-2">
         <div class="col-sm-6 mt-4">
-            <h3 class="text-info">Inventory Management</h3>
+            <h3 class="text-info">Inventory Management - {{ucwords($spa)}}</h3>
         </div>
         <div class="col-sm-6 mt-3">
             <ol class="breadcrumb float-sm-right">

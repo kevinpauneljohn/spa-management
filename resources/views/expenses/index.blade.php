@@ -8,12 +8,12 @@
 @section('content')
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h3 class="text-cyan">{{ucwords($pageTitle)}}</h3>
+            <h3 class="text-cyan">{{ucwords($pageTitle)}} - {{ucwords($spa->name)}}</h3>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
-                <li class="breadcrumb-item active">{{ucwords($owner->spas->first()->name)}} </li>
+                <li class="breadcrumb-item active">{{ucwords($spa->name)}} </li>
             </ol>
         </div>
     </div>
@@ -21,14 +21,14 @@
         <div class="card">
             <div class="card-header">
                 <span class="float-left">
-                   <x-expenses.expenses-date-range :spaId="$spaId"/>
+                   <x-expenses.expenses-date-range :spaId="$spa->id"/>
                 </span>
                 <span class="float-right">
-                    <x-expenses.add-expenses-button :spaId="$spaId"/>
+                    <x-expenses.add-expenses-button :spaId="$spa->id"/>
                 </span>
             </div>
             <div class="card-body">
-                <x-expenses.expenses :spaId='$spaId'/>
+                <x-expenses.expenses :spaId='$spa->id'/>
             </div>
         </div>
     </div>

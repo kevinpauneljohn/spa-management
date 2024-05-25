@@ -28,7 +28,9 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        return view('inventories.index');
+        $user = auth()->user();
+        $spa = $user->hasRole('owner') ? 'all spas' : auth()->user()->spa->name;
+        return view('inventories.index', compact('spa'));
     }
 
     /**
@@ -51,7 +53,7 @@ class InventoryController extends Controller
     {
         if(
             Inventory::create(
-                collect($request->all())->merge(['owner_id' => $userService->get_staff_owner()->id])->toArray()
+                collect($request->all())->merge(['owner_id' => $userService->get_staff_owner()->id, 'user_id' => auth()->user()->id])->toArray()
             )
         ) return response()->json(['success' => true, 'message' => 'item successfully added!']);
 
@@ -119,7 +121,13 @@ class InventoryController extends Controller
 
     public function lists(InventoryService $inventoryService, UserService $userService)
     {
-        $inventories = Inventory::where('owner_id',$userService->get_staff_owner()->id)->get();
+        if(auth()->user()->hasRole('owner'))
+        {
+            $inventories = Inventory::where('owner_id',$userService->get_staff_owner()->id)->get();
+        }else{
+            $inventories = Inventory::where('spa_id',auth()->user()->spa_id)->get();
+        }
+
         return $inventoryService->inventory_lists($inventories);
     }
 

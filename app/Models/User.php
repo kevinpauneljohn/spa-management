@@ -95,6 +95,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Shift::class);
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
     protected static function boot()
     {
         parent::boot();
