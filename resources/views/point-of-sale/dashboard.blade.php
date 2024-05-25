@@ -54,11 +54,13 @@
                         <div class="card-header">
                             <div class="float-left"><h4 class="text-muted card-title">Sales Management</h4></div>
 
-                            @if(auth()->user()->hasRole(['front desk']))
+
                                 <div class="float-right">
+                                    <x-service.menu-button title="Service Menu" :spa="$spa"/>
+                                    @if(auth()->user()->hasRole(['front desk']))
                                     <x-point-of-sale.add-sales :spa="$spa"/>
+                                    @endif
                                 </div>
-                            @endif
 
                         </div>
                         <div class="card-body">
