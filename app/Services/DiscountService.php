@@ -169,7 +169,7 @@ class DiscountService
 
     public function getCouponByCode($code)
     {
-        return Discount::where('code',$code)->where('date_claimed',null)->where('sales_id_claimed')->first();
+        return Discount::where('code',$code)->where('type','coupon')->where('date_claimed',null)->where('sales_id_claimed')->first();
     }
 
 }

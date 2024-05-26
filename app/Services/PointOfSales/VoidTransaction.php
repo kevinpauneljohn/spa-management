@@ -5,7 +5,7 @@ namespace App\Services\PointOfSales;
 use App\Models\Transaction;
 use Spatie\Activitylog\Contracts\Activity;
 
-class VoidTransaction
+class VoidTransaction extends TransactionService
 {
     public function voidTransaction($transactionId, $reason): bool
     {
@@ -14,6 +14,11 @@ class VoidTransaction
         $transaction->user_id = auth()->user()->id;
         $transaction->void_reason = $reason;
         $transaction->deleted_at = now();
+
+        if(!is_null($transaction->discount_id))
+        {
+            $this->voidTransactionCoupon($transactionId);
+        }
 
         if($transaction->save())
         {
@@ -50,9 +55,11 @@ class VoidTransaction
             ->log('voided a transaction');
     }
 
-    private function transaction($transactionId)
-    {
-        return Transaction::find($transactionId);
-    }
+//    private function transaction($transactionId)
+//    {
+//        return Transaction::find($transactionId);
+//    }
+
+
 
 }

@@ -371,7 +371,7 @@ class TransactionService extends SalesService
         return (bool)$transaction->save();
     }
 
-    private function salesIdClaimed($sales_id, $discount_id, $date_claimed)
+    public function salesIdClaimed($sales_id, $discount_id, $date_claimed)
     {
         $coupon = Discount::findOrFail($discount_id);
         $coupon->sales_id_claimed = $sales_id;
