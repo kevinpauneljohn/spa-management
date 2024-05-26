@@ -198,10 +198,10 @@ class TherapistController extends Controller
         $dateTo = $request->session()->get('transactionsDateTo');
         $transactions = collect($therapist->transactions()
             ->whereDate('start_time','>=',$dateFrom)
-            ->whereDate('start_time','<=',$dateTo)->get())
+            ->whereDate('start_time','<=',$dateTo)->orderBy('created_at')->get())
             ->concat($therapist->transactionsTherapistTwo()
                 ->whereDate('start_time','>=',$dateFrom)
-                ->whereDate('start_time','<=',$dateTo)->get());
+                ->whereDate('start_time','<=',$dateTo)->orderBy('created_at')->get());
 
         return response()->json([
             'data' => $transactions,
@@ -209,7 +209,8 @@ class TherapistController extends Controller
                 return $item['therapist_2'] == null ? $item['commission_reference_amount'] : $item['commission_reference_amount'] / 2;
             })->sum(), 2),
             'gross_sales_commission' => number_format($therapist->grossSalesCommission($dateFrom, $dateTo),2),
-            'therapist' => $therapist->only(['commission','full_name','offer_type']),
+            'therapist' => $therapist->only(['commission','full_name','offer_type','percentage']),
+            'commission_rate' => $therapist->percentage
         ]);
     }
 

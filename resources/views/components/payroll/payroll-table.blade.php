@@ -93,14 +93,16 @@
                         therapistModal.find('.modal-content').append(overlay);
                     }
                 }).done((result) => {
-                    console.log(result)
+                    // console.log(result)
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
                         '<th colspan="4"><h2>'+result.therapist.full_name+'</h2></th><th>'+result.therapist.offer_type+'</th><th class="text-info">'+result.therapist.commission+'</th></tr>');
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
-                        '<th></th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Service Amount</th><th>Reference Amount</th><th>Base Amount</th></tr>');
+                        '<th></th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Service Amount</th><th>Reference Amount</th><th>Base Amount</th><th>Receivables</th></tr>');
                     var number = 1;
+
+
                     $.each(result.data, function(key, value){
-                        console.log(value);
+                        console.log(result.commission_rate);
                         therapistModal.find('#view-summary-details-table')
                             .append('<tr><td>#'+number+++'</td>' +
                                 '<td>'+value.start_date+'</td>' +
@@ -110,10 +112,12 @@
                                 '<td>'+value.service_name+'</td>' +
                                 '<td>'+value.amount+'</td>' +
                                 '<td>'+value.commission_reference_amount+'</td>' +
-                                '<td>'+value.gross_sale+'</td></tr>');
+                                '<td>'+value.gross_sale+'</td>' +
+                                '<td>'+(parseFloat(value.gross_sale) * (result.commission_rate)).toFixed(2)+'</td></tr>');
                     });
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
-                        '<th colspan="6">Gross Commissions<span class="text-primary ml-2">'+result.gross_sales_commission+'</span></th><th colspan="3"><span class="float-right">Gross Sales: <span class="text-primary ml-2">'+result.gross_sales+'</span></span></th></tr>');
+                        '<th colspan="7">Gross Sales<span class="text-primary ml-2">'+result.gross_sales+'</span></th><th colspan="3"><span class="float-right">Gross Commissions: <span class="text-primary ml-2">'+result.gross_sales_commission+'</span></span></th></tr>');
+
                 })
                     .always(() => therapistModal.find('.overlay').remove());
             })

@@ -24,7 +24,7 @@ class Therapist extends Model
         'is_excluded',
     ];
 
-    protected $appends = ['full_name','commission'];
+    protected $appends = ['full_name','commission','percentage'];
 
     public $therapist_one;
     public $therapist_two;
