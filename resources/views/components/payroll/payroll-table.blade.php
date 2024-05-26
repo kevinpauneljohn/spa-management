@@ -97,14 +97,15 @@
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
                         '<th colspan="8"><h2>'+result.therapist.full_name+'</h2></th><th style="width: 5%!important;">'+result.therapist.offer_type.replace('_',' ')+'</th><th class="text-info">'+result.therapist.commission+'</th></tr>');
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
-                        '<th></th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Service Amount</th><th>Reference Amount</th><th>Base Amount</th><th>Receivables</th></tr>');
+                        '<th></th><th>invoice</th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Service Amount</th><th>Reference Amount</th><th>Base Amount</th><th>Receivables</th></tr>');
                     var number = 1;
 
 
                     $.each(result.data, function(key, value){
-                        console.log(result.commission_rate);
+                        console.log(value);
                         therapistModal.find('#view-summary-details-table')
                             .append('<tr><td>#'+number+++'</td>' +
+                                '<td><a href="/point-of-sale/add-transaction/'+value.spa_id+'/'+value.sales_id+'" target="_blank">View Invoice</a></td>' +
                                 '<td>'+value.start_date+'</td>' +
                                 '<td>'+value.end_date+'</td>' +
                                 '<td>'+value.client_name+'</td>' +

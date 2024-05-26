@@ -20,8 +20,14 @@
         </div>
     </div>
     <div class="container-fluid">
-        <x-payroll.payroll-date-range />
-        <x-payroll.payroll-table :spaId="$spa->id" />
+        <div class="card">
+            <div class="card-header">
+                <x-payroll.payroll-date-range />
+            </div>
+            <div class="card-body table-responsive">
+                <x-payroll.payroll-table :spaId="$spa->id" />
+            </div>
+        </div>
     </div>
 @stop
 @section('plugins.CustomCSS',true)

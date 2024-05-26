@@ -474,12 +474,16 @@ class TransactionService
             })
             ->addColumn('apply_discount', function($transaction){
                 $action = '';
-                if(is_null($transaction->discount_id))
+                if($transaction->sale->payment_status !== 'completed')
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-outline-success m-1 apply-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-tag"></i></button>';
-                }else{
-                    $action .= '<button type="button" class="btn btn-sm bg-orange m-1 remove-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-trash"></i></button>';
+                    if(is_null($transaction->discount_id))
+                    {
+                        $action .= '<button type="button" class="btn btn-sm btn-outline-success m-1 apply-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-tag"></i></button>';
+                    }else{
+                        $action .= '<button type="button" class="btn btn-sm bg-orange m-1 remove-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-trash"></i></button>';
+                    }
                 }
+
                 return $action;
             })
             ->setRowId(function($transaction){
