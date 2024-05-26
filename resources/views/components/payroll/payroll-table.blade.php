@@ -95,7 +95,7 @@
                 }).done((result) => {
                     // console.log(result)
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
-                        '<th colspan="4"><h2>'+result.therapist.full_name+'</h2></th><th>'+result.therapist.offer_type+'</th><th class="text-info">'+result.therapist.commission+'</th></tr>');
+                        '<th colspan="8"><h2>'+result.therapist.full_name+'</h2></th><th style="width: 5%!important;">'+result.therapist.offer_type.replace('_',' ')+'</th><th class="text-info">'+result.therapist.commission+'</th></tr>');
                     therapistModal.find('#view-summary-details-table').append('<tr>' +
                         '<th></th><th>Start Date</th><th>End Date</th><th>Client</th><th>Room Number</th><th>Service</th><th>Service Amount</th><th>Reference Amount</th><th>Base Amount</th><th>Receivables</th></tr>');
                     var number = 1;
