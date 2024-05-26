@@ -17,6 +17,12 @@
                 </x-slot>
             </x-adminlte-input>
 
+            <x-adminlte-select2 name="category" fgroup-class="col-md-12 category" label="Category">
+                <option value="">-- Select --</option>
+                <option value="salon">Salon</option>
+                <option value="spa">Spa</option>
+            </x-adminlte-select2>
+
             <x-slot name="footerSlot">
                 <x-adminlte-button class="mr-auto" theme="default" label="Close" data-dismiss="modal"/>
                 <x-adminlte-button type="submit" theme="success" label="Submit"/>

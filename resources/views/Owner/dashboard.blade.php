@@ -46,7 +46,7 @@
                             <div class="card-footer">
                             <div class="text-right">
                                 <a href="{{route('point-of-sale.show', ['point_of_sale' => $data->id])}}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-spa"></i> View Spa
+                                    <i class="fas fa-spa"></i> View @if(!is_null($data->category)) {{ucwords($data->category)}} @endif
                                 </a>
                             </div>
                             </div>

@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/print-shift-sales/{shiftId}',[\App\Http\Controllers\Pos\SalesController::class,'printShiftSales'])->name('print-shift-sales');
     Route::patch('/under-time/transaction/{transactionId}',[\App\Http\Controllers\Pos\TransactionController::class,'underTime'])->name('under-time-transaction');
     Route::patch('/buy-voucher',[\App\Http\Controllers\Pos\SalesController::class,'buyVoucher'])->name('buy.voucher');
+    Route::patch('/claim-coupon/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'saveCouponToTransaction'])->name('save.coupon.to.transaction');
+    Route::patch('/void-transaction-coupon/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'removeCouponFromTransaction'])->name('remove.coupon.from.transaction');
 });
 
 

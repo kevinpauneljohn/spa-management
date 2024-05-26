@@ -10,7 +10,7 @@ class Discount extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'code','title','type','is_amount','price','amount','percent','client_id','sales_id','payment_status','date_claimed','sales_id_claimed'
+        'code','title','type','is_amount','price','amount','percent','client_id','sales_id','payment_status','date_claimed','sales_id_claimed','discount_id'
     ];
 
     protected $appends = ['discount_amount','invoice_number_claimed'];
@@ -38,6 +38,11 @@ class Discount extends Model
     public function getDiscountAmountAttribute()
     {
         return $this->is_amount ? $this->amount : $this->percent;
+    }
+
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
     }
 
     protected static function boot()

@@ -35,6 +35,7 @@
                                 <th>Date Added</th>
                                 <th>Name</th>
                                 <th>Address</th>
+                                <th>Category</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -67,6 +68,7 @@
                         { data: 'created_at', name: 'created_at', className: 'text-center' },
                         { data: 'name', name: 'name'},
                         { data: 'address', name: 'address'},
+                        { data: 'category', name: 'category'},
                         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
                     ],
                     responsive:true,

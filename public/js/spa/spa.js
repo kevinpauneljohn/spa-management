@@ -36,7 +36,7 @@ $(document).on('submit','.spa-form',function(form){
             spaForm.find('button[type="submit"]').attr('disabled',false).text('submit');
         }
     });
-    clear_errors('name','address','number_of_rooms');
+    clear_errors('name','address','number_of_rooms','category');
 });
 
 $(document).on('click','#add-spa-btn',function(){

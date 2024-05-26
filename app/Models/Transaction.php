@@ -37,7 +37,9 @@ class Transaction extends Model
         'primary',
         'void',
         'user_id',
-        'void_reason'
+        'void_reason',
+        'discount_amount',
+        'discount_id'
     ];
 
     protected static $logAttributes = [
@@ -94,6 +96,11 @@ class Transaction extends Model
         return "{$client->firstname} {$client->lastname}";
     }
 
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
+    }
+
     public function getStartDateAttribute(): string
     {
         return Carbon::parse($this->start_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
@@ -116,7 +123,7 @@ class Transaction extends Model
 
     public function getTotalAmountAttribute()
     {
-        return $this->getPricePerPlusTimeTotalAttribute() + $this->service->price;
+        return ($this->getPricePerPlusTimeTotalAttribute() + $this->service->price) - $this->discount_amount;
     }
 
     public function getPlusTimeMultiplicandAttribute()

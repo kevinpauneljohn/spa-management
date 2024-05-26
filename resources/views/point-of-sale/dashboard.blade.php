@@ -15,7 +15,7 @@
         </div>
         <div class="col-sm-6 mt-3">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
+                <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">@if(!is_null($spa->category)) {{ucwords($spa->category)}} @endif</a> </li>
                 <li class="breadcrumb-item active">{{ucwords($spa->name)}} </li>
             </ol>
         </div>

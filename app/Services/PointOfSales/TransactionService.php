@@ -357,4 +357,38 @@ class TransactionService extends SalesService
         $voucher->payment_status = 'pending';
         return (bool)$voucher->save();
     }
+
+    public function claimCoupon($transaction_id, $discount_id): bool
+    {
+        $transaction = $this->transaction($transaction_id);
+        $discountAmount = Discount::find($discount_id)->amount;
+        $transaction->discount_id = $discount_id;
+        $transaction->discount_amount = $discountAmount;
+        $transaction->amount = $transaction->amount - $discountAmount;
+        $transaction->commission_reference_amount = $transaction->commission_reference_amount - $discountAmount;
+
+        $this->salesIdClaimed($transaction->sales_id, $discount_id, now());
+        return (bool)$transaction->save();
+    }
+
+    private function salesIdClaimed($sales_id, $discount_id, $date_claimed)
+    {
+        $coupon = Discount::findOrFail($discount_id);
+        $coupon->sales_id_claimed = $sales_id;
+        $coupon->date_claimed = $date_claimed;
+        $coupon->save();
+    }
+
+    public function voidTransactionCoupon($transaction_id): bool
+    {
+        $transaction = $this->transaction($transaction_id);
+        $this->salesIdClaimed(null, $transaction->discount_id, null);
+
+        $discountAmount = Discount::find($transaction->discount_id)->amount;
+        $transaction->amount = $transaction->amount + $discountAmount;
+        $transaction->commission_reference_amount = $transaction->commission_reference_amount + $discountAmount;
+        $transaction->discount_id = null;
+        $transaction->discount_amount = null;
+        return (bool)$transaction->save();
+    }
 }

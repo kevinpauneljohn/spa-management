@@ -167,4 +167,9 @@ class DiscountService
         return Discount::where('code',$code)->where('sale_id',null)->where('date_claimed',null)->first();
     }
 
+    public function getCouponByCode($code)
+    {
+        return Discount::where('code',$code)->where('date_claimed',null)->where('sales_id_claimed')->first();
+    }
+
 }

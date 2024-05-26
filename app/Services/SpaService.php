@@ -33,11 +33,11 @@ class SpaService
                 }
                 if(auth()->user()->can('edit spa'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Edit Spa"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-primary edit-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Edit Spa"><i class="fa fa-edit"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('delete spa'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Delete Spa"><i class="fa fa-trash"></i></a>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger delete-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Delete Spa"><i class="fa fa-trash"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('view expenses'))
                 {
@@ -95,11 +95,11 @@ class SpaService
                 }
                 if(auth()->user()->can('edit service'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-service-btn" id="'.$service->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-primary edit-service-btn" id="'.$service->id.'"><i class="fa fa-edit"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('delete service'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-service-btn" id="'.$service->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger delete-service-btn" id="'.$service->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
                 }
                 return $action;
             })

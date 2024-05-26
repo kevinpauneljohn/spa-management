@@ -17,6 +17,7 @@ class Spa extends Model
         'name',
         'address',
         'number_of_rooms',
+        'category'
     ];
     /**
      * @var mixed

@@ -26,7 +26,8 @@ class SpaRequest extends FormRequest
         return [
             'name' => 'required',
             'address' => 'required',
-            'number_of_rooms' => 'required'
+            'number_of_rooms' => 'required',
+            'category' => 'required'
         ];
     }
 }

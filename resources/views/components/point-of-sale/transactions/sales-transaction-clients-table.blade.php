@@ -13,18 +13,21 @@
             <th>Service Amount</th>
             <th>Payable Amount</th>
             <th>Commission Reference Amount</th>
+            <th>Discount</th>
             <th>Status</th>
             <th>Service Duration</th>
-            <th>Total Time</th>
+{{--            <th>Total Time</th>--}}
             <th>Start Date</th>
             <th>End Date</th>
             <th>Room</th>
             <th>Masseur</th>
             <th>Sales Type</th>
+            <th>Apply/Remove Discount</th>
             <th>Isolate</th>
             <th>Under Time</th>
         @endif
             <th>Void Transaction</th>
+
 
 
     </tr>
@@ -65,19 +68,22 @@
                             { data: 'amount', name: 'amount'},
                             { data: 'payable_amount', name: 'payable_amount'},
                             { data: 'commission_reference_amount', name: 'commission_reference_amount'},
+                            { data: 'discount_amount', name: 'discount_amount'},
                             { data: 'status', name: 'status'},
                             { data: 'duration', name: 'duration'},
-                            { data: 'total_time', name: 'total_time'},
+                            // { data: 'total_time', name: 'total_time'},
                             { data: 'start_date', name: 'start_date'},
                             { data: 'end_date', name: 'end_date'},
                             { data: 'room_id', name: 'room_id'},
                             { data: 'therapists', name: 'therapists'},
                             { data: 'sales_type', name: 'sales_type'},
                             // { data: 'extend_time', name: 'extend_time'},
+                            { data: 'apply_discount', name: 'apply_discount', className: 'text-center'},
                             { data: 'isolate', name: 'isolate',className: 'text-center'},
                             { data: 'under_time', name: 'under_time',className: 'text-center'},
                         @endif
-                            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
+                            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'},
+
                     ],
                     autoFill:'off',
                     responsive:true,
@@ -100,13 +106,13 @@
                         $('#{{$tableId}}').find('tbody')
                             .append('<tr><td class="text-bold" colspan="@if($displayAllColumns === false) 2 @else 7 @endif">Total Amount: <span class="text-primary">'+transaction.total_amount+'</span></td>' +
                                 '<td colspan="3" class="text-bold">Total Clients: <span class="text-primary">'+transaction.total_clients+'</span></td>' +
-                                '<td colspan="8" class="text-bold">Payment Status: <span class="'+color+'">'+transaction.payment_status+'</span></td></tr>' +
+                                '<td colspan="9" class="text-bold">Payment Status: <span class="'+color+'">'+transaction.payment_status+'</span></td></tr>' +
                                 '<tr class="text-bold client-payment" style="background-color: #f3fdf5!important;">' +
                                 '<td colspan="3">Amount Paid: <span class="text-success">'+transaction.amount_paid+'</span></td>' +
                                 '<td colspan="4">Change: <span class="text-success">'+transaction.change+'</span></td>' +
                                 @if($displayAllColumns === true)'<td colspan="3">Payment Method: <span class="text-success">'+transaction.payment_method+'</span></td>' +
                                 '<td colspan="3">Non-cash amount: <span class="text-success">'+transaction.non_cash_amount+'</span></td>' +
-                                '<td colspan="3">Cash amount: <span class="text-success">'+transaction.cash_amount+'</span></td>' +
+                                '<td colspan="4">Cash amount: <span class="text-success">'+transaction.cash_amount+'</span></td>' +
                                 @endif'</tr>')
                     }
                 });

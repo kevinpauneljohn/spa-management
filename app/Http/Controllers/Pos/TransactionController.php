@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesTransactionRequest;
+use App\Models\Discount;
 use App\Models\Spa;
+use App\Models\Transaction;
 use App\Services\PointOfSales\MasseurAvailabilityService;
 use App\Services\PointOfSales\RoomAvailabilityService;
 use App\Services\PointOfSales\VoidTransaction;
@@ -181,6 +183,23 @@ class TransactionController extends Controller
     {
         return $transactionService->underTime($transactionId) ?
             \response()->json(['success' => true, 'message' => 'Transaction completed']):
+            \response()->json(['success' => false, 'message' => 'An error occurred']);
+    }
+
+    public function saveCouponToTransaction($transaction, Request $request, \App\Services\PointOfSales\TransactionService $transactionService): JsonResponse
+    {
+        $request->validate([
+            'discount_code' => ['required']
+        ]);
+
+        return $transactionService->claimCoupon($transaction, $request->input('discount_id')) ?
+            \response()->json(['success' => true, 'message' => 'Discount applied!']) :
+            \response()->json(['success' => false, 'message' => 'An error occurred']);
+    }
+    public function removeCouponFromTransaction($transaction, \App\Services\PointOfSales\TransactionService $transactionService): JsonResponse
+    {
+        return $transactionService->voidTransactionCoupon($transaction) ?
+            \response()->json(['success' => true, 'message' => 'Discount removed!']) :
             \response()->json(['success' => false, 'message' => 'An error occurred']);
     }
 }

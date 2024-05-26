@@ -406,6 +406,9 @@ class TransactionService
             ->editColumn('commission_reference_amount', function($transaction){
                 return number_format($transaction->commission_reference_amount,2);
             })
+            ->editColumn('discount_amount',function($transaction){
+                return '<span class="text-purple text-bold">'.number_format($transaction->discount_amount,2).'</span>';;
+            })
             ->editColumn('start_date', function($transaction){
                 return '<span class="text-primary">'.$transaction->start_date.'</span>';
             })
@@ -469,13 +472,23 @@ class TransactionService
                 }
                 return $action;
             })
+            ->addColumn('apply_discount', function($transaction){
+                $action = '';
+                if(is_null($transaction->discount_id))
+                {
+                    $action .= '<button type="button" class="btn btn-sm btn-outline-success m-1 apply-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-tag"></i></button>';
+                }else{
+                    $action .= '<button type="button" class="btn btn-sm bg-orange m-1 remove-discount" id="'.$transaction->id.'" title="Apply Discount"><i class="fa fa-trash"></i></button>';
+                }
+                return $action;
+            })
             ->setRowId(function($transaction){
                 return 'view-'.$transaction->id;
             })
             ->setRowClass(function ($transaction) {
                 return Carbon::parse($transaction->end_time) >= now() ? 'on-going-transaction' : '';
             })
-            ->rawColumns(['plus_time_amount','payable_amount','total_time','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time'])
+            ->rawColumns(['plus_time_amount','payable_amount','total_time','discount_amount','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time','apply_discount'])
             ->with([
                 'sale_status' => $sales->payment_status,
                 'vouchers' => $sales->discounts,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Discount;
 use App\Http\Requests\StoreDiscountRequest;
 use App\Http\Requests\UpdateDiscountRequest;
+use App\Models\Transaction;
 use App\Services\DiscountService;
 use App\Services\UserService;
 use Illuminate\Contracts\Foundation\Application;
@@ -120,6 +121,11 @@ class DiscountController extends Controller
     public function checkVoucherAvailability($code, DiscountService $discountService)
     {
         return $discountService->checkVoucherAvailability($code);
+    }
+
+    public function getCoupon($code, DiscountService $discountService)
+    {
+        return $discountService->getCouponByCode($code);
     }
 
 

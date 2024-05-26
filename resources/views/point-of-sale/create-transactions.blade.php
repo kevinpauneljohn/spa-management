@@ -52,6 +52,7 @@
         </div>
     </div>
     <x-point-of-sale.transactions.add-client-form :spa="$spa" :sale="$sale"/>
+    <x-point-of-sale.transactions.apply-discount />
 
 
 @stop
