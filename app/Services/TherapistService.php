@@ -223,6 +223,7 @@ class TherapistService
                 'total_gross_sales_commissions' => $this->grossCommission = collect($spa->therapists)->map(function($item, $key){
                     return $item->grossSalesCommission($this->dateFrom, $this->dateTo);
                 })->sum(),
+                'total_gross_sales_commissions_formatted' => number_format($this->grossCommission,2),
                 'net_sales' => number_format(
                     $this->grossSales
                     - $this->grossCommission,2)

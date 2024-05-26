@@ -72,7 +72,7 @@
                         $('#therapist-sales-list').find('tbody')
                             .append('<tr class="text-bold"><td>Total</td>' +
                                 '<td class="text-success">'+therapist.total_clients+'</td><td class="text-success">'+therapist.total_gross_sales+'</td>' +
-                                '<td colspan="2"></td><td></td><td class="text-success">'+therapist.total_gross_sales_commissions+'</td>' +
+                                '<td colspan="2"></td><td></td><td class="text-success">'+therapist.total_gross_sales_commissions_formatted+'</td>' +
                                 '<td>Net Sales: <span class="text-success">'+therapist.net_sales+'</span></td></tr>')
                     }
                 });
