@@ -65,6 +65,9 @@ class ExpenseService
             ->editColumn('amount',function($expense){
                 return number_format($expense->amount,2);
             })
+            ->editColumn('user_id',function($expense){
+                return !is_null($expense->user_id) ? ucwords($expense->user->full_name) : '';
+            })
             ->addColumn('action', function($expense){
                 $action = "";
                 if(auth()->user()->can('edit expenses'))

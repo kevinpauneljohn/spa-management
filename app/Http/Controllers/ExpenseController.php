@@ -50,7 +50,7 @@ class ExpenseController extends Controller
      */
     public function store(ExpenseRequest $request)
     {
-        Expense::create($request->all());
+        Expense::create(collect($request->all())->merge(['user_id' => auth()->user()->id])->toArray());
         return response()->json(['success' => true, 'message' => 'Expense successfully added!']);
     }
 
@@ -85,7 +85,7 @@ class ExpenseController extends Controller
      */
     public function update(ExpenseRequest $request, Expense $expense)
     {
-        $expense->fill(collect($request->all())->except(['_token'])->toArray());
+        $expense->fill(collect($request->all())->except(['_token'])->merge(['user_id' => auth()->user()->id])->toArray());
 
         if($expense->isDirty())
         {

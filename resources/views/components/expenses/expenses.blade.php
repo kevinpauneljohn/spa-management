@@ -7,6 +7,7 @@
             <th>Title</th>
             <th>Description</th>
             <th>Amount</th>
+            <th>Updated By</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -82,6 +83,7 @@
                         { data: 'title', name: 'title'},
                         { data: 'description', name: 'description'},
                         { data: 'amount', name: 'amount'},
+                        { data: 'user_id', name: 'user_id'},
                         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
                     ],
                     responsive:true,
@@ -93,7 +95,7 @@
                         $('#expense-list').find('tbody')
                             .append('<tr class="sales-info-bg">' +
                                 '<td colspan="3"></td>' +
-                                '<td colspan="2">Total Amount: <span class="text-primary" ">'+expenses.total_expenses+'</span></td></tr>')
+                                '<td colspan="3">Total Amount: <span class="text-primary" ">'+expenses.total_expenses+'</span></td></tr>')
                     }
                 });
             });

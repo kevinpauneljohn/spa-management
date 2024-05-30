@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\UsesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -100,6 +101,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Inventory::class);
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
