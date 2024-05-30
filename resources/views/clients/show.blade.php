@@ -23,25 +23,19 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
-
-        </div>
         <div class="card-body table-responsive">
-            <table class="table">
+            <table id="transaction-list" class="table table-bordered table-hover w-100">
                 <thead>
                     <tr>
-                        <th>Client</th>
+                        <th>Spa/Salon</th>
                         <th>Service</th>
-                        <th>Service Amount</th>
                         <th>Payable Amount</th>
-                        <th>Commission Reference Amount</th>
-                        <th>Status</th>
                         <th>Service Duration</th>
-                        <th>Total Time</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Room</th>
                         <th>Masseur</th>
+                        <th>Invoice #</th>
                     </tr>
                 </thead>
             </table>
@@ -55,5 +49,34 @@
 @stop
 
 @section('js')
+<script>
+    $(document).ready(function(){
+        $('#transaction-list').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{!! route('client.transactions',['client' => $client->id]) !!}',
+            columns: [
+                { data: 'spa_id', name: 'spa_id'},
+                { data: 'service_name', name: 'service_name'},
+                { data: 'payable_amount', name: 'payable_amount'},
+                { data: 'duration', name: 'duration'},
+                { data: 'start_date', name: 'start_date'},
+                { data: 'end_date', name: 'end_date'},
+                { data: 'room_id', name: 'room_id'},
+                { data: 'therapists', name: 'therapists'},
+                { data: 'invoice_number', name: 'invoice_number'},
+                // { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+            ],
+            responsive:true,
+            order:[0,'desc'],
+            pageLength: 100,
+            drawCallback: function(row){
+                let transactions = row.json;
 
+                $('#transaction-list').find('tbody')
+                    .append('<tr class="sales-info-bg"><td colspan="9">Total Transactions: <span class="text-primary" ">'+transactions.total_transactions+'</span></td></tr>')
+            }
+        });
+    });
+</script>
 @stop

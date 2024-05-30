@@ -19,7 +19,7 @@ class ClientController extends Controller
     public function __construct(UserService $userService)
     {
         $this->user = $userService;
-        $this->middleware(['permission:view client'])->only(['index']);
+        $this->middleware(['permission:view client'])->only(['index','clientTransactionLists']);
     }
     /**
      * Display a listing of the resource.
@@ -101,5 +101,10 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function clientTransactionLists($client, ClientService $clientService)
+    {
+        return $clientService->clientTransactions($client);
     }
 }

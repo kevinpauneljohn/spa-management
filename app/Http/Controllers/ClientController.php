@@ -12,6 +12,10 @@ use Carbon\Carbon;
 
 class ClientController extends Controller
 {
+    public function __construct()
+    {
+
+    }
     public function index()
     {
     }
@@ -167,4 +171,6 @@ class ClientController extends Controller
         return $spa->owner->clients()
             ->where('id','=',$client)->first();
     }
+
+
 }
