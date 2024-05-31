@@ -56,14 +56,14 @@
                     ajax: '{!! route('pos-sales-client-transactions',['spaId' => $spaId, 'saleId' => $saleId]) !!}',
                     columns: [
                         @if($displayAllColumns === false)
-                            { data: 'client_name', name: 'client_name'},
+                            { data: 'client_id', name: 'client_id'},
                             { data: 'service_name', name: 'service_name'},
                             { data: 'amount', name: 'amount'},
                             { data: 'room_id', name: 'room_id'},
                             { data: 'therapists', name: 'therapists'},
 
                         @else
-                            { data: 'client_name', name: 'client_name'},
+                            { data: 'client_id', name: 'client_id'},
                             { data: 'service_name', name: 'service_name'},
                             { data: 'amount', name: 'amount'},
                             { data: 'payable_amount', name: 'payable_amount'},

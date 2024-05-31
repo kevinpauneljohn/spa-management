@@ -388,6 +388,9 @@ class TransactionService
         $sales = $this->getTransactions($spaId, $saleId);
         $transactions = $this->getTransactions($spaId, $saleId)->transactions;
         return DataTables::of($transactions)
+            ->editColumn('client_id',function($transaction){
+                return '<a href="'.route('clients.show',['client' => $transaction->client->id]).'" target="_blank">'.$transaction->client->full_name.'</a>';
+            })
             ->editColumn('amount', function($transaction){
                 return '<span class="text-primary">'.number_format($transaction->service->price,2).'</span>';
             })
@@ -492,7 +495,7 @@ class TransactionService
             ->setRowClass(function ($transaction) {
                 return Carbon::parse($transaction->end_time) >= now() ? 'on-going-transaction' : '';
             })
-            ->rawColumns(['plus_time_amount','payable_amount','total_time','discount_amount','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time','apply_discount'])
+            ->rawColumns(['client_id','plus_time_amount','payable_amount','total_time','discount_amount','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time','apply_discount'])
             ->with([
                 'sale_status' => $sales->payment_status,
                 'vouchers' => $sales->discounts,
