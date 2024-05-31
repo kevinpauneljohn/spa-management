@@ -12,33 +12,61 @@
 
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h3 class="text-cyan">{{ucwords($client->full_name)}}</h3>
+            <h3 class="text-cyan">Client Profile</h3>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
-                <li class="breadcrumb-item active"><a href="{{route('clients.index')}}">Clients</a> </li>
+                <li class="breadcrumb-item"><a href="{{route('clients.index')}}">Clients</a> </li>
+                <li class="breadcrumb-item active">{{ucwords($client->full_name)}} </li>
             </ol>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body table-responsive">
-            <table id="transaction-list" class="table table-bordered table-hover w-100">
-                <thead>
-                    <tr>
-                        <th>Spa/Salon</th>
-                        <th>Service</th>
-                        <th>Payable Amount</th>
-                        <th>Service Duration</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Room</th>
-                        <th>Masseur</th>
-                        <th>Invoice #</th>
-                    </tr>
-                </thead>
-            </table>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card card-olive">
+                <div class="card-header">
+                    <h3 class="card-title">{{ucwords($client->full_name)}}</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <strong><i class="fa fa-mobile-alt mr-1"></i> Mobile #</strong>
+
+                    <p class="text-muted">
+                        {{$client->mobile_number}}
+                    </p>
+
+                    <hr>
+
+                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
+
+                    <p class="text-muted">{{ucwords($client->address)}}</p>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <table id="transaction-list" class="table table-bordered table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Spa/Salon</th>
+                            <th>Service</th>
+                            <th>Payable Amount</th>
+                            <th>Service Duration</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Room</th>
+                            <th>Masseur</th>
+                            <th>Invoice #</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @stop
