@@ -472,7 +472,7 @@ class TransactionService
             })
             ->addColumn('action',function($transaction){
                 $action = "";
-                if(Carbon::parse($transaction->end_time) > now() && $transaction->sale->payment_status === 'pending')
+                if(Carbon::parse($transaction->end_time) > now() && $transaction->sale->payment_status === 'pending' || auth()->user()->hasRole('owner'))
                 {
                     $action .= '<button type="button" class="btn btn-sm btn-outline-danger m-1 void-transaction" id="'.$transaction->id.'" title="Void Transaction"><i class="fas fa-times"></i></button>';
                 }

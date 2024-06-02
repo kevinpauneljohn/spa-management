@@ -29,7 +29,7 @@
             <th>Void Transaction</th>
             @if(auth()->user()->hasRole('owner'))
                 <th>
-                    Edit
+                    Owner Action
                 </th>
             @endif
 
