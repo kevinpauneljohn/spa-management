@@ -3,6 +3,7 @@
 namespace App\View\Components\PointOfSale\Sales;
 
 use App\Models\Spa;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\View\Component;
 
@@ -24,10 +25,11 @@ class Rooms extends Component
     {
         $this->spa = Spa::find($spaId);
         $this->rooms = $this->spa->number_of_rooms;
-        $this->transactions = collect($this->spa->sales()->with('transactions',function ($transaction){
-            $transaction->where('end_time','>',now());
-        })
-            ->where('payment_status','pending')->orWhere('payment_status','completed')->get())->pluck('transactions')->flatten();
+//        $this->transactions = collect($this->spa->sales()->with('transactions',function ($transaction){
+//            $transaction->where('end_time','>',now());
+//        })
+//            ->where('payment_status','pending')->orWhere('payment_status','completed')->get())->pluck('transactions')->flatten();
+        $this->transactions = collect(Transaction::where('spa_id',$spaId)->where('end_time','>',now())->get());
         $this->takenRoom = $this->transactions->pluck('room_id');
     }
 
