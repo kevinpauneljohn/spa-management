@@ -1,6 +1,5 @@
 
 <div class="row" id="room-availability-section">
-    {{collect($transactions)->pluck('room_id')}}
     @for($room = 1; $room <= $rooms; $room++)
         <div class="col-xl-4 col-lg-6 col-sm-6 col-6 room-holder">
             <div class="card collapsed-card @if(collect($takenRoom)->contains($room)) card-secondary @else card-success @endif">
