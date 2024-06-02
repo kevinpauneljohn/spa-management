@@ -36,7 +36,7 @@
                             totalTime = parseFloat(value[0].service.duration) + plus_time
                             // console.log(totalTime)
 
-                            let remaining_minutes = getMinutes(moment().format("YYYY-MM-DD, hh:mm:ss"), value[0].end_time_twelve_hour_format);
+                            let remaining_minutes = getMinutes(moment().format("YYYY-MM-DD, hh:mm:ss a"), value[0].end_time_twelve_hour_format);
                             let percentage = (remaining_minutes / totalTime) * 100;
 
                             if(percentage > 30 && percentage < 80)

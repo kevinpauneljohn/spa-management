@@ -133,7 +133,7 @@ class Transaction extends Model
 
     public function getEndTimeTwelveHourFormatAttribute()
     {
-        return Carbon::parse($this->end_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s');
+        return Carbon::parse($this->end_time)->setTimezone('Asia/Manila')->format('Y-m-d h:i:s a');
     }
 
     public function getAppointmentDateAttribute()
