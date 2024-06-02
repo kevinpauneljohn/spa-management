@@ -397,6 +397,9 @@ class TransactionService
             ->editColumn('plus_time_amount', function($transaction){
                 return '<span class="text-primary">'.number_format($transaction->price_per_plus_time_total,2).'</span>';
             })
+            ->editColumn('service_id',function($transaction){
+                return ucwords($transaction->service->name);
+            })
             ->addColumn('payable_amount', function($transaction){
                 return '<span class="text-danger text-bold">'.number_format($transaction->total_amount,2).'</span>';
             })
@@ -436,6 +439,14 @@ class TransactionService
 
                 return $therapist;
 
+            })
+            ->addColumn('edit',function($transaction){
+                $action = '';
+                if(auth()->user()->hasRole('owner'))
+                {
+                    $action .= '<button type="button" class="btn btn-sm btn-primary m-1 edit-transaction" id="'.$transaction->id.'" title="Edit Transaction"><i class="fa fa-pen"></i></button>';
+                }
+                return $action;
             })
             ->addColumn('extend_time', function($transaction){
                 $option = '';
@@ -495,7 +506,7 @@ class TransactionService
             ->setRowClass(function ($transaction) {
                 return Carbon::parse($transaction->end_time) >= now() ? 'on-going-transaction' : '';
             })
-            ->rawColumns(['client_id','plus_time_amount','payable_amount','total_time','discount_amount','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time','apply_discount'])
+            ->rawColumns(['edit','client_id','plus_time_amount','payable_amount','total_time','discount_amount','extend_time','isolate','action','status','amount','room_id','therapists','start_date','end_date','duration','plus_time','under_time','apply_discount'])
             ->with([
                 'sale_status' => $sales->payment_status,
                 'vouchers' => $sales->discounts,

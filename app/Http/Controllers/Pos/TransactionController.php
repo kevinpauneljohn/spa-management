@@ -202,4 +202,11 @@ class TransactionController extends Controller
             \response()->json(['success' => true, 'message' => 'Discount removed!']) :
             \response()->json(['success' => false, 'message' => 'An error occurred']);
     }
+
+    public function transactionUpdatedByOwner($transaction, Request $request, \App\Services\PointOfSales\TransactionService $transactionService): JsonResponse
+    {
+        return $transactionService->updateTransactionByOwner($transaction, $request) ?
+            \response()->json(['success' => true, 'message' => 'Transaction Updated']) :
+            \response()->json(['success' => false, 'message' => 'No changes made']) ;
+    }
 }

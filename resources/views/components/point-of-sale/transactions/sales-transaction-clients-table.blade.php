@@ -27,7 +27,11 @@
             <th>Under Time</th>
         @endif
             <th>Void Transaction</th>
-
+            @if(auth()->user()->hasRole('owner'))
+                <th>
+                    Edit
+                </th>
+            @endif
 
 
     </tr>
@@ -36,6 +40,59 @@
 
     </tbody>
 </table>
+
+@if(auth()->user()->hasRole('owner'))
+    <form id="edit-transaction-form">
+        @csrf
+        <x-adminlte-modal id="edit-transaction-modal" title="Edit Transaction" theme="olive"
+                          icon="fas fa-bell" v-centered static-backdrop scrollable>
+            <div>
+                <div class="form-group client">
+                    <label>Client</label>
+                    <x-adminlte-select2 name="client" id="client">
+                        <option value=""> -- Select client -- </option>
+                        @foreach($clients as $client)
+                            <option value="{{$client->id}}">{{ucwords($client->full_name)}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+                <div class="form-group service">
+                    <label>Service</label>
+                    <x-adminlte-select2 name="service" id="service">
+                        <option value=""> -- Select service -- </option>
+                        @foreach($services as $service)
+                            <option value="{{$service->id}}">{{ucwords($service->name)}} - {{number_format($service->price,2)}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+                <div class="form-group edit_therapist_1">
+                    <label>Therapist 1</label>
+                    <x-adminlte-select2 name="edit_therapist_1" id="therapist_1">
+                        <option value=""> -- Select therapist -- </option>
+                        @foreach($therapists as $therapist)
+                            <option value="{{$therapist->id}}">{{ucwords($therapist->full_name)}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+                <div class="form-group edit_therapist_2">
+                    <label>Therapist 2</label>
+                    <x-adminlte-select2 name="edit_therapist_2">
+                        <option value=""> -- Select therapist -- </option>
+                        @foreach($therapists as $therapist)
+                            <option value="{{$therapist->id}}">{{ucwords($therapist->full_name)}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+            </div>
+            <x-slot name="footerSlot">
+
+                <x-adminlte-button class="mr-auto" theme="danger" label="Close" data-dismiss="modal"/>
+                <x-adminlte-button type="submit" theme="success" label="Save"/>
+            </x-slot>
+        </x-adminlte-modal>
+    </form>
+
+@endif
 
 @section('css')
     <style>
@@ -64,7 +121,7 @@
 
                         @else
                             { data: 'client_id', name: 'client_id'},
-                            { data: 'service_name', name: 'service_name'},
+                            { data: 'service_id', name: 'service_id'},
                             { data: 'amount', name: 'amount'},
                             { data: 'payable_amount', name: 'payable_amount'},
                             { data: 'commission_reference_amount', name: 'commission_reference_amount'},
@@ -83,7 +140,9 @@
                             { data: 'under_time', name: 'under_time',className: 'text-center'},
                         @endif
                             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'},
-
+                        @if(auth()->user()->hasRole('owner'))
+                            { data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'text-center'},
+                        @endif
                     ],
                     autoFill:'off',
                     responsive:true,
@@ -106,13 +165,13 @@
                         $('#{{$tableId}}').find('tbody')
                             .append('<tr><td class="text-bold" colspan="@if($displayAllColumns === false) 2 @else 7 @endif">Total Amount: <span class="text-primary">'+transaction.total_amount+'</span></td>' +
                                 '<td colspan="3" class="text-bold">Total Clients: <span class="text-primary">'+transaction.total_clients+'</span></td>' +
-                                '<td colspan="9" class="text-bold">Payment Status: <span class="'+color+'">'+transaction.payment_status+'</span></td></tr>' +
+                                '<td colspan="10" class="text-bold">Payment Status: <span class="'+color+'">'+transaction.payment_status+'</span></td></tr>' +
                                 '<tr class="text-bold client-payment" style="background-color: #f3fdf5!important;">' +
                                 '<td colspan="3">Amount Paid: <span class="text-success">'+transaction.amount_paid+'</span></td>' +
                                 '<td colspan="4">Change: <span class="text-success">'+transaction.change+'</span></td>' +
                                 @if($displayAllColumns === true)'<td colspan="3">Payment Method: <span class="text-success">'+transaction.payment_method+'</span></td>' +
                                 '<td colspan="3">Non-cash amount: <span class="text-success">'+transaction.non_cash_amount+'</span></td>' +
-                                '<td colspan="4">Cash amount: <span class="text-success">'+transaction.cash_amount+'</span></td>' +
+                                '<td colspan="5">Cash amount: <span class="text-success">'+transaction.cash_amount+'</span></td>' +
                                 @endif'</tr>')
                     }
                 });
@@ -294,6 +353,63 @@
                     }
                 })
             })
+
+            @if(auth()->user()->hasRole('owner'))
+                let editTransactionModal = $('#edit-transaction-modal');
+                let editTransactionId;
+                $(document).on('click','.edit-transaction',function(){
+                    editTransactionId = this.id;
+                    editTransactionModal.modal('toggle');
+
+                    $.ajax({
+                        url: '/transaction/'+editTransactionId,
+                        type: 'get',
+                        beforeSend: function(){
+                            editTransactionModal.find('.modal-content').append(overlay);
+                        }
+                    }).done(function(response){
+                        // console.log(response)
+                        editTransactionModal.find('select[name=client]').val(response.data.transaction.client_id).change();
+                        editTransactionModal.find('select[name=service]').val(response.data.transaction.service_id).change();
+                        editTransactionModal.find('select[name=edit_therapist_1]').val(response.data.transaction.therapist_1).change();
+                        editTransactionModal.find('select[name=edit_therapist_2]').val(response.data.transaction.therapist_2).change();
+                    }).fail(function(xhr, status, error){
+                        console.log(xhr)
+                    }).always(function(){
+                        editTransactionModal.find('.overlay').remove();
+                    });
+                });
+
+                $(document).on('submit','#edit-transaction-form', function(form){
+                    form.preventDefault();
+                    let data = $(this).serializeArray();
+                    $.ajax({
+                        url: '/transaction-updated-by-owner/'+editTransactionId,
+                        type: 'patch',
+                        data: data,
+                        beforeSend: function(){
+                            editTransactionModal.find('.modal-content').append(overlay);
+                        }
+                    }).done(function(response){
+                        console.log(response)
+                        if(response.success === true)
+                        {
+                            Swal.fire(response.message, '', 'success')
+                            $('#{{$tableId}}').DataTable().ajax.reload(null, false);
+                            editTransactionModal.modal('toggle');
+                        }else{
+                            Swal.fire(response.message, '', 'warning')
+                        }
+                    }).fail(function(xhr, status, error){
+                        console.log(xhr)
+                        $.each(xhr.responseJSON.errors, function(key, value){
+                            editTransactionModal.find('.'+key).append('<p class="text-danger">'+value+'</p>')
+                        })
+                    }).always(function(){
+                        editTransactionModal.find('.overlay').remove();
+                    });
+                });
+            @endif
         </script>
     @endpush
 @endonce

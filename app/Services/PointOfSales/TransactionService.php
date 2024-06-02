@@ -391,4 +391,23 @@ class TransactionService extends SalesService
         $transaction->discount_amount = null;
         return (bool)$transaction->save();
     }
+
+    public function updateTransactionByOwner($transactionId, $request)
+    {
+        $service = Service::find($request->service);
+        $transaction = $this->transaction($transactionId);
+        $discount = is_null($transaction->discount_amount) ? 0 : $transaction->discount_amount;
+        $transaction->service_id = $request->service;
+        $transaction->client_id = $request->client;
+        $transaction->therapist_1 = $request->edit_therapist_1;
+        $transaction->therapist_2 = $request->edit_therapist_2;
+        $transaction->service_name = $service->name;
+        $transaction->amount = $service->price - $discount;
+        $transaction->commission_reference_amount = $service->commission_reference_amount - $discount;
+        if($transaction->isDirty())
+        {
+            return (bool)$transaction->save();
+        }
+        return false;
+    }
 }

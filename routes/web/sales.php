@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function(){
     Route::patch('/buy-voucher',[\App\Http\Controllers\Pos\SalesController::class,'buyVoucher'])->name('buy.voucher');
     Route::patch('/claim-coupon/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'saveCouponToTransaction'])->name('save.coupon.to.transaction');
     Route::patch('/void-transaction-coupon/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'removeCouponFromTransaction'])->name('remove.coupon.from.transaction');
+    Route::patch('/transaction-updated-by-owner/{transaction}',[\App\Http\Controllers\Pos\TransactionController::class,'transactionUpdatedByOwner'])->name('transaction.updated.by.owner');
 });
 
 
