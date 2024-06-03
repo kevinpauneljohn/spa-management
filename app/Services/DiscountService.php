@@ -68,7 +68,7 @@ class DiscountService
     {
         return DataTables::of($query)
             ->editColumn('created_at',function($discount){
-                return $discount->created_at->format('m d, Y g:i:s a');
+                return $discount->created_at->format('m/d/Y g:i:s a');
             })
             ->editColumn('title',function($discount){
                 return ucwords($discount->title);
