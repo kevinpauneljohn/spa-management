@@ -24,7 +24,7 @@
                 //Date range picker
                 setTimeout(function(){
                     $('#sales-dates').daterangepicker()
-                },1000)
+                },2000)
             });
 
             $(document).on('change','#sales-dates',function(){
