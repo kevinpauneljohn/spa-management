@@ -23,6 +23,7 @@ class VoidTransaction extends TransactionService
         if($transaction->save())
         {
             $this->logActivity($transaction, $reason);
+            $transaction->forceDelete();
             return true;
         }
         return false;
