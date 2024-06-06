@@ -107,6 +107,11 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class);
     }
 
+    public function salesShifts()
+    {
+        return $this->hasMany(SalesShift::class);
+    }
+
     protected static function boot()
     {
         parent::boot();

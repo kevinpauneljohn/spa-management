@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Services\PointOfSales\Sales\PaymentService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class SalesShift extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'start_shift',
@@ -41,5 +42,15 @@ class SalesShift extends Model
     public function nonCash($shiftId)
     {
         return Payment::where('sales_shift_id',$shiftId)->sum('non_cash_payment');
+    }
+
+    public function spa()
+    {
+        return $this->belongsTo(Spa::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

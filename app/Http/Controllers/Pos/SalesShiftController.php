@@ -4,27 +4,30 @@ namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesShiftRequest;
+use App\Models\SalesShift;
 use App\Services\PointOfSales\Shift\ShiftService;
+use App\Services\UserService;
+use App\View\Components\Pos\Appointments\UpcomingTab\view;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class SalesShiftController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware(['role:owner'])->only(['lists']);
+    }
+
     public function index()
     {
-        //
+        return view('SalesShift.index');
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -48,7 +51,7 @@ class SalesShiftController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -59,7 +62,7 @@ class SalesShiftController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -71,7 +74,7 @@ class SalesShiftController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -82,11 +85,13 @@ class SalesShiftController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
-        //
+        return SalesShift::find($id)->delete() ?
+        \response()->json(['success' => true, 'message' => 'Shift deleted'])
+            : \response()->json(['success' => false, 'message' => 'An error occurred!']);
     }
 
     /**
@@ -99,5 +104,18 @@ class SalesShiftController extends Controller
         return $shiftService->end($spaId) ?
             \response()->json(['success' => true, 'message' => 'Shift Ended'])
             : \response()->json(['success' => false, 'message' => 'An error occurred!']);
+    }
+
+    public function endShiftByOwner($id, ShiftService $shiftService)
+    {
+        return $shiftService->endShiftByOwner($id) ?
+            \response()->json(['success' => true, 'message' => 'Shift Ended'])
+            : \response()->json(['success' => false, 'message' => 'An error occurred!']);
+    }
+
+    public function lists(ShiftService $shiftService, UserService $userService)
+    {
+        $spaIds = collect($userService->get_staff_owner()->spas)->pluck('id')->toArray();
+        return $shiftService->salesShiftLists(SalesShift::whereIn('spa_id',$spaIds)->get());
     }
 }

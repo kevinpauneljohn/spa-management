@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalesShift;
+use App\Services\PointOfSales\Shift\ShiftService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Services\SalesShiftService;
 
@@ -33,4 +35,5 @@ class SalesShiftController extends Controller
             return $this->salesShiftService->end_shift($id);
         }
     }
+
 }

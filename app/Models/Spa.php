@@ -106,4 +106,8 @@ class Spa extends Model
             ->whereDate('start_time','<=',$dateTo);
     }
 
+    public function salesShifts(): HasMany
+    {
+        return $this->hasMany(SalesShift::class);
+    }
 }

@@ -426,6 +426,12 @@ return [
             'icon' => 'fa fa-list-ol',
             'can' => 'view activity'
         ],
+        [
+            'text' => 'Shift',
+            'route'  => 'sales-shift.index',
+            'icon' => 'fa fa-hourglass',
+            'can' => 'view sales shift'
+        ],
 //        [
 //            'text' => 'Payroll Management',
 //            'icon' => 'fas fa-fw  fa-money-check-alt',

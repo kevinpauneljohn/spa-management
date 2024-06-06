@@ -25,6 +25,7 @@ require __DIR__ . '/web/client.php';
 require __DIR__ . '/web/discount.php';
 require __DIR__ . '/web/report.php';
 require __DIR__ . '/web/inventory.php';
+require __DIR__ . '/web/salesShift.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));

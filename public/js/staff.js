@@ -16,11 +16,11 @@ function loadRole(status, value)
                     allowClear: true
                 });
 
-                $.each(result , function(index, val) { 
+                $.each(result , function(index, val) {
                     $('.select-role').append('<option value="'+index+'">'+index+'</option>');
                 });
             } else {
-                $.each(result , function(index, val) { 
+                $.each(result , function(index, val) {
                     $('.select-edit-role').append('<option value="'+index+'">'+index+'</option>');
                 });
 
@@ -49,13 +49,13 @@ function loadSpa(status, value)
                 $('.select-spa').select2({
                     placeholder: "Choose Spa",
                     allowClear: true
-                });     
-                
-                $.each(result , function(index, val) { 
+                });
+
+                $.each(result , function(index, val) {
                     $('.select-spa').append('<option value="'+val+'">'+index+'</option>');
                 });
             } else {
-                $.each(result , function(index, val) { 
+                $.each(result , function(index, val) {
                     $('.select-edit-spa').append('<option value="'+val+'">'+index+'</option>');
                 });
 
@@ -76,7 +76,7 @@ $('.select-role').on("select2:selecting", function(e) {
         $('.gender').removeClass('hiddenBtn');
         $('.certificate').removeClass('hiddenBtn');
         $('.offer_type_div').removeClass('hiddenBtn');
-    } else {        
+    } else {
         if (!$('.gender').hasClass('hiddenBtn')) {
             $('.gender').addClass('hiddenBtn');
             $('.gender').val('');
@@ -122,7 +122,7 @@ $(document).on('click','.role_info_next_btn',function(){
     var spa = $('#selected-spa').val();
 
     if (
-        role.length > 0 && 
+        role.length > 0 &&
         spa.length > 0
     ) {
         stepper.next()
@@ -172,7 +172,7 @@ $('#firstname, #lastname').on('keyup, change, input',function(e){
     var lastname = $('#lastname').val();
 
     if (
-        firstname.length > 0 && 
+        firstname.length > 0 &&
         lastname.length > 0
     ) {
         $('.basic_info_next_btn').prop('disabled', false);
@@ -211,7 +211,7 @@ $(document).on('click','.basic_info_next_btn',function(){
                 $('.contact_info_next_btn').prop('disabled', false);
                 $('.add-staff-btn').prop('disabled', false);
             } else {
-                alert('Commission or Allowance field is required.'); 
+                alert('Commission or Allowance field is required.');
             }
         } else {
             alert('Gender and Offer type field is required.');
@@ -293,7 +293,7 @@ $(document).on('click','.add-staff-btn',function(){
             element_password.closest('div.password')
             .find('.text-danger')
             .remove();
-    
+
             element_password.after('<p class="text-danger">Password and Password confirmation does not match.</p>');
         }
     }
@@ -352,14 +352,14 @@ $(document).on('click','.add-staff-btn',function(){
                     if(result.status) {
                         $('#staff-form').trigger('reset');
                         reloadStaffTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                         $('#add-new-staff-modal').modal('hide');
                     } else {
                         swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                         $.each(result, function (key, value) {
                             var element = $('#'+key);
-            
+
                             element.closest('div.'+key)
                                 .addClass(value.length > 0 ? 'has-error' : 'has-success')
                                 .find('.text-danger')
@@ -377,7 +377,7 @@ $(document).on('click','.add-staff-btn',function(){
                             }
                         });
                     }
-            
+
                     $('#staff-form').find('.add-staff-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
@@ -448,7 +448,7 @@ $(document).on('click','.edit-staff-btn',function(){
                 $('.edit_offer_type').val(result.is_therapist.offer_type);
                 $('.edit_offer_type_data').val(result.is_therapist.offer_type);
                 $('.edit_therapist_id').val(result.is_therapist.id);
-                
+
                 if (result.is_therapist.offer_type != '') {
                     $('.edit_offer_type_field').removeClass('hiddenBtn');
                     if (result.is_therapist.offer_type == 'percentage_only') {
@@ -519,14 +519,14 @@ $('.select-edit-role').on("select2:selecting", function(e) {
     var id = e.params.args.data.id;
     $('#selected-edit-role').val(id);
 
-    if (id == 'therapist') {       
+    if (id == 'therapist') {
         $('.edit_gender').removeClass('hiddenBtn');
         if ($('.edit_gender_data').val() != '') {
             $('.edit_gender').val($('.edit_gender_data').val());
         } else {
             $('.edit_gender').val('');
         }
-        
+
         $('.edit_certificate').removeClass('hiddenBtn');
         if ($('.edit_certificate_data').val() != '') {
             $('.edit_certificate').val($('.edit_certificate_data').val());
@@ -553,7 +553,7 @@ $('.select-edit-role').on("select2:selecting", function(e) {
             $('.edit_allowance').val('');
         }
 
-    } else {        
+    } else {
         if (!$('.edit_gender').hasClass('hiddenBtn')) {
             $('.edit_gender').addClass('hiddenBtn');
             $('.edit_gender').val('');
@@ -627,7 +627,7 @@ $(document).on('click','.edit_basic_info_next_btn',function(){
                 $('.edit_contact_info_previous_btn').removeClass('hiddenBtn');
                 $('.edit_contact_info_next_btn').removeClass('hiddenBtn');
             } else {
-                alert('Commission or Allowance field is required.'); 
+                alert('Commission or Allowance field is required.');
             }
         } else {
             alert('Gender and Offer type field is required.');
@@ -643,7 +643,7 @@ $(document).on('click','.edit_basic_info_next_btn',function(){
         } else {
             $('.edit_contact_info_next_btn').prop('disabled', true);
         }
-        
+
         if ($('#edit_username').val() != '') {
             $('.edit_credential_info_submit_btn').prop('disabled', false);
         } else {
@@ -718,7 +718,7 @@ $(document).on('click','.update-staff-btn',function(){
     var email = $('#edit_email').val();
     var username = $('#edit_username').val();
     var role = $('#selected-edit-role').val();
-    var spa = $('#selected-edit-spa').val();
+    var spa = $('#edit_spa').val();
 
     var gender;
     var certificate;
@@ -751,6 +751,7 @@ $(document).on('click','.update-staff-btn',function(){
         commission: commission,
         therapist_id: therapist_id
     };
+    console.log(data)
 
     swal.fire({
         title: "Are you sure you want to update Staff Information?",
@@ -775,7 +776,7 @@ $(document).on('click','.update-staff-btn',function(){
                     if(result.status) {
                         $('#update-staff-form').trigger('reset');
                         reloadStaffTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                         $('#update-staff-modal').modal('hide');
                     } else {
@@ -785,17 +786,17 @@ $(document).on('click','.update-staff-btn',function(){
                             swal.fire("Warning!", 'Kindly check all fields to view error.', "warning");
                             $.each(result, function (key, value) {
                                 var element = $('#edit_'+key);
-                
+
                                 element.closest('div.'+key)
                                     .addClass(value.length > 0 ? 'has-error' : 'has-success')
                                     .find('.text-danger')
                                     .remove();
-                                
+
                                 element.after('<p class="text-danger">'+value+'</p>');
                             });
                         }
                     }
-            
+
                     $('#update-staff-form').find('.update-staff-btn').val('Save').attr('disabled',false);
                 },error: function(xhr, status, error){
                     console.log(xhr);
@@ -849,11 +850,11 @@ $(document).on('click','.delete-staff-btn',function(){
                 'data': {},
                 'headers': {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 beforeSend: function () {
-                   
+
                 },success: function (result) {
                     if(result.status) {
                         reloadStaffTable();
-        
+
                         swal.fire("Done!", result.message, "success");
                     }
                 },error: function(xhr, status, error){
