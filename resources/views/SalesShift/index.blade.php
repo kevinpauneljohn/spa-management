@@ -78,7 +78,7 @@
 
             Swal.fire({
                 title: 'End Shift?',
-                html: 'are you sure you want to end your shift?',
+                html: 'are you sure you want to end your shift for ['+data[2]+']?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Confirm',
