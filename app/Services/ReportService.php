@@ -89,7 +89,7 @@ class ReportService
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
 
-            $sales = Sale::whereBetween('paid_at', [$startDate, $endDate])
+            $sales = Sale::whereBetween('created_at', [$startDate, $endDate])
                 ->where('payment_status', 'completed')
                 ->whereIn('spa_id', $spa_ids)
                 ->sum('total_amount');
@@ -102,15 +102,15 @@ class ReportService
 
     protected function getMonthlySalesPercentageChange($spa_ids, $year, $month): string
     {
-        $currentMonthSales = Sale::whereYear('paid_at', $year)
+        $currentMonthSales = Sale::whereYear('created_at', $year)
             ->where('payment_status', 'completed')
-            ->whereMonth('paid_at', $month)
+            ->whereMonth('created_at', $month)
             ->whereIn('spa_id', $spa_ids)
             ->sum('total_amount');
 
         $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
-        $lastMonthSales = Sale::whereYear('paid_at', $lastMonth->year)
-            ->whereMonth('paid_at', $lastMonth->month)
+        $lastMonthSales = Sale::whereYear('created_at', $lastMonth->year)
+            ->whereMonth('created_at', $lastMonth->month)
             ->where('payment_status', 'completed')
             ->whereIn('spa_id', $spa_ids)
             ->sum('total_amount');
