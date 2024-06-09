@@ -59,7 +59,7 @@
                         applyDiscountModal.find('#discount-details')
                             .html('Discount Amount: <span class="text-primary">'+response.amount+'</span><br/>' +
                                 'Service Amount: <span class="text-primary">'+transactionData[2]+'</span><br/>' +
-                                'Discounted Amount: <span class="text-success text-bold">'+replaceNumberWithCommas(discountedServiceAmount.toFixed(2))+'</span>');
+                                'Discounted Amount: <span class="text-success text-bold">'+discountedServiceAmount.toFixed(2).toLocaleString()+'</span>');
                     }else{
                         applyDiscountModal.find('input[name=discount_code]').val('').change();
                         Swal.fire('Invalid Code', '', 'error')

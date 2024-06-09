@@ -488,7 +488,7 @@ class TransactionService
             })
             ->addColumn('apply_discount', function($transaction){
                 $action = '';
-                if($transaction->sale->payment_status !== 'completed')
+                if($transaction->sale->payment_status !== 'completed' || auth()->user()->hasRole('owner'))
                 {
                     if(is_null($transaction->discount_id))
                     {
