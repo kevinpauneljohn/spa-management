@@ -44,6 +44,7 @@
                 <th>Mobile Number</th>
                 <th>Date of birth</th>
                 <th>Address</th>
+                <th>Transactions</th>
                 <th style="width: 15%"></th>
             </tr>
             <tbody>
@@ -54,6 +55,7 @@
                         <td>{{$client->mobile_number}}</td>
                         <td>{{$client->date_of_birth}}</td>
                         <td>{{$client->address}}</td>
+                        <td>{{$client->transaction->count()}}</td>
                         <td>
                             @can('view client') <a href="{{route('clients.show',['client' => $client->id])}}" class="btn btn-sm btn-success view-client" id="{{$client->id}}">View</a> @endcan
                             @can('edit client') <button class="btn btn-sm btn-primary edit-client" id="{{$client->id}}">Edit</button> @endcan

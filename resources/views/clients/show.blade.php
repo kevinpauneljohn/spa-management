@@ -96,7 +96,7 @@
                 // { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
             ],
             responsive:true,
-            order:[0,'desc'],
+            order:[4,'desc'],
             pageLength: 100,
             drawCallback: function(row){
                 let transactions = row.json;
