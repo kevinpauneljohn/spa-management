@@ -42,7 +42,7 @@
             <div class="d-flex">
               <p class="d-flex flex-column">
                 <span class="text-bold text-lg currentMonthVisitors text-orange"></span>
-                <span>Visitors {{date('F, Y')}}</span>
+                <span>Transactions {{date('F, Y')}}</span>
               </p>
               <p class="ml-auto d-flex flex-column text-right">
                 <span class="textVisitorPercentage">
