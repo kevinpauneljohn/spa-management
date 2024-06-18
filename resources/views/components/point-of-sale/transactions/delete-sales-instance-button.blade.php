@@ -1,4 +1,4 @@
-@if($sale->payment_status !== 'completed')
+@if($sale->payment_status !== 'completed' || auth()->user()->hasRole('owner'))
     <button class="btn btn-warning" id="cancel-sales-btn">
         {{$slot}}
     </button>
