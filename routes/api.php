@@ -17,7 +17,6 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 |
 */
 
-Route::post('/login-app',[\App\Http\Controllers\Api\LoginController::class,'authenticate'])->name('api.login');
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 
