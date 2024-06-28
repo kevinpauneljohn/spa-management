@@ -11,10 +11,10 @@
         } else {
             params.visible_columns = null;
         }
-        
+
         return params;
     };
-    
+
     var _getVisibleColumns = function () {
 
         var visible_columns = [];
@@ -28,7 +28,7 @@
     };
 
     var _downloadFromUrl = function (url, params) {
-        var postUrl = url + '/export';
+        var postUrl = url + '/Exports';
         var xhr = new XMLHttpRequest();
         xhr.open('POST', postUrl, true);
         xhr.responseType = 'arraybuffer';
@@ -85,7 +85,7 @@
         if (url.indexOf('?') > -1) {
             return url + '&' + $.param(params);
         }
-        
+
         return url + '?' + $.param(params);
     };
 
@@ -116,7 +116,7 @@
             _downloadFromUrl(url, params);
         }
     };
-    
+
     DataTable.ext.buttons.postExcelVisibleColumns = {
         className: 'buttons-excel',
 
@@ -135,10 +135,10 @@
     DataTable.ext.buttons.export = {
         extend: 'collection',
 
-        className: 'buttons-export',
+        className: 'buttons-Exports',
 
         text: function (dt) {
-            return '<i class="fa fa-download"></i> ' + dt.i18n('buttons.export', 'Export') + '&nbsp;<span class="caret"/>';
+            return '<i class="fa fa-download"></i> ' + dt.i18n('buttons.Exports', 'Export') + '&nbsp;<span class="caret"/>';
         },
 
         buttons: ['csv', 'excel', 'pdf']
@@ -171,7 +171,7 @@
             _downloadFromUrl(url, params);
         }
     };
-    
+
     DataTable.ext.buttons.postCsv = {
         className: 'buttons-csv',
 

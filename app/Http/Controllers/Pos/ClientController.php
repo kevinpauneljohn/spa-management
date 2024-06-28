@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pos;
 
+use App\Exports\ClientsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClientUpdateRequest;
 use App\Models\Client;
@@ -11,15 +12,20 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Excel;
+use PhpOffice\PhpSpreadsheet\Exception;
 
 class ClientController extends Controller
 {
     public $user;
+    private $excel;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, Excel $excel)
     {
+        $this->excel = $excel;
         $this->user = $userService;
         $this->middleware(['permission:view client'])->only(['index','clientTransactionLists']);
+        $this->middleware(['permission:download clients'])->only(['downloadClients']);
     }
     /**
      * Display a listing of the resource.
@@ -106,5 +112,14 @@ class ClientController extends Controller
     public function clientTransactionLists($client, ClientService $clientService)
     {
         return $clientService->clientTransactions($client);
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function downloadClients(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        return $this->excel->download(new ClientsExport, 'clients.xlsx');
     }
 }

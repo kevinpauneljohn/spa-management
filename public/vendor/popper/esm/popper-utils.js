@@ -1075,7 +1075,7 @@ function setupEventListeners(reference, options, state, updateBound) {
 // ```
 // import * as PopperUtils from 'popper-utils';
 // ```
-// The default export will be removed in the next major version.
+// The default Exports will be removed in the next major version.
 var index = {
   computeAutoPlacement: computeAutoPlacement,
   debounce: debounce,

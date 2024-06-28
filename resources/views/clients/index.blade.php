@@ -22,6 +22,10 @@
     </div>
 <div class="card clients-card">
     <div class="card-header">
+        @can('download clients')
+            <a href="{{route('download.clients')}}" class="btn bg-olive btn-sm">Download</a>
+        @endcan
+
         <div class="float-right">
             {{--            <label for="search"></label><input type="search" name="search" class="form-control" id="search">--}}
             <form>

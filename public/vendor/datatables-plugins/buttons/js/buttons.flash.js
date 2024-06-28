@@ -1,5 +1,5 @@
 /*!
- * Flash export buttons for Buttons and DataTables.
+ * Flash Exports buttons for Buttons and DataTables.
  * 2015 SpryMedia Ltd - datatables.net/license
  *
  * ZeroClipbaord - MIT license
@@ -155,7 +155,7 @@ ZeroClipboard_TableTools.Client.prototype = {
 	cssEffects: true, // enable CSS mouse effects on dom container
 	handlers: null, // user event handlers
 	sized: false,
-	sheetName: '', // default sheet name for excel export
+	sheetName: '', // default sheet name for excel Exports
 
 	glue: function(elem, title) {
 		// glue to DOM element
@@ -592,11 +592,11 @@ var _newLine = function ( config )
 
 /**
  * Combine the data from the `buttons.exportData` method into a string that
- * will be used in the export file.
+ * will be used in the Exports file.
  *
  * @param  {DataTable.Api} dt     DataTables API instance
  * @param  {object}        config Button configuration
- * @return {object}               The data to export
+ * @return {object}               The data to Exports
  */
 var _exportData = function ( dt, config )
 {
@@ -739,7 +739,7 @@ function _createNode( doc, nodeName, opts ){
 
 /**
  * Get the width for an Excel column based on the contents of that column
- * @param  {object} data Data for export
+ * @param  {object} data Data for Exports
  * @param  {int}    col  Column index
  * @return {int}         Column width
  */
@@ -1387,7 +1387,7 @@ DataTable.ext.buttons.excelFlash = $.extend( {}, flashButton, {
 
 
 
-// PDF export
+// PDF Exports
 DataTable.ext.buttons.pdfFlash = $.extend( {}, flashButton, {
 	className: 'buttons-pdf buttons-flash',
 

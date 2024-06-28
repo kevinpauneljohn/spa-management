@@ -61,7 +61,7 @@ return [
         'order'   => [[0, 'desc']],
         'buttons' => [
             'create',
-            'export',
+            'Exports',
             'print',
             'reset',
             'reload',
@@ -80,7 +80,7 @@ return [
         /*
          * Default buttons to generate when not set.
          */
-        'buttons' => 'create,export,print,reset,reload',
+        'buttons' => 'create,Exports,print,reset,reload',
 
         /*
          * Default DOM to generate when not set.

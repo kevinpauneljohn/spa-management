@@ -1,5 +1,5 @@
 /*!
- * HTML5 export buttons for Buttons and DataTables.
+ * HTML5 Exports buttons for Buttons and DataTables.
  * 2016 SpryMedia Ltd - datatables.net/license
  *
  * FileSaver.js (1.3.3) - MIT license
@@ -275,11 +275,11 @@ var _newLine = function ( config )
 
 /**
  * Combine the data from the `buttons.exportData` method into a string that
- * will be used in the export file.
+ * will be used in the Exports file.
  *
  * @param	{DataTable.Api} dt		 DataTables API instance
  * @param	{object}				config Button configuration
- * @return {object}							 The data to export
+ * @return {object}							 The data to Exports
  */
 var _exportData = function ( dt, config )
 {
@@ -484,7 +484,7 @@ function _createNode( doc, nodeName, opts ) {
 
 /**
  * Get the width for an Excel column based on the contents of that column
- * @param  {object} data Data for export
+ * @param  {object} data Data for Exports
  * @param  {int}    col  Column index
  * @return {int}         Column width
  */
@@ -921,7 +921,7 @@ DataTable.ext.buttons.copyHtml5 = {
 };
 
 //
-// CSV export
+// CSV Exports
 //
 DataTable.ext.buttons.csvHtml5 = {
 	bom: false,
@@ -994,7 +994,7 @@ DataTable.ext.buttons.csvHtml5 = {
 };
 
 //
-// Excel (xlsx) export
+// Excel (xlsx) Exports
 //
 DataTable.ext.buttons.excelHtml5 = {
 	className: 'buttons-excel buttons-html5',
@@ -1181,13 +1181,13 @@ DataTable.ext.buttons.excelHtml5 = {
 			addRow( data.header, rowPos );
 			$('row:last c', rels).attr( 's', '2' ); // bold
 		}
-	
+
 		dataStartRow = rowPos;
 
 		for ( var n=0, ie=data.body.length ; n<ie ; n++ ) {
 			addRow( data.body[n], rowPos );
 		}
-	
+
 		dataEndRow = rowPos;
 
 		if ( config.footer && data.footer ) {
@@ -1301,7 +1301,7 @@ DataTable.ext.buttons.excelHtml5 = {
 };
 
 //
-// PDF export - using pdfMake - http://pdfmake.org
+// PDF Exports - using pdfMake - http://pdfmake.org
 //
 DataTable.ext.buttons.pdfHtml5 = {
 	className: 'buttons-pdf buttons-html5',

@@ -3229,7 +3229,7 @@
       render(this, innerParams);
       privateProps.innerParams.set(this, innerParams);
       return swalPromise(this, domCache, innerParams);
-    } // `catch` cannot be the name of a module export, so we define our thenable methods here instead
+    } // `catch` cannot be the name of a module Exports, so we define our thenable methods here instead
 
 
     then(onFulfilled) {

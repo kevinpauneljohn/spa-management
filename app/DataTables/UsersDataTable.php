@@ -50,7 +50,7 @@ class UsersDataTable extends DataTable
                     ->orderBy(1)
                     ->buttons(
                         Button::make('create'),
-                        Button::make('export'),
+                        Button::make('Exports'),
                         Button::make('print'),
                         Button::make('reset'),
                         Button::make('reload')
@@ -78,7 +78,7 @@ class UsersDataTable extends DataTable
     }
 
     /**
-     * Get filename for export.
+     * Get filename for Exports.
      *
      * @return string
      */
