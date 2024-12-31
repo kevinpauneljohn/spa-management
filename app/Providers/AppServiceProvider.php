@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\View\Components\forms\Spa;
-use App\View\Components\forms\TherapistForm;
+use App\View\Components\Forms\Spa;
+use App\View\Components\Forms\TherapistForm;
 use App\View\Components\Inventory\InventoryCategory;
 use App\View\Components\Inventory\InventoryCategoryForm;
 use App\View\Components\Inventory\InventoryForm;
