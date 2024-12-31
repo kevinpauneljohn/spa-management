@@ -88,9 +88,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Spa::class);
     }
+//    public function employee()
+//    {
+//        return $this->hasOne(EmployeeTable::class);
+//    }
+
     public function employee()
     {
-        return $this->hasOne(EmployeeTable::class);
+        return $this->hasOne(Employee::class);
     }
     public function shift()
     {
@@ -135,4 +140,5 @@ class User extends Authenticatable
             }
         });
     }
+
 }

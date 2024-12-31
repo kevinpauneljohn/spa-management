@@ -346,12 +346,6 @@ return [
 //            'can' => 'view owner'
         ],
         [
-            'text' => 'Owners',
-            'route'  => 'owners.index',
-            'icon' => 'fas fa-fw fa-user',
-            'can' => 'view owner'
-        ],
-        [
             'text' => 'Staff Management',
             'route'  => 'owner.my.staffs',
             'icon' => 'fas fa-fw fa-user-plus',
@@ -431,6 +425,35 @@ return [
             'route'  => 'sales-shift.index',
             'icon' => 'fa fa-hourglass',
             'can' => 'view sales shift'
+        ],
+        [
+            'text' => 'HR Management',
+            'icon' => 'fas fa-fw fa-book',
+            'can' => 'view admin user',
+            'submenu' => [
+                [
+                    'text'    => 'Departments',
+                    'shift'   => 'ml-3',
+                    'route'  => 'departments.index',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view department'
+                ],
+                [
+                    'text'    => 'Schedules',
+                    'shift'   => 'ml-3',
+                    'route'  => 'schedules.index',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view schedule'
+                ],
+                [
+                    'text'    => 'Employees',
+                    'shift'   => 'ml-3',
+                    'route'  => 'employees.index',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view employee'
+                ],
+            ],
+
         ],
 //        [
 //            'text' => 'Payroll Management',
