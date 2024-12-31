@@ -429,7 +429,7 @@ return [
         [
             'text' => 'HR Management',
             'icon' => 'fas fa-fw fa-book',
-            'can' => 'view admin user',
+            'can' => 'view department',
             'submenu' => [
                 [
                     'text'    => 'Departments',
