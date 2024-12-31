@@ -103,7 +103,7 @@
 
                             <div class="tab-pane" id="account-details">
 {{--                                <x-therapist-form spaId="{{$therapist->spa_id}}" :therapist="$therapist ??''" type="specific-spa"/>--}}
-                                <x-therapist-form spaId="{{$therapist->spa_id}}" :therapist="$therapist ??''"/>
+                                <x-forms.therapist-form spaId="{{$therapist->spa_id}}" :therapist="$therapist ??''"/>
                             </div>
                             <!-- /.tab-pane -->
                         </div>

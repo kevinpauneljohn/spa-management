@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::component('add-spa-form-modal',Spa::class);
-        Blade::component('therapist-form',TherapistForm::class);
+//        Blade::component('therapist-form',TherapistForm::class);
         Blade::component('therapist-profile',TherapistProfile::class);
         Blade::component('sales-transaction-table',SalesTransactionClientsTable::class);
     }
