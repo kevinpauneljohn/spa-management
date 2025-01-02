@@ -7,6 +7,7 @@ use App\Http\Middleware\CheckIfUserLoggedInIsAnOwner;
 use App\Http\Middleware\CheckSalesIfExists;
 use App\Http\Middleware\CheckSalesIfExistsForPayment;
 use App\Http\Middleware\CheckUserBelongsToSpaSegmentTwo;
+use App\Http\Middleware\EnsureOwnersAndHiredEmployeesCanViewEmployeeProfile;
 use App\Http\Middleware\OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance;
 use App\Http\Middleware\UpgradeToHttpsUnderNgrok;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -81,6 +82,7 @@ class Kernel extends HttpKernel
         'CheckSalesIfExists' => CheckSalesIfExists::class,
         'CheckSalesIfExistsForPayment' => CheckSalesIfExistsForPayment::class,
         'sales.transaction.verifier' => \App\Http\Middleware\Pos\SalesTransactionVerifier::class,
-        'verify.sales.instance' => \App\Http\Middleware\Pos\CheckIfSalesShiftInstantiated::class
+        'verify.sales.instance' => \App\Http\Middleware\Pos\CheckIfSalesShiftInstantiated::class,
+        'allowedUsersOnly' => EnsureOwnersAndHiredEmployeesCanViewEmployeeProfile::class
     ];
 }

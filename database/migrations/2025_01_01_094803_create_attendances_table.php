@@ -16,10 +16,10 @@ class CreateAttendancesTable extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id');
-            $table->string('time_in')->nullable();
-            $table->string('time_out')->nullable();
-            $table->string('break_in')->nullable();
-            $table->string('break_out')->nullable();
+            $table->dateTime('time_in')->nullable();
+            $table->dateTime('time_out')->nullable();
+            $table->dateTime('break_in')->nullable();
+            $table->dateTime('break_out')->nullable();
             $table->boolean('is_overtime_allowed');
             $table->string('overtime_taken_in_hours')->nullable();
             $table->foreignUuid('user_id');//approved by an HR manager or the owner

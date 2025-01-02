@@ -7,9 +7,11 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
 use App\Models\Role;
+use App\Models\Schedule;
 use App\Models\Spa;
 use App\Models\User;
 use App\Services\HR\EmployeeService;
+use App\Services\HR\ScheduleSettingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -21,6 +23,7 @@ class EmployeeController extends Controller
         $this->middleware(['permission:add employee'])->only(['store']);
         $this->middleware(['permission:edit employee'])->only(['edit','update']);
         $this->middleware(['permission:delete employee'])->only(['destroy']);
+        $this->middleware(['allowedUsersOnly'])->only(['show']);
     }
     /**
      * Display a listing of the resource.
@@ -66,11 +69,13 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, UserService $userService)
     {
-        //
+        return view('hr.employees.show',[
+            'employee' => Employee::findOrFail($id),
+        ]);
     }
 
     /**
