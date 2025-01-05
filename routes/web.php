@@ -30,6 +30,7 @@ require __DIR__ . '/web/hr/department.php';
 require __DIR__ . '/web/hr/schedule.php';
 require __DIR__ . '/web/hr/employee.php';
 require __DIR__ . '/web/hr/scheduleSettings.php';
+require __DIR__ . '/web/hr/biometrics.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));

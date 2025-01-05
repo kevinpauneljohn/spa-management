@@ -27,6 +27,9 @@
     <div class="card">
         <div class="card-header">
             <x-adminlte-button label="Add" theme="primary" id="add-employee-btn" data-toggle="modal" data-target="#add-employee"/>
+            <div class="card-tools">
+                <button type="button" class="btn btn-info test-biometrics-connection-button">Test Biometrics Connection</button>
+            </div>
         </div>
         <div class="card-body table-responsive">
             <table id="employee-list" class="table table-bordered table-hover table-striped" role="grid" style="width:100%;">
@@ -40,6 +43,7 @@
                     <th>Spa</th>
                     <th>Role</th>
                     <th>Date Added</th>
+                    <th>Biometrics User Id</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -142,6 +146,50 @@
         </div>
     </form>
 
+    <form class="save-to-biometrics-form" id="add-to-biometrics-form">
+        @csrf
+        <div class="modal fade" id="add-to-biometrics-modal" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content">
+                    <div class="modal-header bg-olive">
+                        <h4 class="modal-title">Save Employee To Biometrics</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span>×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td>Employee</td>
+                                <td id="employee_name"></td>
+                            </tr>
+                        </table>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group biometric_users">
+                                    <label for="biometric_users">Biometric Users</label><span class="required">*</span>
+                                    <select name="biometric_users" class="form-control" id="biometric_users" >
+                                        <option value="">--Select User--</option>
+                                        @if(!is_null($biometricsUsers))
+                                            @foreach($biometricsUsers as $user)
+                                                <option value="{{$user['userid']}}">{{$user['name']}} - {{$user['userid']}}</option>
+                                           ]]] @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+                        <button type="submit" class="btn btn-primary save-employee-to-biometrics-button">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 @stop
 @section('plugins.CustomCSS',true)
 
@@ -165,6 +213,7 @@
                     { data: 'spa', name: 'spa'},
                     { data: 'role', name: 'role'},
                     { data: 'updated_at', name: 'updated_at'},
+                    { data: 'biometrics_id', name: 'biometrics_id'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
                 ],
                 responsive:true,
@@ -349,5 +398,91 @@
                 }
             });
         });
+
+        let testBiometricsConnectionButton = $('.test-biometrics-connection-button');
+        let addToBiometrics = $('.add-to-biometrics');
+        $(document).on('click','.test-biometrics-connection-button',function(){
+            $.ajax({
+                url: '{{route('test-biometrics-connection')}}',
+                type: 'get',
+                beforeSend: function(){
+                    testBiometricsConnectionButton.attr('disabled',true).text('Connecting...');
+                }
+            }).done(function(response){
+                console.log(response)
+                if(response.success === true)
+                {
+                    Toast.fire({
+                        type: 'success',
+                        title: response.message
+                    });
+                }
+            }).fail(function(xhr, status, error){
+                console.log(xhr)
+            }).always(function(){
+                testBiometricsConnectionButton.attr('disabled',false).text('Test Biometrics Connection');
+            });
+        })
+
+        let saveToBiometricsForm = $('.save-to-biometrics-form');
+        let employee_id;
+        $(document).on('click','.add-to-biometrics', function(){
+            employee_id = this.id;
+
+            $('#add-to-biometrics-modal').modal('toggle')
+            $.ajax({
+                url: '/employees/'+employee_id+'/edit',
+                type: 'get',
+                headers: csrf_token,
+                beforeSend: function(){
+                    saveToBiometricsForm.find('input').attr('disabled',true);
+                }
+            }).done(function(response){
+                let employee = response.user;
+                saveToBiometricsForm.find('#employee_name').text(employee.firstname+' '+employee.lastname);
+            }).fail(function (xhr, status, error){
+                console.log(xhr)
+            }).always(function(){
+                saveToBiometricsForm.find('input').attr('disabled',false);
+            });
+        });
+
+        $(document).on('submit','.save-to-biometrics-form', function(form){
+            form.preventDefault();
+            let data = $(this).serializeArray();
+
+            $.ajax({
+                url: '/add-employee-to-biometrics/'+employee_id,
+                type: 'post',
+                data: data,
+                headers: csrf_token,
+                beforeSend: function(){
+                    saveToBiometricsForm.find('.text-danger').remove();
+                    saveToBiometricsForm.find('.save-employee-to-biometrics-button').attr('disabled',true).text('Saving...');
+                }
+            }).done(function(response){
+                console.log(response)
+                if(response.success === true)
+                {
+                    Toast.fire({
+                        type: 'success',
+                        title: response.message
+                    });
+                    $('#employee-list').DataTable().ajax.reload(null, false);
+                }else{
+                    Toast.fire({
+                        type: 'warning',
+                        title: response.message
+                    });
+                }
+            }).fail(function (xhr, status, error){
+                console.log(xhr)
+                $.each(xhr.responseJSON.errors, function(key, value){
+                    saveToBiometricsForm.find('.'+key).append('<p class="text-danger">'+value+'</p>');
+                });
+            }).always(function (){
+                saveToBiometricsForm.find('.save-employee-to-biometrics-button').attr('disabled',false).text('Save');
+            });
+        })
     </script>
 @stop

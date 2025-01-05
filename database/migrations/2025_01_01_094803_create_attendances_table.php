@@ -23,6 +23,7 @@ class CreateAttendancesTable extends Migration
             $table->boolean('is_overtime_allowed');
             $table->string('overtime_taken_in_hours')->nullable();
             $table->foreignUuid('user_id');//approved by an HR manager or the owner
+            $table->string('userid')->nullable();//this will match the biometrics userid
             $table->timestamps();
         });
     }

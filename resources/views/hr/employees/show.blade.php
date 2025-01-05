@@ -107,15 +107,16 @@
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a class="nav-link active" href="#job-description" data-toggle="tab">Job Description</a></li>
+                                <li class="nav-item"><a class="nav-link active" href="#attendance" data-toggle="tab">Attendance</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#benefits" data-toggle="tab">Benefits</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#schedule" data-toggle="tab">Schedule</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#job-description" data-toggle="tab">Job Description</a></li>
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="active tab-pane" id="job-description">
-                                    Job Description
+                                <div class="active tab-pane" id="attendance">
+                                    Attendance
                                 </div>
                                 <!-- /.tab-pane -->
                                 <div class="tab-pane" id="benefits">
@@ -126,7 +127,9 @@
                                 <div class="tab-pane" id="schedule">
                                     <x-hr.schedule-settings-form :employee="$employee"/>
                                 </div>
-                                <!-- /.tab-pane -->
+                                <div class="tab-pane" id="job-description">
+                                    Job Description
+                                </div>
                             </div>
                             <!-- /.tab-content -->
                         </div><!-- /.card-body -->

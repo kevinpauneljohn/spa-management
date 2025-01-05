@@ -433,24 +433,39 @@ return [
             'submenu' => [
                 [
                     'text'    => 'Departments',
-                    'shift'   => 'ml-3',
+                    'shift'   => 'ml-2',
                     'route'  => 'departments.index',
                     'icon'  => 'fas fa-angle-right',
                     'can' => 'view department'
                 ],
                 [
                     'text'    => 'Schedules',
-                    'shift'   => 'ml-3',
+                    'shift'   => 'ml-2',
                     'route'  => 'schedules.index',
                     'icon'  => 'fas fa-angle-right',
                     'can' => 'view schedule'
                 ],
                 [
                     'text'    => 'Employees',
-                    'shift'   => 'ml-3',
+                    'shift'   => 'ml-2',
                     'route'  => 'employees.index',
                     'icon'  => 'fas fa-angle-right',
                     'can' => 'view employee'
+                ],
+                [
+                    'text'    => 'Biometrics',
+                    'shift'   => 'ml-2',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view biometrics',
+                    'submenu' => [
+                        [
+                            'text'    => 'Attendances',
+                            'shift'   => 'ml-3',
+                            'route'  => 'biometrics-attendance',
+                            'icon'  => 'fas fa-angle-right',
+                            'can' => 'view biometrics'
+                        ]
+                    ]
                 ],
             ],
 

@@ -2,8 +2,10 @@
 
 namespace App\Services\HR;
 
+use App\Models\Biometric;
 use App\Models\Employee;
 use App\Models\User;
+use Rats\Zkteco\Lib\ZKTeco;
 use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeService
@@ -46,6 +48,58 @@ class EmployeeService
         return false;
     }
 
+    public function saveEmployeeToBiometricsDevice($ipAddress, $employee_id, $password): array
+    {
+        $zkTeco = new ZKTeco($ipAddress);
+        $zkTeco->connect();
+        $zkTeco->enableDevice();
+
+        $employee = Employee::findOrFail($employee_id);
+        $isEmployeeSavedToBiometrics =  $zkTeco->setUser(
+            $employee->id,
+            $this->userIdFormatter($employee->id),
+            $employee->user->fullname,
+            $password
+        );
+
+        if($isEmployeeSavedToBiometrics)
+        {
+            if($this->saveEmployeeToBiometricsTable($this->userIdFormatter($employee->id), $employee_id))
+            {
+                return ['success' => true, 'message' => 'Employee successfully saved to biometrics'];
+            }
+            return ['success' => true, 'message' => 'employee saved'];
+        }
+        return ['success' => false, 'message' => 'Unable to save employee to biometrics'];
+    }
+
+    public function saveEmployeeToBiometricsTable($userId, $employee_id): array
+    {
+        if(Biometric::create([
+            'userid' => $userId,
+            'employee_id' => $employee_id
+        ]))
+        {
+            return ['success' => true, 'message' => 'Employee successfully integrated to biometrics'];
+        }
+        return ['success' => false, 'message' => 'Unable to integrate employee to biometrics'];
+    }
+
+    public function userIdFormatter($user_id): string
+    {
+        return sprintf("%05d", $user_id); // Outputs: 00042
+    }
+
+    public function isBiometricsConnected($ipAddress): array
+    {
+        $zkTeco = new ZKTeco($ipAddress);
+        if($zkTeco->connect())
+        {
+            return ['success' => true,'message' => 'Biometrics Successfully connected'];
+        }
+        return ['success' => false, 'message' => 'Unable to connect biometrics'];
+    }
+
     public function getEmployees($owner_id)
     {
         $employees = Employee::where('owner_id', $owner_id)->get();
@@ -68,6 +122,9 @@ class EmployeeService
             ->addColumn('spa', function ($employee) {
                 return !is_null($employee->user->spa_id) ? $employee->user->spa->name : '';
             })
+            ->addColumn('biometrics_id', function ($employee) {
+                return !is_null($employee->biometric) ? $employee->biometric->userid : '';
+            })
             ->addColumn('role', function ($employee) {
                 $roles = $employee->user->getRoleNames();
                 $names = '';
@@ -84,6 +141,10 @@ class EmployeeService
                 if(auth()->user()->can('view employee'))
                 {
                     $action .= '<a href="'.route('employees.show',['employee' => $employee->id]).'" class="btn btn-sm btn-success mr-1 view-employee" id="'.$employee->id.'">View Profile</a>';
+                }
+                if(auth()->user()->can('edit employee'))
+                {
+                    $action .= '<button type="button" class="btn btn-sm btn-info mr-1 add-to-biometrics" id="'.$employee->id.'">Add Biometrics</button>';
                 }
                 if(auth()->user()->can('edit employee'))
                 {

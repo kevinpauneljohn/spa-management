@@ -23,4 +23,9 @@ class Employee extends Model
     {
         return $this->hasOne(ScheduleSetting::class);
     }
+
+    public function biometric()
+    {
+        return $this->hasOne(Biometric::class);
+    }
 }
