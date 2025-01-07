@@ -408,18 +408,18 @@ return [
 //            'icon' => 'fas fa-fw fa-chart-pie',
 //            'can' => 'view expenses'
 //        ],
-        [
-            'text' => 'Product Management',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-store',
-            'can' => 'view product'
-        ],
-        [
-            'text' => 'Activity Logs',
-            'url'  => '#',
-            'icon' => 'fa fa-list-ol',
-            'can' => 'view activity'
-        ],
+//        [
+//            'text' => 'Product Management',
+//            'url'  => '#',
+//            'icon' => 'fas fa-fw fa-store',
+//            'can' => 'view product'
+//        ],
+//        [
+//            'text' => 'Activity Logs',
+//            'url'  => '#',
+//            'icon' => 'fa fa-list-ol',
+//            'can' => 'view activity'
+//        ],
         [
             'text' => 'Shift',
             'route'  => 'sales-shift.index',
