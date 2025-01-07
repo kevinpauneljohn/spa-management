@@ -108,9 +108,10 @@ class ReportService
             ->whereIn('spa_id', $spa_ids)
             ->sum('total_amount');
 
-        $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
-        $lastMonthSales = Sale::whereYear('created_at', $lastMonth->year)
-            ->whereMonth('created_at', $lastMonth->month)
+        $year = Carbon::now()->firstOfMonth()->subMonths($month)->year;
+//        $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
+        $lastMonthSales = Sale::whereYear('created_at', Carbon::now()->firstOfMonth()->subMonths($month)->year)
+            ->whereMonth('created_at', Carbon::now()->subMonths(1)->month)
             ->where('payment_status', 'completed')
             ->whereIn('spa_id', $spa_ids)
             ->sum('total_amount');
@@ -150,8 +151,14 @@ class ReportService
             ->whereIn('spa_id', $spa_ids)
             ->count();
 
-        $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
-        $lastMonthVisitor = Transaction::whereYear('end_time', $lastMonth->year)
+//        $year = Carbon::now()->firstOfMonth()->subMonths($month)->year;
+////        $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
+//        $lastMonthSales = Sale::whereYear('created_at', Carbon::now()->firstOfMonth()->subMonths($month)->year)
+//            ->whereMonth('created_at', Carbon::now()->subMonths(1)->month)
+
+//        $lastMonth = Carbon::createFromDate($year, $month, 1)->subMonth();
+        $lastMonth = Carbon::now()->firstOfMonth()->subMonths(1);
+        $lastMonthVisitor = Transaction::whereYear('end_time', Carbon::now()->firstOfMonth()->subMonths(1)->year)
             ->whereMonth('end_time', $lastMonth->month)
             ->where('amount','>', 0)
             ->whereIn('spa_id', $spa_ids)
