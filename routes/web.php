@@ -234,3 +234,7 @@ Route::middleware(['auth'])->group(function(){
     //attendance
     Route::get('/spa-attendance/{name}', [\App\Http\Controllers\DownloadAttendanceController::class, 'employeeAttendace']);
 
+    Route::get('/dhg-proposal', function(){
+        return view('proposal.proposal');
+    });
+
