@@ -11,7 +11,7 @@
 </head>
 <body style="background-color: #e6e6e6;">
 
-<div class="container mt-4" style="background-color: white; padding: 80px">
+<div class="container mt-4" style="background-color: white; padding: 40px">
     <span>Proposal for <span style="font-weight: bold;">Fabuluxe Aesthetic</span></span><br/>
     <span>Prepared for: Maritess Faustino</span><br/>
     <span>Business: Aesthetics Business in Telabastagan, San Fernando, Pampanga</span><br/><br/>
