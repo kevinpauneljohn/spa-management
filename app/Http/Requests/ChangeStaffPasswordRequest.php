@@ -24,7 +24,7 @@ class ChangeStaffPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'new_password' => ['required','password','confirmed']
+            'new_password' => ['required','confirmed']
         ];
     }
 }

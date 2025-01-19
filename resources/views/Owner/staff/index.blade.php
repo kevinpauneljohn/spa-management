@@ -539,6 +539,7 @@
                 form.preventDefault();
                 let data = $(this).serializeArray()
 
+                console.log(data)
                 $.ajax({
                     url: '/staff/'+staffId+'/change-password',
                     type: 'put',
