@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
-use App\Services\HR\BiometricsService;
 use Illuminate\Http\Request;
 
 class BiometricController extends Controller
@@ -84,14 +83,13 @@ class BiometricController extends Controller
         //
     }
 
-    public function attendance(BiometricsService $biometricsService)
+    public function attendance()
     {
-        return view('hr.biometrics.attendances');
     }
 
-    public function getEmployeeAttendance(BiometricsService $biometricsService)
+    public function getEmployeeAttendance()
     {
-        return $biometricsService->getAttendanceInTableFormat('192.168.254.10');
+
     }
 
 }

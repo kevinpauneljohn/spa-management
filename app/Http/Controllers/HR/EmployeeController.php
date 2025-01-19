@@ -11,12 +11,10 @@ use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\Spa;
 use App\Models\User;
-use App\Services\HR\BiometricsService;
 use App\Services\HR\EmployeeService;
 use App\Services\HR\ScheduleSettingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Rats\Zkteco\Lib\ZKTeco;
 
 class EmployeeController extends Controller
 {
@@ -33,13 +31,12 @@ class EmployeeController extends Controller
      *
      * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index(UserService $userService, BiometricsService $biometricsService)
+    public function index(UserService $userService)
     {
         $excludedRoles = ['super admin', 'owner', 'admin'];
         return view('hr.employees.index',[
             'roles' => Role::whereNotIn('name', $excludedRoles)->get(),
             'spas' => Spa::where('owner_id',$userService->get_staff_owner()->id)->get(),
-            'biometricsUsers' => $biometricsService->getBioMetricsUsers()
         ]);
     }
 
@@ -134,7 +131,7 @@ class EmployeeController extends Controller
 
     public function testBiometricsConnection(EmployeeService $employeeService): \Illuminate\Http\JsonResponse
     {
-        return response()->json($employeeService->isBiometricsConnected('192.168.254.10'));
+//        return response()->json($employeeService->isBiometricsConnected('192.168.254.10'));
     }
 
     public function addEmployeeToBiometrics(StoreEmployeeToBiometricsRequest $request,$id, EmployeeService $employeeService): \Illuminate\Http\JsonResponse
