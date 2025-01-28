@@ -4,8 +4,9 @@ namespace App\Services\HR;
 
 use App\Models\Biometric;
 use App\Models\Employee;
+use App\Models\Spa;
 use App\Models\User;
-use Rats\Zkteco\Lib\ZKTeco;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeService
@@ -48,56 +49,26 @@ class EmployeeService
         return false;
     }
 
-    public function saveEmployeeToBiometricsDevice($ipAddress, $employee_id, $password): array
-    {
-        $zkTeco = new ZKTeco($ipAddress);
-        $zkTeco->connect();
-        $zkTeco->enableDevice();
-
-        $employee = Employee::findOrFail($employee_id);
-        $isEmployeeSavedToBiometrics =  $zkTeco->setUser(
-            $employee->id,
-            $this->userIdFormatter($employee->id),
-            $employee->user->fullname,
-            $password
-        );
-
-        if($isEmployeeSavedToBiometrics)
-        {
-            if($this->saveEmployeeToBiometricsTable($this->userIdFormatter($employee->id), $employee_id))
-            {
-                return ['success' => true, 'message' => 'Employee successfully saved to biometrics'];
-            }
-            return ['success' => true, 'message' => 'employee saved'];
-        }
-        return ['success' => false, 'message' => 'Unable to save employee to biometrics'];
-    }
-
     public function saveEmployeeToBiometricsTable($userId, $employee_id): array
     {
-        if(Biometric::create([
-            'userid' => $userId,
-            'employee_id' => $employee_id
-        ]))
+        if(Biometric::where('userid',$userId)->count() > 0 || Biometric::where('employee_id',$employee_id)->count() > 0)
         {
-            return ['success' => true, 'message' => 'Employee successfully integrated to biometrics'];
+            return ['success' => false, 'message' => 'User already connected in the biometrics'];
+        }else{
+            if(Biometric::create([
+                'userid' => $userId,
+                'employee_id' => $employee_id
+            ]))
+            {
+                return ['success' => true, 'message' => 'Employee successfully integrated to biometrics'];
+            }
+            return ['success' => false, 'message' => 'Unable to integrate employee to biometrics'];
         }
-        return ['success' => false, 'message' => 'Unable to integrate employee to biometrics'];
     }
 
     public function userIdFormatter($user_id): string
     {
         return sprintf("%05d", $user_id); // Outputs: 00042
-    }
-
-    public function isBiometricsConnected($ipAddress): array
-    {
-        $zkTeco = new ZKTeco($ipAddress);
-        if($zkTeco->connect())
-        {
-            return ['success' => true,'message' => 'Biometrics Successfully connected'];
-        }
-        return ['success' => false, 'message' => 'Unable to connect biometrics'];
     }
 
     public function getEmployees($owner_id)
@@ -181,8 +152,26 @@ class EmployeeService
         return Employee::findOrFail($employee_id)->user->id;
     }
 
-    public function updateUserRole()
+    public function getEmployeesByOwnerId($owner_id): \Illuminate\Support\Collection
     {
+        $employees = Employee::where('owner_id',$owner_id)->get();
+        return collect($employees)->map(function($item, $key){
+            $user = User::find($item['user_id']);
+            return collect($item)->merge(['user' => $user])
+                ->merge(['full_name' => ucwords($user->fullname)])
+                ->merge(['spa_name' => ucwords($user->spa->name)])
+                ->merge(['date_added' => Carbon::parse($item['created_at'])->format('Y-m-d h:i:s a')])
+                ->merge(['is_biometrics_connected' => $this->is_biometrics_connected($item['id'])]);
+        });
+    }
 
+    private function is_biometrics_connected($employee_id): bool
+    {
+        return Biometric::where('employee_id',$employee_id)->count() > 0;
+    }
+
+    private function getOwnerSpa($owner_id)
+    {
+        return collect(Spa::where('owner_id',$owner_id)->get())->pluck('id')->toArray();
     }
 }

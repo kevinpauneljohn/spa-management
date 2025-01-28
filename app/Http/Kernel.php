@@ -11,6 +11,7 @@ use App\Http\Middleware\EnsureOwnersAndHiredEmployeesCanViewEmployeeProfile;
 use App\Http\Middleware\OnlyEmployeeOrOwnerOfTheSpaAndCheckSalesInstance;
 use App\Http\Middleware\UpgradeToHttpsUnderNgrok;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 
 class Kernel extends HttpKernel
 {
@@ -83,6 +84,7 @@ class Kernel extends HttpKernel
         'CheckSalesIfExistsForPayment' => CheckSalesIfExistsForPayment::class,
         'sales.transaction.verifier' => \App\Http\Middleware\Pos\SalesTransactionVerifier::class,
         'verify.sales.instance' => \App\Http\Middleware\Pos\CheckIfSalesShiftInstantiated::class,
-        'allowedUsersOnly' => EnsureOwnersAndHiredEmployeesCanViewEmployeeProfile::class
+        'allowedUsersOnly' => EnsureOwnersAndHiredEmployeesCanViewEmployeeProfile::class,
+        'client' => CheckClientCredentials::class,
     ];
 }

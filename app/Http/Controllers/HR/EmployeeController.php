@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\HR\EmployeeService;
 use App\Services\HR\ScheduleSettingService;
 use App\Services\UserService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -29,7 +30,7 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return array|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return string
      */
     public function index(UserService $userService)
     {
@@ -70,7 +71,7 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function show($id, UserService $userService)
     {
@@ -134,11 +135,16 @@ class EmployeeController extends Controller
 //        return response()->json($employeeService->isBiometricsConnected('192.168.254.10'));
     }
 
-    public function addEmployeeToBiometrics(StoreEmployeeToBiometricsRequest $request,$id, EmployeeService $employeeService): \Illuminate\Http\JsonResponse
+    public function addEmployeeToBiometrics(StoreEmployeeToBiometricsRequest $request,$employee_id, EmployeeService $employeeService): \Illuminate\Http\JsonResponse
     {
         return response()->json($employeeService->saveEmployeeToBiometricsTable(
             $request->biometric_users,
-            $id,
+            $employee_id,
         ));
+    }
+
+    public function getEmployees($owner_id, EmployeeService $employeeService)
+    {
+        return $employeeService->getEmployeesByOwnerId($owner_id);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ApiAttendance;
+//use App\Http\Controllers\ApiAttendance;
 use App\Http\Controllers\DownloadAttendanceController;
 use App\Http\Controllers\EmployeeController;
 use Illuminate\Http\Request;
@@ -17,12 +17,16 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-
+Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 });
 
-Route::post('/timeinApi/{id}/{spaCode}', [EmployeeController::class, 'timeInApi']);
-Route::match(['get', 'put'], '/timeUpdate/{id}/{action}', [EmployeeController::class, 'timeOutBreakInBreakOutApi']);
+//Route::post('/timeinApi/{id}/{spaCode}', [EmployeeController::class, 'timeInApi']);
+//Route::match(['get', 'put'], '/timeUpdate/{id}/{action}', [EmployeeController::class, 'timeOutBreakInBreakOutApi']);
 
+
+
+Route::middleware('client')->group(function () {
+    Route::get('/get-all-employees/{owner_id}',[\App\Http\Controllers\HR\EmployeeController::class,'getEmployees'])->name('get-all-employees');
+    Route::post('/add-employee-to-biometrics/{id}',[\App\Http\Controllers\HR\EmployeeController::class,'addEmployeeToBiometrics'])->name('add-employee-to-biometrics');
+});

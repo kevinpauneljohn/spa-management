@@ -13,7 +13,7 @@ class StoreEmployeeToBiometricsRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->user()->can('add employee');
+        return true;
     }
 
     /**
