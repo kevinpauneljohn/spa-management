@@ -143,8 +143,13 @@ class EmployeeController extends Controller
         ));
     }
 
-    public function getEmployees($owner_id, EmployeeService $employeeService)
+    public function getEmployees($owner_id, EmployeeService $employeeService): \Illuminate\Support\Collection
     {
         return $employeeService->getEmployeesByOwnerId($owner_id);
+    }
+
+    public function getEmployee()
+    {
+
     }
 }

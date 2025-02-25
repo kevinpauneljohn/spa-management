@@ -9,11 +9,11 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['employee_id','time_in','time_out','break_in','break_out'];
+    protected $fillable = ['time_in','time_out','break_in','break_out','is_overtime_allowed'];
     protected $table = 'attendances';
 
-    public function employee()
-    {
-        return $this->belongsTo(EmployeeTable::class);
-    }
+    protected $attributes = [
+        'is_overtime_allowed' => false
+    ];
+
 }

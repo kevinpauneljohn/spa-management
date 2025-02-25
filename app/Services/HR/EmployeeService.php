@@ -53,7 +53,7 @@ class EmployeeService
     {
         if(Biometric::where('userid',$userId)->count() > 0 || Biometric::where('employee_id',$employee_id)->count() > 0)
         {
-            return ['success' => false, 'message' => 'User already connected in the biometrics'];
+            return ['success' => false, 'message' => 'Employee already connected in the biometrics'];
         }else{
             if(Biometric::create([
                 'userid' => $userId,
@@ -115,10 +115,6 @@ class EmployeeService
                 }
                 if(auth()->user()->can('edit employee'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-info mr-1 add-to-biometrics" id="'.$employee->id.'">Add Biometrics</button>';
-                }
-                if(auth()->user()->can('edit employee'))
-                {
                     $action .= '<button type="button" class="btn btn-sm btn-primary mr-1 edit-employee" id="'.$employee->id.'">Edit</button>';
                 }
                 if(auth()->user()->can('delete employee'))
@@ -161,7 +157,8 @@ class EmployeeService
                 ->merge(['full_name' => ucwords($user->fullname)])
                 ->merge(['spa_name' => ucwords($user->spa->name)])
                 ->merge(['date_added' => Carbon::parse($item['created_at'])->format('Y-m-d h:i:s a')])
-                ->merge(['is_biometrics_connected' => $this->is_biometrics_connected($item['id'])]);
+                ->merge(['is_biometrics_connected' => $this->is_biometrics_connected($item['id'])])
+                ->merge(['biometrics_id' => $this->get_biometrics_id($item['id'])]);
         });
     }
 
@@ -170,7 +167,13 @@ class EmployeeService
         return Biometric::where('employee_id',$employee_id)->count() > 0;
     }
 
-    private function getOwnerSpa($owner_id)
+    private function get_biometrics_id($employee_id): string
+    {
+        $biometrics = Biometric::where('employee_id',$employee_id);
+        return $biometrics->count() > 0 ? $biometrics->first()->userid : '';
+    }
+
+    private function getOwnerSpa($owner_id): array
     {
         return collect(Spa::where('owner_id',$owner_id)->get())->pluck('id')->toArray();
     }
