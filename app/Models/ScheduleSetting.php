@@ -19,4 +19,9 @@ class ScheduleSetting extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 }

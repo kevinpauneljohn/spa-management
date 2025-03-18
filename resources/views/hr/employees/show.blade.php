@@ -15,6 +15,7 @@
                         <li class="breadcrumb-item">HR</li>
                         <li class="breadcrumb-item"><a href="{{route('employees.index')}}">Employees</a></li>
                         <li class="breadcrumb-item active">{{ucwords($employee->user->fullname)}}</li>
+
                     </ol>
                 </div>
             </div>
@@ -52,6 +53,9 @@
                                 </li>
                                 <li class="list-group-item">
                                     <b>Branch:</b> <a class="float-right">{{!is_null($employee->user->spa_id) ? $employee->user->spa->name : ''}}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Biometrics ID:</b> <a class="float-right">{{!is_null($employee->biometric) ? $employee->biometric->userid : ''}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -108,19 +112,19 @@
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
                                 <li class="nav-item"><a class="nav-link active" href="#attendance" data-toggle="tab">Attendance</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#benefits" data-toggle="tab">Benefits</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#schedule" data-toggle="tab">Schedule</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#benefits" data-toggle="tab">Benefits</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#job-description" data-toggle="tab">Job Description</a></li>
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="active tab-pane" id="attendance">
-                                    Attendance
+                                    <x-hr.attendance :employee="$employee" :ownerId="$employee->owner_id"/>
                                 </div>
                                 <!-- /.tab-pane -->
                                 <div class="tab-pane" id="benefits">
-                                    Benefits
+                                    <x-hr.benefits :employee="$employee"/>
                                 </div>
                                 <!-- /.tab-pane -->
 
@@ -142,6 +146,8 @@
         </div><!-- /.container-fluid -->
     </section>
 
+
+
 @stop
 @section('plugins.CustomCSS',true)
 
@@ -150,7 +156,5 @@
 @stop
 
 @section('js')
-    <script>
 
-    </script>
 @stop

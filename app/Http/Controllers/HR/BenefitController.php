@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Services\HR\BenefitService;
 use Illuminate\Http\Request;
 
 class BenefitController extends Controller
@@ -31,11 +32,13 @@ class BenefitController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request, BenefitService $benefitService): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(
+            $benefitService->saveEmployeeBenefits(collect($request->all())->toArray())
+        );
     }
 
     /**

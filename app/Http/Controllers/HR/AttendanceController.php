@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateAttendanceRequest;
+use App\Models\Attendance;
 use App\Services\HR\AttendanceService;
+use App\Services\UserService;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -11,11 +15,12 @@ class AttendanceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(UserService $userService)
     {
-        //
+        return view('hr.attendances.index')
+            ->with('owner_id', $userService->get_staff_owner()->id);
     }
 
     /**
@@ -32,7 +37,7 @@ class AttendanceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return array
      */
     public function store(Request $request, AttendanceService $attendanceService)
     {
@@ -58,7 +63,7 @@ class AttendanceController extends Controller
      */
     public function edit($id)
     {
-        //
+        return Attendance::findOrFail($id);
     }
 
     /**
@@ -66,11 +71,19 @@ class AttendanceController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAttendanceRequest $request, $id, AttendanceService $attendanceService)
     {
-        //
+        return response()->json($attendanceService->updateAttendance(
+            $id,
+            [
+                'time_in' => $request->time_in,
+                'time_out' => $request->time_out,
+                'break_in' => $request->break_in,
+                'break_out' => $request->break_out
+            ]
+        ));
     }
 
     /**
@@ -84,8 +97,18 @@ class AttendanceController extends Controller
         //
     }
 
-    public function storeAttendance(Request $request, AttendanceService $attendanceService)
+    public function storeAttendance(Request $request, AttendanceService $attendanceService): \Illuminate\Http\JsonResponse
     {
         return response()->json($attendanceService->saveAttendance($request->type,$request->timestamp,$request->id));
+    }
+
+    public function employeeAttendance($employee_biometrics_id, AttendanceService $attendanceService)
+    {
+        return $attendanceService->employeeAttendance($employee_biometrics_id);
+    }
+
+    public function allEmployeeAttendance(AttendanceService $attendanceService)
+    {
+        return $attendanceService->employeeAttendance(null);
     }
 }

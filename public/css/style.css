@@ -24,7 +24,7 @@
     color: #3d9970;
 }
 
-.no-transaction{
+.no-transaction, .late{
     background-color: #fcc2c2!important;
 }
 .sales-info-bg{

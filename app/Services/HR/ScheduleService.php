@@ -7,7 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 
-class ScheduleService
+class ScheduleService extends ScheduleSettingService
 {
     public function saveSchedule($name, $time_in, $time_out, $break_in, $break_out, $owner_id, $user_id): array
     {
@@ -98,14 +98,14 @@ class ScheduleService
     {
         $time_in = Carbon::parse($time_in);
         $time_out = Carbon::parse($time_out);
-        return $time_in->diffInHours($time_out);
+        return $time_in->diffInHours($time_out, false);
     }
 
     public function getTotalMinutes($time_in, $time_out): int
     {
         $time_in = Carbon::parse($time_in);
         $time_out = Carbon::parse($time_out);
-        return $time_in->diffInMinutes($time_out);
+        return $time_in->diffInMinutes($time_out, false);
     }
 
     public function getTotalHoursLessBreak($time_in, $time_out, $break_in, $break_out): string

@@ -453,20 +453,27 @@ return [
                     'can' => 'view employee'
                 ],
                 [
-                    'text'    => 'Biometrics',
+                    'text'    => 'Attendances',
                     'shift'   => 'ml-2',
+                    'route'  => 'attendances.index',
                     'icon'  => 'fas fa-angle-right',
-                    'can' => 'view biometrics',
-                    'submenu' => [
-                        [
-                            'text'    => 'Attendances',
-                            'shift'   => 'ml-3',
-                            'route'  => 'biometrics-attendance',
-                            'icon'  => 'fas fa-angle-right',
-                            'can' => 'view biometrics'
-                        ]
-                    ]
+                    'can' => 'view attendance'
                 ],
+//                [
+//                    'text'    => 'Biometrics',
+//                    'shift'   => 'ml-2',
+//                    'icon'  => 'fas fa-angle-right',
+//                    'can' => 'view biometrics',
+//                    'submenu' => [
+//                        [
+//                            'text'    => 'Attendances',
+//                            'shift'   => 'ml-3',
+//                            'route'  => 'biometrics-attendance',
+//                            'icon'  => 'fas fa-angle-right',
+//                            'can' => 'view biometrics'
+//                        ]
+//                    ]
+//                ],
             ],
 
         ],

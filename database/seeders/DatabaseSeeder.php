@@ -36,7 +36,8 @@ class DatabaseSeeder extends Seeder
                 EmployeeSeeder::class,
                 ScheduleSettingSeeder::class,
                 BenefitSeeder::class,
-                BiometricsSeeder::class
+                BiometricsSeeder::class,
+                AttendanceSeeder::class
             ]);
     }
 }

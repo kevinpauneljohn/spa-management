@@ -15,4 +15,13 @@ class Schedule extends Model
 
     protected $fillable = ['name','time_in','time_out','break_in','break_out','owner_id','user_id'];
 
+    public function scheduleSettings()
+    {
+        return $this->hasMany(ScheduleSetting::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

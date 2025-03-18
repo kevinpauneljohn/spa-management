@@ -2,6 +2,7 @@
 
 namespace App\Services\HR;
 
+use App\Models\Biometric;
 use App\Models\ScheduleSetting;
 
 class ScheduleSettingService
@@ -28,5 +29,15 @@ class ScheduleSettingService
     public function is_employee_have_saved_schedule($employee_id): bool
     {
         return ScheduleSetting::where('employee_id', $employee_id)->count() > 0;
+    }
+
+    public function get_employee_id($biometric_user_id)
+    {
+        return Biometric::where('userid',$biometric_user_id)->first()->employee_id;
+    }
+
+    public function get_schedule_id($biometric_user_id)
+    {
+        return ScheduleSetting::where('employee_id',$this->get_employee_id($biometric_user_id))->first()->schedule_id;
     }
 }

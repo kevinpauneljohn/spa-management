@@ -31,6 +31,8 @@ require __DIR__ . '/web/hr/schedule.php';
 require __DIR__ . '/web/hr/employee.php';
 require __DIR__ . '/web/hr/scheduleSettings.php';
 require __DIR__ . '/web/hr/biometrics.php';
+require __DIR__ . '/web/hr/attendance.php';
+require __DIR__ . '/web/hr/benefits.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
@@ -222,7 +224,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::get('/home', [App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('home');
 
-    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
+//    Route::get('/attendance', [\App\Http\Controllers\EmployeeController::class, 'index'])->name('attendance.index');
     // Route::post('/attendanceID/{id}', [\App\Http\Controllers\EmployeeController::class, 'create']);
     // Route::put('/time-out/{id}', [\App\Http\Controllers\EmployeeController::class, 'time_out']);
     // Route::get('/break-in/{id}', [\App\Http\Controllers\EmployeeController::class, 'break_in']);

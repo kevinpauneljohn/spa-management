@@ -47,6 +47,7 @@
             $(document).on('submit','.schedule-settings-form', function(form){
                 form.preventDefault();
                 let data = $(this).serializeArray();
+                console.log(data)
 
                 $.ajax({
                     url: '{{route('schedule-settings.store')}}',

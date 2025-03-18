@@ -16,4 +16,24 @@ class Attendance extends Model
         'is_overtime_allowed' => false
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+
+    private function getEmployeeId()
+    {
+        return Biometric::where('userid',$this->userid)->firstOrFail()->employee_id;
+    }
+
+    public function getEmployeeName()
+    {
+        return Employee::findOrFail($this->getEmployeeId())->user->fullname;
+    }
+
 }

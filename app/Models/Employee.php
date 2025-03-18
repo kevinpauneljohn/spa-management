@@ -28,4 +28,9 @@ class Employee extends Model
     {
         return $this->hasOne(Biometric::class);
     }
+
+    public function benefit()
+    {
+        return $this->hasOne(Benefit::class);
+    }
 }
