@@ -33,6 +33,9 @@ require __DIR__ . '/web/hr/scheduleSettings.php';
 require __DIR__ . '/web/hr/biometrics.php';
 require __DIR__ . '/web/hr/attendance.php';
 require __DIR__ . '/web/hr/benefits.php';
+require __DIR__ . '/web/hr/payslip.php';
+require __DIR__ . '/web/hr/deduction.php';
+require __DIR__ . '/web/hr/additionalPay.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));

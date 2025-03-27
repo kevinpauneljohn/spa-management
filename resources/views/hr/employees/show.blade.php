@@ -120,6 +120,8 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="active tab-pane" id="attendance">
+                                    <x-hr.add-attendance-button />
+                                    <x-hr.attendance.attendance-date-range />
                                     <x-hr.attendance :employee="$employee" :ownerId="$employee->owner_id"/>
                                 </div>
                                 <!-- /.tab-pane -->

@@ -4,8 +4,11 @@ namespace App\Services\HR;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Schedule;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 
 class AttendanceService extends ScheduleService
@@ -39,10 +42,26 @@ class AttendanceService extends ScheduleService
     public function updateAttendance($attendance_id, array $data): array
     {
         $attendance = Attendance::findOrFail($attendance_id);
+
+        $schedule_id = $this->get_schedule_id($attendance->userid);
+        $schedule = $this->get_schedule_by_id($schedule_id);
+        $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
+
         $attendance->time_in = !empty($data['time_in']) ? Carbon::parse($data['time_in'])->format('Y-m-d H:i:s') : null;
         $attendance->time_out = !empty($data['time_out']) ? Carbon::parse($data['time_out'])->format('Y-m-d H:i:s') : null;
         $attendance->break_in = !empty($data['break_in']) ? Carbon::parse($data['break_in'])->format('Y-m-d H:i:s') : null;
         $attendance->break_out = !empty($data['break_out']) ? Carbon::parse($data['break_out'])->format('Y-m-d H:i:s') : null;
+        $attendance->is_overtime_allowed = collect($data)->has('is_overtime_allowed');
+        $attendance->overtime_taken_in_hours = $attendance->is_overtime_allowed ?
+            $this->get_total_overtime($attendance->time_out, $scheduled_time_out) : 0;
+        $attendance->total_late_hours = $this->get_hours_late($attendance->time_in, $attendance->schedule_id);
+        $attendance->daily_basic_pay = $this->get_employee_daily_basic_pay($this->get_employee_id($attendance->userid));
+        $attendance->late_deductions = $this->late_amount_deductions(
+            $attendance->userid,
+            $data['time_in'],
+            $attendance->schedule_id
+        );
+        $attendance->overtime_pay = $this->get_overtime_pay_amount($attendance->time_out, $schedule->time_out, $schedule_id, $attendance->daily_basic_pay, $attendance->is_overtime_allowed);
         if($attendance->isDirty())
         {
             $attendance->user_id = auth()->user()->id;
@@ -66,6 +85,8 @@ class AttendanceService extends ScheduleService
         $attendance->time_in = $time_in;
         $attendance->userid = $biometrics_userid;
         $attendance->schedule_id = $this->get_schedule_id($biometrics_userid);
+        $attendance->daily_basic_pay = $this->get_employee_daily_basic_pay($this->get_employee_id($biometrics_userid));
+        $attendance->total_late_hours = $this->get_hours_late($attendance->time_in, $attendance->schedule_id);
 
         return $attendance->save();
     }
@@ -76,11 +97,52 @@ class AttendanceService extends ScheduleService
         if($attendance->count() > 0)
         {
             $attendance = $attendance->first();
+            $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
+
             $attendance->time_out = $time_out;
+            $attendance->overtime_taken_in_hours = $attendance->is_overtime_allowed ?
+                $this->get_total_overtime($attendance->time_out, $scheduled_time_out) : 0;
             $attendance->save();
             return true;
         }
         return false;
+    }
+
+    public function save_employee_attendance_manually(array $data): array
+    {
+
+        $schedule_id = $this->get_schedule_id($data['biometrics_user']);
+        $schedule = $this->get_schedule_by_id($schedule_id);
+        $biometric_user_id = $data['biometrics_user'];
+
+        $attendance = new Attendance();
+        $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
+
+        $attendance->time_in = !empty($data['time_in']) ? Carbon::parse($data['time_in'])->format('Y-m-d H:i:s') : null;
+        $attendance->time_out = !empty($data['time_out']) ? Carbon::parse($data['time_out'])->format('Y-m-d H:i:s') : null;
+        $attendance->break_in = !empty($data['break_in']) ? Carbon::parse($data['break_in'])->format('Y-m-d H:i:s') : null;
+        $attendance->break_out = !empty($data['break_out']) ? Carbon::parse($data['break_out'])->format('Y-m-d H:i:s') : null;
+        $attendance->user_id = auth()->user()->id;
+        $attendance->userid = $biometric_user_id;
+        $attendance->schedule_id = $this->get_schedule_id($biometric_user_id);
+        $attendance->is_overtime_allowed = collect($data)->has('is_overtime_allowed');
+        $attendance->overtime_taken_in_hours = $attendance->is_overtime_allowed ?
+            $this->get_total_overtime($attendance->time_out, $scheduled_time_out) : 0;
+        $attendance->total_late_hours = $this->get_hours_late($attendance->time_in, $attendance->schedule_id);
+        $attendance->daily_basic_pay = $this->get_employee_daily_basic_pay($this->get_employee_id($biometric_user_id));
+        $attendance->late_deductions = $this->late_amount_deductions(
+            $attendance->userid,
+            $data['time_in'],
+            $attendance->schedule_id
+        );
+        $attendance->overtime_pay = $this->get_overtime_pay_amount(
+            $attendance->time_out, $schedule->time_out, $schedule_id, $attendance->daily_basic_pay, $attendance->is_overtime_allowed);
+
+        if($attendance->save())
+        {
+            return ['success' => true, 'message' => 'Attendance successfully Added!'];
+        }
+        return ['success' => false, 'message' => 'An error occurred!'];
     }
 
     public function late_counter_in_minutes($time_in, $schedule_time_in)
@@ -89,34 +151,94 @@ class AttendanceService extends ScheduleService
         return max(number_format($late_in_minutes,2), 0);
     }
 
+    public function get_default_work_hours($schedule_id): int
+    {
+        $schedule = $this->get_schedule_by_id($schedule_id);
+        return Carbon::parse($schedule->time_in)->diffInHours($schedule->time_out, false);
+    }
+
     public function get_total_overtime($time_out, $schedule_time_out)
     {
         $total_overtime = Carbon::parse($schedule_time_out)->diffInHours($time_out,false);
         return max(number_format($total_overtime,2), 0);
     }
 
-    private function getBiometricUserId()
+    public function get_overtime_pay_amount($employee_time_out, $schedule_time_out, $schedule_id, $daily_basic_pay, $is_overtime_allowed)
+    {
+        if($is_overtime_allowed)
+        {
+            $work_hours = $this->get_default_work_hours($schedule_id) - 1;
+            $daily_basic_pay_per_hour = $daily_basic_pay / $work_hours;
+
+            $scheduled_time_out = Carbon::parse($employee_time_out)->format('Y-m-d').' '.$schedule_time_out;
+            $total_overtime_hours = $this->get_total_overtime($employee_time_out, $scheduled_time_out);
+
+            return $total_overtime_hours * $daily_basic_pay_per_hour;
+        }
+        return 0;
+    }
+
+    public function get_hours_late($employee_time_in, $schedule_id)
+    {
+        $schedule = $this->get_schedule_by_id($schedule_id);
+        $date_time_in = Carbon::parse($employee_time_in)->format('Y-m-d');
+
+        $scheduled_time_in = Carbon::parse($date_time_in.' '.$schedule->time_in)->format('Y-m-d H:i');
+        $employee_time_in = Carbon::parse($employee_time_in)->format('Y-m-d H:i');
+        $late = Carbon::parse($scheduled_time_in)->diffInMinutes($employee_time_in,false) / 60;
+
+        return $late > 0.25 && $late < 1 ? 1 : round($late);
+    }
+
+    public function late_amount_deductions($biometric_user_id, $time_in, $schedule_id)
+    {
+        $employee_id = $this->get_employee_id($biometric_user_id);
+        $late = $this->get_hours_late($time_in, $schedule_id);
+
+        return $this->daily_basic_pay_less_late_deductions($employee_id, $schedule_id) * $late;
+    }
+
+    public function daily_basic_pay_less_late_deductions($employee_id, $schedule_id)
+    {
+        $schedule = Schedule::find($schedule_id);
+
+        $employee_daily_basic_pay = $this->get_employee_daily_basic_pay($employee_id);
+        $total_work_hours = $this->getTotalHours($schedule->time_in, $schedule->time_out) - 1;
+
+        return $employee_daily_basic_pay / $total_work_hours;
+    }
+
+    public function daily_net_pay(array $attendance)
+    {
+        return ($attendance['daily_basic_pay'] + $attendance['overtime_pay']) - $attendance['late_deductions'];
+    }
+
+    private function getBiometricUserId(): \Illuminate\Support\Collection
     {
         return collect(Employee::where('owner_id',$this->userService->get_staff_owner()->id)->get())->map(function($item, $key){
             return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
         })->pluck('biometrics_user_id');
     }
 
-    public function employeeAttendance($employee_id)
+    public function employeeAttendance($request, $employee_id)
     {
+        $startDate = $request->session()->get('attendance_start_date');
+        $endDate = $request->session()->get('attendance_end_date');
+
         if(is_null($employee_id))
         {
             $employees = $this->getBiometricUserId();
-            $attendances = Attendance::whereIn('userid',$employees)->get();
+            $attendances = Attendance::whereIn('userid',$employees)->whereBetween('time_in',[$startDate, $endDate])->get();
         }
         else{
             $employee = Employee::find($employee_id);
-            $attendances = Attendance::where('userid',$employee->biometric->userid)->get();
+            $attendances = Attendance::where('userid',$employee->biometric->userid)->whereBetween('time_in',[$startDate, $endDate])->get();
         }
+
 
         return DataTables::of($attendances)
             ->addColumn('name',function($attendance){
-                return ucwords($attendance->getEmployeeName());
+                return '<a href="'.route('employees.show',['employee' => $this->get_employee_id($attendance->userid)]).'">'.ucwords($attendance->getEmployeeName()).'</a>';
             })
             ->editColumn('time_in', function($attendance){
                 return !is_null($attendance->time_in) ? Carbon::parse($attendance->time_in)->format('Y-m-d h:i:s a') : '';
@@ -143,12 +265,14 @@ class AttendanceService extends ScheduleService
                 $scheduled_time_in = Carbon::parse($attendance->time_in)->format('Y-m-d').' '.$attendance->schedule->time_in;
                 return $this->late_counter_in_minutes($attendance->time_in, $scheduled_time_in);
             })
+            ->addColumn('total_work_hours', function($attendance){
+                return $this->get_default_work_hours($attendance->schedule_id);
+            })
             ->editColumn('is_overtime_allowed', function($attendance){
                 return $attendance->is_overtime_allowed ? '<span class="badge badge-success">Approved</span>' : '';
             })
             ->editColumn('total_overtime', function($attendance){
-                $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
-                return $this->get_total_overtime($attendance->time_out, $scheduled_time_out);
+                return $attendance->overtime_taken_in_hours;
             })
             ->editColumn('updated_at', function($attendance){
                 return $attendance->updated_at->format('Y-m-d h:i:s a');
@@ -156,8 +280,26 @@ class AttendanceService extends ScheduleService
             ->editColumn('user_id', function($attendance){
                 return !is_null($attendance->user) ? ucwords($attendance->user->fullname) : '';
             })
+            ->addColumn('basic_pay', function($attendance){
+                return number_format($attendance->daily_basic_pay,2);
+            })
+            ->addColumn('late_deductions', function($attendance){
+
+                return $attendance->late_deductions;
+            })
+            ->addColumn('overtime_pay', function($attendance){
+                return $attendance->overtime_pay;
+            })
+            ->addColumn('net_pay', function($attendance){
+                return number_format($this->daily_net_pay(collect($attendance)->toArray()),2);
+            })
             ->addColumn('action', function($attendance){
                 $action = '';
+                if(auth()->user()->can('view attendance') && Route::current()->getName() !== 'employee-attendance')
+                {
+                    $action .= '<a href="'.route('employees.show',['employee' => $this->get_employee_id($attendance->userid)]).'" class="btn btn-sm btn-success mr-1 mb-1 view-attendance">View</a>';
+                }
+
                 if(auth()->user()->can('edit attendance'))
                 {
                     $action .= '<button type="button" class="btn btn-sm btn-primary mr-1 mb-1 edit-attendance" id="'.$attendance->id.'" data-toggle="modal" data-target="#attendance-modal">Edit</button>';
@@ -172,7 +314,12 @@ class AttendanceService extends ScheduleService
                 $scheduled_time_in = Carbon::parse($attendance->time_in)->format('Y-m-d').' '.$attendance->schedule->time_in;
                 return $this->late_counter_in_minutes($attendance->time_in, $scheduled_time_in) > 0 ? 'late' : '';
             })
-            ->rawColumns(['action','is_overtime_allowed'])
+            ->rawColumns(['action','is_overtime_allowed','name'])
+            ->with([
+                'total_net_pay' => !is_null($employee_id) ? number_format($this->get_payroll_net_pay($employee->biometric->userid, $startDate, $endDate),2) : null,
+                'start_date' => $request->session()->get('attendance_start_date'),
+                'end_date' => $request->session()->get('attendance_end_date')
+            ])
             ->make(true);
     }
 }

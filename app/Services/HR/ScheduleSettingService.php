@@ -5,7 +5,7 @@ namespace App\Services\HR;
 use App\Models\Biometric;
 use App\Models\ScheduleSetting;
 
-class ScheduleSettingService
+class ScheduleSettingService extends BenefitService
 {
     public function saveSettings($owner_id, $days_of_work, $schedule_id, $employee_id): array
     {

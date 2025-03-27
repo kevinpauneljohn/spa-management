@@ -47,6 +47,11 @@ class ScheduleService extends ScheduleSettingService
         return ['success' => false, 'message' => 'No changes have been made'];
     }
 
+    public function get_schedule_by_id($schedule_id)
+    {
+        return Schedule::findOrFail($schedule_id);
+    }
+
     public function getSchedules($owner_id)
     {
         $schedules = Schedule::where('owner_id',$owner_id)->get();

@@ -4,7 +4,7 @@ namespace App\Services\HR;
 
 use App\Models\Benefit;
 
-class BenefitService
+class BenefitService extends PayrollService
 {
     public function saveEmployeeBenefits(array $employeeBenefit)
     {
@@ -32,5 +32,11 @@ class BenefitService
             return ['success' => true, 'message' => 'Benefits Successfully Saved!', 'benefits' => $benefits];
         }
         return ['success' => false, 'message' => 'Something Went Wrong!'];
+    }
+
+    public function get_employee_daily_basic_pay($employeeId)
+    {
+        $daily_basic_pay = Benefit::where('employee_id',$employeeId)->first()->daily_basic_pay;
+        return is_null($daily_basic_pay) ? 0 : $daily_basic_pay;
     }
 }

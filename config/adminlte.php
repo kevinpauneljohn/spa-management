@@ -453,11 +453,18 @@ return [
                     'can' => 'view employee'
                 ],
                 [
-                    'text'    => 'Attendances',
+                    'text'    => 'Attendance',
                     'shift'   => 'ml-2',
                     'route'  => 'attendances.index',
                     'icon'  => 'fas fa-angle-right',
                     'can' => 'view attendance'
+                ],
+                [
+                    'text'    => 'Payroll',
+                    'shift'   => 'ml-2',
+                    'route'  => 'employees-payroll',
+                    'icon'  => 'fas fa-angle-right',
+                    'can' => 'view payroll'
                 ],
 //                [
 //                    'text'    => 'Biometrics',

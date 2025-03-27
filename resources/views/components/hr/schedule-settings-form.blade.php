@@ -27,65 +27,52 @@
     <button type="submit" class="btn btn-primary save-schedule-settings">Save</button>
 </form>
 
-@once
-    @push('js')
-        <script>
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+@push('js')
+    <script>
+        let csrf_token = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
+        let scheduleSettingsForm = $('.schedule-settings-form');
+
+        $(document).on('submit','.schedule-settings-form', function(form){
+            form.preventDefault();
+            let data = $(this).serializeArray();
+            console.log(data)
+
+            $.ajax({
+                url: '{{route('schedule-settings.store')}}',
+                type: 'post',
+                data: data,
+                headers: csrf_token,
+                beforeSend: function(){
+                    scheduleSettingsForm.find('.text-danger').remove();
+                    scheduleSettingsForm.find('.save-schedule-settings').attr('disabled',true).text('Saving...');
                 }
-            })
-            let csrf_token = {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')};
-            let scheduleSettingsForm = $('.schedule-settings-form');
+            }).done(function(response){
 
-            $(document).on('submit','.schedule-settings-form', function(form){
-                form.preventDefault();
-                let data = $(this).serializeArray();
-                console.log(data)
-
-                $.ajax({
-                    url: '{{route('schedule-settings.store')}}',
-                    type: 'post',
-                    data: data,
-                    headers: csrf_token,
-                    beforeSend: function(){
-                        scheduleSettingsForm.find('.text-danger').remove();
-                        scheduleSettingsForm.find('.save-schedule-settings').attr('disabled',true).text('Saving...');
-                    }
-                }).done(function(response){
-
-                    if(response.success === true)
-                    {
-                        Toast.fire({
-                            type: 'success',
-                            title: response.message
-                        });
-                    }else{
-                        Toast.fire({
-                            type: 'danger',
-                            title: response.message
-                        });
-                    }
-
-                }).fail(function(xhr, status, error){
-                    console.log(xhr)
-
-                    $.each(xhr.responseJSON.errors, function(key, value){
-                        console.log(key)
-
-                        scheduleSettingsForm.find('.'+key).append('<p class="text-danger">'+value+'</p>');
+                if(response.success === true)
+                {
+                    Toast.fire({
+                        type: 'success',
+                        title: response.message
                     });
+                }else{
+                    Toast.fire({
+                        type: 'danger',
+                        title: response.message
+                    });
+                }
 
-                }).always(function(){
-                    scheduleSettingsForm.find('.save-schedule-settings').attr('disabled',false).text('Save');
+            }).fail(function(xhr, status, error){
+                console.log(xhr)
+
+                $.each(xhr.responseJSON.errors, function(key, value){
+                    console.log(key)
+
+                    scheduleSettingsForm.find('.'+key).append('<p class="text-danger">'+value+'</p>');
                 });
+
+            }).always(function(){
+                scheduleSettingsForm.find('.save-schedule-settings').attr('disabled',false).text('Save');
             });
-        </script>
-    @endpush
-@endonce
+        });
+    </script>
+@endpush
