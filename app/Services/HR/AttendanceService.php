@@ -217,7 +217,13 @@ class AttendanceService extends ScheduleService
     {
         return collect(Employee::where('owner_id',$this->userService->get_staff_owner()->id)->get())->map(function($item, $key){
 //            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
-            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])]);
+            $biometrics_userid = Employee::find($item['id'])->biometric;
+            if(!is_null($biometrics_userid))
+            {
+                return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
+            }
+            return $item;
+//            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])]);
         })->pluck('biometrics_user_id');
     }
 
