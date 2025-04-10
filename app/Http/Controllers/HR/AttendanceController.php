@@ -118,7 +118,7 @@ class AttendanceController extends Controller
     public function allEmployeeAttendance(Request $request, AttendanceService $attendanceService)
     {
 //        return $attendanceService->employeeAttendance($request,null);
-        return 'kevin';
+        return $attendanceService->getBiometricUserId();
     }
 
     public function get_attendance_by_date_range(Request $request)

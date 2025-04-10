@@ -213,7 +213,7 @@ class AttendanceService extends ScheduleService
         return ($attendance['daily_basic_pay'] + $attendance['overtime_pay']) - $attendance['late_deductions'];
     }
 
-    private function getBiometricUserId(): \Illuminate\Support\Collection
+    public function getBiometricUserId(): \Illuminate\Support\Collection
     {
         return collect(Employee::where('owner_id',$this->userService->get_staff_owner()->id)->get())->map(function($item, $key){
             return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
