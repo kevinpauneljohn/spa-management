@@ -131,7 +131,7 @@ class EmployeeController extends Controller
         return $employeeService->getEmployees($userService->get_staff_owner()->id);
     }
 
-    public function testBiometricsConnection(EmployeeService $employeeService): \Illuminate\Http\JsonResponse
+    public function testBiometricsConnection(EmployeeService $employeeService)
     {
 //        return response()->json($employeeService->isBiometricsConnected('192.168.254.10'));
     }
