@@ -216,14 +216,8 @@ class AttendanceService extends ScheduleService
     public function getBiometricUserId(): \Illuminate\Support\Collection
     {
         return collect(Employee::where('owner_id',$this->userService->get_staff_owner()->id)->get())->map(function($item, $key){
-//            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
-            $biometrics_userid = Employee::find($item['id'])->biometric;
-            if(!is_null($biometrics_userid))
-            {
-                return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
-            }
-//            return $item;
-//            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])]);
+            $employee = Employee::find($item['id']);
+            return collect($item)->merge(['biometrics_user_id' => is_null($employee->biometric) ? 0 : $employee->biometric->userid]);
         })->pluck('biometrics_user_id');
     }
 
