@@ -222,7 +222,7 @@ class AttendanceService extends ScheduleService
             {
                 return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])->biometric->userid]);
             }
-            return $item;
+//            return $item;
 //            return collect($item)->merge(['biometrics_user_id' => Employee::find($item['id'])]);
         })->pluck('biometrics_user_id');
     }
