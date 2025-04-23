@@ -96,7 +96,7 @@ class DiscountService
                 {
                     return '';
                 }
-                return is_null($discount->sales_claiming) ? 'yes' : 'no';
+                return is_null($discount->sales_claiming) ? 'yes' : $discount->sales_claiming->spa_id;
 //                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sales_claiming->spa->id, 'sale' => $discount->sales_claiming->id]).'" class="text-primary" target="_blank">#'.$discount->invoice_number_claimed.'</a>';
             })
             ->addColumn('action',function($discount){
