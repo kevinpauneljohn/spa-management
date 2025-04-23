@@ -46,6 +46,7 @@
                             </div>
                             <button type="button" class="btn btn-default btn-xs" id="reset-voucher">Reset Voucher</button>
                             <p class="mt-2">Total Voucher Amount = <span class="text-primary text-bold" id="total-voucher-amount">0</span></p>
+                            <p class="mt-2">Discounted Amount = <span class="text-primary text-bold" id="discounted-amount">0</span></p>
                         </section>
                         <div class="row voucher-row mb-1">
                             <div class="col-6">
@@ -152,6 +153,7 @@
                 });
 
                 const cashPayment = (cash, totalAmount, change) => {
+                    console.log('kevin')
                     if(cash >= totalAmount)
                     {
                         payForm.find('#cash').removeClass('is-invalid')
@@ -183,6 +185,14 @@
                     {
                         let change = cash - totalAmount;
                         cashPayment(cash, totalAmount, change)
+                    }
+                    else if(paymentType === "Voucher")
+                    {
+                        let total_voucher_amount = display_total_voucher_amount();
+                        let discounted_price = totalAmount - total_voucher_amount;
+                        let change = cash - discounted_price;
+                        cashPayment(cash, discounted_price, change)
+                        console.log('total amount = '+ change)
                     }
                     else{
                         let total_payment = parseFloat($('#non_cash_amount').val()) + parseFloat(cash);
@@ -317,11 +327,11 @@
                             }).done(function(response){
                                 console.log(response)
                                 let value = "";
-                                if(response === '')
+                                if(response.success === false)
                                 {
                                     Toast.fire({
                                         type: 'warning',
-                                        title: 'Voucher already claimed'
+                                        title: response.message
                                     });
                                     $('.voucher-row').find('.voucher-code#'+id).val('').change();
                                 }
@@ -337,6 +347,9 @@
                                 $('.voucher-row').find('.voucher-amount#'+id).val(value).change();
 
                                 let total_voucher_amount = display_total_voucher_amount();
+                                let discounted_amount = totalAmount - total_voucher_amount;
+                                discounted_amount = discounted_amount < 0 ? 0 : discounted_amount.toLocaleString();
+                                $('#discounted-amount').text(discounted_amount)
 
                                 display_cash_field_if_voucher_value_is_lower(total_voucher_amount);
 
@@ -424,6 +437,7 @@
 
                 $(document).on('click','.pay-button',function(){
                     salesId = this.id;
+                    payForm.trigger('reset');
                     payForm.find('#cash').removeClass('is-invalid')
 
                     payForm.find('input[name=sales_id]').val(salesId);

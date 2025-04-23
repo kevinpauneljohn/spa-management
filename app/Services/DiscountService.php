@@ -159,7 +159,21 @@ class DiscountService
 
     public function getDiscountByCode($code)
     {
-        return Discount::where('code',$code)->where('payment_status','completed')->where('date_claimed',null)->first();
+        $discount = Discount::where('code',$code);
+        if($discount->count() < 1)
+        {
+            return ['success' => false, 'message' => 'Voucher does not exist!'];
+        }
+        if($discount->where('payment_status','completed')->count() > 0)
+        {
+            if($discount->where('date_claimed',null)->count() > 0)
+            {
+                return $discount->first();
+            }
+            return ['success' => false, 'message' => 'Voucher was already claimed!'];
+        }
+        return ['success' => false, 'message' => 'Voucher was not paid!'];
+
     }
 
     public function checkVoucherAvailability($code)
