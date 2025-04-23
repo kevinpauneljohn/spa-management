@@ -26,6 +26,7 @@ class StoreNewAttendanceRequest extends FormRequest
         return [
             'biometrics_user' => ['required', 'string', 'max:255'],
             'time_in' => ['required'],
+            'time_out' => ['required'],
         ];
     }
 }

@@ -116,7 +116,6 @@ class AttendanceService extends ScheduleService
         $biometric_user_id = $data['biometrics_user'];
 
         $attendance = new Attendance();
-        $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
 
         $attendance->time_in = !empty($data['time_in']) ? Carbon::parse($data['time_in'])->format('Y-m-d H:i:s') : null;
         $attendance->time_out = !empty($data['time_out']) ? Carbon::parse($data['time_out'])->format('Y-m-d H:i:s') : null;
@@ -126,6 +125,7 @@ class AttendanceService extends ScheduleService
         $attendance->userid = $biometric_user_id;
         $attendance->schedule_id = $this->get_schedule_id($biometric_user_id);
         $attendance->is_overtime_allowed = collect($data)->has('is_overtime_allowed');
+        $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
         $attendance->overtime_taken_in_hours = $attendance->is_overtime_allowed ?
             $this->get_total_overtime($attendance->time_out, $scheduled_time_out) : 0;
         $attendance->total_late_hours = $this->get_hours_late($attendance->time_in, $attendance->schedule_id);
@@ -195,7 +195,8 @@ class AttendanceService extends ScheduleService
         $employee_id = $this->get_employee_id($biometric_user_id);
         $late = $this->get_hours_late($time_in, $schedule_id);
 
-        return $this->daily_basic_pay_less_late_deductions($employee_id, $schedule_id) * $late;
+        $amount = $this->daily_basic_pay_less_late_deductions($employee_id, $schedule_id) * $late;
+        return max($amount, 0);
     }
 
     public function daily_basic_pay_less_late_deductions($employee_id, $schedule_id)

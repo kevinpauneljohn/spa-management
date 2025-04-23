@@ -80,8 +80,7 @@ $(document).on('click','#add-attendance-btn', function(){
 $(document).on('submit','#add-new-attendance-form', function(form){
     form.preventDefault();
     let data = $(this).serializeArray();
-    // console.log(data);
-
+    console.log(data)
     $.ajax({
         url: `/add-new-employee-attendance`,
         method: 'POST',
@@ -92,6 +91,7 @@ $(document).on('submit','#add-new-attendance-form', function(form){
             attendanceSavingForm.find('.text-danger').remove();
         }
     }).done(function(response){
+        console.log(response)
         if(response.success === true)
         {
             $('#attendance-list').DataTable().ajax.reload(null, false);
@@ -108,6 +108,7 @@ $(document).on('submit','#add-new-attendance-form', function(form){
         }
 
     }).fail(function(xhr, status, error){
+        console.log(xhr)
         $.each(xhr.responseJSON.errors, function(key, value){
             attendanceSavingForm.find('#'+key).addClass('is-invalid').after('<p class="text-danger">'+value+'</p>');
         })
