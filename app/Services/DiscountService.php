@@ -88,14 +88,16 @@ class DiscountService
                 {
                     return '';
                 }
-                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sale->spa->id, 'sale' => $discount->sale->id]).'" class="text-primary" target="_blank">#'.$discount->sale->invoice_number.'</a>';
+//                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sale->spa->id, 'sale' => $discount->sale->id]).'" class="text-primary" target="_blank">#'.$discount->sale->invoice_number.'</a>';
+                return '';
             })
             ->addColumn('sales_invoice_claimed',function($discount){
                 if(is_null($discount->sales_id_claimed))
                 {
                     return '';
                 }
-                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sales_claiming->spa->id, 'sale' => $discount->sales_claiming->id]).'" class="text-primary" target="_blank">#'.$discount->invoice_number_claimed.'</a>';
+                return '';
+//                return '<a href="'.route('pos.add.transaction',['spa' => $discount->sales_claiming->spa->id, 'sale' => $discount->sales_claiming->id]).'" class="text-primary" target="_blank">#'.$discount->invoice_number_claimed.'</a>';
             })
             ->addColumn('action',function($discount){
                 $action = '';
