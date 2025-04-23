@@ -7,7 +7,6 @@ use App\Models\Employee;
 use App\Models\Schedule;
 use App\Services\UserService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -97,11 +96,19 @@ class AttendanceService extends ScheduleService
         if($attendance->count() > 0)
         {
             $attendance = $attendance->first();
-            $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
 
             $attendance->time_out = $time_out;
+            $scheduled_time_out = Carbon::parse($attendance->time_out)->format('Y-m-d').' '.$attendance->schedule->time_out;
             $attendance->overtime_taken_in_hours = $attendance->is_overtime_allowed ?
                 $this->get_total_overtime($attendance->time_out, $scheduled_time_out) : 0;
+            $attendance->total_late_hours = $this->get_hours_late($attendance->time_in, $attendance->schedule_id);
+            $attendance->daily_basic_pay = $this->get_employee_daily_basic_pay($this->get_employee_id($attendance->userid));
+            $attendance->late_deductions = $this->late_amount_deductions(
+                $attendance->userid,
+                $attendance->time_in,
+                $attendance->schedule_id
+            );
+            $attendance->overtime_pay = $this->get_overtime_pay_amount($attendance->time_out, $attendance->schedule->time_out, $attendance->schedule_id, $attendance->daily_basic_pay, $attendance->is_overtime_allowed);
             $attendance->save();
             return true;
         }
