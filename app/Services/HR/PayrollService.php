@@ -53,7 +53,7 @@ class PayrollService extends EmployeeService
 
     public function get_employees_payroll($owner_id)
     {
-        $employee_ids = collect($this->get_employees_id_by_owner_id($owner_id))->toArray();
+        $employee_ids = collect($this->get_employees_id_by_owner_id($owner_id))->pluck('id')->toArray();
         $payrolls = $this->get_payroll_by_employee_ids($employee_ids);
         return DataTables::of($payrolls)
             ->editColumn('date_start', function($payroll){
@@ -134,7 +134,7 @@ class PayrollService extends EmployeeService
 
     public function get_payroll_by_employee_ids(array $employee_ids)
     {
-        return Payroll::whereIn('employee_id', [1])->get();
+        return Payroll::whereIn('employee_id', $employee_ids)->get();
     }
 
 
