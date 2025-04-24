@@ -120,7 +120,19 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="active tab-pane" id="attendance">
-                                    <x-hr.add-attendance-button />
+                                    @if(
+                                        !is_null($employee->schedule_setting)
+                                        && !is_null($employee->benefit)
+                                        && !is_null($employee->benefit->daily_basic_pay)
+                                    )
+                                        <x-hr.add-attendance-button />
+                                    @else
+                                        <div class="alert alert-warning">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+                                            You need to set the schedule and daily basic salary
+                                        </div>
+                                    @endif
+
                                     <x-hr.attendance.attendance-date-range />
                                     <x-hr.attendance :employee="$employee" :ownerId="$employee->owner_id"/>
                                 </div>

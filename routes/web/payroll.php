@@ -7,4 +7,5 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/employees-payroll',[\App\Http\Controllers\Payroll\PayrollController::class,'employeePayroll'])->name('employees-payroll');
     Route::get('/get-employees-payroll',[\App\Http\Controllers\Payroll\PayrollController::class,'getEmployeesPayroll'])->name('get-employees-payroll');
     Route::post('/save-payroll',[\App\Http\Controllers\Payroll\PayrollController::class,'save_payroll'])->name('save-payroll');
+    Route::get('/get-payroll-by-date-range',[\App\Http\Controllers\Payroll\PayrollController::class,'get_payroll_by_date_range'])->name('get-payroll-by-date-range');
 });

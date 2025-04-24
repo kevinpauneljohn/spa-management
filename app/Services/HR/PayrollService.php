@@ -51,22 +51,19 @@ class PayrollService extends EmployeeService
         return $daily_basic_pay * $worked_days;
     }
 
-    public function get_employees_payroll($owner_id)
+    public function get_employees_payroll($request, $owner_id)
     {
+        $startDate = $request->session()->get('payroll_start_date');
+        $endDate = $request->session()->get('payroll_end_date');
+
         $employee_ids = collect($this->get_employees_id_by_owner_id($owner_id))->pluck('id')->toArray();
-        $payrolls = $this->get_payroll_by_employee_ids($employee_ids);
+        $payrolls = $this->get_payroll_by_employee_ids($startDate, $endDate, $employee_ids);
         return DataTables::of($payrolls)
             ->editColumn('date_start', function($payroll){
-                return '<span class="text-blue text-bold">'.$payroll->date_start.'</span>';
+                return '<span class="text-blue text-bold">'.Carbon::parse($payroll->date_start)->format('m-d-Y').'</span>';
             })
             ->editColumn('date_end', function($payroll){
-                return '<span class="text-green text-bold">'.$payroll->date_start.'</span>';
-            })
-            ->addColumn('employee_id', function($payroll){
-                return Carbon::parse($payroll->date_start)->format('Y-m-d');
-            })
-            ->addColumn('employee_id', function($payroll){
-                return Carbon::parse($payroll->date_end)->format('Y-m-d');
+                return '<span class="text-green text-bold">'.Carbon::parse($payroll->date_end)->format('m-d-Y').'</span>';
             })
             ->addColumn('employee_id', function($payroll){
                 return $payroll->employee_id;
@@ -132,10 +129,11 @@ class PayrollService extends EmployeeService
         return true;
     }
 
-    public function get_payroll_by_employee_ids(array $employee_ids)
+    public function get_payroll_by_employee_ids($startDate, $endDate ,array $employee_ids)
     {
-        return Payroll::whereIn('employee_id', $employee_ids)->get();
+//        return Payroll::whereIn('employee_id', $employee_ids)->where('date_start','>=', $startDate)
+//            ->where('date_end','<=', $endDate)->get();
+        return Payroll::whereIn('employee_id', $employee_ids)->whereBetween('date_start',[$startDate, $endDate])
+            ->orWhereBetween('date_end',[$startDate, $endDate])->get();
     }
-
-
 }

@@ -112,10 +112,10 @@ class PayrollController extends Controller
         return view('hr.payroll.payroll');
     }
 
-    public function getEmployeesPayroll(\App\Services\HR\PayrollService $payrollService)
+    public function getEmployeesPayroll(Request $request,\App\Services\HR\PayrollService $payrollService)
     {
         $owner_id = auth()->user()->owner->id;
-        return $payrollService->get_employees_payroll($owner_id);
+        return $payrollService->get_employees_payroll($request, $owner_id);
     }
 
     public function save_payroll(Request $request, \App\Services\HR\PayrollService $payrollService): \Illuminate\Http\JsonResponse
@@ -131,5 +131,15 @@ class PayrollController extends Controller
             return response()->json(['success' => true, 'message' => 'Payroll Successfully Generated!']);
         }
         return response()->json(['success' => false, 'message' => 'An error occurred']);
+    }
+
+    public function get_payroll_by_date_range(Request $request)
+    {
+        $date = explode('-',$request->input('date'));
+        $startDate = Carbon::parse($date[0])->startOfDay();
+        $endDate = Carbon::parse($date[1])->endOfDay();
+
+        $request->session()->put('payroll_start_date',$startDate);
+        $request->session()->put('payroll_end_date',$endDate);
     }
 }
