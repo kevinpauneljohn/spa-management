@@ -9,11 +9,16 @@
 @section('content')
     <div class="row mb-2">
         <div class="col-sm-6 mt-4">
-            <h3 class="text-info">Inventory Management</h3>
+            <h3 class="text-info">{{$spa->name}} - Inventories</h3>
         </div>
         <div class="col-sm-6 mt-3">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{route('spa.show',['spa' => $spa->id])}}">{{$spa->name}}</a> </li>
+                @if(auth()->user()->hasRole(['admin','owner']))
+                    <li class="breadcrumb-item"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
+                @else
+                    <li class="breadcrumb-item"><a href="{{route('spa.show',['spa' => $spa->id])}}">{{$spa->name}}</a> </li>
+                @endif
+
                 <li class="breadcrumb-item active">Inventories </li>
             </ol>
         </div>

@@ -33,7 +33,30 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event){
-            if(!auth()->user()->hasRole('owner'))
+            if(!auth()->user()->hasRole(['admin'])){
+                $event->menu->addAfter('payroll',[
+                    'text' => 'Inventory Management',
+                    'icon' => 'fas fa-fw fa-shopping-cart',
+                    'can' => 'view inventory',
+                    'key' => 'inventory',
+                    'submenu' => [
+                        [
+                            'text'    => 'Categories',
+                            'shift'   => 'ml-3',
+                            'route'  => 'inventory-categories.index',
+                            'icon'  => 'fas fa-angle-right',
+                            'can' => 'view category'
+                        ],
+                        [
+                            'text'    => 'Inventories',
+                            'shift'   => 'ml-3',
+                            'route'  => 'inventories.index',
+                            'icon'  => 'fas fa-angle-right',
+                        ],
+                    ],
+                ]);
+            }
+            if(!auth()->user()->hasRole(['owner','admin']))
             {
                 $event->menu->addAfter('inventory',[
                     'text' => 'Expense Management',

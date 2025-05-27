@@ -27,8 +27,11 @@ class ExpenseController extends Controller
     public function index(UserService $userService, ExpenseService $expenseService)
     {
         $pageTitle = 'Expenses';
-//        $owner = $userService->get_staff_owner(); //you may now call any related models
         $spa = auth()->user()->spa;
+
+        if (auth()->user()->hasRole('admin')) {
+            return view('expenses.spa_expenses',compact('pageTitle'));
+        }
         return view('expenses.index',compact('pageTitle','spa'));
     }
 

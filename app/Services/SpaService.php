@@ -27,7 +27,7 @@ class SpaService
                 {
                     $action .= '<a href="'.route('point-of-sale.show',['point_of_sale' => $spa->id]).'" class="btn btn-sm btn-outline-success mb-1 mr-1" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
                 }
-                if(auth()->user()->can('view spa'))
+                if(auth()->user()->can('view spa') && !auth()->user()->hasRole(['admin']))
                 {
                     $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-secondary mb-1 mr-1" title="View Spa Profile" ><i class="fas fa-eye"></i></a>&nbsp;';
                 }
@@ -41,11 +41,11 @@ class SpaService
                 }
                 if(auth()->user()->can('view expenses'))
                 {
-                    $action .= '<a href="'.route('spa.expenses.display',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-info mb-1 mr-1" id="'.$spa->name.'" title="View Expenses"><i class="fa fa-fw fa-chart-area"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.expenses.display',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-info mb-1 mr-1" id="'.$spa->name.'" title="View Expenses">Expense</a>&nbsp;';
                 }
                 if(auth()->user()->can('view inventory'))
                 {
-                    $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success mb-1 mr-1" id="'.$spa->name.'" title="View Inventory"><i class="fa fa-fw fa-cubes"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success mb-1 mr-1" id="'.$spa->name.'" title="View Inventory">Inventory</a>&nbsp;';
                 }
 //                if(auth()->user()->can('download attendance'))
 //                {

@@ -16,7 +16,7 @@ class CheckIfUserLoggedInIsAnOwner
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->user()->hasRole(['owner']))
+        if(!auth()->user()->hasRole(['owner','admin']))
             abort(403, 'Unauthorized Access');
         return $next($request);
     }

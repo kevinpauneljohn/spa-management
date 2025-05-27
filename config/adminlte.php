@@ -379,29 +379,30 @@ return [
             'text' => 'Payroll Management',
             'route'  => 'payroll.index',
             'icon' => 'fas fa-fw fa-money-check-alt',
-            'can' => 'view payroll'
+            'can' => 'view payroll',
+            'key' => 'payroll'
         ],
-        [
-            'text' => 'Inventory Management',
-            'icon' => 'fas fa-fw fa-shopping-cart',
-            'can' => 'view inventory',
-            'key' => 'inventory',
-            'submenu' => [
-                    [
-                        'text'    => 'Categories',
-                        'shift'   => 'ml-3',
-                        'route'  => 'inventory-categories.index',
-                        'icon'  => 'fas fa-angle-right',
-                        'can' => 'view category'
-                    ],
-                    [
-                        'text'    => 'Inventories',
-                        'shift'   => 'ml-3',
-                        'route'  => 'inventories.index',
-                        'icon'  => 'fas fa-angle-right',
-                    ],
-            ],
-        ],
+//        [
+//            'text' => 'Inventory Management',
+//            'icon' => 'fas fa-fw fa-shopping-cart',
+//            'can' => 'view inventory',
+//            'key' => 'inventory',
+//            'submenu' => [
+//                    [
+//                        'text'    => 'Categories',
+//                        'shift'   => 'ml-3',
+//                        'route'  => 'inventory-categories.index',
+//                        'icon'  => 'fas fa-angle-right',
+//                        'can' => 'view category'
+//                    ],
+//                    [
+//                        'text'    => 'Inventories',
+//                        'shift'   => 'ml-3',
+//                        'route'  => 'inventories.index',
+//                        'icon'  => 'fas fa-angle-right',
+//                    ],
+//            ],
+//        ],
 //        [
 //            'text' => 'Expense Management',
 //            'route'  => 'expenses.index',

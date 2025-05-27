@@ -8,15 +8,11 @@ use App\Http\Requests\StoreEmployeeToBiometricsRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
 use App\Models\Role;
-use App\Models\Schedule;
 use App\Models\Spa;
 use App\Models\User;
-use App\Services\HR\AttendanceService;
 use App\Services\HR\EmployeeService;
-use App\Services\HR\ScheduleSettingService;
 use App\Services\UserService;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {

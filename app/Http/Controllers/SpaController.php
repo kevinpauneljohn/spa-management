@@ -9,6 +9,7 @@ use App\Services\SpaService;
 use App\Models\Spa;
 use App\Models\Owner;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class SpaController extends Controller
@@ -76,9 +77,16 @@ class SpaController extends Controller
         return view('Spa.overview',compact('owners', 'roles'));
     }
 
-    public function get_owner_spas(SpaService $spaService)
+    public function get_owner_spas(SpaService $spaService, UserService $userService)
     {
-        return $spaService->spas(auth()->user()->owner->spas);
+        if(auth()->user()->hasRole('owner'))
+        {
+            $spas = auth()->user()->owner->spas;
+        }elseif (auth()->user()->hasRole('admin')){
+            $spas = $userService->get_staff_owner()->spas;
+        }
+
+        return $spaService->spas($spas);
     }
     public function my_spas()
     {
