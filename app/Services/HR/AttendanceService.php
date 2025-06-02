@@ -241,7 +241,8 @@ class AttendanceService extends ScheduleService
         }
         else{
             $employee = Employee::find($employee_id);
-            $attendances = Attendance::where('userid',$employee->biometric->userid)->whereBetween('time_in',[$startDate, $endDate])->get();
+            $biometrics_user_id = is_null($employee->biometric) ? 0 : $employee->biometric->userid;
+            $attendances = Attendance::where('userid',$biometrics_user_id)->whereBetween('time_in',[$startDate, $endDate])->get();
         }
 
 
