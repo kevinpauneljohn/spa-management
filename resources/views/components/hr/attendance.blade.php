@@ -47,7 +47,7 @@
                         @foreach($employees as $biometric_user)
                             <option value="{{$biometric_user['biometrics_id']}}"
                                     @if(!is_null($employee))
-                                        @if(!is_null($employee->biometric->userid))
+                                        @if(!is_null($employee->biometric))
                                             @if($biometric_user['biometrics_id'] == $employee->biometric->userid)
                                                 selected
                                             @endif
