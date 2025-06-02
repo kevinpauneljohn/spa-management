@@ -30,6 +30,14 @@ class StoreEmployeeRequest extends FormRequest
             'email' => ['nullable','string', 'email', 'max:255', 'unique:users'],
             'username' => ['nullable','string','max:255', 'unique:users'],
             'role' => ['required'],
+            'spa_id' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'spa_id.required' => 'The SPA field is required.',
         ];
     }
 }

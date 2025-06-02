@@ -30,6 +30,14 @@ class UpdateEmployeeRequest extends FormRequest
             'email' => ['nullable','string', 'email', 'max:255'],
             'username' => ['nullable','string','max:255'],
             'role' => ['required'],
+            'spa_id' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'spa_id.required' => 'The SPA field is required.',
         ];
     }
 }
