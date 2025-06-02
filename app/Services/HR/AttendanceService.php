@@ -233,6 +233,7 @@ class AttendanceService extends ScheduleService
     {
         $startDate = $request->session()->get('attendance_start_date');
         $endDate = $request->session()->get('attendance_end_date');
+        $biometrics_user_id = 0;
 
         if(is_null($employee_id))
         {
@@ -326,7 +327,7 @@ class AttendanceService extends ScheduleService
             })
             ->rawColumns(['action','is_overtime_allowed','name'])
             ->with([
-                'total_net_pay' => !is_null($employee_id) ? number_format($this->get_payroll_net_pay($employee->biometric->userid, $startDate, $endDate),2) : null,
+                'total_net_pay' => !is_null($employee_id) ? number_format($this->get_payroll_net_pay($biometrics_user_id, $startDate, $endDate),2) : null,
                 'start_date' => $request->session()->get('attendance_start_date'),
                 'end_date' => $request->session()->get('attendance_end_date')
             ])
