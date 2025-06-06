@@ -12,6 +12,7 @@ use Yajra\DataTables\Facades\DataTables;
 class EmployeeService
 {
     private $user;
+    private $counter = 1;
     public function createEmployee($employeeData, $role, $owner_id): array
     {
         if($this->saveUser($employeeData, $role))
@@ -75,6 +76,9 @@ class EmployeeService
     {
         $employees = Employee::where('owner_id', $owner_id)->get();
         return DataTables::of($employees)
+            ->addColumn('counter', function ($employee){
+                return $this->counter++.'.';
+            })
             ->addColumn('name', function ($employee) {
                 return '<a href="'.route('employees.show',['employee' => $employee->id]).'">' . $employee->user->fullname . '</a>';
             })

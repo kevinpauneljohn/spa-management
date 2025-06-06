@@ -32,6 +32,7 @@
             <table id="employee-list" class="table table-bordered table-hover table-striped" role="grid" style="width:100%;">
                 <thead>
                 <tr role="row">
+                    <th></th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Username</th>
@@ -195,6 +196,7 @@
                 serverSide: true,
                 ajax: '{!! route('get-employees') !!}',
                 columns: [
+                    { data: 'counter', name: 'counter'},
                     { data: 'name', name: 'name'},
                     { data: 'email', name: 'email'},
                     { data: 'username', name: 'username'},
