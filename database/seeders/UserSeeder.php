@@ -25,31 +25,31 @@ class UserSeeder extends Seeder
         $user->email = 'johnkevinpaunel@gmail.com';
         $user->username = 'kevinpauneljohn';
         $user->mobile_number = '09166520817';
-        $user->password = bcrypt('123');
+        $user->password = bcrypt('kamotengpusa999P');
         $user->assignRole('super admin');
         $user->save();
 
-        $owner = new User();
-        $owner->firstname = 'jamaica';
-        $owner->middlename = 'fernando';
-        $owner->lastname = 'soto';
-        $owner->email = 'sotojamaica@yahoo.com';
-        $owner->username = 'jamaica';
-        $owner->mobile_number = '09166520823';
-        $owner->password = bcrypt('123');
-        $owner->assignRole('owner');
-        $owner->save();
-
-        $ownerUser = new Owner();
-        $ownerUser->user_id = $owner->id;
-        $ownerUser->save();
-
-        $spa = new Spa();
-        $spa->owner_id = $ownerUser->id;
-        $spa->name = 'Thai Khun Lounge & Spa';
-        $spa->address = 'Mabalacat city, Pampanga';
-        $spa->number_of_rooms = 7;
-        $spa->save();
+//        $owner = new User();
+//        $owner->firstname = 'jamaica';
+//        $owner->middlename = 'fernando';
+//        $owner->lastname = 'soto';
+//        $owner->email = 'sotojamaica@yahoo.com';
+//        $owner->username = 'jamaica';
+//        $owner->mobile_number = '09166520823';
+//        $owner->password = bcrypt('123');
+//        $owner->assignRole('owner');
+//        $owner->save();
+//
+//        $ownerUser = new Owner();
+//        $ownerUser->user_id = $owner->id;
+//        $ownerUser->save();
+//
+//        $spa = new Spa();
+//        $spa->owner_id = $ownerUser->id;
+//        $spa->name = 'Thai Khun Lounge & Spa';
+//        $spa->address = 'Mabalacat city, Pampanga';
+//        $spa->number_of_rooms = 7;
+//        $spa->save();
 
 //        $frontDesk = new User([
 //            'firstname' => 'john',
