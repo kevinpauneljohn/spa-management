@@ -80,6 +80,7 @@
 
 @stop
 @section('plugins.CustomCSS',true)
+@section('plugins.Sweetalert2',true)
 @section('css')
 
 @stop
@@ -95,19 +96,31 @@
             $(document).on('submit','#register-owner', function(form){
                 form.preventDefault();
                 let data = $(this).serializeArray();
-
                 $.ajax({
                     url: '{{route('owners.index')}}',
                     type: 'POST',
                     data: data,
                     dataType: 'json',
                     beforeSend: function(){
+                        registerForm.find('.text-danger').remove();
                         registerForm.find('.submit-create-btn').attr('disabled',true).text('Saving..');
                     }
                 }).done(function(result){
                     console.log(result);
-                }).fail(function(xhr, status, error){
+                    if(result.success === true)
+                    {
+                        Toast.fire({
+                            type: 'success',
+                            title: data
+                        });
 
+                        $('#owners-list').DataTable().ajax.reload(null, false);
+                    }
+                }).fail(function(xhr, status, error){
+                    console.log(xhr)
+                    $.each(xhr.responseJSON.errors, function (key, value){
+                        registerForm.find('.'+key).append('<p class="text-danger">'+value+'</p>');
+                    });
                 }).always(function(){
                     registerForm.find('.submit-create-btn').attr('disabled',false).text('Save');
                 });

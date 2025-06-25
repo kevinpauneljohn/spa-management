@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Owners;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOwnerRequest;
 use App\Models\User;
 use App\Models\Owner;
 use App\Models\Spa;
+use App\Services\OwnerServices;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -45,18 +47,22 @@ class OwnerController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreOwnerRequest $request, OwnerServices $ownerServices)
     {
-        //
+        $user = $ownerServices->create_owner_as_user(collect($request->all())->toArray());
+
+        return  Owner::create(['user_id' => $user->id])?
+            response()->json(['success' => true, 'message' => 'Owner added successfully']) :
+            response()->json(['success' => false, 'message' => 'Failed to add owner']);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {

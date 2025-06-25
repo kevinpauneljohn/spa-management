@@ -24,6 +24,6 @@ class InventorySeeder extends Seeder
             }
         }
 
-        Inventory::factory()->count(15)->create();
+//        Inventory::factory()->count(15)->create();
     }
 }
