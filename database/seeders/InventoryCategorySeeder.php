@@ -25,10 +25,10 @@ class InventoryCategorySeeder extends Seeder
             }
         }
 
-        InventoryCategory::factory()->count(3)->state(new Sequence(
-            ['name' => 'consumable'],
-            ['name' => 'washable'],
-            ['name' => 'refillable'],
-        ))->create();
+//        InventoryCategory::factory()->count(3)->state(new Sequence(
+//            ['name' => 'consumable'],
+//            ['name' => 'washable'],
+//            ['name' => 'refillable'],
+//        ))->create();
     }
 }
