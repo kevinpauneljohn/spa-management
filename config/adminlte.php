@@ -373,7 +373,8 @@ return [
             'text' => 'Client Management',
             'route'  => 'clients.index',
             'icon' => 'fa fa-users',
-            'can' => 'view client'
+            'can' => 'view client',
+            'key' => 'client',
         ],
         [
             'text' => 'Payroll Management',

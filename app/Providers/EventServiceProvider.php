@@ -34,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
     {
         Event::listen(BuildingMenu::class, function (BuildingMenu $event){
             if(!auth()->user()->hasRole(['admin'])){
-                $event->menu->addAfter('payroll',[
+                $event->menu->addAfter('client',[
                     'text' => 'Inventory Management',
                     'icon' => 'fas fa-fw fa-shopping-cart',
                     'can' => 'view inventory',
