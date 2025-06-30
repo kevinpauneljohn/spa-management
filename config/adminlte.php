@@ -366,7 +366,7 @@ return [
         [
             'text' => 'Discounts',
             'route'  => 'discounts.index',
-            'icon' => 'fas fa-fw fa-search-dollar',
+            'icon' => 'fas fa-fw fa-tags',
             'can' => 'access discounts'
         ],
         [
