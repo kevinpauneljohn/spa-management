@@ -180,7 +180,9 @@
             // let therapists = [];
             let multipleMasseur = false;
 
-            $('.select2').select2()
+            $('#service').select2({
+                dropdownParent: $("#add-client-modal")
+            });
 
             $(document).ready(function(){
                 $('#clear-client-search, #appointment-info, #sales-transaction-reset-btn, #reset-personal-info-btn, #close-modal-btn').tooltip();
