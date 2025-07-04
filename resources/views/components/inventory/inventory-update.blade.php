@@ -55,7 +55,6 @@
                     title: 'Update '+tableData[1]+'?',
                     text: "You won't be able to revert this!",
                     type: 'warning',
-                    maxlength: "250",
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',

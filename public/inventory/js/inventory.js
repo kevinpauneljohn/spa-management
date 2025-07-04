@@ -88,7 +88,7 @@ $(document).on('submit','.edit-inventory-form', async function (form) {
         inputLabel: 'Password',
         inputPlaceholder: 'Enter your password',
         inputAttributes: {
-            maxlength: 10,
+            maxlength: 250,
             autocapitalize: 'off',
             autocorrect: 'off',
             autocomplete: 'off',
