@@ -211,7 +211,7 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => true,
+    'sidebar_collapse' => false,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
@@ -343,46 +343,47 @@ return [
             'text' => 'Dashboard',
             'route'  => 'dashboard',
             'icon' => 'fas fa-fw fa-tachometer-alt',
+            'key' => 'dashboard',
 //            'can' => 'view owner'
         ],
-        [
-            'text' => 'Staff Management',
-            'route'  => 'owner.my.staffs',
-            'icon' => 'fas fa-fw fa-user-plus',
-            'can' => 'view staff'
-        ],
-        [
-            'text' => 'Spa Management',
-            'route'  => 'owner.my.spas',
-            'icon' => 'fas fa-fw fa-spa',
-            'can' => 'view spa'
-        ],
-        [
-            'text' => 'Sales Report',
-            'route'  => 'spa.sales.report',
-            'icon' => 'fas fa-fw fa-search-dollar',
-            'can' => 'view sales management'
-        ],
-        [
-            'text' => 'Discounts',
-            'route'  => 'discounts.index',
-            'icon' => 'fas fa-fw fa-tags',
-            'can' => 'access discounts'
-        ],
-        [
-            'text' => 'Client Management',
-            'route'  => 'clients.index',
-            'icon' => 'fa fa-users',
-            'can' => 'view client',
-            'key' => 'client',
-        ],
-        [
-            'text' => 'Payroll Management',
-            'route'  => 'payroll.index',
-            'icon' => 'fas fa-fw fa-money-check-alt',
-            'can' => 'view payroll',
-            'key' => 'payroll'
-        ],
+//        [
+//            'text' => 'Staff Management',
+//            'route'  => 'owner.my.staffs',
+//            'icon' => 'fas fa-fw fa-user-plus',
+//            'can' => 'view staff'
+//        ],
+//        [
+//            'text' => 'Spa Management',
+//            'route'  => 'owner.my.spas',
+//            'icon' => 'fas fa-fw fa-spa',
+//            'can' => 'view spa'
+//        ],
+//        [
+//            'text' => 'Sales Report',
+//            'route'  => 'spa.sales.report',
+//            'icon' => 'fas fa-fw fa-search-dollar',
+//            'can' => 'view sales management'
+//        ],
+//        [
+//            'text' => 'Discounts',
+//            'route'  => 'discounts.index',
+//            'icon' => 'fas fa-fw fa-tags',
+//            'can' => 'access discounts'
+//        ],
+//        [
+//            'text' => 'Client Management',
+//            'route'  => 'clients.index',
+//            'icon' => 'fa fa-users',
+//            'can' => 'view client',
+//            'key' => 'client',
+//        ],
+//        [
+//            'text' => 'Payroll Management',
+//            'route'  => 'payroll.index',
+//            'icon' => 'fas fa-fw fa-money-check-alt',
+//            'can' => 'view payroll',
+//            'key' => 'payroll'
+//        ],
 //        [
 //            'text' => 'Inventory Management',
 //            'icon' => 'fas fa-fw fa-shopping-cart',
@@ -422,70 +423,70 @@ return [
 //            'icon' => 'fa fa-list-ol',
 //            'can' => 'view activity'
 //        ],
-        [
-            'text' => 'Shift',
-            'route'  => 'sales-shift.index',
-            'icon' => 'fa fa-hourglass',
-            'can' => 'view sales shift'
-        ],
-        [
-            'text' => 'HR Management',
-            'icon' => 'fas fa-fw fa-book',
-            'can' => 'view department',
-            'submenu' => [
-                [
-                    'text'    => 'Departments',
-                    'shift'   => 'ml-2',
-                    'route'  => 'departments.index',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view department'
-                ],
-                [
-                    'text'    => 'Schedules',
-                    'shift'   => 'ml-2',
-                    'route'  => 'schedules.index',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view schedule'
-                ],
-                [
-                    'text'    => 'Employees',
-                    'shift'   => 'ml-2',
-                    'route'  => 'employees.index',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view employee'
-                ],
-                [
-                    'text'    => 'Attendance',
-                    'shift'   => 'ml-2',
-                    'route'  => 'attendances.index',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view attendance'
-                ],
-                [
-                    'text'    => 'Payroll',
-                    'shift'   => 'ml-2',
-                    'route'  => 'employees-payroll',
-                    'icon'  => 'fas fa-angle-right',
-                    'can' => 'view payroll'
-                ],
+//        [
+//            'text' => 'Shift',
+//            'route'  => 'sales-shift.index',
+//            'icon' => 'fa fa-hourglass',
+//            'can' => 'view sales shift'
+//        ],
+//        [
+//            'text' => 'HR Management',
+//            'icon' => 'fas fa-fw fa-book',
+//            'can' => 'view department',
+//            'submenu' => [
 //                [
-//                    'text'    => 'Biometrics',
+//                    'text'    => 'Departments',
 //                    'shift'   => 'ml-2',
+//                    'route'  => 'departments.index',
 //                    'icon'  => 'fas fa-angle-right',
-//                    'can' => 'view biometrics',
-//                    'submenu' => [
-//                        [
-//                            'text'    => 'Attendances',
-//                            'shift'   => 'ml-3',
-//                            'route'  => 'biometrics-attendance',
-//                            'icon'  => 'fas fa-angle-right',
-//                            'can' => 'view biometrics'
-//                        ]
-//                    ]
+//                    'can' => 'view department'
 //                ],
-            ],
-
-        ],
+//                [
+//                    'text'    => 'Schedules',
+//                    'shift'   => 'ml-2',
+//                    'route'  => 'schedules.index',
+//                    'icon'  => 'fas fa-angle-right',
+//                    'can' => 'view schedule'
+//                ],
+//                [
+//                    'text'    => 'Employees',
+//                    'shift'   => 'ml-2',
+//                    'route'  => 'employees.index',
+//                    'icon'  => 'fas fa-angle-right',
+//                    'can' => 'view employee'
+//                ],
+//                [
+//                    'text'    => 'Attendance',
+//                    'shift'   => 'ml-2',
+//                    'route'  => 'attendances.index',
+//                    'icon'  => 'fas fa-angle-right',
+//                    'can' => 'view attendance'
+//                ],
+//                [
+//                    'text'    => 'Payroll',
+//                    'shift'   => 'ml-2',
+//                    'route'  => 'employees-payroll',
+//                    'icon'  => 'fas fa-angle-right',
+//                    'can' => 'view payroll'
+//                ],
+////                [
+////                    'text'    => 'Biometrics',
+////                    'shift'   => 'ml-2',
+////                    'icon'  => 'fas fa-angle-right',
+////                    'can' => 'view biometrics',
+////                    'submenu' => [
+////                        [
+////                            'text'    => 'Attendances',
+////                            'shift'   => 'ml-3',
+////                            'route'  => 'biometrics-attendance',
+////                            'icon'  => 'fas fa-angle-right',
+////                            'can' => 'view biometrics'
+////                        ]
+////                    ]
+////                ],
+//            ],
+//
+//        ],
 //        [
 //            'text' => 'Payroll Management',
 //            'icon' => 'fas fa-fw  fa-money-check-alt',
@@ -525,23 +526,23 @@ return [
 //            ],
 //
 //        ],
-        [
-            'text'    => 'Settings',
-            'icon'    => 'fas fa-cogs',
-            'can'     => 'view settings',
-            'submenu' => [
-                [
-                    'text' => 'Roles',
-                    'route'  => 'role.index',
-                    'can'  => 'view role',
-                ],
-                [
-                    'text' => 'Permissions',
-                    'route'  => 'permission.index',
-                    'can'  => 'view permission',
-                ],
-            ],
-        ],
+//        [
+//            'text'    => 'Settings',
+//            'icon'    => 'fas fa-cogs',
+//            'can'     => 'view settings',
+//            'submenu' => [
+//                [
+//                    'text' => 'Roles',
+//                    'route'  => 'role.index',
+//                    'can'  => 'view role',
+//                ],
+//                [
+//                    'text' => 'Permissions',
+//                    'route'  => 'permission.index',
+//                    'can'  => 'view permission',
+//                ],
+//            ],
+//        ],
     ],
 
     /*
