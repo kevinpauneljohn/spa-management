@@ -23,7 +23,7 @@
         </div>
         <div class="row">
             @foreach($spa as $data)
-                <div class="col-xl-3 col-lg-6 col-sm-6 col-12">
+                <div class="col-xl-4 col-lg-6 col-sm-6 col-12">
                     <div class="card card-info card-outline">
                         <div class="card-header">
                             <h4>{{$data->name}}</h4>
