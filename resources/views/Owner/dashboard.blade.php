@@ -10,7 +10,7 @@
 </style>
 @section('content')
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
             <div class="col-sm-6">
                 <h3 class="text-cyan">Dashboard</h3>
             </div>
@@ -21,40 +21,26 @@
                 </ol>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    @foreach($spa as $data)
-                    <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
-                        <div class="card bg-light d-flex flex-fill">
-                            <div class="card-header text-muted border-bottom-0">
-                                <!-- Digital Strategist -->
-                            </div>
-                            <div class="card-body pt-0">
-                            <div class="row">
-                                <div class="col-7">
-                                    <h2 class="lead"><b>{{$data->name}}</b></h2>
-                                    <br />
-                                    <p class="text-muted text-sm"><i class="fas fa-lg fa-building"></i> <b>Address: </b> {{$data->address}} </p>
-                                    <!-- <p class="text-muted text-sm"><i class="fas fa-lg fa-phone"></i> <b>Phone #: </b>+ 800 - 12 12 23 52 </p> -->
-                                </div>
-                                <!-- <div class="col-5 text-center">
-                                    <img src="../../dist/img/user1-128x128.jpg" alt="user-avatar" class="img-circle img-fluid">
-                                </div> -->
-                            </div>
-                            </div>
-                            <div class="card-footer">
-                            <div class="text-right">
-                                <a href="{{route('point-of-sale.show', ['point_of_sale' => $data->id])}}" class="btn btn-sm btn-primary">
+        <div class="row">
+            @foreach($spa as $data)
+                <div class="col-xl-3 col-lg-6 col-sm-6 col-12">
+                    <div class="card card-info card-outline">
+                        <div class="card-header">
+                            <h4>{{$data->name}}</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted text-sm"><i class="fas fa-lg fa-globe mr-2"></i> {{$data->address}} </p>
+                        </div>
+                        <div class="card-footer">
+                            <div>
+                                <a href="{{route('point-of-sale.show', ['point_of_sale' => $data->id])}}" class="btn btn-sm btn-outline-info">
                                     <i class="fas fa-spa"></i> View @if(!is_null($data->category)) {{ucwords($data->category)}} @endif
                                 </a>
                             </div>
-                            </div>
                         </div>
                     </div>
-                    @endforeach
                 </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @stop
