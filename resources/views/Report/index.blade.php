@@ -31,7 +31,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-6">
-        <div class="card">
+        <div class="card sales-chart">
           <div class="card-header border-0">
             <div class="d-flex justify-content-between">
               <h3 class="card-title">Store Transactions</h3>
@@ -75,7 +75,7 @@
 
       <!-- /.col-md-6 -->
       <div class="col-lg-6">
-        <div class="card">
+        <div class="card sales-chart">
           <div class="card-header border-0">
             <div class="d-flex justify-content-between">
               <h3 class="card-title">Sales</h3>

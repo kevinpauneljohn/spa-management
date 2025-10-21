@@ -87,6 +87,8 @@
         type = 'all';
       }
 
+    let overlay = '<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>';
+
       $.ajax({
           url: '/get-sales-report/'+owner_id,
           type: 'GET',
@@ -95,6 +97,9 @@
             spa_id: spa_id
           },
           dataType: 'json',
+          beforeSend: function (xhr) {
+              $('.sales-chart').prepend(overlay)
+          },
           success: function(data) {
               // console.log(data)
               if (data.sales) {
@@ -161,6 +166,8 @@
           error: function(xhr, status, error) {
               console.error('Error:', error);
           }
+      }).always(function() {
+          $('.sales-chart').find('.overlay').remove();
       });
     }
 
