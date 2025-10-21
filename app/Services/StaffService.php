@@ -9,6 +9,7 @@ use App\Models\Shift;
 use App\Models\User;
 use App\Models\Spa;
 use App\Models\Therapist;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 Use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -26,11 +27,11 @@ class StaffService
             }
         }
 
-        $staff = User::whereIn('spa_id', $data)->get();
+        $staff = User::whereIn('spa_id', $data)->role(['front desk','HR manager'])->get();
 
         return DataTables::of($staff)
             ->editColumn('created_at',function($staff){
-                return date('F d, Y', strtotime($staff->created_at));
+                return Carbon::parse($staff->created_at)->format('m-d-Y h:i a');
             })
             ->editColumn('spa',function ($staff){
 
