@@ -11,7 +11,7 @@
       <input type="hidden" class="form-control salesSpaId">
     </div>
     <div class="col-lg-9">
-      <ul class="nav nav-tabs float-right" id="tabs" role="tablist">
+      <ul class="nav nav-pills float-right" id="tabs" role="tablist">
         <li class="nav-item">
           <a class="nav-link active spaTabs" id="all" data-toggle="pill" href="#all" role="tab" aria-controls="all" aria-selected="true">All Store</a>
         </li>

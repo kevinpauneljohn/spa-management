@@ -96,6 +96,15 @@
     height:auto;
 }
 
+.nav-pills .nav-link.active {
+    background-color: #17a2b8; /* Custom active color */
+    color: white;
+}
+/*.nav-pills .nav-link {*/
+/*    background-color: #f0f0f0; !* Default background *!*/
+/*    color: #333;*/
+/*}*/
+
 
 
 
