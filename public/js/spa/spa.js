@@ -3,6 +3,12 @@ let formModal = $('.modal');
 let spaForm = $('.spa-form');
 let editSpaId;
 
+$(function (){
+    $('.dropdown-toggle').dropdown({
+        flip: false,
+        boundary: 'window'
+    });
+});
 $(document).on('submit','.spa-form',function(form){
     form.preventDefault();
 
@@ -80,8 +86,9 @@ $(document).on('click','.edit-spa-btn',function (){
                 }
             },1000)
         },success: function(data){
+            console.log(data)
             $.each(data,function (key, value){
-                editSpaForm.find('#'+key).val(value);
+                editSpaForm.find('#'+key).val(value).change();
             });
             clearInterval(loadingInterval);
             editSpaForm.find('.modal-title').text('Edit Spa');

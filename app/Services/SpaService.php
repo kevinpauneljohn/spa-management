@@ -12,7 +12,7 @@ class SpaService
     {
         return DataTables::of($spa)
             ->editColumn('created_at',function($spa){
-                return $spa->created_at->format('M d, Y');
+                return $spa->created_at->format('M d, Y h:i A');
             })
             ->addColumn('name',function ($spa){
 
@@ -21,36 +21,43 @@ class SpaService
             ->addColumn('address',function ($spa){
                 return $spa->address;
             })
+            ->editColumn('category',function ($spa){
+                return ucwords($spa->category);
+            })
             ->addColumn('action', function($spa){
-                $action = "";
+                $action = "<div class='dropdown'>";
+                $action .= '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                          </button>';
+                $action .= '<div class="dropdown-menu">';
                 if(auth()->user()->can('access pos'))
                 {
-                    $action .= '<a href="'.route('point-of-sale.show',['point_of_sale' => $spa->id]).'" class="btn btn-sm btn-outline-success mb-1 mr-1" title="Access POS"><i class="fas fa-building"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('point-of-sale.show',['point_of_sale' => $spa->id]).'" class="dropdown-item"><i class="fas fa-building"></i>&nbsp;Access POS</a>';
+                    $action .= '<div class="dropdown-divider"></div>';
                 }
                 if(auth()->user()->can('view spa') && !auth()->user()->hasRole(['admin']))
                 {
-                    $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-secondary mb-1 mr-1" title="View Spa Profile" ><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.show',['spa' => $spa->id]).'" class="dropdown-item text-success"><i class="fas fa-eye"></i>&nbsp;View Spa</a>';
                 }
                 if(auth()->user()->can('edit spa'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-outline-primary edit-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Edit Spa"><i class="fa fa-edit"></i></button>&nbsp;';
+                    $action .= '<a href="#" class="edit-spa-btn dropdown-item text-primary" id="'.$spa->id.'"><i class="fa fa-edit"></i>&nbsp;Edit Spa</a>';
                 }
                 if(auth()->user()->can('delete spa'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger delete-spa-btn mb-1 mr-1" id="'.$spa->id.'" title="Delete Spa"><i class="fa fa-trash"></i></button>&nbsp;';
+                    $action .= '<a href="#" class="delete-spa-btn dropdown-item text-danger" id="'.$spa->id.'"><i class="fa fa-trash"></i>&nbsp;Remove Spa</a>';
                 }
+                $action .= '<div class="dropdown-divider"></div>';
                 if(auth()->user()->can('view expenses'))
                 {
-                    $action .= '<a href="'.route('spa.expenses.display',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-info mb-1 mr-1" id="'.$spa->name.'" title="View Expenses">Expense</a>&nbsp;';
+                    $action .= '<a href="'.route('spa.expenses.display',['spa' => $spa->id]).'" class="dropdown-item" id="'.$spa->name.'">&nbsp;Expenses</a>';
                 }
                 if(auth()->user()->can('view inventory'))
                 {
-                    $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="btn btn-sm btn-outline-success mb-1 mr-1" id="'.$spa->name.'" title="View Inventory">Inventory</a>&nbsp;';
+                    $action .= '<a href="'.route('spa.inventory',['spa' => $spa->id]).'" class="dropdown-item" id="'.$spa->name.'">&nbsp;Inventories</a>';
                 }
-//                if(auth()->user()->can('download attendance'))
-//                {
-//                    $action .= '<a href="/download/'.urldecode($spa->name).'" class="btn btn-sm btn-outline-warning" id="'.$spa->name.'" title="Download Attendance Form"><i class="fas fa-fw fa-file-download"></i></a>&nbsp;';
-//                }
+                $action .= '</div>';
+                $action .= '</div>';
                 return $action;
             })
             ->rawColumns(['action','name'])

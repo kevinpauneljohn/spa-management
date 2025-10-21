@@ -19,10 +19,10 @@ class DiscountController extends Controller
     {
         $this->discountService = $discountService;
         $this->discountService->checkPermissions();
-        $this->middleware(['permission:access discounts'])->only(['index','discountTable']);
+//        $this->middleware(['permission:access discounts'])->only(['index','discountTable']);
     }
     /**
-     * @return Application|Factory|View
+//     * @return Application|Factory|View
      */
     public function index(UserService $userService)
     {
@@ -104,7 +104,7 @@ class DiscountController extends Controller
 
     public function discountTable()
     {
-        return $this->discountService->discountTable(Discount::all());
+        return $this->discountService->discountTable(Discount::where('owner_id', auth()->user()->owner_info['id'])->get());
     }
 
     public function generateCode($id, DiscountService $discountService): \Illuminate\Http\JsonResponse

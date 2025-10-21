@@ -43,4 +43,9 @@ class Owner extends Model
     {
         return $this->belongsToMany(Client::class);
     }
+
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class);
+    }
 }

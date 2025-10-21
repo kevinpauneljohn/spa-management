@@ -1,6 +1,6 @@
 <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#service-menu">{{$title}}</button>
 
-<x-adminlte-modal id="service-menu" title="Service Menu" size="xl" theme="olive"
+<x-adminlte-modal id="service-menu" title="Service Menu" size="xl" theme="info"
                   icon="fas fa-bell" v-centered static-backdrop scrollable>
     <div class="table-responsive">
         <table id="service-list" class="table table-bordered table-hover" role="grid" style="width:100%;">

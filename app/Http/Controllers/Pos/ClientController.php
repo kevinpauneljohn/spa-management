@@ -36,8 +36,8 @@ class ClientController extends Controller
     {
         $clients = $this->user->get_staff_owner()->clients()
             ->where('firstname','LIKE','%'.$request->input('search_client').'%')
-            ->orWhere('middlename','LIKE','%'.$request->input('search_client').'%')
-            ->orWhere('lastname','LIKE','%'.$request->input('search_client').'%')
+//            ->orWhere('middlename','LIKE','%'.$request->input('search_client').'%')
+//            ->orWhere('lastname','LIKE','%'.$request->input('search_client').'%')
             ->paginate(10);
         return view('clients.index',compact('clients'));
     }

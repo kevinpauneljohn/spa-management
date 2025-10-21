@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangeStaffPasswordRequest;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Spa;
 use App\Services\StaffService;
-use Illuminate\Support\Facades\Validator;
 use Config;
 
 class MyStaffController extends Controller
@@ -29,8 +26,8 @@ class MyStaffController extends Controller
 
     public function my_staffs()
     {
-        $offer_type = Config::get('app.offer_type');
-        $certificate_type = Config::get('app.certificate_type');
+        $offer_type = \Illuminate\Support\Facades\Config::get('app.offer_type');
+        $certificate_type = \Illuminate\Support\Facades\Config::get('app.certificate_type');
 
         return view('Owner.staff.index', ['offer_type' => $offer_type, 'certificate_type' => $certificate_type]);
     }

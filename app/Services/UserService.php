@@ -20,7 +20,8 @@ class UserService
         {
             return $user->owner;
         }
-        elseif ($user->hasRole(['therapist','manager','front desk','expense manager','HR Manager','admin']))
+//        elseif ($user->hasRole(['therapist','manager','front desk','expense manager','HR Manager','admin']))
+        else
         {
             return $user->spa->owner;
         }

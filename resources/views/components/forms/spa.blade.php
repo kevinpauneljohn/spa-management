@@ -1,7 +1,7 @@
 
     <form class="spa-form">
         @csrf
-        <x-adminlte-modal id="add-spa" title="Add New Spa" size="lg" theme="teal"
+        <x-adminlte-modal id="add-spa" title="Add New Spa" size="lg" theme="olive"
                            v-centered static-backdrop scrollable>
             <x-adminlte-input name="name" label="Name" placeholder="Spa name here"
                               fgroup-class="col-md-12 name" disable-feedback/>

@@ -11,7 +11,7 @@
 @section('content')
 
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
             <div class="col-sm-6">
                 <h3 class="text-cyan">Spa Management</h3>
             </div>
@@ -29,14 +29,14 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 table-responsive">
-                        <table id="spa-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+                        <table id="spa-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
                             <thead>
                             <tr role="row">
                                 <th>Date Added</th>
                                 <th>Name</th>
                                 <th>Address</th>
                                 <th>Category</th>
-                                <th>Action</th>
+                                <th></th>
                             </tr>
                             </thead>
                         </table>

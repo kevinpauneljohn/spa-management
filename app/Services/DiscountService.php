@@ -147,7 +147,8 @@ class DiscountService
                 'amount' => $request->input('value_type') == "amount" ? $request->input('amount') : null,
                 'percent' => $request->input('value_type') == "percentage" ? $request->input('amount') : null,
                 'price' => $request->input('price'),
-                'client_id' => $request->input('client')
+                'client_id' => $request->input('client'),
+                'owner_id' => auth()->user()->owner_info['id'],
             ]);
         }
         return true;
@@ -155,12 +156,12 @@ class DiscountService
 
     public function removeVoucher($voucherId): bool
     {
-        return (bool)DB::table('discounts')->where('id',$voucherId)->update(['sale_id' => null,'payment_status' => null]);
+        return (bool)DB::table('discounts')->where('owner_id',auth()->user()->owner_info['id'])->where('id',$voucherId)->update(['sale_id' => null,'payment_status' => null]);
     }
 
     public function getDiscountByCode($code)
     {
-        $discount = Discount::where('code',$code);
+        $discount = Discount::where('code',$code)->where('owner_id',auth()->user()->owner_info['id']);
         if($discount->count() < 1)
         {
             return ['success' => false, 'message' => 'Voucher does not exist!'];
@@ -179,12 +180,16 @@ class DiscountService
 
     public function checkVoucherAvailability($code)
     {
-        return Discount::where('code',$code)->where('sale_id',null)->where('date_claimed',null)->first();
+        return Discount::where('code',$code)->where('owner_id',auth()->user()->owner_info['id'])->where('sale_id',null)->where('date_claimed',null)->first();
     }
 
     public function getCouponByCode($code)
     {
-        return Discount::where('code',$code)->where('type','coupon')->where('date_claimed',null)->where('sales_id_claimed',null)->first();
+        return Discount::where('code',$code)
+            ->where('owner_id',auth()->user()->owner_info['id'])
+            ->where('type','coupon')
+            ->where('date_claimed',null)
+            ->where('sales_id_claimed',null)->first();
     }
 
 }

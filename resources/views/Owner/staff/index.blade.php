@@ -31,7 +31,7 @@
 </style>
 @section('content')
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
             <div class="col-sm-6">
                 <h3 class="text-cyan">Staff Management</h3>
             </div>
@@ -42,34 +42,68 @@
                 </ol>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        @can('add staff')
-                            <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewStaff"><i class="fa fa-plus-circle"></i> Add New</button>
-                        @endcan
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="alert alert-default-info">
+                    <h5><i class="fas fa-info"></i> Note:</h5>
+                    <p>
+                        Only front desk and HR manager can be created in this page. <br/>
+                        If you want to add Staff like Therapists or Hair Stylists, follow the instructions below.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h6 class="text-bold text-info">Adding therapists, hair stylist, aesthetician, and nail technician process</h6>
                     </div>
-                </div><br />
-                <div class="row">
-                    <div class="col-md-12 table-responsive">
-                        <table id="staff-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
-                            <thead>
-                            <tr role="row">
-                                <th>Date Added</th>
-                                <th>Spa</th>
-                                <th>Name</th>
-                                <th>Email Address</th>
-                                <th>Mobile Number</th>
-                                <th>Position</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                        </table>
+
+                    <div class="card-body">
+                        <ol class="text-muted">
+                            <li>Click Spa Management menu located on the left sidebar</li>
+                            <li>Click Action button</li>
+                            <li>Click View Spa</li>
+                            <li>Click Masseur/Masseuse tab</li>
+                            <li>Click Add Masseur/Masseuse button</li>
+                            <li>Register the staff in the form</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @can('add staff')
+                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewStaff"><i class="fa fa-plus-circle"></i> Add New</button>
+                                @endcan
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table id="staff-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+                                    <thead>
+                                    <tr role="row">
+                                        <th>Date Added</th>
+                                        <th>Spa</th>
+                                        <th>Name</th>
+                                        <th>Email Address</th>
+                                        <th>Mobile Number</th>
+                                        <th>Position</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 
     @can('add staff')

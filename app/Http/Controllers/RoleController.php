@@ -98,7 +98,7 @@ class RoleController extends Controller
                 return response()->json(['status' => true, 'message' => 'Roles has been successfully udpated!']);
             } else {
                 return response()->json(['status' => false, 'message' => 'No changes made.']);
-            } 
+            }
         }
         return response()->json($validator->errors());
     }
@@ -117,8 +117,10 @@ class RoleController extends Controller
     public function getRoleList()
     {
         if(auth()->user()->hasRole(['owner'])) {
-            $role_exclude = ['super admin', 'owner'];
-            $role = Role::whereNotIn('name', $role_exclude)->orderBy('name' , 'ASC')->pluck('id', 'name');
+//            $role_exclude = ['super admin', 'owner'];
+//            $role = Role::whereNotIn('name', $role_exclude)->orderBy('name' , 'ASC')->pluck('id', 'name');
+            $role_included = ['front desk', 'hr manager'];
+            $role = Role::whereIn('name', $role_included)->orderBy('name' , 'ASC')->pluck('id', 'name');
         } else {
             $role = Role::pluck('id, name');
         }

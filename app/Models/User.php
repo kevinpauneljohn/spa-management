@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UserService;
 use App\Traits\UsesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +55,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['owner_info'];
+
     public function adminlte_image()
     {
         return asset('vendor/adminlte/dist/img/user2-160x160.jpg');
@@ -67,6 +70,19 @@ class User extends Authenticatable
     public function adminlte_profile_url()
     {
         return 'profile/username';
+    }
+
+    public function getOwnerInfoAttribute()
+    {
+        if(!auth()->user()->hasRole('super admin'))
+        {
+            if(auth()->user()->hasRole('owner'))
+            {
+                return Owner::where('user_id', auth()->id())->first()->only('id', 'user_id','license');
+            }
+            return auth()->user()->spa->owner->only('id', 'user_id','license');
+        }
+        return auth()->id();
     }
 
     public function getFullNameAttribute()
