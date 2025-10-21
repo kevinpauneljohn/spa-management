@@ -20,8 +20,8 @@
           datasets: [{
               label: 'Current Year',
               data: [],
-              backgroundColor: '#28a745',
-              borderColor: '#28a745',
+              backgroundColor: '#17a2b8',
+              borderColor: '#17a2b8',
               borderWidth: 1
           }, {
               label: 'Last Year',
@@ -173,8 +173,8 @@
         datasets: [{
             label: 'Current Year',
             data: [],
-            backgroundColor: '#28a745',
-            borderColor: '#28a745',
+            backgroundColor: '#17a2b8',
+            borderColor: '#17a2b8',
             borderWidth: 1
         }, {
             label: 'Last Year',

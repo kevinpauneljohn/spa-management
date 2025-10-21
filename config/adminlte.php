@@ -739,7 +739,7 @@ return [
             ],
         ],
         'CustomCSS' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'css',
