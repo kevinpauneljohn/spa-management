@@ -71,7 +71,7 @@ class TherapistService
                 $action = "";
                 if(auth()->user()->can('view therapist'))
                 {
-                    $action .= '<a href="'.route('therapists.profile',['id' => $therapist->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('therapists.profile',['id' => $therapist->id]).'" class="btn btn-sm bg-gradient-success m-1" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit therapist'))
                 {
@@ -80,11 +80,11 @@ class TherapistService
                     if (!empty($user)) {
                         $user_id = $user->id;
                     }
-                    $action .= '<button class="btn btn-sm btn-outline-primary edit-therapist-btn" id="'.$therapist->id.'" data-user_id="'.$user_id.'"><i class="fa fa-edit"></i></button>&nbsp;';
+                    $action .= '<button class="btn btn-sm bg-gradient-info m-1 edit-therapist-btn" id="'.$therapist->id.'" data-user_id="'.$user_id.'"><i class="fa fa-edit"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('delete therapist'))
                 {
-                    $action .= '<button class="btn btn-sm btn-outline-danger delete-therapist-btn" id="'.$therapist->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
+                    $action .= '<button class="btn btn-sm bg-gradient-orange m-1 text-white delete-therapist-btn" id="'.$therapist->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
                 }
                 return $action;
             })

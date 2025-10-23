@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#service-menu">{{$title}}</button>
+<button type="button" class="btn bg-gradient-orange text-white btn-sm" data-toggle="modal" data-target="#service-menu">{{$title}}</button>
 
 <x-adminlte-modal id="service-menu" title="Service Menu" size="xl" theme="info"
                   icon="fas fa-bell" v-centered static-backdrop scrollable>
@@ -18,7 +18,7 @@
         </table>
     </div>
     <x-slot name="footerSlot">
-        <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal"/>
+        <x-adminlte-button class="bg-gradient-orange text-white" label="Dismiss" data-dismiss="modal"/>
     </x-slot>
 </x-adminlte-modal>
 

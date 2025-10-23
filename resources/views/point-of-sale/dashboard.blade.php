@@ -23,7 +23,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card card-info card-outline">
                 <div class="card-body">
                     @if(in_array('owner',collect(auth()->user()->getRoleNames())->toArray()) ||
         in_array('manager',collect(auth()->user()->getRoleNames())->toArray()))
@@ -50,7 +50,7 @@
         <div class="col-lg-7">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card">
+                    <div class="card card-outline card-info">
                         <div class="card-header">
                             <div class="float-left"><h4 class="text-muted card-title">Sales Management</h4></div>
 
@@ -97,8 +97,8 @@
             <div class="row masseur-availability">
                 <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="text-muted card-title">Therapist Availability</h3>
+                        <div class="card-header bg-gradient-info">
+                            <h3 class="card-title">Therapist Availability</h3>
                         </div>
                         <div class="card-body">
                             <x-point-of-sale.sales.masseur-availability :spaId="$spa->id" />

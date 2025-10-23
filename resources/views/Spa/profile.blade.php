@@ -31,10 +31,10 @@
                     </span>
                     <span class="float-right">
                         @can('access pos')
-                            <a href="{{route('point-of-sale.show',['point_of_sale' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>
+                            <a href="{{route('point-of-sale.show',['point_of_sale' => $spa->id])}}" class="btn bg-gradient-orange text-white">Point Of Sale</a>
 {{--                            <a href="{{route('receptionist.dashboard',['id' => $spa->id])}}" class="btn btn-default">Point Of Sale</a>--}}
                         @endcan
-                            <a href="{{route('spa.calendar',['spa' => $spa->id])}}" class="btn btn-default">Calendar</a>
+{{--                            <a href="{{route('spa.calendar',['spa' => $spa->id])}}" class="btn btn-default">Calendar</a>--}}
                     </span>
                 </div>
                 <div class="card-body">
@@ -80,8 +80,8 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card card-olive">
-                <div class="card-header">
+            <div class="card">
+                <div class="card-header bg-gradient-info">
                     <h3 class="card-title">Spa Details</h3>
                 </div>
                 <!-- /.card-header -->
@@ -246,7 +246,7 @@
                 ],
                 responsive:true,
                 order:[0,'desc'],
-                pageLength: 50
+                pageLength: 10
             });
 
             // $('#addNewService').on('click', function() {

@@ -58,7 +58,8 @@
 }
 
 .room-available-bg-color{
-    background-color: #bafdc9;
+    /*background-color: #bafdc9;*/
+    background-color: #d1ecf1;
 }
 
 .on-going-transaction{

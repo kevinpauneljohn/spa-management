@@ -1,4 +1,4 @@
-<a href="#" class="btn btn-primary btn-sm" id="add-sales-btn">Add Sales</a>
+<a href="#" class="btn bg-gradient-info btn-sm" id="add-sales-btn">Add Sales</a>
 @section('plugins.Sweetalert2',true)
 @once
     @push('js')

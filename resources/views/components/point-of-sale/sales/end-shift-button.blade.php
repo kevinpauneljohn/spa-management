@@ -1,4 +1,4 @@
-<button class="btn btn-primary btn-sm" id="end-shift-btn">End Shift</button>
+<button class="btn bg-gradient-info btn-sm" id="end-shift-btn">End Shift</button>
 
 @once
     @push('js')

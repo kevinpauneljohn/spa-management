@@ -25,8 +25,8 @@
 
     <div class="row">
         <div class="col-lg-3">
-            <div class="card card-info">
-                <div class="card-header">
+            <div class="card">
+                <div class="card-header bg-gradient-info">
                     <h3 class="card-title">{{ucwords($client->full_name)}}</h3>
                 </div>
                 <!-- /.card-header -->
@@ -50,7 +50,7 @@
         <div class="col-lg-9">
             <div class="card">
                 <div class="card-body table-responsive">
-                    <table id="transaction-list" class="table table-bordered table-hover w-100">
+                    <table id="transaction-list" class="table table-striped table-hover w-100 border border-2">
                         <thead>
                         <tr>
                             <th>Spa/Salon</th>
@@ -97,7 +97,7 @@
             ],
             responsive:true,
             order:[4,'desc'],
-            pageLength: 100,
+            pageLength: 25,
             drawCallback: function(row){
                 let transactions = row.json;
 

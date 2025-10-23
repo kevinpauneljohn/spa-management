@@ -98,15 +98,15 @@ class SpaService
                 $action = "";
                 if(auth()->user()->can('view service'))
                 {
-                    $action .= '<a href="'.route('spa.overview',['id' => $service->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.overview',['id' => $service->id]).'" class="btn btn-sm bg-gradient-success m-1" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit service'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-outline-primary edit-service-btn" id="'.$service->id.'"><i class="fa fa-edit"></i></button>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm bg-gradient-info edit-service-btn m-1" id="'.$service->id.'"><i class="fa fa-edit"></i></button>&nbsp;';
                 }
                 if(auth()->user()->can('delete service'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-outline-danger delete-service-btn" id="'.$service->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
+                    $action .= '<button type="button" class="btn btn-sm bg-gradient-orange text-white m-1    delete-service-btn" id="'.$service->id.'"><i class="fa fa-trash"></i></button>&nbsp;';
                 }
                 return $action;
             })

@@ -41,7 +41,8 @@
         </div>
     </div>
     <div class="card-body table-responsive">
-        <table class="table table-bordered table-hover">
+        <table class="table table-striped table-hover border border-2">
+            <thead>
             <tr>
                 <th>Client</th>
                 <th>Email</th>
@@ -49,16 +50,17 @@
                 <th>Date of birth</th>
                 <th>Address</th>
                 <th>Transactions</th>
-                <th style="width: 15%"></th>
+                <th style="width: 10%"></th>
             </tr>
+            </thead>
             <tbody>
                 @foreach($clients as $key => $client)
                     <tr>
-                        <td>{{ucwords(strtolower($client->full_name))}}</td>
+                        <td><a href="{{route('clients.show',['client' => $client->id])}}" title="Click to view">{{ucwords(strtolower($client->full_name))}}</a></td>
                         <td>{{$client->email}}</td>
                         <td>{{$client->mobile_number}}</td>
                         <td>{{$client->date_of_birth}}</td>
-                        <td>{{$client->address}}</td>
+                        <td>{{ucwords(strtolower($client->address))}}</td>
                         <td>{{$client->transaction->count()}}</td>
                         <td>
                             @can('view client') <a href="{{route('clients.show',['client' => $client->id])}}" class="btn btn-xs bg-gradient-success view-client" id="{{$client->id}}">View</a> @endcan
@@ -85,7 +87,7 @@
             <form id="client-form">
                 @csrf
                 <div class="modal-content">
-                    <div class="modal-header bg-olive">
+                    <div class="modal-header bg-info">
                         <h5 class="modal-title">Edit Client</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -125,9 +127,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info">Save</button>
                     </div>
                 </div>
             </form>

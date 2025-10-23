@@ -11,8 +11,8 @@
                 <option value="Exclude">Exclude</option>
                 <option value="Unexclude">Unexclude</option>
             </select>
-            <x-adminlte-button label="Submit" data-toggle="modal" data-target="#exclude-therapist-modal" id="exclude-therapist-modal-btn" class="bg-olive float-left"/>
-            <x-adminlte-button label="Add Masseur/Masseuse" data-toggle="modal" data-target="#therapist-modal" id="therapist-modal-btn" class="bg-olive float-right"/>
+            <x-adminlte-button label="Submit" data-toggle="modal" data-target="#exclude-therapist-modal" id="exclude-therapist-modal-btn" class="bg-gradient-info text-white float-left"/>
+            <x-adminlte-button label="Add Masseur/Masseuse" data-toggle="modal" data-target="#therapist-modal" id="therapist-modal-btn" class="bg-gradient-info float-right"/>
         @endcan
     </div>
 </div>
@@ -40,7 +40,7 @@
     <div class="modal fade" id="therapist-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-olive">
+                <div class="modal-header bg-gradient-info">
                     <h5 class="modal-title" id="exampleModalCenterTitle">New Masseur/Masseuse Form</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -56,7 +56,7 @@
     <div class="modal fade" id="exclude-therapist-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-olive">
+                <div class="modal-header bg-gradient-info">
                     <h5 class="modal-title">Exclude Masseur/Masseuse Form</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -121,11 +121,11 @@
 
                         }
                     }).done(function(response){
-                        let tableRow = '<table>';
+                        let tableRow = '<table class="mt-2 mb-2">';
                         $.each(response, function(key, value){
                             tableRow += '<tr><td>'+value.full_name+'</td></tr>'
                         })
-                        tableRow += '</table><button type="button" class="btn btn-success mt-3 w-100 confirm-exclude-btn">'+excludeStatus+'</button>'
+                        tableRow += '</table><button type="button" class="btn bg-gradient-orange text-white mt-3 w-100 confirm-exclude-btn">'+excludeStatus+'</button>'
 
                         $('#exclude-therapist-modal').find('.modal-body').html(tableRow)
                     }).fail(function(xhr, status, error){

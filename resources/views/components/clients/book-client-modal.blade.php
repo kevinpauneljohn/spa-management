@@ -3,7 +3,7 @@
 
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-olive">
+                <div class="modal-header bg-gradient-info">
                     <h4 class="modal-title">Set New Appointment</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -89,7 +89,7 @@
                                 </div>
                             </fieldset>
 
-                            <button type="submit" class="btn btn-success px-5 mt-3 w-100">Save</button>
+                            <button type="submit" class="btn bg-gradient-orange text-white px-5 mt-3 w-100">Save</button>
                         </form>
 
                 </div>

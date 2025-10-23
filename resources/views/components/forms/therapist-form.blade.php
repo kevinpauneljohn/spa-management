@@ -41,8 +41,10 @@
                 <x-adminlte-input type="text" name="firstname" label="First Name" id="firstname" fgroup-class="firstname col-md-12" value="{{(!empty($therapist)) ? $therapist->user->firstname : ''}}"/>
                 <x-adminlte-input type="text" name="middlename" label="Middle Name" id="middlename" fgroup-class="middlename col-md-12"  value="{{(!empty($therapist)) ? $therapist->user->middlename : ''}}"/>
                 <x-adminlte-input type="text" name="lastname" label="last Name" id="lastname" fgroup-class="lastname col-md-12"  value="{{(!empty($therapist)) ? $therapist->user->lastname : ''}}"/>
+
+
                 <x-adminlte-button class="therapist_closeModal" theme="default" label="Close" data-dismiss="modal"/>
-                <x-adminlte-button class="therapist_name_next_btn" theme="primary" label="Next" onclick="addTherapistStepper.next()"/>
+                <x-adminlte-button class="therapist_name_next_btn float-right" theme="info" label="Next" onclick="addTherapistStepper.next()"/>
             </div>
             <div id="info-part" class="content" role="tabpanel" aria-labelledby="info-part-trigger">
 
@@ -64,7 +66,7 @@
                 </x-adminlte-select>
 
                 <x-adminlte-button class="therapist_info_previous_btn" theme="default" label="Previous" onclick="addTherapistStepper.previous()"/>
-                <x-adminlte-button class="therapist_name_next_btn" theme="primary" label="Next" onclick="addTherapistStepper.next()"/>
+                <x-adminlte-button class="therapist_name_next_btn float-right" theme="info" label="Next" onclick="addTherapistStepper.next()"/>
             </div>
             <div id="contact-part" class="content" role="tabpanel" aria-labelledby="contact-part-trigger">
                 <div class="form-group mobile_number"><span class="required">*</span>
@@ -77,7 +79,7 @@
                     <input type="email" name="email" id="email" class="form-control" value="{{(!empty($therapist)) ? $therapist->user->email : ''}}">
                 </div>
                 <x-adminlte-button class="therapist_contact_previous_btn" theme="default" label="Previous" onclick="addTherapistStepper.previous()"/>
-                <x-adminlte-button class="therapist_contact_next_btn" theme="primary" label="Next" onclick="addTherapistStepper.next()"/>
+                <x-adminlte-button class="therapist_contact_next_btn float-right" theme="info" label="Next" onclick="addTherapistStepper.next()"/>
             </div>
             <div id="offer-part" class="content" role="tabpanel" aria-labelledby="offer-part-trigger">
                 @if(empty($spaId))
@@ -95,13 +97,15 @@
                     <option value="amount_plus_allowance">Amount + Allowance</option>
                 </x-adminlte-select>
 
+
                 <x-adminlte-input type="number" name="commission_percentage" label="Commission Rate" fgroup-class="commission_percentage" id="commission_percentage" value="{{(!empty($therapist)) ? $therapist->commission_percentage : ''}}"/>
                 <x-adminlte-input type="number" name="commission_flat" label="Commission Amount" fgroup-class="commission_flat" id="commission_flat" value="{{(!empty($therapist)) ? $therapist->commission_flat : ''}}"/>
                 <x-adminlte-input type="number" name="allowance" label="Allowance" fgroup-class="allowance" id="allowance" value="{{(!empty($therapist)) ? $therapist->allowance : ''}}"/>
 
 
+
                 <x-adminlte-button class="therapist_offer_previous_btn" theme="default" label="Previous" onclick="addTherapistStepper.previous()"/>
-                <x-adminlte-button type="submit" class="therapist_offer_submit_btn add-therapist-btn" theme="primary" label="Save"/>
+                <x-adminlte-button type="submit" class="therapist_offer_submit_btn add-therapist-btn float-right" theme="info" label="Save"/>
             </div>
         </div>
     </div>
