@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+q@extends('adminlte::page')
 
 @section('title', 'Spa')
 
@@ -207,7 +207,7 @@
                 order:[0,'desc'],
                 pageLength: 50
             });
-            
+
 
             $('#addNewSpa').on('click', function() {
                 $('#name').val('');

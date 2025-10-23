@@ -1,7 +1,7 @@
 
     <form class="spa-form">
         @csrf
-        <x-adminlte-modal id="add-spa" title="Add New Spa" size="lg" theme="olive"
+        <x-adminlte-modal id="add-spa" title="Add New Spa" size="lg" theme="info"
                            v-centered static-backdrop scrollable>
             <x-adminlte-input name="name" label="Name" placeholder="Spa name here"
                               fgroup-class="col-md-12 name" disable-feedback/>
@@ -25,7 +25,7 @@
 
             <x-slot name="footerSlot">
                 <x-adminlte-button class="mr-auto" theme="default" label="Close" data-dismiss="modal"/>
-                <x-adminlte-button type="submit" theme="success" label="Submit"/>
+                <x-adminlte-button type="submit" theme="info" label="Submit"/>
             </x-slot>
         </x-adminlte-modal>
     </form>

@@ -19,12 +19,12 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card card-info card-outline">
         <div class="card-header">
-            <x-adminlte-button label="Add" theme="primary" id="add-discount-btn" data-toggle="modal" data-target="#add-discount"/>
+            <x-adminlte-button label="Add" theme="info" id="add-discount-btn" data-toggle="modal" data-target="#add-discount"/>
         </div>
         <div class="card-body table-responsive">
-            <table id="discount-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+            <table id="discount-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
                 <thead>
                 <tr role="row">
                     <th>Date Added</th>
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <x-adminlte-modal id="code-modal" title="Code Generator" theme="teal" size="sm">
+    <x-adminlte-modal id="code-modal" title="Code Generator" theme="info" size="sm">
         <div style="border: solid 2px black; padding-top:20px;">
             <div id="code-content" style="display: flex; align-items: center; justify-content: center"></div>
         </div>
@@ -56,7 +56,7 @@
 
     <form id="discount-form">
         @csrf
-        <x-adminlte-modal id="add-discount" title="Add Voucher/Coupon" theme="teal">
+        <x-adminlte-modal id="add-discount" title="Add Voucher/Coupon" theme="info">
             <div class="form-group title">
                 <label for="title">Title</label> <span class="font-italic">(Optional)</span>
                 <input type="text" name="title" class="form-control" id="title">
@@ -85,21 +85,13 @@
                 <label for="price">Price</label>
                 <input type="number" step="any" name="price" class="form-control" id="price" min="0">
             </div>
-{{--            <div class="form-group client">--}}
-{{--                <label for="client">Assign Client</label>--}}
-{{--                <select name="client" class="form-control select2" id="client" style="width: 100%;">--}}
-{{--                    <option value=""> -- Select Client -- </option>--}}
-{{--                    @foreach($clients as $client)--}}
-{{--                        <option value="{{$client->id}}">{{ucwords(strtolower($client->full_name))}} - {{$client->mobile_number}}</option>--}}
-{{--                    @endforeach--}}
-{{--                </select>--}}
-{{--            </div>--}}
             <div class="form-group quantity">
                 <label for="quantity">Quantity</label>
                 <input type="number" name="quantity" min="0" max="50" class="form-control w-25" id="quantity">
             </div>
             <x-slot name="footerSlot">
-                <x-adminlte-button theme="success" label="Save" type="submit"/>
+                <x-adminlte-button class="mr-auto" theme="default" label="Close" data-dismiss="modal"/>
+                <x-adminlte-button type="submit" theme="info" label="Save"/>
             </x-slot>
         </x-adminlte-modal>
     </form>

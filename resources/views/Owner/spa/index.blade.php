@@ -23,8 +23,8 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-header">
-                <x-adminlte-button label="Add" data-toggle="modal" data-target="#add-spa" class="bg-olive" id="add-spa-btn"/>
+            <div class="card-header card-outline card-info">
+                <x-adminlte-button label="Add" data-toggle="modal" data-target="#add-spa" class="bg-gradient-info" id="add-spa-btn"/>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -52,7 +52,10 @@
 @section('plugins.CustomCSS',true)
 @section('css')
 @stop
+<style>
 
+
+</style>
 @section('js')
     @if(auth()->check())
         <script src="{{asset('js/clear_errors.js')}}"></script>
@@ -60,6 +63,7 @@
         <script src="{{asset('js/spa/spa.js')}}"></script>
         <script>
             $(document).ready(function(){
+
                 $('#spa-list').DataTable({
                     processing: true,
                     serverSide: true,

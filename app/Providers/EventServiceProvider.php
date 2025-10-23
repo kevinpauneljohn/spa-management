@@ -104,14 +104,14 @@ class EventServiceProvider extends ServiceProvider
                     'submenu' => [
                         [
                             'text'    => 'Categories',
-                            'shift'   => 'ml-3',
+//                            'shift'   => 'ml-3',
                             'route'  => 'inventory-categories.index',
                             'icon'  => 'fas fa-angle-right',
                             'can' => 'view category'
                         ],
                         [
                             'text'    => 'Inventories',
-                            'shift'   => 'ml-3',
+//                            'shift'   => 'ml-3',
                             'route'  => 'inventories.index',
                             'icon'  => 'fas fa-angle-right',
                         ],

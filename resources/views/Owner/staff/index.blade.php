@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="col-lg-9">
-                <div class="card">
+                <div class="card card-info card-outline">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-12">
@@ -83,7 +83,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 table-responsive">
-                                <table id="staff-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+                                <table id="staff-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
                                     <thead>
                                     <tr role="row">
                                         <th>Date Added</th>
@@ -112,7 +112,7 @@
                 @csrf
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header bg-primary">
+                        <div class="modal-header bg-info">
                             <h4 class="modal-title">Staff Registration Form</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -263,13 +263,13 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary role_info_next_btn">Next</button>
+                            <button type="button" class="btn btn-info role_info_next_btn">Next</button>
                             <button type="button" class="btn btn-default basic_info_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary basic_info_next_btn hiddenBtn" disabled>Next</button>
+                            <button type="button" class="btn btn-info basic_info_next_btn hiddenBtn" disabled>Next</button>
                             <button type="button" class="btn btn-default contact_info_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary contact_info_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
+                            <button type="button" class="btn btn-info contact_info_next_btn hiddenBtn" onclick="stepper.next()" disabled>Next</button>
                             <button type="button" class="btn btn-default credential_info_previous_btn hiddenBtn" onclick="stepper.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary credential_info_submit_btn add-staff-btn hiddenBtn" disabled>Submit</button>
+                            <button type="button" class="btn btn-info credential_info_submit_btn add-staff-btn hiddenBtn" disabled>Submit</button>
                         </div>
                     </div>
                 </div>
@@ -283,7 +283,7 @@
                 @csrf
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header bg-primary">
+                        <div class="modal-header bg-info">
                             <h4 class="modal-title modalUpdateTitle"></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -421,13 +421,13 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default edit_closeModal" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary edit_role_info_next_btn" onclick="steppers.next()">Next</button>
+                            <button type="button" class="btn btn-info edit_role_info_next_btn" onclick="steppers.next()">Next</button>
                             <button type="button" class="btn btn-default edit_basic_info_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary edit_basic_info_next_btn hiddenBtn">Next</button>
+                            <button type="button" class="btn btn-info edit_basic_info_next_btn hiddenBtn">Next</button>
                             <button type="button" class="btn btn-default edit_contact_info_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary edit_contact_info_next_btn hiddenBtn" onclick="steppers.next()">Next</button>
+                            <button type="button" class="btn btn-info edit_contact_info_next_btn hiddenBtn" onclick="steppers.next()">Next</button>
                             <button type="button" class="btn btn-default edit_credential_info_previous_btn hiddenBtn" onclick="steppers.previous()">Previous</button>
-                            <button type="button" class="btn btn-primary edit_credential_info_submit_btn update-staff-btn hiddenBtn">Submit</button>
+                            <button type="button" class="btn btn-info edit_credential_info_submit_btn update-staff-btn hiddenBtn">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -441,7 +441,7 @@
                 @csrf
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header bg-primary">
+                        <div class="modal-header bg-info">
                             <h4 class="modal-title">Change Password</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -467,7 +467,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary change-password-btn">Update</button>
+                            <button type="submit" class="btn btn-info change-password-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -477,6 +477,7 @@
 @stop
 @section('plugins.BsStepper',true)
 @section('css')
+
 @stop
 
 @section('js')

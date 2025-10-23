@@ -68,13 +68,13 @@ class DiscountService
     {
         return DataTables::of($query)
             ->editColumn('created_at',function($discount){
-                return $discount->created_at->format('m/d/Y g:i:s a');
+                return $discount->created_at->format('m-d-Y g:i:s a');
             })
             ->editColumn('title',function($discount){
-                return ucwords($discount->title);
+                return '<span class="text-primary">'.ucwords($discount->title).'</span>';
             })
             ->editColumn('code',function($discount){
-                return $discount->code;
+                return '<span class="text-danger text-bold">'.$discount->code.'</span>';
             })
             ->editColumn('client_id',function($discount){
                 return !is_null($discount->client_id) ? ucwords(strtolower($discount->client->full_name)) : '';
@@ -102,7 +102,7 @@ class DiscountService
                 $action = '';
                 if(auth()->user()->can('view discounts'))
                 {
-                    $action .= '<button class="btn btn-info btn-xs mr-1 view-bar-code" id="'.$discount->id.'">View Bar Code</button>';
+                    $action .= '<button class="btn bg-gradient-info btn-xs mr-1 view-bar-code" id="'.$discount->id.'">View QR</button>';
 //                    $action .= '<button class="btn btn-success btn-xs mr-1" id="'.$discount->id.'">View</button>';
                 }
 //                if(auth()->user()->can('edit discounts'))
@@ -114,14 +114,14 @@ class DiscountService
                 {
                     if(is_null($discount->sales_id_claimed) && is_null($discount->sale_id))
                     {
-                        $action .= '<button class="btn btn-danger btn-xs mr-1 delete-discount" id="'.$discount->id.'">Delete</button>';
+                        $action .= '<button class="btn bg-gradient-orange btn-xs mr-1 delete-discount text-white" id="'.$discount->id.'">Delete</button>';
                     }
 
                 }
 
                 return $action;
             })
-            ->rawColumns(['action','code','sales_invoice','sales_invoice_claimed'])
+            ->rawColumns(['action','code','sales_invoice','sales_invoice_claimed','title'])
             ->make(true);
     }
 

@@ -60,7 +60,7 @@
 
             <div class="d-flex flex-row justify-content-end">
               <span class="mr-2">
-                <i class="fas fa-square text-success"></i> This year
+                <i class="fas fa-square text-info"></i> This year
               </span>
 
               <span>

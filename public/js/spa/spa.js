@@ -3,12 +3,6 @@ let formModal = $('.modal');
 let spaForm = $('.spa-form');
 let editSpaId;
 
-$(function (){
-    $('.dropdown-toggle').dropdown({
-        flip: false,
-        boundary: 'window'
-    });
-});
 $(document).on('submit','.spa-form',function(form){
     form.preventDefault();
 

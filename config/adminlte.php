@@ -134,7 +134,7 @@ return [
     'usermenu_header_class' => 'bg-default',
     'usermenu_image' => true,
     'usermenu_desc' => true,
-    'usermenu_profile_url' => true,
+    'usermenu_profile_url' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -192,9 +192,9 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-light-info elevation-4',
+    'classes_sidebar' => 'sidebar-dark-info elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light ',
+    'classes_topnav' => 'navbar-info navbar-light ',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -210,8 +210,8 @@ return [
     |
     */
 
-    'sidebar_mini' => 'xs',
-    'sidebar_collapse' => false,
+    'sidebar_mini' => 'md',
+    'sidebar_collapse' => true,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => true,
     'sidebar_collapse_remember_no_transition' => true,

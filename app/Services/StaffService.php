@@ -61,11 +61,11 @@ class StaffService
                 // }
 
                 if (auth()->user()->can('edit staff')) {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-staff-btn" id="'.$staff->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<a href="#" class="btn btn-sm bg-gradient-info edit-staff-btn m-1" id="'.$staff->id.'" title="Edit"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
 
                 if (auth()->user()->can('change staff password')) {
-                    $action .= '<button class="btn btn-sm btn-outline-primary change-staff-password-btn" id="'.$staff->id.'"><i class="fa fa-lock"></i></button>&nbsp;';
+                    $action .= '<button class="btn btn-sm bg-gradient-orange change-staff-password-btn" id="'.$staff->id.'" title="Change Password"><i class="fa fa-lock text-white"></i></button>&nbsp;';
                 }
 
                 if (auth()->user()->can('delete staff')) {

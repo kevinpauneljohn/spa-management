@@ -100,10 +100,29 @@
     background-color: #17a2b8; /* Custom active color */
     color: white;
 }
-/*.nav-pills .nav-link {*/
-/*    background-color: #f0f0f0; !* Default background *!*/
-/*    color: #333;*/
-/*}*/
+.bs-stepper .step.active .bs-stepper-circle{
+    background-color: #fd7e14;
+    color: white;
+}
+.nav-sidebar .nav-treeview {
+    background-color:  rgba(0, 0, 0, .1)!important;
+    /*border-left: 3px solid grey;*/
+    border-radius: 0;
+}
+
+.nav-sidebar .nav-treeview .nav-link {
+    color: #adb5bd;
+    transition: 0.3s ease;
+}
+
+.nav-sidebar .nav-treeview .nav-link:hover {
+    background-color: #007bff;
+    color: #fff;
+    padding-left: 2rem;
+}
+.dropdown-menu.show {
+    display: ruby;
+}
 
 
 
