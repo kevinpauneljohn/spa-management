@@ -46,10 +46,10 @@
 
     <x-adminlte-modal id="code-modal" title="Code Generator" theme="info" size="sm">
         <div style="border: solid 2px black; padding-top:20px;">
-            <div id="code-content" style="display: flex; align-items: center; justify-content: center"></div>
+            <div id="code-content" style="display: flex; align-items: center; justify-content: center" class="text-muted"></div>
         </div>
         <x-slot name="footerSlot">
-            <x-adminlte-button theme="danger" label="Dismiss" data-dismiss="modal" class="w-100"/>
+            <x-adminlte-button label="Dismiss" data-dismiss="modal" class="w-100 bg-gradient-orange text-white"/>
         </x-slot>
     </x-adminlte-modal>
 

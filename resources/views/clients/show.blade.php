@@ -25,7 +25,7 @@
 
     <div class="row">
         <div class="col-lg-3">
-            <div class="card card-olive">
+            <div class="card card-info">
                 <div class="card-header">
                     <h3 class="card-title">{{ucwords($client->full_name)}}</h3>
                 </div>

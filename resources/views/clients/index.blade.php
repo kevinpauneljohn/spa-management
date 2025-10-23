@@ -9,7 +9,7 @@
 
 </style>
 @section('content')
-    <div class="row mb-2">
+    <div class="row">
         <div class="col-sm-6 mt-3">
             <h3 class="text-cyan">Client Management</h3>
         </div>
@@ -20,10 +20,10 @@
             </ol>
         </div>
     </div>
-<div class="card clients-card">
+<div class="card clients-card card-info card-outline">
     <div class="card-header">
         @can('download clients')
-            <a href="{{route('download.clients')}}" class="btn bg-olive btn-sm">Download</a>
+            <a href="{{route('download.clients')}}" class="btn bg-gradient-info btn-sm">Download</a>
         @endcan
 
         <div class="float-right">
@@ -61,9 +61,9 @@
                         <td>{{$client->address}}</td>
                         <td>{{$client->transaction->count()}}</td>
                         <td>
-                            @can('view client') <a href="{{route('clients.show',['client' => $client->id])}}" class="btn btn-sm btn-success view-client" id="{{$client->id}}">View</a> @endcan
-                            @can('edit client') <button class="btn btn-sm btn-primary edit-client" id="{{$client->id}}">Edit</button> @endcan
-                            @can('delete client') <button class="btn btn-sm btn-danger delete-client" id="{{$client->id}}">Delete</button> @endcan
+                            @can('view client') <a href="{{route('clients.show',['client' => $client->id])}}" class="btn btn-xs bg-gradient-success view-client" id="{{$client->id}}">View</a> @endcan
+                            @can('edit client') <button class="btn btn-xs bg-gradient-info edit-client" id="{{$client->id}}">Edit</button> @endcan
+                            @can('delete client') <button class="btn btn-xs bg-gradient-orange text-white delete-client" id="{{$client->id}}">Delete</button> @endcan
                         </td>
                     </tr>
                 @endforeach
