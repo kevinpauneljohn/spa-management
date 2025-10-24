@@ -6,6 +6,7 @@ use App\Models\Sale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\ReportService;
+use Illuminate\Support\Facades\Route;
 
 class ReportController extends Controller
 {

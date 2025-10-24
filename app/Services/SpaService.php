@@ -22,7 +22,7 @@ class SpaService
                 return $spa->address;
             })
             ->editColumn('category',function ($spa){
-                return ucwords($spa->category);
+                return '<span class="badge bg-gradient-orange text-white badge-pill">'.ucwords($spa->category).'</span>';
             })
             ->addColumn('action', function($spa){
                 $action = "<div class='dropdown'>";
@@ -60,7 +60,7 @@ class SpaService
                 $action .= '</div>';
                 return $action;
             })
-            ->rawColumns(['action','name'])
+            ->rawColumns(['action','name','category'])
             ->make(true);
     }
 

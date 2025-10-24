@@ -133,7 +133,6 @@ class SalesController extends Controller
         $pageTitle = 'Create Sales Transaction';
         return view('point-of-sale.create-transactions',
         compact('spa','pageTitle','sale'));
-//        return $transactionService->getTransactions($spa->id, $sale->id);
     }
 
     public function getSalesByDateRange(Request $request, $spaId)
