@@ -19,7 +19,12 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card card-info card-outline">
+        <div class="card-header">
+            @can('add inventory')
+                <x-adminlte-button label="Add Item" data-toggle="modal" data-target="#inventory-modal" id="inventory-modal-btn" class="bg-gradient-info float-right"/>
+            @endcan
+        </div>
         <div class="card-body">
             <x-inventory.inventory-management/>
         </div>

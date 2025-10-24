@@ -30,15 +30,15 @@ class InventoryService
                 $action = "";
                 if(auth()->user()->can('manage inventory'))
                 {
-                    $action .= '<button class="btn btn-sm btn-outline-success update-inventory mr-1" title="Manage inventory" id="'.$inventory->id.'"><i class="fas fa-fw fa-shopping-cart"></i></button>';
+                    $action .= '<button class="btn btn-sm bg-gradient-success update-inventory mr-1 mb-1" title="Manage inventory" id="'.$inventory->id.'"><i class="fas fa-fw fa-shopping-cart"></i></button>';
                 }
                 if(auth()->user()->can('edit inventory'))
                 {
-                    $action .= '<button class="btn btn-sm btn-outline-primary edit-inventory-btn mr-1" id="'.$inventory->id.'"><i class="fa fa-edit"></i></button>';
+                    $action .= '<button class="btn btn-sm bg-gradient-info edit-inventory-btn mr-1 mb-1" id="'.$inventory->id.'"><i class="fa fa-edit"></i></button>';
                 }
                 if(auth()->user()->can('delete inventory'))
                 {
-                    $action .= '<button class="btn btn-sm btn-outline-danger delete-inventory-btn mr-1" id="'.$inventory->id.'"><i class="fa fa-trash"></i></button>';
+                    $action .= '<button class="btn btn-sm bg-gradient-orange delete-inventory-btn mr-1 mb-1" id="'.$inventory->id.'"><i class="text-white fa fa-trash"></i></button>';
                 }
                 return $action;
             })

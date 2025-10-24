@@ -121,8 +121,8 @@
     color: #fff;
     padding-left: 2rem;
 }
-.dropdown-menu.show {
-    display: ruby;
+#spa-list .dropdown-menu.show {
+    display: ruby!important;
 }
 
 
