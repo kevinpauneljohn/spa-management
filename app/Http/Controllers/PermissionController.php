@@ -31,7 +31,7 @@ class PermissionController extends Controller
                 $role = "";
                 foreach ($role_permissions as $roles)
                 {
-                    $role .= '<span class="badge badge-info right role-badge">'.ucfirst($roles->name).'</span>';
+                    $role .= '<span class="badge bg-gradient-orange text-white right role-badge badge-pill mr-1 mb-1">'.ucfirst($roles->name).'</span>';
                 }
 
                 return $role;
@@ -41,11 +41,11 @@ class PermissionController extends Controller
                 $action = "";
                 if(auth()->user()->can('edit permission'))
                 {
-                $action .= '<a href="#" class="btn btn-xs btn-primary edit-permission-btn" id="'.$permission->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                $action .= '<a href="#" class="btn btn-sm bg-gradient-info edit-permission-btn" id="'.$permission->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('delete permission'))
                 {
-                $action .= '<a href="#" class="btn btn-xs btn-danger delete-permission-btn" id="'.$permission->id.'" data-name="'.strtolower($permission->name).'"><i class="fa fa-trash"></i></a>&nbsp;';
+                $action .= '<a href="#" class="btn btn-sm bg-gradient-orange text-white delete-permission-btn" id="'.$permission->id.'" data-name="'.strtolower($permission->name).'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
                 return $action;
             })
@@ -104,11 +104,11 @@ class PermissionController extends Controller
         {
             $permission->name = strtolower($request->edit_permission);
             if($permission->isDirty()){
-                $permission->save();    
+                $permission->save();
                 $message = 'Permission successfully updated!';
             } else {
                 $message = 'Assigned Roles successfully updated.';
-            } 
+            }
 
             $roles = \Spatie\Permission\Models\Permission::whereName($permission->name)->first()->roles->pluck('name');
             if (!empty($roles)) {

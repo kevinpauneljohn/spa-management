@@ -125,6 +125,11 @@
     display: ruby!important;
 }
 
+.layout-fixed .brand-link {
+    width: 250px;
+    background-color: #17a2b8;
+}
+
 
 
 

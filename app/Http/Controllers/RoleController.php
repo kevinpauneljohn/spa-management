@@ -35,11 +35,11 @@ class RoleController extends Controller
                 $action = "";
                 if(auth()->user()->can('edit role'))
                 {
-                $action .= '<a href="#" class="btn btn-xs btn-primary edit-role-btn" id="'.$roles->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                $action .= '<a href="#" class="btn btn-sm bg-gradient-info edit-role-btn" id="'.$roles->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('delete role'))
                 {
-                $action .= '<a href="#" class="btn btn-xs btn-danger delete-role-btn" id="'.$roles->id.'" data-name="'.strtolower($roles->name).'"><i class="fa fa-trash"></i></a>&nbsp;';
+                $action .= '<a href="#" class="btn btn-sm bg-gradient-orange delete-role-btn text-white" id="'.$roles->id.'" data-name="'.strtolower($roles->name).'"><i class="fa fa-trash"></i></a>&nbsp;';
                 }
                 return $action;
             })

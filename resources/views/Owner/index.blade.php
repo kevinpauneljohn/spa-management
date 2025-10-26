@@ -10,7 +10,7 @@
 </style>
 @section('content')
     <div class="container-fluid">
-        <div class="row mb-2">
+        <div class="row">
             <div class="col-sm-6">
                 <h3 class="text-cyan">{{$title}}</h3>
             </div>
@@ -21,9 +21,9 @@
                 </ol>
             </div>
         </div>
-        <div class="card">
+        <div class="card card-info card-outline">
             <div class="card-header">
-                <x-adminlte-button label="Add" data-toggle="modal" data-target="#createOwner" class="bg-teal" id="add-owner-btn"/>
+                <x-adminlte-button label="Add" data-toggle="modal" data-target="#createOwner" class="bg-gradient-info" id="add-owner-btn"/>
             </div>
             <div class="card-body">
                 <x-admin.owners.owner />
@@ -33,7 +33,7 @@
 
     <form id="register-owner">
         @csrf
-    <x-adminlte-modal id="createOwner" title="Register New Owner" size="lg" theme="teal"
+    <x-adminlte-modal id="createOwner" title="Register New Owner" size="lg" theme="info"
                       icon="fas fa-bell" v-centered static-backdrop scrollable>
 
                     <div class="row mb-2">
@@ -72,7 +72,7 @@
                     </div>
 
         <x-slot name="footerSlot">
-            <x-adminlte-button type="submit" class="mr-auto submit-create-btn" theme="success" label="Save"/>
+            <x-adminlte-button type="submit" class="mr-auto submit-create-btn bg-gradient-info" label="Save"/>
         </x-slot>
     </x-adminlte-modal>
     </form>

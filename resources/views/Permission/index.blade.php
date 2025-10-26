@@ -11,59 +11,33 @@
     }
 </style>
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>User Permission Management</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Permission</a></li>
-                            <li class="breadcrumb-item active">List</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <div class="row">
+        <div class="col-sm-6">
+            <h3 class="text-info">User Permission Management</h3>
         </div>
-        <div class="card-body">
-            <section class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="tab-content">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                @can('add permission')
-                                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewPermission"><i class="fa fa-plus-circle"></i> Add New</button>
-                                                @endcan
-                                            </div>
-                                        </div><br />
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <table id="permissions-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th>Name</th>
-                                                            <th>Roles</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Permission</a></li>
+                <li class="breadcrumb-item active">List</li>
+            </ol>
+        </div>
+    </div>
+    <div class="card card-info card-outline">
+        <div class="card-header">
+            @can('add permission')
+                <button type="button" class="btn bg-gradient-orange text-white btn-sm" id="addNewPermission">Add</button>
+            @endcan
+        </div>
+        <div class="card-body table-responsive">
+            <table id="permissions-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
+                <thead>
+                <tr role="row">
+                    <th>Name</th>
+                    <th>Roles</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+            </table>
         </div>
     </div>
 

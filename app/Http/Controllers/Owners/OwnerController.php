@@ -164,15 +164,15 @@ class OwnerController extends Controller
                 $action = "";
                 if(auth()->user()->can('view spa'))
                 {
-                    $action .= '<a href="'.route('spa.overview',['id' => $owners->id]).'" class="btn btn-sm btn-outline-success" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
+                    $action .= '<a href="'.route('spa.overview',['id' => $owners->id]).'" class="btn btn-sm bg-gradient-success mb-1" title="View"><i class="fas fa-eye"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('edit owner'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-primary edit-owner-btn" id="'.$owners->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
+                    $action .= '<a href="#" class="btn btn-sm bg-gradient-info edit-owner-btn mb-1" id="'.$owners->id.'"><i class="fa fa-edit"></i></a>&nbsp;';
                 }
                 if(auth()->user()->can('delete owner'))
                 {
-                    $action .= '<a href="#" class="btn btn-sm btn-outline-danger delete-owner-btn" id="'.$owners->id.'"><i class="fa fa-trash"></i></a>&nbsp;';
+                    $action .= '<a href="#" class="btn btn-sm bg-gradient-orange delete-owner-btn mb-1" id="'.$owners->id.'"><i class="fa fa-trash text-white"></i></a>&nbsp;';
                 }
                 return $action;
             })

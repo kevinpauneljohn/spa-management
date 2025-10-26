@@ -11,58 +11,33 @@
     }
 </style>
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>User Role Management</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Role</a></li>
-                            <li class="breadcrumb-item active">List</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <div class="row">
+        <div class="col-sm-6">
+            <h3 class="text-info">User Role Management</h3>
         </div>
-        <div class="card-body">
-            <section class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="tab-content">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                @can('add role')
-                                                    <button type="button" class="btn bg-gradient-primary btn-sm float-right" id="addNewRole"><i class="fa fa-plus-circle"></i> Add New</button>
-                                                @endcan
-                                            </div>
-                                        </div><br />
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <table id="roles-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th>Name</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Role</a></li>
+                <li class="breadcrumb-item active">List</li>
+            </ol>
+        </div>
+    </div>
+    <div class="card card-info card-outline">
+        <div class="card-header">
+            @can('add role')
+                <button type="button" class="btn bg-gradient-orange text-white btn-sm" id="addNewRole">Add</button>
+            @endcan
+        </div>
+        <div class="card-body table-responsive">
+            <table id="roles-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
+                <thead>
+                <tr role="row">
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 
@@ -72,7 +47,7 @@
                 @csrf
                 <div class="modal-dialog modal-md">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-gradient-info">
                             <h4 class="modal-title">New Role Form</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -85,8 +60,8 @@
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input type="button" class="btn btn-primary add-role-btn" value="Save">
+                            <button type="button" class="btn bg-gradient-orange text-white" data-dismiss="modal">Close</button>
+                            <input type="button" class="btn bg-gradient-info add-role-btn" value="Save">
                         </div>
                     </div>
                 </div>
@@ -100,7 +75,7 @@
                 @csrf
                 <div class="modal-dialog modal-md">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-gradient-info">
                             <h4 class="modal-title role-title"></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -114,8 +89,8 @@
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <input type="button" class="btn btn-primary update-role-btn" value="Save">
+                            <button type="button" class="btn bg-gradient-orange text-white" data-dismiss="modal">Close</button>
+                            <input type="button" class="btn bg-gradient-info update-role-btn" value="Save">
                         </div>
                     </div>
                 </div>

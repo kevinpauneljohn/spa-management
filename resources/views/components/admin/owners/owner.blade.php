@@ -1,5 +1,5 @@
 <div>
-    <table id="owners-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+    <table id="owners-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
         <thead>
         <tr role="row">
             <th>Date Added</th>

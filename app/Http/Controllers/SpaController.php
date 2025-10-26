@@ -74,6 +74,7 @@ class SpaController extends Controller
         $owners = User::role(['owner'])->where('id', $id)->first();
         $roles = $owners->getRoleNames()->first();
 
+//        return view('Spa.overview',compact('owners', 'roles'));
         return view('Spa.overview',compact('owners', 'roles'));
     }
 
