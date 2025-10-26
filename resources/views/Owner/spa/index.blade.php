@@ -24,7 +24,7 @@
         </div>
         <div class="card">
             <div class="card-header card-outline card-info">
-                <x-adminlte-button label="Add" data-toggle="modal" data-target="#add-spa" class="bg-gradient-info" id="add-spa-btn"/>
+                <x-adminlte-button label="Add" data-toggle="modal" data-target="#add-spa" class="bg-gradient-orange text-white" id="add-spa-btn"/>
             </div>
             <div class="card-body">
                 <div class="row">

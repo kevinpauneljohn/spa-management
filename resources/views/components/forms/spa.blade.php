@@ -24,8 +24,8 @@
             </x-adminlte-select2>
 
             <x-slot name="footerSlot">
-                <x-adminlte-button class="mr-auto" theme="default" label="Close" data-dismiss="modal"/>
-                <x-adminlte-button type="submit" theme="info" label="Submit"/>
+                <x-adminlte-button class="mr-auto bg-gradient-orange text-white" label="Close" data-dismiss="modal"/>
+                <x-adminlte-button type="submit" class="bg-gradient-info" label="Submit"/>
             </x-slot>
         </x-adminlte-modal>
     </form>

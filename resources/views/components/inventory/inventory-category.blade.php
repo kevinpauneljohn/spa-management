@@ -1,21 +1,10 @@
-<div class="row mb-1">
-    <div class="col-md-12">
-                <div class="alert alert-default-info">
-                    <h5><i class="fas fa-info"></i> Note:</h5>
-                    Add Categories to your inventory
-                </div>
-        @can('add inventory')
-            <x-adminlte-button label="Add Category" data-toggle="modal" data-target="#category-modal" id="category-modal-btn" class="bg-olive float-right mb-3"/>
-        @endcan
-    </div>
-</div>
 <div class="row">
-    <div class="col-md-12">
-        <table id="category-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+    <div class="col-md-12 table-responsive">
+        <table id="category-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
             <thead>
             <tr role="row">
-                <th>Category</th>
-                <th>Description</th>
+                <th class="w-25">Category</th>
+                <th class="w-50">Description</th>
                 <th>Action</th>
             </tr>
             </thead>

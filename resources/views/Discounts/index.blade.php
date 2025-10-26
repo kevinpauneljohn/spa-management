@@ -21,7 +21,7 @@
 
     <div class="card card-info card-outline">
         <div class="card-header">
-            <x-adminlte-button label="Add" theme="info" id="add-discount-btn" data-toggle="modal" data-target="#add-discount"/>
+            <x-adminlte-button label="Add" id="add-discount-btn" data-toggle="modal" data-target="#add-discount" class="bg-gradient-orange text-white"/>
         </div>
         <div class="card-body table-responsive">
             <table id="discount-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">

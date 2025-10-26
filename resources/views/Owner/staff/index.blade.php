@@ -75,7 +75,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 @can('add staff')
-                                    <button type="button" class="btn bg-info btn-sm float-right" id="addNewStaff">Add Staff</button>
+                                    <button type="button" class="btn bg-gradient-orange text-white btn-sm float-right" id="addNewStaff">Add Staff</button>
                                 @endcan
                             </div>
                         </div>

@@ -23,7 +23,7 @@
 <div class="card clients-card card-info card-outline">
     <div class="card-header">
         @can('download clients')
-            <a href="{{route('download.clients')}}" class="btn bg-gradient-info btn-sm">Download</a>
+            <a href="{{route('download.clients')}}" class="btn bg-gradient-orange text-white btn-sm">Download</a>
         @endcan
 
         <div class="float-right">
