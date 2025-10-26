@@ -130,6 +130,10 @@
     background-color: #17a2b8;
 }
 
+.layout-navbar-fixed .wrapper .sidebar-dark-info .brand-link:not([class*=navbar]) {
+    background-color: #17a2b8;
+}
+
 
 
 

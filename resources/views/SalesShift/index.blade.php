@@ -15,14 +15,15 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active"><a href="{{route('payroll.index')}}">Sales Shift</a> </li>
+                <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a> </li>
+                <li class="breadcrumb-item active">Sales Shift </li>
             </ol>
         </div>
     </div>
     <div class="container-fluid">
-        <div class="card">
+        <div class="card card-outline card-info">
             <div class="card-body table-responsive">
-                <table id="sales-shit-list" class="table" style="width: 100%;">
+                <table id="sales-shit-list" class="table table-striped border border-2" style="width: 100%;">
                     <thead>
                         <tr>
                             <th>Updated At</th>

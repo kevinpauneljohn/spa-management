@@ -107,11 +107,11 @@ class ShiftService
                 $action = '';
                 if(auth()->user()->can('edit sales shift'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-primary m-1 end-shift" id="'.$salesShift->id.'" title="End Shift">End Shift</button>';
+                    $action .= '<button type="button" class="btn btn-sm bg-gradient-info m-1 mb-1 end-shift" id="'.$salesShift->id.'" title="End Shift">End Shift</button>';
                 }
                 if(auth()->user()->can('delete sales shift'))
                 {
-                    $action .= '<button type="button" class="btn btn-sm btn-danger m-1 delete-shift" id="'.$salesShift->id.'" title="Delete Shift">Delete</button>';
+                    $action .= '<button type="button" class="btn btn-sm bg-gradient-orange text-white mb-1 m-1 delete-shift" id="'.$salesShift->id.'" title="Delete Shift">Delete</button>';
                 }
                 return $action;
             })

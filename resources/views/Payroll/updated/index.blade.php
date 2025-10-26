@@ -12,14 +12,15 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active"><a href="{{route('owner.my.spas')}}">Spa</a> </li>
+                <li class="breadcrumb-item active"><a href="{{route('dashboard')}}">Dashboard</a> </li>
+                <li class="breadcrumb-item active">Payroll</li>
             </ol>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <table id="spa-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+    <div class="card card-info card-outline">
+        <div class="card-body table-responsive">
+            <table id="spa-list" class="table table-striped border border-2 table-hover" role="grid" style="width:100%;">
                 <thead>
                 <tr role="row">
                     <th>Date Added</th>

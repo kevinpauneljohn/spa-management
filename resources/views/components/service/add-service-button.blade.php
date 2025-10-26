@@ -1,5 +1,5 @@
 @can('add service')
-    <button type="button" class="btn bg-gradient-info btn-sm float-right" id="addNewService"><i class="fa fa-plus-circle"></i> Add Service</button>
+    <button type="button" class="btn bg-gradient-info btn-sm float-right" id="addNewService">Add Service</button>
 @endcan
 
 @once

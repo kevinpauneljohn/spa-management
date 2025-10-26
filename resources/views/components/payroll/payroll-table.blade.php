@@ -1,4 +1,4 @@
-<table id="therapist-sales-list" class="table table-bordered table-hover" role="grid" style="width:100%;">
+<table id="therapist-sales-list" class="table table-striped table-hover border border-2" role="grid" style="width:100%;">
     <thead>
     <tr role="row">
         <th>Therapist</th>
