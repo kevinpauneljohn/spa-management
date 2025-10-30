@@ -89,7 +89,11 @@ class ReportService
             $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
 
-            $sales = Sale::whereBetween('created_at', [$startDate, $endDate])
+//            $sales = Sale::whereBetween('created_at', [$startDate, $endDate])
+//                ->where('payment_status', 'completed')
+//                ->whereIn('spa_id', $spa_ids)
+//                ->sum('total_amount');
+            $sales = Sale::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)
                 ->where('payment_status', 'completed')
                 ->whereIn('spa_id', $spa_ids)
                 ->sum('total_amount');
@@ -181,8 +185,7 @@ class ReportService
 
     public function sales($spaId, $startDate, $endDate)
     {
-        $sales = Spa::find($spaId)->sales()->whereBetween('created_at',[$startDate, $endDate])
-            ->where('payment_status','completed')->get();
+        $sales = Spa::find($spaId)->sales()->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->get();
         $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
         $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
 
@@ -191,7 +194,10 @@ class ReportService
 
     public function expenses($spaId, $startDate, $endDate)
     {
-        return DB::table('expenses')->whereBetween('date_expended',[$startDate, $endDate])
-            ->where('spa_id',$spaId)->sum('amount');
+//        return DB::table('expenses')->whereBetween('date_expended',[$startDate, $endDate])
+//            ->where('spa_id',$spaId)->sum('amount');
+        return DB::table('expenses')->whereDate('date_expended', '>=', $startDate)
+            ->whereDate('date_expended', '<=', $endDate)->where('spa_id',$spaId)
+            ->sum('amount');
     }
 }

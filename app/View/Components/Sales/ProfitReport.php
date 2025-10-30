@@ -10,6 +10,7 @@ use Illuminate\View\Component;
 
 class ProfitReport extends Component
 {
+    public $display_sales;
     public $total_sales;
     public $expenses;
     public $profit;
@@ -29,6 +30,9 @@ class ProfitReport extends Component
 
         $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
         $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
+
+        //test
+        $this->display_sales = $sales;
 
         $this->total_sales = $total_transactions + $total_vouchers;
 

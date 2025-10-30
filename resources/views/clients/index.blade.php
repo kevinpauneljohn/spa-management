@@ -61,7 +61,7 @@
                         <td>{{$client->mobile_number}}</td>
                         <td>{{$client->date_of_birth}}</td>
                         <td>{{ucwords(strtolower($client->address))}}</td>
-                        <td class="text-purple text-bold">{{$client->transaction->count()}}</td>
+                        <td><span class="badge badge-pill bg-gradient-info">{{$client->transaction->count()}}</span></td>
                         <td>
                             @can('view client') <a href="{{route('clients.show',['client' => $client->id])}}" class="btn btn-xs bg-gradient-success view-client mb-1" id="{{$client->id}}">View</a> @endcan
                             @can('edit client') <button class="btn btn-xs bg-gradient-info edit-client mb-1" id="{{$client->id}}">Edit</button> @endcan
