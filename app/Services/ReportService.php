@@ -86,15 +86,12 @@ class ReportService
     {
         $data = [];
         for ($month = 0; $month <= 12; $month++) {
-            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $startDate = Carbon::createFromDate($year, $month)->startOfMonth();
+            $endDate = Carbon::createFromDate($year, $month)->endOfMonth();
 
-//            $sales = Sale::whereBetween('created_at', [$startDate, $endDate])
-//                ->where('payment_status', 'completed')
-//                ->whereIn('spa_id', $spa_ids)
-//                ->sum('total_amount');
             $sales = Sale::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)
                 ->where('payment_status', 'completed')
+                ->where('paid_at','!=',null)
                 ->whereIn('spa_id', $spa_ids)
                 ->sum('total_amount');
 

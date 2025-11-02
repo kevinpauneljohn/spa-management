@@ -4,23 +4,18 @@ namespace App\Http\Controllers\Pos;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SalesTransactionRequest;
-use App\Models\Discount;
 use App\Models\Spa;
-use App\Models\Transaction;
 use App\Services\PointOfSales\MasseurAvailabilityService;
 use App\Services\PointOfSales\RoomAvailabilityService;
 use App\Services\PointOfSales\VoidTransaction;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 
 class TransactionController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *

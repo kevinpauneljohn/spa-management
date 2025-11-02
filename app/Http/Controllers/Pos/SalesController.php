@@ -17,6 +17,7 @@ use App\Services\PointOfSales\Sales\IsolateTransaction;
 use App\Services\PointOfSales\Sales\SalesService;
 use App\Services\PointOfSales\Shift\ShiftService;
 use App\Services\PointOfSales\TransactionService;
+use App\Services\PointOfSales\VoidTransaction;
 use App\View\Components\Pos\Appointments\UpcomingTab\view;
 use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
@@ -69,7 +70,7 @@ class SalesController extends Controller
         return response()->json(['success' => false, 'message' => 'An error occurred']);
     }
 
-
+//
     /**
      * @param $id
      * @return Application|Factory|\Illuminate\Contracts\View\View

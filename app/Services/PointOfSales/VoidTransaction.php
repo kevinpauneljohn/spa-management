@@ -2,6 +2,7 @@
 
 namespace App\Services\PointOfSales;
 
+use App\Models\Sale;
 use App\Models\Transaction;
 use Spatie\Activitylog\Contracts\Activity;
 
@@ -22,11 +23,34 @@ class VoidTransaction extends TransactionService
 
         if($transaction->save())
         {
-            $this->logActivity($transaction, $reason);
-            $transaction->forceDelete();
+            $sales = $transaction->sale;
+            if($this->update_sales_total_after_transaction_voided(
+                $sales->payment_status, $transaction->sales_id, $transaction->amount
+                ))
+            {
+                $this->logActivity($transaction, $reason);
+                $transaction->forceDelete();
+            }
             return true;
         }
         return false;
+    }
+
+    private function update_sales_total_after_transaction_voided($paymentStatus, $salesId, $transactionAmount): bool
+    {
+        //if sales status was completed and voided by the owner, sales total amount will be deducted by the
+        //transaction amount voided
+        if($paymentStatus == "completed")
+        {
+            $sales = Sale::findOrfail($salesId);
+            $sales->total_amount = $sales->total_amount - $transactionAmount;
+            if($sales->save())
+            {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -55,11 +79,6 @@ class VoidTransaction extends TransactionService
             })
             ->log('voided a transaction');
     }
-
-//    private function transaction($transactionId)
-//    {
-//        return Transaction::find($transactionId);
-//    }
 
 
 
