@@ -1,6 +1,6 @@
 <span id="button-container">
     @if($display)
-        <button class="btn btn-success mr-2 pay-button" id="{{$salesId}}">Pay</button>
+        <button class="btn bg-gradient-success mr-1 pay-button" id="{{$salesId}}">Pay</button>
     @endif
 </span>
 
@@ -11,7 +11,7 @@
                 @csrf
                 <input type="hidden" name="sales_id">
                 <div class="modal-content">
-                    <div class="modal-header bg-olive">
+                    <div class="modal-header bg-gradient-info">
                         <h4 class="modal-title">Payment</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -93,7 +93,7 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                         <div class="float-right">
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn bg-gradient-orange text-white">Save</button>
                         </div>
                     </div>
                 </div>

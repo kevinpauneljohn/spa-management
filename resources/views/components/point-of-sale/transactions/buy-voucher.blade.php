@@ -1,8 +1,7 @@
-<button type="button" class="btn bg-purple" id="buy-voucher-btn">Buy Voucher</button>
+<button type="button" class="btn bg-gradient-orange text-white" id="buy-voucher-btn">Buy Voucher</button>
 <form id="buy-voucher-form">
     @csrf
-    <x-adminlte-modal id="buy-voucher-modal" title="Account Policy" theme="olive"
-                      icon="fas fa-bell" v-centered static-backdrop scrollable>
+    <x-adminlte-modal id="buy-voucher-modal" title="Account Policy" theme="gradient-info" icon="fas fa-bell" v-centered static-backdrop scrollable>
         <div>
             <div class="form-group voucher">
                 <label for="voucher"></label>
@@ -19,7 +18,7 @@
         <input type="hidden" name="sales_id" value="{{$salesId}}" />
         <input type="hidden" name="voucher_id" value=""/>
         <x-slot name="footerSlot">
-            <x-adminlte-button type="submit" theme="success" label="Add voucher"/>
+            <x-adminlte-button type="submit" class="bg-gradient-orange text-white" label="Add voucher"/>
         </x-slot>
     </x-adminlte-modal>
 </form>

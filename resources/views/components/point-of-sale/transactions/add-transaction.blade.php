@@ -1,5 +1,5 @@
 @if(!$display)
-<button type="button" class="btn btn-primary" id="add-client-btn">Add Transaction</button>
+<button type="button" class="btn bg-gradient-info" id="add-client-btn">Add Transaction</button>
 
 
     @once

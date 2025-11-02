@@ -1,7 +1,7 @@
 <div class="modal fade" id="add-client-modal" data-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-                <div class="modal-header bg-olive">
+                <div class="modal-header bg-gradient-info">
                     <h4 class="modal-title">Add Transaction</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -137,7 +137,7 @@
                                                 data-toggle="tooltip" data-placement="right" title="Clear Whole Form"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                     </div>
                                     <span class="float-right">
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" class="btn bg-gradient-orange text-white">Save</button>
                                     </span>
                                 </div>
                             </form>
