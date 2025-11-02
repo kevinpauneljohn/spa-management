@@ -217,7 +217,10 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/spa/{spa}/retrieve-by-name/{serviceName}',[\App\Http\Controllers\SpaController::class,'retrieveService'])->name('retrieve-service-by-name');
     Route::get('/spa/{spa}/retrieve-by-id/{serviceId}',[\App\Http\Controllers\SpaController::class,'retrieveServiceById'])->name('retrieve-service-by-id');
 
-    Route::get('/test-kevin', \App\Http\Controllers\TestController::class);
+//    Route::get('/test-kevin', \App\Http\Controllers\TestController::class);
+    Route::get('/access-denied', function (){
+        return view('errors.access_denied');
+    })->name('access-denied');
 
 });
 

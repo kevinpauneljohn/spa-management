@@ -27,7 +27,7 @@ class CheckIfSalesShiftInstantiated
             {
                 return redirect(route('required.start-shift',['spaId' => $user->spa_id]));
             }elseif ($salesShift->where('user_id','!=',auth()->user()->id)->where('completed',false)->count() > 0){
-                abort(404);
+                return redirect(route('access-denied'));
             }
         }
         return $next($request);
