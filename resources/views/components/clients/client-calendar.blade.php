@@ -68,7 +68,7 @@
                         }
                     },
                     eventClick: function(info){
-                        // console.log(info.event.id)
+                        // console.log(info.event.extendedProps.category)
                         $.ajax({
                             url: '/appointment-show/'+info.event.id,
                             type: 'GET',
@@ -76,7 +76,7 @@
                                 $('#client-info').find('.modal-content').append(overlay);
                             }
                         }).done( (appointment) => {
-                            console.log(appointment)
+                            // console.log(appointment)
                             let fullName = appointment.firstname+' '+appointment.middlename+' '+appointment.lastname;
                             clientInfoModal.find('.modal-title').text(fullName);
 
@@ -84,18 +84,18 @@
                                 '<tr><td>Appointment Date:</td><td>'+appointment.start_time_formatted+'</td></tr>' +
                                 '<tr><td>Mobile Number:</td><td><a href="tel:+63'+appointment.mobile_number+'">+63'+appointment.mobile_number+'</a></td></tr>' +
                                 '<tr><td>Email:</td><td><a href="mailto:'+appointment.email+'">'+(appointment.email != null ? appointment.email : '')+'</a></td></tr>' +
-                                '<tr><td>Client Type:</td><td>'+appointment.client_type+'</td></tr>' +
+                                // '<tr><td>Client Type:</td><td>'+appointment.client_type+'</td></tr>' +
                                 '<tr><td>Remarks:</td><td>'+appointment.remarks+'</td></tr>';
 
                             clientInfoModal.find('#client-booking-info').html(details)
                                 .append('<tr><td>' +
-                                    '<button type="button" class="btn btn-primary btn-sm convert-booking-to-sales" id="'+appointment.id+'">Convert to sales</button>' +
-                                    '</td><td><form id="reschedule-form">@csrf<div class="row"><div class="col-lg-9 col-md-6 mb-2"><input type="datetime-local" name="reschedule" class="form-control" id="'+appointment.id+'"/></div><div class="col-lg-3 col-md-6"><button type="submit" class="btn btn-primary">Reschedule</button></div></div></form></td></tr>');
+                                    '<button type="button" class="btn bg-gradient-success btn-sm convert-booking-to-sales" id="'+appointment.id+'">Convert to sales</button>' +
+                                    '</td><td><form id="reschedule-form">@csrf<div class="row"><div class="col-lg-9 col-md-6 mb-2"><input type="datetime-local" name="reschedule" class="form-control" id="'+appointment.id+'"/></div><div class="col-lg-3 col-md-6"><button type="submit" class="btn bg-gradient-info">Reschedule</button></div></div></form></td></tr>');
                             return appointment;
 
                         }).fail( (xhr, data, error) => {
-
-                            if(error === 'Not Found')
+                            console.log(info.event.extendedProps.category)
+                            if(info.event.extendedProps.category === 'completed')
                             {
                                 clientInfoModal.find('.modal-title').text('');
                                 clientInfoModal.find('#client-booking-info tr').remove()
@@ -120,18 +120,25 @@
                         $('#client-info').find('.modal-content').append(overlay);
                     }
                 }).done((transaction) => {
-                    // console.log(transaction)
+                    console.log(transaction)
                     clientInfoModal.find('.modal-title').text(transaction.client_name);
 
+                    let discountAmount = Number(0).toFixed(2);
+                    let serviceAmount = Number(transaction.amount).toFixed(2);
+                    if(transaction.discount_amount != null)
+                    {
+                        discountAmount = parseFloat(transaction.discount_amount).toFixed(2);
+                        serviceAmount = Number(parseFloat(transaction.amount ) + parseFloat(transaction.discount_amount)).toFixed(2);
+                    }
+
                         clientInfoModal.find('#client-booking-info').html('<tr><td>Category</td><td class="text-success">Completed Sales</td></tr>' +
-                            '<tr><td>Invoice #</td><td><a href="/point-of-sale/add-transaction/'+transaction.spa_id+'/'+transaction.sales_id+'" style="cursor:pointer;">#'+(truncateString(transaction.sales_id,8))+'</a></td></tr>' +
+                            '<tr><td>Invoice #</td><td><a href="/point-of-sale/add-transaction/'+transaction.spa_id+'/'+transaction.sales_id+'" style="cursor:pointer;" title="Click to view the details">#'+(truncateString(transaction.sales_id,8))+'</a></td></tr>' +
                             '<tr><td>Start Date:</td><td>'+transaction.start_date+'</td></tr>' +
                             '<tr><td>End Date:</td><td>'+transaction.end_date+'</td></tr>' +
-                            '<tr><td>Service:</td><td class="text-fuchsia">'+transaction.service.name+'</td></tr>' +
-                            '<tr><td>Service Amount</td><td>'+parseFloat(transaction.service.price).toFixed(2)+'</td></tr>' +
-                            '<tr><td>Plus Time</td><td>'+transaction.plus_time+' minutes</td></tr>' +
-                            '<tr><td>Plus Time Amount</td><td>'+parseFloat(transaction.price_per_plus_time_total).toFixed(2)+'</td></tr>' +
-                            '<tr><td>Total Amount</td><td>'+transaction.total_amount.toFixed(2)+'</td></tr>');
+                            '<tr><td>Service:</td><td class="text-fuchsia">'+transaction.service_name+'</td></tr>' +
+                            '<tr><td>Service Amount</td><td class="text-bold text-success">'+ serviceAmount +'</td></tr>' +
+                            '<tr><td>Discount</td><td class="text-bold text-primary">'+ discountAmount +'</td></tr>' +
+                            '<tr><td>Discounted Amount</td><td class="text-bold text-orange">'+transaction.total_amount.toFixed(2)+'</td></tr>');
                 }).always(() => {
 
                     clientInfoModal.find('.overlay').remove();
