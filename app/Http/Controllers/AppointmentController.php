@@ -26,12 +26,12 @@ class AppointmentController extends Controller
         return $this->appointmentService->data($id);
     }
 
-    public function store(Request $request, $id)
+    public function store(Request $request, $id): array
     {
         return $this->appointmentService->create($request, $id);
     }
 
-    public function storeSales(Request $request, $id, $amount)
+    public function storeSales(Request $request, $id, $amount): array
     {
         return $this->appointmentService->appointmentCreateSales($request, $id, $amount);
     }
@@ -44,8 +44,9 @@ class AppointmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Appointment  $appointment
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return array
      */
     public function edit(Request $request, $id)
     {

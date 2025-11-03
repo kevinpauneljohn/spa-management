@@ -166,7 +166,7 @@
                             setTimeout(function(){
                                 checkAvailability();
                                 therapistsAvailability()
-                            },5000)
+                            },90000)
                         }else{
                             $('#dashboard-sales-table-list').DataTable().ajax.reload(null, false);
                             $('#room-availability-section').load('{{url()->current()}} #room-availability-section .room-holder');
