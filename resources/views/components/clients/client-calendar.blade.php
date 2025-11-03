@@ -68,7 +68,6 @@
                         }
                     },
                     eventClick: function(info){
-                        // console.log(info.event.extendedProps.category)
                         $.ajax({
                             url: '/appointment-show/'+info.event.id,
                             type: 'GET',
@@ -76,7 +75,6 @@
                                 $('#client-info').find('.modal-content').append(overlay);
                             }
                         }).done( (appointment) => {
-                            // console.log(appointment)
                             let fullName = appointment.firstname+' '+appointment.middlename+' '+appointment.lastname;
                             clientInfoModal.find('.modal-title').text(fullName);
 
@@ -84,7 +82,6 @@
                                 '<tr><td>Appointment Date:</td><td>'+appointment.start_time_formatted+'</td></tr>' +
                                 '<tr><td>Mobile Number:</td><td><a href="tel:+63'+appointment.mobile_number+'">+63'+appointment.mobile_number+'</a></td></tr>' +
                                 '<tr><td>Email:</td><td><a href="mailto:'+appointment.email+'">'+(appointment.email != null ? appointment.email : '')+'</a></td></tr>' +
-                                // '<tr><td>Client Type:</td><td>'+appointment.client_type+'</td></tr>' +
                                 '<tr><td>Remarks:</td><td>'+appointment.remarks+'</td></tr>';
 
                             clientInfoModal.find('#client-booking-info').html(details)
@@ -94,7 +91,6 @@
                             return appointment;
 
                         }).fail( (xhr, data, error) => {
-                            console.log(info.event.extendedProps.category)
                             if(info.event.extendedProps.category === 'completed')
                             {
                                 clientInfoModal.find('.modal-title').text('');
