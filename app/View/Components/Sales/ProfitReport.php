@@ -25,19 +25,22 @@ class ProfitReport extends Component
     {
         $this->spaId = $spaId;
         $this->current_month = now()->format('m');
-        $sales = Spa::find($spaId)->sales()->whereMonth('created_at',$this->current_month)
-            ->where('payment_status','completed')->get();
+//        $sales = Spa::find($spaId)->sales()->whereMonth('created_at',$this->current_month)
+//            ->where('payment_status','completed')->get();
 
-        $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
-        $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
+        $sales = Sale::where('spa_id',$this->spaId)
+            ->whereDate('created_at','>=',now()->startOfMonth())
+            ->whereDate('created_at','<=',now()->endOfMonth())
+            ->where('payment_status','completed')->sum('total_amount');
 
-        //test
-        $this->display_sales = $sales;
+//        $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
+//        $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
 
-        $this->total_sales = $total_transactions + $total_vouchers;
+        $this->total_sales = $sales;
 
 //        $this->expenses = DB::table('expenses')->whereMonth('date_expended','=',$this->current_month)->where('spa_id',$spaId)->sum('amount');
-        $this->expenses = Expense::where('spa_id','=','774a6ccf-d0e6-4cb7-a56c-9f0f470d3272')->whereMonth('date_expended','=',$this->current_month)->sum('amount');
+//        $this->expenses = Expense::where('spa_id','=','774a6ccf-d0e6-4cb7-a56c-9f0f470d3272')->whereMonth('date_expended','=',$this->current_month)->sum('amount');
+        $this->expenses = Expense::where('spa_id','=',$spaId)->whereMonth('date_expended','=',$this->current_month)->sum('amount');
 
         $this->profit = $this->total_sales - $this->expenses;
     }

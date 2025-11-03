@@ -182,11 +182,12 @@ class ReportService
 
     public function sales($spaId, $startDate, $endDate)
     {
-        $sales = Spa::find($spaId)->sales()->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->get();
-        $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
-        $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
-
-        return $total_transactions + $total_vouchers;
+        return Spa::find($spaId)->sales()->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->sum('total_amount');
+//        $sales = Spa::find($spaId)->sales()->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->sum('total_amount');
+//        $total_transactions = $sales->pluck('transactions')->flatten()->sum('amount');
+//        $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price');
+//
+//        return $total_transactions + $total_vouchers;
     }
 
     public function expenses($spaId, $startDate, $endDate)
