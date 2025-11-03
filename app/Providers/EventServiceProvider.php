@@ -80,7 +80,7 @@ class EventServiceProvider extends ServiceProvider
                 {
                     $event->menu->add(
                         [
-                            'text' => 'Discounts',
+                            'text' => 'Coupons & Vouchers',
                             'route'  => 'discounts.index',
                             'icon' => 'fas fa-fw fa-tags',
                             'can' => 'access discounts',

@@ -392,7 +392,7 @@ class TransactionService extends SalesService
         return (bool)$transaction->save();
     }
 
-    public function updateTransactionByOwner($transactionId, $request)
+    public function updateTransactionByOwner($transactionId, $request): bool
     {
         $service = Service::find($request->service);
         $transaction = $this->transaction($transactionId);
