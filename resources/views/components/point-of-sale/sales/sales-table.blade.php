@@ -45,7 +45,8 @@
                     $('#dashboard-sales-table-list').find('tbody')
                         .append('<tr class="sales-info-bg">' +
                             '<td colspan="2">Total No. Clients: <span class="text-info text-bold">'+sale.total_clients+'</span></td>' +
-                            '<td colspan="7">Total Expected Amount: <span class="text-info text-bold">'+sale.total_expected_amount+'</span></td>' +
+                            '<td colspan="3">Total Expected Amount: <span class="text-info text-bold">'+sale.total_expected_amount+'</span></td>' +
+                            '<td colspan="4">Total Amount Paid: <span class="text-info text-bold">'+sale.total_amount_paid+'</span></td>' +
                             // '<td colspan="4">Total Amount Paid: <span class="text-info text-bold">'+sale.total_amount_paid+'</span></td></tr>' +
                             '<tr class="sales-info-bg"><td colspan="2">Completed Sales: <span class="text-success text-bold">'+sale.completed_sales+'</span></td>' +
                             '<td colspan="3">Pending Sales: <span class="text-danger text-bold">'+sale.pending_sales+'</span></td>' +

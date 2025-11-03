@@ -116,7 +116,7 @@ class SalesService
                 'total_discounts' => $total_vouchers = $sales->pluck('discounts')->flatten()->sum('price'),
                 'total_expected_amount' => number_format($sales->pluck('transactions')->flatten()->sum('amount') + $total_vouchers,2),
                 'total_clients' => $sales->pluck('transactions')->flatten()->count(),
-                'total_amount_paid' => number_format($sales->where('payment_status','completed')->sum('amount_paid'),2)
+                'total_amount_paid' => number_format($sales->where('payment_status','completed')->sum('total_amount'),2)
             ])
             ->make(true);
     }
