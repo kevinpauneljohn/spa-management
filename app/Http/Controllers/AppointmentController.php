@@ -96,8 +96,18 @@ class AppointmentController extends Controller
 
     public function getCalendarEvents(Spa $spa): \Illuminate\Support\Collection
     {
-        $appointments = collect($spa->appointments)->toArray();
-        $transactions = collect($spa->transactions)->toArray();
+        $appointments = collect($spa->appointments()->whereBetween('created_at', [
+            Carbon::now()->subMonths(6),
+            Carbon::now()->addMonths(6)
+        ])
+            ->get())->toArray();
+
+        $transactions = collect($spa->transactions()->whereBetween('created_at', [
+            Carbon::now()->subMonths(6),
+            Carbon::now()->addMonths(6)
+        ])
+        ->get())->toArray();
+
         $calendarBookings = collect($appointments)->merge($transactions)->toArray();
 
         return collect($calendarBookings)->mapWithKeys(function($item, $key){
