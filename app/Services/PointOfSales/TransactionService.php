@@ -365,7 +365,7 @@ class TransactionService extends SalesService
         $transaction->discount_id = $discount_id;
         $transaction->discount_amount = $discountAmount;
         $transaction->amount = $transaction->amount - $discountAmount;
-        $transaction->commission_reference_amount = $transaction->commission_reference_amount - $discountAmount;
+//        $transaction->commission_reference_amount = $transaction->commission_reference_amount - $discountAmount;
 
         $this->salesIdClaimed($transaction->sales_id, $discount_id, now());
         return (bool)$transaction->save();
@@ -386,7 +386,7 @@ class TransactionService extends SalesService
 
         $discountAmount = Discount::find($transaction->discount_id)->amount;
         $transaction->amount = $transaction->amount + $discountAmount;
-        $transaction->commission_reference_amount = $transaction->commission_reference_amount + $discountAmount;
+//        $transaction->commission_reference_amount = $transaction->commission_reference_amount + $discountAmount;
         $transaction->discount_id = null;
         $transaction->discount_amount = null;
         return (bool)$transaction->save();
@@ -403,7 +403,7 @@ class TransactionService extends SalesService
         $transaction->therapist_2 = $request->edit_therapist_2;
         $transaction->service_name = $service->name;
         $transaction->amount = $service->price - $discount;
-        $transaction->commission_reference_amount = $service->commission_reference_amount - $discount;
+        $transaction->commission_reference_amount = $service->commission_reference_amount;
         if($transaction->isDirty())
         {
             return (bool)$transaction->save();

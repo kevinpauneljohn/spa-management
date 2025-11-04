@@ -95,6 +95,8 @@
                     <option value="percentage_plus_allowance">Percentage + Allowance</option>
                     <option value="amount_only">Amount Only</option>
                     <option value="amount_plus_allowance">Amount + Allowance</option>
+                    <option value="per_service_plus_allowance">Per Service + Allowance</option>
+                    <option value="per_service_only">Per Service Only</option>
                 </x-adminlte-select>
 
 
