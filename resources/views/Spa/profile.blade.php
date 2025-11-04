@@ -25,9 +25,10 @@
                 <div class="card-header p-2">
                     <span class="float-left">
                         <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#data" data-toggle="tab">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#therapists" data-toggle="tab">Masseur/Masseuse</a></li>
-                    </ul>
+                            <li class="nav-item"><a class="nav-link active" href="#therapists" data-toggle="tab">Masseur/Masseuse</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#service-category" data-toggle="tab">Service Category</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#services" data-toggle="tab">Services</a></li>
+                        </ul>
                     </span>
                     <span class="float-right">
                         @can('access pos')
@@ -39,7 +40,34 @@
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
-                        <div class="active tab-pane" id="data">
+                        <div class="active tab-pane" id="therapists">
+                            <x-therapists :spaId="$spa->id"/>
+                        </div>
+                        <div class="tab-pane table-responsive" id="service-category">
+                            <div class="alert alert-default-info">
+                                <h5><i class="fas fa-info"></i> Note:</h5>
+                                Create categories first before you add services.
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn bg-gradient-info mb-3 float-right" id="add-service-category-btn">Add Category</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table class="table table-hover table-striped border border-2 w-100" id="service-category-list">
+                                        <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="services">
                             <div class="alert alert-default-info">
                                 <h5><i class="fas fa-info"></i> Note:</h5>
                                 Create services you offer to your customers.
@@ -70,10 +98,6 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="tab-pane" id="therapists">
-                            <x-therapists :spaId="$spa->id"/>
                         </div>
                     </div>
                 </div>
@@ -207,6 +231,34 @@
             </form>
         </div>
     @endcan
+
+    @if(auth()->user()->can('add service') || auth()->user()->can('edit-user'))
+        <div class="modal fade" id="service-modal">
+            <form role="form">
+                @csrf
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header bg-gradient-info">
+                            <h4 class="modal-title"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group category">
+                                <label for="category">Category</label>
+                                <input type="text" name="category" class="form-control" id="category">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-info save-category-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endif
 @stop
 
 @section('plugins.Toastr',true)
@@ -224,6 +276,7 @@
 
 @section('js')
     <script src="{{asset('js/clear_errors.js')}}"></script>
+    <script src="{{asset('js/spa/service-category.js')}}"></script>
     <script>
         $(document).ready(function() {
             var spa_id = $('.spa-id').val();
@@ -242,6 +295,19 @@
                     { data: 'duration', name: 'duration'},
                     { data: 'category', name: 'category'},
                     { data: 'multiple_masseur', name: 'multiple_masseur'},
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
+                ],
+                responsive:true,
+                order:[0,'desc'],
+                pageLength: 10
+            });
+
+            $('#service-category-list').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('get.service-category', ['spa_id' => $spa["id"]]) !!}',
+                columns: [
+                    { data: 'category', name: 'category'},
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center'}
                 ],
                 responsive:true,

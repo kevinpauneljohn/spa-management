@@ -60,8 +60,9 @@
                                 <label for="category">Category</label>
                                 <select name="category" class="form-control" id="category">
                                     <option value="">Select here</option>
-                                    <option value="regular">Regular</option>
-                                    <option value="promo">Promo</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{$category->category}}">{{$category->category}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <button type="button" class="btn btn-default price_previous_btn" onclick="addServiceStepper.previous()">Previous</button>

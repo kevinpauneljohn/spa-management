@@ -2,12 +2,14 @@
 
 namespace App\View\Components\Service;
 
+use App\Models\ServiceCategory;
 use Illuminate\View\Component;
 
 class Service extends Component
 {
     public $spa;
     public $range;
+    public $categories;
     /**
      * Create a new component instance.
      *
@@ -17,6 +19,7 @@ class Service extends Component
     {
         $this->spa = $spa;
         $this->range = $this->minutes();
+        $this->categories = ServiceCategory::where('spa_id', $spa->id)->get();
     }
 
     private function minutes()

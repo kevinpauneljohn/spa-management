@@ -21,7 +21,8 @@
 }
 
 .personal-information .fas,.personal-information .far, .personal-information .fa{
-    color: #3d9970;
+    /*color: #3d9970;*/
+    color: #fd9137;
 }
 
 .no-transaction, .late{

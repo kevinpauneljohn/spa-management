@@ -37,6 +37,7 @@ require __DIR__ . '/web/hr/payslip.php';
 require __DIR__ . '/web/hr/deduction.php';
 require __DIR__ . '/web/hr/additionalPay.php';
 require __DIR__ . '/web/expense.php';
+require __DIR__ . '/web/service_category.php';
 
 Route::get('/', function () {
     return redirect(\route('dashboard'));
