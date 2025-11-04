@@ -33,6 +33,7 @@ $(document).on('submit','#add-service-category-form',function(form){
                 title: response.message
             });
             $('#service-category-list').DataTable().ajax.reload(null, false);
+            serviceModal.find('form').trigger('reset');
         }
     }).fail(function(xhr, status, error) {
         $.each(xhr.responseJSON.errors, function(key, value) {
