@@ -370,13 +370,13 @@ class TransactionService extends SalesService
 //        $transaction->commission_reference_amount = $transaction->commission_reference_amount - $discountAmount;
 
         $this->salesIdClaimed($transaction->sales_id, $discount_id, now());
-        $this->saveDiscountToExpense(
-            $discount->title,
-            $transaction->sale->invoice_number,
-            $discount->code,
-            $discountAmount,
-            $transaction->sale->spa_id
-        );
+//        $this->saveDiscountToExpense(
+//            $discount->title,
+//            $transaction->sale->invoice_number,
+//            $discount->code,
+//            $discountAmount,
+//            $transaction->sale->spa_id
+//        );
         return (bool)$transaction->save();
     }
 
@@ -400,13 +400,13 @@ class TransactionService extends SalesService
         $transaction->discount_id = null;
         $transaction->discount_amount = null;
 
-//        return (bool)$transaction->save();
+        return (bool)$transaction->save();
 
-        if($transaction->save())
-        {
-            return $this->removeDiscountFromExpense($discount->code);
-        }
-        return false;
+//        if($transaction->save())
+//        {
+//            return $this->removeDiscountFromExpense($discount->code);
+//        }
+//        return false;
     }
 
     public function saveDiscountToExpense($title, $salesInvoice, $discount_code, $discountAmount, $spa_id)
