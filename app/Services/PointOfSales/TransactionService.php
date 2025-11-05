@@ -4,6 +4,7 @@ namespace App\Services\PointOfSales;
 
 use App\Models\Client;
 use App\Models\Discount;
+use App\Models\Expense;
 use App\Models\Sale;
 use App\Models\Service;
 use App\Models\Spa;
@@ -189,9 +190,9 @@ class TransactionService extends SalesService
      * @param $service
      * @return mixed
      */
-    private function service($service)
+    private function service($serviceId)
     {
-        return Service::find($service);
+        return Service::find($serviceId);
     }
 
     /**
@@ -360,14 +361,22 @@ class TransactionService extends SalesService
 
     public function claimCoupon($transaction_id, $discount_id): bool
     {
+        $discount = Discount::find($discount_id);
         $transaction = $this->transaction($transaction_id);
-        $discountAmount = Discount::find($discount_id)->amount;
+        $discountAmount = $discount->amount;
         $transaction->discount_id = $discount_id;
         $transaction->discount_amount = $discountAmount;
         $transaction->amount = $transaction->amount - $discountAmount;
 //        $transaction->commission_reference_amount = $transaction->commission_reference_amount - $discountAmount;
 
         $this->salesIdClaimed($transaction->sales_id, $discount_id, now());
+        $this->saveDiscountToExpense(
+            $discount->title,
+            $transaction->sale->invoice_number,
+            $discount->code,
+            $discountAmount,
+            $transaction->sale->spa_id
+        );
         return (bool)$transaction->save();
     }
 
@@ -384,17 +393,54 @@ class TransactionService extends SalesService
         $transaction = $this->transaction($transaction_id);
         $this->salesIdClaimed(null, $transaction->discount_id, null);
 
-        $discountAmount = Discount::find($transaction->discount_id)->amount;
+        $discount = Discount::find($transaction->discount_id);
+        $discountAmount = $discount->amount;
         $transaction->amount = $transaction->amount + $discountAmount;
 //        $transaction->commission_reference_amount = $transaction->commission_reference_amount + $discountAmount;
         $transaction->discount_id = null;
         $transaction->discount_amount = null;
-        return (bool)$transaction->save();
+
+//        return (bool)$transaction->save();
+
+        if($transaction->save())
+        {
+            return $this->removeDiscountFromExpense($discount->code);
+        }
+        return false;
+    }
+
+    public function saveDiscountToExpense($title, $salesInvoice, $discount_code, $discountAmount, $spa_id)
+    {
+        Expense::create([
+            'title' => 'Coupon claimed - '.$title,
+            'description' => nl2br('Sales invoice# '.$salesInvoice.'--/-- Voucher Used: '.collect($discount_code)->toJson()),
+            'amount' => $discountAmount,
+            'spa_id' => $spa_id,
+            'date_expended' => now()->format('Y-m-d'),
+            'discount_code' => $discount_code
+        ]);
+    }
+
+    public function removeDiscountFromExpense($discount_code): bool
+    {
+        $expense = Expense::where('discount_code', $discount_code);
+        if($expense->count() > 0)
+        {
+            try {
+                $expense->delete();
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
+
+        }
+        return false;
     }
 
     public function updateTransactionByOwner($transactionId, $request): bool
     {
-        $service = Service::find($request->service);
+//        $service = Service::find($request->service);
+        $service = $this->service($request->service);
         $transaction = $this->transaction($transactionId);
         $discount = is_null($transaction->discount_amount) ? 0 : $transaction->discount_amount;
         $transaction->service_id = $request->service;

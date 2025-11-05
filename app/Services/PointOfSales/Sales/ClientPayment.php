@@ -2,6 +2,7 @@
 
 namespace App\Services\PointOfSales\Sales;
 
+use App\Models\Discount;
 use App\Models\Expense;
 use App\Models\Payment;
 use App\Models\Sale;
@@ -120,6 +121,7 @@ class ClientPayment extends AmountToBePaid
         ]);
         $this->saveVoucherToExpenses($voucherCode, $sales->invoice_number, $sales->spa_id, $voucherAmount);
     }
+
 
     private function saveVoucherToExpenses($vouchers, $salesInvoice, $spa_id, $voucherAmount)
     {
